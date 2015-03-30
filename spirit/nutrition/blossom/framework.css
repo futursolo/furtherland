@@ -1,0 +1,170 @@
+html, body{
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Candara, Verdana, Tahoma, 'Microsoft YaHei', simhei;
+    background-repeat: no-repeat;
+    font-size: 15px;
+    color: rgb(100, 100, 100);
+}
+a:link{
+    text-decoration: none;
+    color: rgb(100, 100, 100);
+    transition: all 0.30s ease-in-out;
+}
+a:hover{
+    text-decoration: none;
+    color: rgb(100, 100, 100);
+    transition: all 0.30s ease-in-out;
+}
+a:active{
+    text-decoration: none;
+    color: rgb(100, 100, 100);
+    transition: all 0.30s ease-in-out;
+}
+a:visited{
+    text-decoration: none;
+    color: rgb(100, 100, 100);
+    transition: all 0.30s ease-in-out;
+}
+a:visited:hover{
+    text-decoration: none;
+    color: rgb(100, 100, 100);
+    transition: all 0.30s ease-in-out;
+}
+a:visited:active{
+    text-decoration: none;
+    color: rgb(100, 100, 100);
+    transition: all 0.30s ease-in-out;
+}
+input{
+    font-family: Candara, Verdana, Tahoma, 'Microsoft YaHei', simhei;
+    box-sizing: border-box;
+}
+header.normal{
+    height: 200px;
+    width: 100%;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    text-align: center;
+    display: table;
+    padding-bottom: 50px;
+    box-sizing: border-box;
+}
+header .filter{
+    height: 150px;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.05);
+    display: table-cell;
+    vertical-align: middle;
+}
+header .profile{
+    background-color: rgb(255, 255, 255);
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    height: 120px;
+    width: 120px;
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 500px;
+    box-shadow: 0 0 5px 1px rgb(0, 0, 0);
+    transition: all 0.40s ease-in-out;
+    transition-delay: 0.2s;
+    -moz-transition-delay: 0.2s;
+    -webkit-transition-delay: 0.2s;
+    -o-transition-delay: 0.2s;
+    overflow: hidden;
+}
+header .profile .avatar{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 120px;
+    width: 120px;
+    border-radius: 500px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+header .profile .content{
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 150px;
+    width: 250px;
+    line-height: 25px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    transition-delay: 0.5s;
+    -moz-transition-delay: 0.5s;
+    -webkit-transition-delay: 0.5s;
+    -o-transition-delay: 0.5s;
+    transition: all 0.30s ease-in-out;
+    opacity: 0;
+}
+header .profile:hover{
+    width: 420px;
+}
+header .profile:hover .content{
+    opacity: 1;
+    transition-delay: 0s;
+    -moz-transition-delay: 0s;
+    -webkit-transition-delay: 0s;
+    -o-transition-delay: 0s;
+}
+nav.normal{
+    height: 50px;
+    width: 100%;
+    position: absolute;
+    top: 150px;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+nav.normal .container{
+    width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+nav.normal .left{
+    float: left;
+}
+nav.normal .right{
+    float: right;
+}
+nav.normal a:link{
+    color: rgb(255, 255, 255);
+}
+nav.normal a:hover{
+    color: rgb(200, 200, 200);
+}
+nav.normal a:active{
+    color: rgb(200, 200, 200);
+}
+nav.normal a:visited{
+    color: rgb(255, 255, 255);
+}
+nav.normal a:visited:hover{
+    color: rgb(200, 200, 200);
+}
+nav.normal a:visited:active{
+    color: rgb(200, 200, 200);
+}
+nav .link{
+    padding-left: 20px;
+    padding-right: 20px;
+    display: inline-block;
+    line-height: 52px;
+    height: 50px;
+}
+.main .page-title{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 25px;
+    font-weight: bold;
+}
+form{
+    display: none;
+}

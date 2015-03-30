@@ -1,6 +1,18 @@
+
+# FurtherLand Biosphere
+biosphere/
+
+# FurtherLand Melody
+melody.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
+*/__pycache__/
 *.py[cod]
+*.pyc
+
+# Node.js Extensions
+node_modules/
 
 # C extensions
 *.so
