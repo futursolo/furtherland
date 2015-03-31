@@ -17,10 +17,10 @@
         </div>
         <div class="right">
         {% if not current_user %}
-        <div class="link"><a href="{{ config["site_url"] }}/checkin">登录</a></div>
+        <div class="link"><a href="{{ config["site_url"] }}/management/checkin">登录</a></div>
         {% else %}
-        <div class="link"><a href="{{ config["site_url"] }}/management">未来领域管理局</a></div>
-        <div class="link"><a href="{{ config["site_url"] }}/checkout">登出</a></div>
+        <div class="link"><a href="{{ config["site_url"] }}/management">{{ config["site_name"] }}管理局</a></div>
+        <div class="link"><a href="{{ config["site_url"] }}/management/checkout">登出</a></div>
         {% end %}
         </div>
     </div>

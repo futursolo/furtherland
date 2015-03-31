@@ -1,6 +1,6 @@
 {% extends "framework.htm" %}
 {% block css %}
-    <link href="{{ static_url('checkin.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ management_url('checkin.css') }}" rel="stylesheet" type="text/css">
 {% end %}
 {% block body %}
 <div class="main checkin">
@@ -46,6 +46,6 @@
 </form>
 {% end %}
 {% block js %}
-<script src="{{ static_url('checkin.js') }}" charset="utf-8"></script>
-<script src="{{ static_url('sha.js') }}" charset="utf-8"></script>
+<script src="{{ management_url('sha.js') }}" charset="utf-8"></script>
+<script src="{{ management_url('checkin.js') }}" charset="utf-8"></script>
 {% end %}

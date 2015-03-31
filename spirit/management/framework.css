@@ -1,0 +1,93 @@
+html, body{
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Candara, Verdana, Tahoma, 'Microsoft YaHei', simhei;
+    background-repeat: no-repeat;
+    font-size: 15px;
+    color: rgb(100, 100, 100);
+}
+a:link{
+    text-decoration: none;
+    color: rgb(100, 100, 100);
+    transition: all 0.30s ease-in-out;
+}
+a:hover{
+    text-decoration: none;
+    color: rgb(100, 100, 100);
+    transition: all 0.30s ease-in-out;
+}
+a:active{
+    text-decoration: none;
+    color: rgb(100, 100, 100);
+    transition: all 0.30s ease-in-out;
+}
+a:visited{
+    text-decoration: none;
+    color: rgb(100, 100, 100);
+    transition: all 0.30s ease-in-out;
+}
+a:visited:hover{
+    text-decoration: none;
+    color: rgb(100, 100, 100);
+    transition: all 0.30s ease-in-out;
+}
+a:visited:active{
+    text-decoration: none;
+    color: rgb(100, 100, 100);
+    transition: all 0.30s ease-in-out;
+}
+input{
+    font-family: Candara, Verdana, Tahoma, 'Microsoft YaHei', simhei;
+    box-sizing: border-box;
+}
+nav.management{
+    height: 50px;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+nav.management .container{
+    width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+nav.management .left{
+    float: left;
+}
+nav.management .right{
+    float: right;
+}
+nav.management a:link{
+    color: rgb(255, 255, 255);
+}
+nav.management a:hover{
+    color: rgb(200, 200, 200);
+}
+nav.management a:active{
+    color: rgb(200, 200, 200);
+}
+nav.management a:visited{
+    color: rgb(255, 255, 255);
+}
+nav.management a:visited:hover{
+    color: rgb(200, 200, 200);
+}
+nav.management a:visited:active{
+    color: rgb(200, 200, 200);
+}
+nav .link{
+    padding-left: 20px;
+    padding-right: 20px;
+    display: inline-block;
+    line-height: 52px;
+    height: 50px;
+}
+.main .page-title{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 25px;
+    font-weight: bold;
+}
+form{
+    display: none;
+}

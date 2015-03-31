@@ -34,6 +34,7 @@ class GreetingPlace(RequestHandler):
         self.render_list["config"] = self.config
         self.render_list["FurtherLand"] = self.settings["further_land"]
         self.render_list["checkin_status"] = self.checkin_status
+        self.render_list["management_url"] = self.management_url
 
         self.next_url = self.get_arg("next", arg_type="link", default="/")
         self.remote_ip = self.request.headers.get(
@@ -53,7 +54,8 @@ class GreetingPlace(RequestHandler):
             result = book.result()
             for key in result:
                 self._config[result[key]["_id"]] = result[key]["value"]
-        return self._config
+        raise Return(self._config)
+
 
     @coroutine
     def get_current_user(self):
@@ -70,7 +72,7 @@ class GreetingPlace(RequestHandler):
                     self._current_user = None
                 else:
                     self._current_user = user
-            return self._current_user
+            raise Return(self._current_user)
 
     def get_arg(self, arg, default=None, arg_type="origin"):
         result = RequestHandler.get_argument(self, arg, None)
@@ -247,6 +249,19 @@ class GreetingPlace(RequestHandler):
         return RequestHandler.static_url(
             self, path, include_host=include_host, **kwargs)
 
+    def management_render(self, page):
+        if "page_title" not in list(self.render_list.keys()):
+            self.render_list["page_title"] = (
+                self.render_list["origin_title"] +
+                " - " + self.config["site_name"] + "管理局")
+        page = "management/" + page
+        return RequestHandler.render(self, page, **self.render_list)
+
+    def management_url(self, path, include_host=None, **kwargs):
+        path = "management/" + path
+        return RequestHandler.static_url(
+            self, path, include_host=include_host, **kwargs)
+
 
 class IndexPlace(GreetingPlace):
     @coroutine
@@ -255,12 +270,29 @@ class IndexPlace(GreetingPlace):
         self.render("index.htm")
 
 
+class WritingsPlace(GreetingPlace):
+    pass
+
+
+class HistoryLibrary(GreetingPlace):
+    pass
+
+
+class SpiritPlace(StaticFileHandler):
+    @coroutine
+    def get(self, path, include_body=True):
+        if re.match(r"^(.*)\.(htm|json|tpl|csv|mo|po|py|pyc)$", path) != None:
+            raise HTTPError(403)
+        else:
+            yield StaticFileHandler.get(self, path, include_body=include_body)
+
+
 class CheckinOffice(GreetingPlace):
     @coroutine
     @visitor_only
     def get(self):
         self.render_list["origin_title"] = "登录"
-        self.render("checkin.htm")
+        self.management_render("checkin.htm")
 
     @coroutine
     @visitor_only
@@ -271,7 +303,7 @@ class CheckinOffice(GreetingPlace):
         remember = self.get_arg("remember", arg_type="boolean")
         if not (username and password and two):
             self.set_scookie("checkin_status", "password", expires_days=None)
-            self.redirect("/checkin")
+            self.redirect("/management/checkin")
             return
         result = yield self.checkin(
             username=username, password=password, two=two)
@@ -291,7 +323,7 @@ class CheckinOffice(GreetingPlace):
             self.redirect(self.next_url)
         else:
             self.set_scookie("checkin_status", result[1], expires_days=None)
-            self.redirect("/checkin")
+            self.redirect("/management/checkin")
 
 
 class CheckoutOffice(GreetingPlace):
@@ -302,33 +334,27 @@ class CheckoutOffice(GreetingPlace):
         self.redirect(self.next_url)
 
 
-class WritingsPlace(GreetingPlace):
-    pass
-
-
-class ManagementOffice(GreetingPlace):
-    pass
-
-
-class HistoryLibrary(GreetingPlace):
-    pass
-
-
-class SpiritPlace(StaticFileHandler):
+class LobbyOffice(GreetingPlace):
     @coroutine
-    def get(self, path, include_body=True):
-        if re.match(r"^(.*)\.(htm|json|tpl|csv|mo|po|py|pyc)$", path) != None:
-            raise HTTPError(403)
-        else:
-            yield StaticFileHandler.get(self, path, include_body=include_body)
+    @authenticated
+    def get(self):
+        self.render_list["origin_title"] = "大厅"
+        self.management_render("lobby.htm")
+
+    @coroutine
+    @authenticated
+    def post(self):
+        pass
 
 
 navigation = [
     (r"/", IndexPlace),
-    (r"/checkin", CheckinOffice),
-    (r"/checkout", CheckoutOffice),
-    (r"/management/(.*)", ManagementOffice),
-    (r"/writings/(.*).htm", WritingsPlace)
     # (r"/classes/(.*).htm", ClassesPlace),  This will be avaliable in futhre
     # (r"/timeline", HistoryLibrary),
+    (r"/writings/(.*).htm", WritingsPlace),
+    (r"/management/checkin", CheckinOffice),
+    (r"/management/checkout", CheckoutOffice),
+    (r"/management", RedirectHandler, {"url": "/management/lobby"}),
+    (r"/management/", RedirectHandler, {"url": "/management/lobby"}),
+    (r"/management/lobby", LobbyOffice)
 ]
