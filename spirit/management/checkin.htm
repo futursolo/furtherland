@@ -7,7 +7,7 @@
     <div class="container">
         <div class="filter">
             <div class="page-title">欢迎回来，为什么不快乐地登录呢？</div>
-            <div class="avatar" style="background-image: url({{ static_url("avatar.jpg") }});"></div>
+            <div class="avatar" style="background-image: url({{ management_url("avatar.jpg") }});"></div>
             {% if checkin_status() %}
             <div>
                 {% if checkin_status("password") %}

@@ -61,6 +61,13 @@ class Element:
             update = {"$set": update_condition}
         self._action = self._current_collection.find_and_modify(
             query=condition, update=update, new=new)
+        self._action_ready = True
+        return self
+
+    def count(self):
+        self.reset()
+        self._action = self._current_collection.count()
+        self._action_ready = True
         return self
 
     def skip(self, skip=0):

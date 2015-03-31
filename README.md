@@ -8,12 +8,12 @@ FurtherLand is in development, DO NOT USE it in production environment unless yo
 Requirements
 ------------
 
- - Python3(FurtherLand will not work under Python2)
- - Gevent(Optional)
- - Virtualenv
- - Tornado
- - Motor
- - Misaka
+ - Python>=3.2.5 (FurtherLand will not work under Python2)
+ - Gevent (GitVersion, Optional)
+ - Virtualenv>=12.0.5
+ - Tornado>=4.0
+ - Motor>=0.4
+ - Misaka>=1.0.2
 
 License
 -------
