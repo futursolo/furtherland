@@ -1,1 +1,42 @@
 {% extends "framework.htm" %}
+{% block css %}
+<link href="{{ management_url('lobby.css') }}" rel="stylesheet" type="text/css">
+{% end %}
+{% block main %}
+    <div class="main management">
+        <div class="lobby">
+            <div class="page-title">欢迎来到{{ config["site_name"] }}管理局大厅</div>
+            <div class="left">
+                <div class="crda-status float-block">
+                    <div class="title">统计 - {{ config["site_name"] }}管理局资料室</div>
+                    <div class="content">截至目前，本资料室共藏有
+                        <span class="item">{{ count["writings"] }} 篇文章</span>、
+                        <span class="item">{{ count["replies"] }} 条评论</span>、以及
+                        <span class="item">{{ count["pages"] }} 个页面</span>。
+                    </div>
+                </div>
+                <div class="reply-activities float-block">
+                    <div class="title">域主大人的碎碎念</div>
+                    <div class="content">
+                        Coming Soon!ヽ(ﾟ∇ﾟ(ﾟ∇ﾟ(ﾟ∇ﾟo(ﾟ∇ﾟ)oﾟ∇ﾟ)ﾟ∇ﾟ)ﾟ∇ﾟ)ﾉﾆﾊﾟｯ
+                    </div>
+                </div>
+            </div>
+            <div class="right">
+                <div class="teleport float-block">
+                    <div class="title">快速通道</div>
+                    <div class="content">
+                        <div class="line">
+                            <div class="item left"><a href="/management/working">进行创作</a></div>
+                            <div class="item right"><a href="/management/crda">管理资料</a></div>
+                        </div>
+                        <div class="line">
+                            <div class="item left"><a href="https://github.com/futursolo/FurtherLand">扩建FurtherLand</a></div>
+                            <div class="item right"><a href="/management/configuration">变更设置</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% end %}

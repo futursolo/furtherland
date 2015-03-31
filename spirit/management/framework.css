@@ -88,6 +88,21 @@ nav .link{
     font-size: 25px;
     font-weight: bold;
 }
+.main.management{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 1000px;
+    box-sizing: border-box;
+    position: relative;
+}
+.main.management .page-title{
+    line-height: 50px;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
 form{
     display: none;
 }

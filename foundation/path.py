@@ -11,6 +11,30 @@ import string
 import functools
 
 
+def decorator_with_args(decorator_to_enhance):
+    def decorator_maker(*args, **kwargs):
+        def decorator_wrapper(func):
+            return decorator_to_enhance(func, *args, **kwargs)
+        return decorator_wrapper
+    return decorator_maker
+
+
+@decorator_with_args
+def slug_validation(func, *args, **kwargs):
+    @functools.wraps(func)
+    def wrapper(self, *func_args, **func_kwargs):
+        valid_list = args[0]
+        new_slug = []
+        for number in range(0, len(valid_list)):
+            try:
+                new_slug.append(self.value_validation(
+                    valid_list[number], func_args[number]))
+            except:
+                new_slug.append(False)
+        return func(self, *new_slug, **func_kwargs)
+    return wrapper
+
+
 def visitor_only(func):
     @functools.wraps(func)
     def wrapper(self, *args, **kwargs):
@@ -55,7 +79,6 @@ class GreetingPlace(RequestHandler):
             for key in result:
                 self._config[result[key]["_id"]] = result[key]["value"]
         raise Return(self._config)
-
 
     @coroutine
     def get_current_user(self):
@@ -262,6 +285,20 @@ class GreetingPlace(RequestHandler):
         return RequestHandler.static_url(
             self, path, include_host=include_host, **kwargs)
 
+    @coroutine
+    def get_count(self):
+        result = {}
+        book = self.memories.select("Writings").count()
+        yield book.do()
+        result["writings"] = book.result()
+        book = self.memories.select("Replies").count()
+        yield book.do()
+        result["replies"] = book.result()
+        book = self.memories.select("Pages").count()
+        yield book.do()
+        result["pages"] = book.result()
+        return result
+
 
 class IndexPlace(GreetingPlace):
     @coroutine
@@ -338,13 +375,23 @@ class LobbyOffice(GreetingPlace):
     @coroutine
     @authenticated
     def get(self):
+        self.render_list["count"] = yield self.get_count()
         self.render_list["origin_title"] = "大厅"
         self.management_render("lobby.htm")
 
+
+class WorkingOffice(GreetingPlace):
     @coroutine
     @authenticated
-    def post(self):
-        pass
+    @slug_validation(["hash"])
+    def get(self, method):
+        self.render_list["method"] = method
+        self.render_list["work"] = None
+        if method == "new":
+            self.render_list["origin_title"] = "进行创作 - 工作室"
+        elif method == "edit":
+            self.render_list["origin_title"] = "修改作品 - 工作室"
+        self.management_render("working.htm")
 
 
 navigation = [
@@ -353,8 +400,17 @@ navigation = [
     # (r"/timeline", HistoryLibrary),
     (r"/writings/(.*).htm", WritingsPlace),
     (r"/management/checkin", CheckinOffice),
+    (r"/management/checkin/", RedirectHandler, {"url": "/management/checkin"}),
     (r"/management/checkout", CheckoutOffice),
+    (r"/management/checkout/", RedirectHandler,
+     {"url": "/management/checkout"}),
     (r"/management", RedirectHandler, {"url": "/management/lobby"}),
     (r"/management/", RedirectHandler, {"url": "/management/lobby"}),
-    (r"/management/lobby", LobbyOffice)
+    (r"/management/lobby", LobbyOffice),
+    (r"/management/lobby/", RedirectHandler, {"url": "/management/lobby"}),
+    (r"/management/working", RedirectHandler,
+     {"url": "/management/working/new"}),
+    (r"/management/working/", RedirectHandler,
+     {"url": "/management/working/new"}),
+    (r"/management/working/(.*)", WorkingOffice)
 ]
