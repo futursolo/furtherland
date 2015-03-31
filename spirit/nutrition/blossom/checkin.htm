@@ -8,6 +8,17 @@
         <div class="filter">
             <div class="page-title">欢迎回来，为什么不快乐地登录呢？</div>
             <div class="avatar" style="background-image: url({{ static_url("avatar.jpg") }});"></div>
+            {% if checkin_status() %}
+            <div>
+                {% if checkin_status("password") %}
+                <div class="alert">登录失败，请检查域主大人的登录信息后重试。</div>
+                {% elif checkin_status("two") %}
+                <div class="alert">登录失败，两步验证代码无效。</div>
+                {% else %}
+                <div class="alert">现在遇到了未知错误，请稍候再试。</div>
+                {% end %}
+            </div>
+            {% end %}
             <div>
                 <input id="origin-username" type="text" class="input" placeholder="用户名" spellcheck="false">
             </div>
@@ -18,7 +29,7 @@
                 <input id="origin-two" type="text" class="input" placeholder="两步验证代码">
             </div>
             <div>
-                <input id="origin-remember" type="checkbox" class="checkbox" form="checkin-form">
+                <input id="origin-remember" type="checkbox" name="remember" class="checkbox" form="checkin-form" checked>
                 <label for="origin-remember">保持登录状态</label>
             </div>
             <div>
@@ -27,10 +38,10 @@
         </div>
     </div>
 </div>
-<form id="checkin-form" action="" method="post">
-    <input id="real-username" type="text" name="username">
-    <input id="real-password" type="password" name="password">
-    <input id="real-two" type="text" name="two">
+<form id="checkin-form" action="" method="post" autocomplete="off">
+    <input id="real-username" type="text" name="username" autocomplete="off">
+    <input id="real-password" type="password" name="password" autocomplete="off">
+    <input id="real-two" type="text" name="two" autocomplete="off">
     {% module xsrf_form_html() %}
 </form>
 {% end %}
