@@ -9,6 +9,8 @@ import foundation.pyotp as pyotp
 import random
 import string
 import functools
+import mako.lookup
+import mako.template
 
 
 def decorator_with_args(decorator_to_enhance):
@@ -54,11 +56,6 @@ class GreetingPlace(RequestHandler):
         self.memories = self.settings["historial_records"]
         self.current_user = yield self.get_current_user()
         self.config = yield self.get_config()
-
-        self.render_list["config"] = self.config
-        self.render_list["FurtherLand"] = self.settings["further_land"]
-        self.render_list["checkin_status"] = self.checkin_status
-        self.render_list["management_url"] = self.management_url
 
         self.next_url = self.get_arg("next", arg_type="link", default="/")
         self.remote_ip = self.request.headers.get(
@@ -258,19 +255,44 @@ class GreetingPlace(RequestHandler):
     def make_md(self):
         return misaka.html()
 
-    def render(self, page):
-        if "page_title" not in list(self.render_list.keys()):
-            self.render_list["page_title"] = (
-                self.render_list["origin_title"] +
-                " - " + self.config["site_name"])
-        page = "nutrition/" + self.config["nutrition_type"] + "/" + page
-        return RequestHandler.render(self, page, **self.render_list)
-
     def static_url(self, path, include_host=None, nutrition=True, **kwargs):
         if nutrition:
             path = "nutrition/" + self.config["nutrition_type"] + "/" + path
         return RequestHandler.static_url(
             self, path, include_host=include_host, **kwargs)
+
+    def render_string(self, filename, **kwargs):
+        lookup = mako.lookup.TemplateLookup(
+            [self.settings["template_path"]],
+            input_encoding="utf-8",
+            output_encoding="utf-8",
+            default_filters=["decode.utf_8"])
+        template = lookup.get_template(filename)
+        env_kwargs = {
+            "handler": self,
+            "request": self.request,
+            "current_user": self.current_user,
+            "locale": self.locale,
+            "_": self.locale.translate,
+            "xsrf_form_html": self.xsrf_form_html,
+            "reverse_url": self.application.reverse_url,
+            "config": self.config,
+            "static_url": self.static_url,
+            "management_url": self.management_url,
+            "FurtherLand": self.settings["further_land"],
+            "checkin_status": self.checkin_status
+            }
+        env_kwargs.update(kwargs)
+        return template.render(**env_kwargs)
+
+    def render(self, page, nutrition=True):
+        if "page_title" not in list(self.render_list.keys()):
+            self.render_list["page_title"] = (
+                self.render_list["origin_title"] +
+                " - " + self.config["site_name"])
+        if nutrition:
+            page = "nutrition/" + self.config["nutrition_type"] + "/" + page
+        self.finish(self.render_string(page, **self.render_list))
 
     def management_render(self, page):
         if "page_title" not in list(self.render_list.keys()):
@@ -278,7 +300,7 @@ class GreetingPlace(RequestHandler):
                 self.render_list["origin_title"] +
                 " - " + self.config["site_name"] + "管理局")
         page = "management/" + page
-        return RequestHandler.render(self, page, **self.render_list)
+        self.finish(self.render_string(page, **self.render_list))
 
     def management_url(self, path, include_host=None, **kwargs):
         path = "management/" + path

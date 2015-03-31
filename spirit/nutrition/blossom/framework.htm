@@ -1,27 +1,25 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>{% block title %}{{ page_title }}{% end %}</title>
+    <title><%block name="title">${page_title}</%block></title>
     <meta charset="UTF-8">
     <meta name="renderer" content="webkit">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="referrer" content="origin">
-    <meta property="og:title" content="{{ origin_title }}">
-    <meta property="og:url" content="{{ config["site_url"] }}">
-    <meta property="og:site_name" content="{{ config["site_name"] }}">
-    <meta name="description" content="{{ config["site_description"] }}">
-    <meta name="keywords" content="{{ config["site_keywords"] }}">
-    <meta name="generator" content="{{ FurtherLand.version() }}">
-    <link rel="canonical" href="{{ config["site_url"] }}">
-    <link href="{{ static_url('framework.css') }}" rel="stylesheet" type="text/css">{% block css %}{% end %}
+    <meta property="og:title" content="${origin_title}">
+    <meta property="og:url" content="${config["site_url"]}">
+    <meta property="og:site_name" content="${config["site_name"]}">
+    <meta name="description" content="${config["site_description"]}">
+    <meta name="keywords" content="${config["site_keywords"]}">
+    <meta name="generator" content="${FurtherLand.version()}">
+    <link rel="canonical" href="${config["site_url"]}">
+    <link href="${static_url('framework.css')}" rel="stylesheet" type="text/css"><%block name="css"/>
 </head>
 <body>
-    {% block body %}
-    {% include "nav.htm" %}
-    {% block main %}
-    {% end %}
-    {% include "footer.htm" %}
-    {% end %}
-    <script src="{{ static_url('jquery.min.js') }}" charset="utf-8"></script>{% block js %}{% end %}
+    <%include file="nav.htm"/>
+    <%block name="main"/>
+    ${self.body()}
+    <%include file="footer.htm"/>
+    <script src="{{ static_url('jquery.min.js') }}" charset="utf-8"></script><%block name="js"/>
 </body>
 </html>
