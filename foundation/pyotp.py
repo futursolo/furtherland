@@ -160,7 +160,7 @@ class HOTP(OTP):
         @param [String/Integer] otp the OTP to check against
         @param [Integer] counter the counter of the OTP
         """
-        return utils.strings_equal(str(otp), str(self.at(counter)))
+        return strings_equal(str(otp), str(self.at(counter)))
 
     def provisioning_uri(self, name, initial_count=0, issuer_name=None):
         """
@@ -173,7 +173,7 @@ class HOTP(OTP):
             organization title of the OTP entry in Authenticator
         @return [String] provisioning uri
         """
-        return utils.build_uri(
+        return build_uri(
             self.secret,
             name,
             initial_count=initial_count,
@@ -215,7 +215,7 @@ class TOTP(OTP):
         if for_time is None:
             for_time = datetime.datetime.now()
 
-        return utils.strings_equal(str(otp), str(self.at(for_time)))
+        return strings_equal(str(otp), str(self.at(for_time)))
 
     def provisioning_uri(self, name, issuer_name=None):
         """
@@ -225,7 +225,7 @@ class TOTP(OTP):
         @param [String] name of the account
         @return [String] provisioning uri
         """
-        return utils.build_uri(self.secret, name, issuer_name=issuer_name)
+        return build_uri(self.secret, name, issuer_name=issuer_name)
 
     def timecode(self, for_time):
         i = time.mktime(for_time.timetuple())

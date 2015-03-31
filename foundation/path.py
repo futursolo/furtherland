@@ -6,6 +6,19 @@ import misaka
 import hashlib
 import base64
 import foundation.pyotp as pyotp
+import random
+import string
+import functools
+
+
+def visitor_only(func):
+    @functools.wraps(func)
+    def wrapper(self, *args, **kwargs):
+        if self.current_user:
+            self.redirect(self.next_url)
+            return
+        return func(self, *args, **kwargs)
+    return wrapper
 
 
 class GreetingPlace(RequestHandler):
@@ -17,9 +30,12 @@ class GreetingPlace(RequestHandler):
         self.memories = self.settings["historial_records"]
         self.current_user = yield self.get_current_user()
         self.config = yield self.get_config()
+
         self.render_list["config"] = self.config
         self.render_list["FurtherLand"] = self.settings["further_land"]
-        self.next_url = self.get_argument("next", arg_type="link", default="/")
+        self.render_list["checkin_status"] = self.checkin_status
+
+        self.next_url = self.get_arg("next", arg_type="link", default="/")
         self.remote_ip = self.request.headers.get(
             "X-Forwarded-For",
             self.request.headers.get(
@@ -42,9 +58,21 @@ class GreetingPlace(RequestHandler):
     @coroutine
     def get_current_user(self):
         if not hasattr(self, "_current_user"):
-            pass
+            user_id = self.get_scookie("user_id", arg_type="number")
+            device_id = self.get_scookie("device_id", arg_type="hash")
+            agent_auth = self.get_scookie("agent_auth", arg_type="hash")
+            if not (user_id and device_id and agent_auth):
+                self._current_user = None
+            else:
+                user = yield self.get_user(_id=user_id)
+                if self.hash((device_id + user["password"]),
+                             "sha256") != agent_auth:
+                    self._current_user = None
+                else:
+                    self._current_user = user
+            return self._current_user
 
-    def get_argument(self, arg, default=None, arg_type="origin"):
+    def get_arg(self, arg, default=None, arg_type="origin"):
         result = RequestHandler.get_argument(self, arg, None)
         try:
             result = str(result.decode())
@@ -58,8 +86,9 @@ class GreetingPlace(RequestHandler):
         else:
             return self.value_validation(arg_type, result)
 
-    def get_secure_cookie(self, arg, default=None, arg_type="origin"):
-        result = RequestHandler.get_secure_cookie(self, arg, None, max_age_days=180)
+    def get_scookie(self, arg, default=None, arg_type="origin"):
+        result = RequestHandler.get_secure_cookie(
+            self, arg, None, max_age_days=181)
         if not result:
             return default
         try:
@@ -74,34 +103,7 @@ class GreetingPlace(RequestHandler):
         else:
             return self.value_validation(arg_type, result)
 
-    def set_secure_cookie(self, arg, value="", expires_days=30):
-        str_value = ""
-        try:
-            str_value = str(value.decode())
-        except:
-            try:
-                str_value = str(value)
-            except:
-                str_value = value
-        RequestHandler.set_secure_cookie(self, arg, str_value, expires_days)
-
-    def get_cookie(self, arg, default=None, arg_type="origin"):
-        result = RequestHandler.get_cookie(self, arg, None)
-        if not result:
-            return result
-        try:
-            result = str(result.decode())
-        except:
-            try:
-                result = str(result)
-            except:
-                pass
-        if (not result) or (result == "None"):
-            return default
-        else:
-            return self.value_validation(arg_type, result)
-
-    def set_cookie(self, arg, value="", expires_days=None):
+    def set_scookie(self, arg, value="", expires_days=30):
         str_value = ""
         try:
             str_value = str(value.decode())
@@ -143,11 +145,7 @@ class GreetingPlace(RequestHandler):
                 return False
         elif arg_type == "username":
             string = str(value)
-            if re.match(r"^([ ]+)$", string) != None:
-                return False
-            elif re.match(r"([@_]+)", string) != None:
-                return False
-            elif re.match(r"^([\s\S]{3,30})$", string) == None:
+            if re.match(r"^([ a-zA-Z]+)$", string) == None:
                 return False
             else:
                 return string
@@ -181,6 +179,15 @@ class GreetingPlace(RequestHandler):
         return "".join(random.sample(string.ascii_letters + string.digits,
                                      length))
 
+    def checkin_status(self, code=None):
+        if not hasattr(self, ("_checkin_status")):
+            self._checkin_status = self.get_scookie(
+                "checkin_status", arg_type="hash", default="ok")
+            self.clear_cookie("checkin_status")
+        if code is None:
+            return (self._checkin_status != "ok")
+        return (code == self._checkin_status)
+
     @coroutine
     def get_class(self):
         pass
@@ -206,25 +213,23 @@ class GreetingPlace(RequestHandler):
         user = yield self.get_user(username=username)
         if (not user) or (self.hash(password, "sha1") != user["password"]):
             raise Return([False, "password"])
-        if not self.verify_otp(two, key=user["otp_key"]):
+        if not (self.verify_otp(two, key=user["otp_key"])):
             raise Return([False, "two"])
         device_id = self.get_random(32)
         raise Return([
             True, {
-                "id": user["_id"],
+                "user_id": user["_id"],
                 "device_id": device_id,
                 "agent_auth": self.hash((device_id + user["password"]),
                                         "sha256")
             }])
 
-    @coroutine
     def verify_otp(self, code, key=None):
         if not key:
             key = self.current_user["otp_key"]
         totp = pyotp.TOTP(key)
         return totp.verify(code)
 
-    @coroutine
     def make_md(self):
         return misaka.html()
 
@@ -250,27 +255,51 @@ class IndexPlace(GreetingPlace):
         self.render("index.htm")
 
 
-class CheckInOffice(GreetingPlace):
+class CheckinOffice(GreetingPlace):
     @coroutine
+    @visitor_only
     def get(self):
         self.render_list["origin_title"] = "登录"
         self.render("checkin.htm")
 
     @coroutine
+    @visitor_only
     def post(self):
-        username = self.get_argument("username", arg_type="username")
-        password = self.get_argument("password", arg_type="hash")
-        two = self.get_argument("two", arg_type="number")
+        username = self.get_arg("username", arg_type="username")
+        password = self.get_arg("password", arg_type="hash")
+        two = self.get_arg("two", arg_type="number")
+        remember = self.get_arg("remember", arg_type="boolean")
+        if not (username and password and two):
+            self.set_scookie("checkin_status", "password", expires_days=None)
+            self.redirect("/checkin")
+            return
         result = yield self.checkin(
             username=username, password=password, two=two)
         if result[0]:
-            self.set_secure_cookie("id", result[1]["id"])
-            self.set_secure_cookie("device_id", result[1]["device_id"])
-            self.set_secure_cookie("agent_auth", result[1]["agent_auth"])
+            expires_days = None
+            if remember:
+                expires_days = 180
+            self.set_scookie(
+                "user_id", result[1]["user_id"],
+                expires_days=expires_days)
+            self.set_scookie(
+                "device_id", result[1]["device_id"],
+                expires_days=expires_days)
+            self.set_scookie(
+                "agent_auth", result[1]["agent_auth"],
+                expires_days=expires_days)
             self.redirect(self.next_url)
         else:
-            self.set_secure_cookie("checkin-status", result[1])
+            self.set_scookie("checkin_status", result[1], expires_days=None)
             self.redirect("/checkin")
+
+
+class CheckoutOffice(GreetingPlace):
+    def get(self):
+        self.clear_cookie("user_id")
+        self.clear_cookie("device_id")
+        self.clear_cookie("agent_auth")
+        self.redirect(self.next_url)
 
 
 class WritingsPlace(GreetingPlace):
@@ -296,7 +325,8 @@ class SpiritPlace(StaticFileHandler):
 
 navigation = [
     (r"/", IndexPlace),
-    (r"/checkin", CheckInOffice),
+    (r"/checkin", CheckinOffice),
+    (r"/checkout", CheckoutOffice),
     (r"/management/(.*)", ManagementOffice),
     (r"/writings/(.*).htm", WritingsPlace)
     # (r"/classes/(.*).htm", ClassesPlace),  This will be avaliable in futhre

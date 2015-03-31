@@ -14,6 +14,12 @@
     margin-right: auto;
     text-align: center;
 }
+.main.checkin .container .filter .alert{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: rgb(231, 76, 60);
+}
 .main.checkin .container .filter .avatar{
     display: inline-block;
     border-radius: 500px;
