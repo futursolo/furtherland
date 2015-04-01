@@ -14,7 +14,7 @@
 ##   limitations under the License.
 <%inherit file="framework.htm"/>
 <%block name="css">
-    <link href="${management_url('checkin.css')}" rel="stylesheet" type="text/css">
+    <link href="${management_url("checkin.css")}" rel="stylesheet" type="text/css">
 </%block>
     <div class="main checkin">
         <div class="container">
@@ -58,6 +58,6 @@
         ${xsrf_form_html()}
     </form>
 <%block name="js">
-<script src="${management_url('sha.js')}" charset="utf-8"></script>
-<script src="${management_url('checkin.js')}" charset="utf-8"></script>
+    <script src="${management_url("sha.js")}" charset="utf-8"></script>
+    <script src="${management_url("checkin.js")}" charset="utf-8"></script>
 </%block>

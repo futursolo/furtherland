@@ -21,11 +21,13 @@
     <meta name="renderer" content="webkit">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="referrer" content="origin">
-    <link href="${management_url('framework.css')}" rel="stylesheet" type="text/css"><%block name="css"/>
+    <link href="http://fonts.googleapis.com/css?family=Oxygen:400,700" rel="stylesheet" type="text/css">
+    <link href="${management_url("framework.css")}" rel="stylesheet" type="text/css"><%block name="css"/>
 </head>
 <body>
     ${self.body()}
-    <script src="${management_url('jquery.min.js')}" charset="utf-8"></script><%block name="js"/>
+    <script src="${management_url("jquery.min.js")}" charset="utf-8"></script>
+    <script src="${management_url("framework.js")}" charset="utf-8"></script><%block name="js"/>
 </body>
 </html>
 <%def name="header()">
@@ -45,4 +47,10 @@
 </nav>
 </%def>
 <%def name="footer()">
+<footer class="management">
+    <div class="container">
+        <div class="left">&copy; 2015 <a href="${config["site_url"]}">${config["site_name"]}</a> All Rights Reserved.</div>
+        <div class="right">Powered by <a href="https://github.com/futursolo/FurtherLand">${FurtherLand.version()}</a>.</div>
+    </div>
+</footer>
 </%def>

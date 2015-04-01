@@ -42,7 +42,7 @@ class FurtherLand:
             template_path=os.path.join(
                 os.path.split(os.path.realpath(melody.base))[0], "spirit"),
 
-            login_url="/checkin",
+            login_url="/management/checkin",
 
             historial_records=historial.Records(melody.library),
 
@@ -67,4 +67,4 @@ class FurtherLand:
         tornado.ioloop.IOLoop.instance().stop()
 
     def version(self):
-        return "FurtherLand Development v20150330"
+        return "FurtherLand v20150401 dev"
