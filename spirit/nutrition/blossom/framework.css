@@ -1,8 +1,25 @@
+/*--
+
+   Copyright 2015 Futur Solo
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+--*/
 html, body{
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: Candara, Verdana, Tahoma, 'Microsoft YaHei', simhei;
+    font-family: Oxygen, Verdana, Tahoma, STHeiti, "Noto Sans CJK SC", "Microsoft YaHei", SimHei;
     background-repeat: no-repeat;
     font-size: 15px;
     color: rgb(100, 100, 100);
@@ -38,7 +55,7 @@ a:visited:active{
     transition: all 0.30s ease-in-out;
 }
 input{
-    font-family: Candara, Verdana, Tahoma, 'Microsoft YaHei', simhei;
+    font-family: Oxygen, Verdana, Tahoma, STHeiti, "Noto Sans CJK SC", "Microsoft YaHei", SimHei;
     box-sizing: border-box;
 }
 header.normal{
@@ -167,4 +184,22 @@ nav .link{
 }
 form{
     display: none;
+}
+footer.management{
+    height: 50px;
+    width: 100%;
+    margin-top: 20px;
+}
+footer.normal .container{
+    line-height: 50px;
+    border-top: 1px solid rgb(230, 230, 230);
+    width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+footer.normal .left{
+    float: left;
+}
+footer.normal .right{
+    float: right;
 }

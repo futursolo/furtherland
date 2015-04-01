@@ -17,55 +17,37 @@
 <head>
     <title><%block name="title">${page_title}</%block></title>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
     <meta name="renderer" content="webkit">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="referrer" content="origin">
-    <meta property="og:title" content="${origin_title}">
-    <meta property="og:url" content="${config["site_url"]}">
-    <meta property="og:site_name" content="${config["site_name"]}">
-    <meta name="description" content="${config["site_description"]}">
-    <meta name="keywords" content="${config["site_keywords"]}">
-    <meta name="generator" content="${FurtherLand.version()}">
-    <link rel="canonical" href="${config["site_url"]}">
     <link href="http://fonts.googleapis.com/css?family=Oxygen:400,700" rel="stylesheet" type="text/css">
-    <link href="${static_url('framework.css')}" rel="stylesheet" type="text/css"><%block name="css"/>
+    <link href="${management_url("framework.css")}" rel="stylesheet" type="text/css"><%block name="css"/>
 </head>
 <body>
     ${self.body()}
-    <script src="${management_url('jquery.min.js')}" charset="utf-8"></script><%block name="js"/>
+    <script src="${management_url("jquery.min.js")}" charset="utf-8"></script>
+    <script src="${management_url("framework.js")}" charset="utf-8"></script><%block name="js"/>
 </body>
 </html>
 <%def name="header()">
-<header class="normal" style="background-image: url(${static_url("header-background.jpg")});">
-    <div class="filter">
-        <div class="container">
-            <div class="profile">
-                <div class="avatar" style="background-image: url(${static_url("avatar.jpg")});"></div>
-                <div class="content">${config["header_profile_content"]}</div>
-            </div>
-        </div>
-    </div>
-</header>
-<nav class="normal">
+<nav class="management">
     <div class="container">
         <div class="left">
-            <div class="link"><a href="${config["site_url"]}">未来领域</a></div>
-            <div class="link"><a href="${config["site_url"]}/timeline">档案馆</a></div>
-            <div class="link"><a href="${config["site_url"]}/pages/about.htm">关于</a></div>
+            <div class="link"><a href="${config["site_url"]}/management/lobby">大厅</a></div>
+            <div class="link"><a href="${config["site_url"]}/management/working">工作室</a></div>
+            <div class="link"><a href="${config["site_url"]}/management/crda">资料室</a></div>
+            <div class="link"><a href="${config["site_url"]}/management/configuration">控制室</a></div>
         </div>
         <div class="right">
-        % if not current_user:
-        <div class="link"><a href="${config["site_url"]}/management/checkin">登录</a></div>
-        % else:
-        <div class="link"><a href="${config["site_url"]}/management">${config["site_name"]}管理局</a></div>
+        <div class="link"><a href="${config["site_url"]}/">${config["site_name"]}</a></div>
         <div class="link"><a href="${config["site_url"]}/management/checkout">登出</a></div>
-        % endif
         </div>
     </div>
 </nav>
 </%def>
 <%def name="footer()">
-<footer class="normal">
+<footer class="management">
     <div class="container">
         <div class="left">&copy; 2015 <a href="${config["site_url"]}">${config["site_name"]}</a> All Rights Reserved.</div>
         <div class="right">Powered by <a href="https://github.com/futursolo/FurtherLand">${FurtherLand.version()}</a>.</div>

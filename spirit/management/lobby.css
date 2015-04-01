@@ -1,22 +1,5 @@
-# FurtherLand
-A light-weighted Blog Platform, written in Python, using Tornado and MongoDB, with fully asynchronous support.
+/*--
 
-Important
----------
-FurtherLand is in development, DO NOT USE it in production environment unless you know what you are doing.
-
-Requirements
-------------
- - Python>=3.2.5 or Pypy3>=2.4.0 (FurtherLand will not work under Python2 or pypy)
- - Gevent (GitVersion, Optional)
- - Virtualenv>=12.0.5
- - Tornado>=4.0
- - Motor>=0.4
- - Misaka>=1.0.2
- - Mako>=1.0.1
-
-License
--------
    Copyright 2015 Futur Solo
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,3 +13,23 @@ License
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+
+--*/
+.main.management .lobby{
+    overflow: hidden;
+}
+.main.management .lobby .left{
+    float: left;
+    width: 50%;
+}
+.main.management .lobby .right{
+    float: right;
+    width: 50%;
+}
+.main.management .lobby .editor{
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
