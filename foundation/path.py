@@ -427,9 +427,9 @@ class WorkingOffice(GreetingPlace):
     @slug_validation(["hash"])
     def get(self, method):
         self.render_list["method"] = method
-        self.render_list["work"] = None
         if method == "new":
             self.render_list["origin_title"] = "进行创作"
+            self.render_list["pre_working"] = None
         elif method == "edit":
             self.render_list["origin_title"] = "修改作品"
         else:

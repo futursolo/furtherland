@@ -48,3 +48,9 @@
     margin-top: 10px;
     margin-bottom: 10px;
 }
+.main.checkin .container .filter .input{
+    width: 300px;
+}
+.main.checkin .container .filter .button{
+    width: 300px;
+}
