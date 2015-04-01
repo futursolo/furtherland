@@ -1,3 +1,20 @@
+/*--
+
+   Copyright 2015 Futur Solo
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+--*/
 .main.checkin{
     width: 100%;
     height: 100%;
@@ -30,48 +47,4 @@
     background-position: center;
     margin-top: 10px;
     margin-bottom: 10px;
-}
-.main.checkin .container .filter .input{
-    width: 300px;
-    height: 40px;
-    font-size: 15px;
-    line-height: 40px;
-    border: 1px solid rgb(150, 150, 150);
-    border-radius: 2px;
-    padding-left: 10px;
-    padding-right: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    background-color: rgb(245, 245, 245);
-    transition: all 0.30s ease-in-out;
-}
-.main.checkin .container .filter .input:focus{
-    outline: 0;
-    background-color: rgb(255, 255, 255);
-}
-.main.checkin .container .filter .button{
-    display: inline-block;
-    width: 300px;
-    height: 40px;
-    padding-left: 10px;
-    padding-right: 10px;
-    box-sizing: border-box;
-    background-color: rgb(130, 200, 114);
-    color: rgb(255, 255, 255);
-    line-height: 40px;
-    border-radius: 2px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    transition: border 0.30s ease-in-out;
-    border-bottom: 3px solid rgba(83, 152, 68, 0);
-    transition: all 0.30s ease-in-out;
-    cursor: pointer;
-}
-.main.checkin .container .filter .button:hover{
-    background-color: rgb(83, 152, 68);
-}
-.main.checkin .container .filter .checkbox + label{
-    margin-top: 10px;
-    margin-bottom: 10px;
-    display: inline-block;
 }

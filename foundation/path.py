@@ -1,3 +1,20 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+#   Copyright 2015 Futur Solo
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
 
 from tornado.web import *
 from tornado.gen import *
@@ -32,7 +49,7 @@ def slug_validation(func, *args, **kwargs):
                 new_slug.append(self.value_validation(
                     valid_list[number], func_args[number]))
             except:
-                new_slug.append(False)
+                raise HTTPError(404)
         return func(self, *new_slug, **func_kwargs)
     return wrapper
 
@@ -412,9 +429,14 @@ class WorkingOffice(GreetingPlace):
         self.render_list["method"] = method
         self.render_list["work"] = None
         if method == "new":
-            self.render_list["origin_title"] = "进行创作 - 工作室"
+            self.render_list["origin_title"] = "进行创作"
         elif method == "edit":
-            self.render_list["origin_title"] = "修改作品 - 工作室"
+            self.render_list["origin_title"] = "修改作品"
+        else:
+            raise HTTPError(404)
+        self.render_list["page_title"] = (
+            self.render_list["origin_title"] +
+            " - " + self.config["site_name"] + "管理局" + "工作室")
         self.management_render("working.htm")
 
 
@@ -436,5 +458,5 @@ navigation = [
      {"url": "/management/working/new"}),
     (r"/management/working/", RedirectHandler,
      {"url": "/management/working/new"}),
-    (r"/management/working/(.*)", WorkingOffice)
+    (r"/management/working/([a-zA-Z0-9]+)", WorkingOffice)
 ]
