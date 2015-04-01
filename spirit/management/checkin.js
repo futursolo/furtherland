@@ -12,3 +12,13 @@
 //   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
+$("#checkin-button").click(function() {
+    $("#real-username").val($("#origin-username").val());
+    $("#real-password").val(function() {
+        var SHAObj = new jsSHA($("#origin-password").val(), "TEXT");
+        var hash = SHAObj.getHash("SHA-256", "HEX");
+        return hash;
+    });
+    $("#real-two").val($("#origin-two").val());
+    $("#checkin-form").submit();
+});

@@ -1,3 +1,20 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+#   Copyright 2015 Futur Solo
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
 
 from tornado.web import *
 from tornado.gen import *
@@ -9,6 +26,32 @@ import foundation.pyotp as pyotp
 import random
 import string
 import functools
+import mako.lookup
+import mako.template
+
+
+def decorator_with_args(decorator_to_enhance):
+    def decorator_maker(*args, **kwargs):
+        def decorator_wrapper(func):
+            return decorator_to_enhance(func, *args, **kwargs)
+        return decorator_wrapper
+    return decorator_maker
+
+
+@decorator_with_args
+def slug_validation(func, *args, **kwargs):
+    @functools.wraps(func)
+    def wrapper(self, *func_args, **func_kwargs):
+        valid_list = args[0]
+        new_slug = []
+        for number in range(0, len(valid_list)):
+            try:
+                new_slug.append(self.value_validation(
+                    valid_list[number], func_args[number]))
+            except:
+                raise HTTPError(404)
+        return func(self, *new_slug, **func_kwargs)
+    return wrapper
 
 
 def visitor_only(func):
@@ -31,10 +74,6 @@ class GreetingPlace(RequestHandler):
         self.current_user = yield self.get_current_user()
         self.config = yield self.get_config()
 
-        self.render_list["config"] = self.config
-        self.render_list["FurtherLand"] = self.settings["further_land"]
-        self.render_list["checkin_status"] = self.checkin_status
-
         self.next_url = self.get_arg("next", arg_type="link", default="/")
         self.remote_ip = self.request.headers.get(
             "X-Forwarded-For",
@@ -53,7 +92,7 @@ class GreetingPlace(RequestHandler):
             result = book.result()
             for key in result:
                 self._config[result[key]["_id"]] = result[key]["value"]
-        return self._config
+        raise Return(self._config)
 
     @coroutine
     def get_current_user(self):
@@ -70,7 +109,7 @@ class GreetingPlace(RequestHandler):
                     self._current_user = None
                 else:
                     self._current_user = user
-            return self._current_user
+            raise Return(self._current_user)
 
     def get_arg(self, arg, default=None, arg_type="origin"):
         result = RequestHandler.get_argument(self, arg, None)
@@ -233,19 +272,77 @@ class GreetingPlace(RequestHandler):
     def make_md(self):
         return misaka.html()
 
-    def render(self, page):
-        if "page_title" not in list(self.render_list.keys()):
-            self.render_list["page_title"] = (
-                self.render_list["origin_title"] +
-                " - " + self.config["site_name"])
-        page = "nutrition/" + self.config["nutrition_type"] + "/" + page
-        return RequestHandler.render(self, page, **self.render_list)
-
     def static_url(self, path, include_host=None, nutrition=True, **kwargs):
         if nutrition:
             path = "nutrition/" + self.config["nutrition_type"] + "/" + path
         return RequestHandler.static_url(
             self, path, include_host=include_host, **kwargs)
+
+    def render_string(self, filename, **kwargs):
+        lookup = mako.lookup.TemplateLookup(
+            [self.settings["template_path"]],
+            input_encoding="utf-8",
+            output_encoding="utf-8",
+            default_filters=["decode.utf_8"],
+            module_directory=(self.settings["root_path"] + "/rubbish/mako")
+            )
+        template = lookup.get_template(filename)
+        env_kwargs = {
+            "handler": self,
+            "request": self.request,
+            "current_user": self.current_user,
+            "locale": self.locale,
+            "_": self.locale.translate,
+            "xsrf_form_html": self.xsrf_form_html,
+            "reverse_url": self.application.reverse_url,
+            "config": self.config,
+            "static_url": self.static_url,
+            "management_url": self.management_url,
+            "public_url": self.public_url,
+            "FurtherLand": self.settings["further_land"],
+            "checkin_status": self.checkin_status
+            }
+        env_kwargs.update(kwargs)
+        return template.render(**env_kwargs)
+
+    def render(self, page, nutrition=True):
+        if "page_title" not in list(self.render_list.keys()):
+            self.render_list["page_title"] = (
+                self.render_list["origin_title"] +
+                " - " + self.config["site_name"])
+        if nutrition:
+            page = "nutrition/" + self.config["nutrition_type"] + "/" + page
+        self.finish(self.render_string(page, **self.render_list))
+
+    def management_render(self, page):
+        if "page_title" not in list(self.render_list.keys()):
+            self.render_list["page_title"] = (
+                self.render_list["origin_title"] +
+                " - " + self.config["site_name"] + "管理局")
+        page = "management/" + page
+        self.finish(self.render_string(page, **self.render_list))
+
+    def management_url(self, path, include_host=None, **kwargs):
+        path = "management/" + path
+        return RequestHandler.static_url(
+            self, path, include_host=include_host, **kwargs)
+
+    def public_url(self, path, include_host=None, **kwargs):
+        pass
+
+    @coroutine
+    def get_count(self):
+        result = {}
+        book = self.memories.select("Writings").count()
+        yield book.do()
+        result["writings"] = book.result()
+        book = self.memories.select("Replies").count()
+        yield book.do()
+        result["replies"] = book.result()
+        book = self.memories.select("Pages").count()
+        yield book.do()
+        result["pages"] = book.result()
+        return result
 
 
 class IndexPlace(GreetingPlace):
@@ -255,12 +352,29 @@ class IndexPlace(GreetingPlace):
         self.render("index.htm")
 
 
+class WritingsPlace(GreetingPlace):
+    pass
+
+
+class HistoryLibrary(GreetingPlace):
+    pass
+
+
+class SpiritPlace(StaticFileHandler):
+    @coroutine
+    def get(self, path, include_body=True):
+        if re.match(r"^(.*)\.(htm|json|tpl|csv|mo|po|py|pyc)$", path) != None:
+            raise HTTPError(403)
+        else:
+            yield StaticFileHandler.get(self, path, include_body=include_body)
+
+
 class CheckinOffice(GreetingPlace):
     @coroutine
     @visitor_only
     def get(self):
         self.render_list["origin_title"] = "登录"
-        self.render("checkin.htm")
+        self.management_render("checkin.htm")
 
     @coroutine
     @visitor_only
@@ -271,7 +385,7 @@ class CheckinOffice(GreetingPlace):
         remember = self.get_arg("remember", arg_type="boolean")
         if not (username and password and two):
             self.set_scookie("checkin_status", "password", expires_days=None)
-            self.redirect("/checkin")
+            self.redirect("/management/checkin")
             return
         result = yield self.checkin(
             username=username, password=password, two=two)
@@ -291,7 +405,7 @@ class CheckinOffice(GreetingPlace):
             self.redirect(self.next_url)
         else:
             self.set_scookie("checkin_status", result[1], expires_days=None)
-            self.redirect("/checkin")
+            self.redirect("/management/checkin")
 
 
 class CheckoutOffice(GreetingPlace):
@@ -302,33 +416,51 @@ class CheckoutOffice(GreetingPlace):
         self.redirect(self.next_url)
 
 
-class WritingsPlace(GreetingPlace):
-    pass
-
-
-class ManagementOffice(GreetingPlace):
-    pass
-
-
-class HistoryLibrary(GreetingPlace):
-    pass
-
-
-class SpiritPlace(StaticFileHandler):
+class LobbyOffice(GreetingPlace):
     @coroutine
-    def get(self, path, include_body=True):
-        if re.match(r"^(.*)\.(htm|json|tpl|csv|mo|po|py|pyc)$", path) != None:
-            raise HTTPError(403)
+    @authenticated
+    def get(self):
+        self.render_list["count"] = yield self.get_count()
+        self.render_list["origin_title"] = "大厅"
+        self.management_render("lobby.htm")
+
+
+class WorkingOffice(GreetingPlace):
+    @coroutine
+    @authenticated
+    @slug_validation(["hash"])
+    def get(self, method):
+        self.render_list["method"] = method
+        if method == "new":
+            self.render_list["pre_working"] = None
+            self.render_list["origin_title"] = "进行创作"
+        elif method == "edit":
+            self.render_list["origin_title"] = "修改作品"
         else:
-            yield StaticFileHandler.get(self, path, include_body=include_body)
+            raise HTTPError(404)
+        self.render_list["page_title"] = (
+            self.render_list["origin_title"] +
+            " - " + self.config["site_name"] + "管理局" + "工作室")
+        self.management_render("working.htm")
 
 
 navigation = [
     (r"/", IndexPlace),
-    (r"/checkin", CheckinOffice),
-    (r"/checkout", CheckoutOffice),
-    (r"/management/(.*)", ManagementOffice),
-    (r"/writings/(.*).htm", WritingsPlace)
     # (r"/classes/(.*).htm", ClassesPlace),  This will be avaliable in futhre
     # (r"/timeline", HistoryLibrary),
+    (r"/writings/(.*).htm", WritingsPlace),
+    (r"/management/checkin", CheckinOffice),
+    (r"/management/checkin/", RedirectHandler, {"url": "/management/checkin"}),
+    (r"/management/checkout", CheckoutOffice),
+    (r"/management/checkout/", RedirectHandler,
+     {"url": "/management/checkout"}),
+    (r"/management", RedirectHandler, {"url": "/management/lobby"}),
+    (r"/management/", RedirectHandler, {"url": "/management/lobby"}),
+    (r"/management/lobby", LobbyOffice),
+    (r"/management/lobby/", RedirectHandler, {"url": "/management/lobby"}),
+    (r"/management/working", RedirectHandler,
+     {"url": "/management/working/new"}),
+    (r"/management/working/", RedirectHandler,
+     {"url": "/management/working/new"}),
+    (r"/management/working/([a-zA-Z0-9]+)", WorkingOffice)
 ]

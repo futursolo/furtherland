@@ -16,19 +16,22 @@
 #   limitations under the License.
 
 
-import melody
-import foundation
+secret = ""
+# This will be the top secret of the FurtherLand
 
+base = __file__
+# There the FurtherLand exactly located
 
-# Build FurtherLand
-furtherland = foundation.FurtherLand(melody)
+listen_ip = "127.0.0.1"
+listen_port = 3000
+# The place the FurtherLand will rise
 
-
-# Rise FurtherLand
-try:
-    print("FurtherLand has been risen on %s:%s." % (melody.listen_ip,
-                                                    str(melody.listen_port)))
-    furtherland.rise()
-except:
-    furtherland.set()
-    print("FurtherLand set.")
+library = {
+    "host": "",
+    "port": "",
+    "user": "",
+    "passwd": "",
+    "database": "",
+    "prefix": ""
+}
+# This is the Library of FurtherLand

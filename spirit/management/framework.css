@@ -1,0 +1,257 @@
+/*--
+
+   Copyright 2015 Futur Solo
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+--*/
+html, body{
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Oxygen, Verdana, Tahoma, STHeiti, "Noto Sans CJK SC", "Microsoft YaHei", SimHei;
+    background-repeat: no-repeat;
+    font-size: 15px;
+    color: rgb(100, 100, 100);
+}
+a:link{
+    text-decoration: none;
+    color: rgb(100, 100, 100);
+    transition: all 0.30s ease-in-out;
+}
+a:hover{
+    text-decoration: none;
+    color: rgb(100, 100, 100);
+    transition: all 0.30s ease-in-out;
+}
+a:active{
+    text-decoration: none;
+    color: rgb(100, 100, 100);
+    transition: all 0.30s ease-in-out;
+}
+a:visited{
+    text-decoration: none;
+    color: rgb(100, 100, 100);
+    transition: all 0.30s ease-in-out;
+}
+a:visited:hover{
+    text-decoration: none;
+    color: rgb(100, 100, 100);
+    transition: all 0.30s ease-in-out;
+}
+a:visited:active{
+    text-decoration: none;
+    color: rgb(100, 100, 100);
+    transition: all 0.30s ease-in-out;
+}
+input{
+    font-family: Oxygen, Verdana, Tahoma, STHeiti, "Noto Sans CJK SC", "Microsoft YaHei", SimHei;
+    box-sizing: border-box;
+}
+nav.management{
+    height: 50px;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+nav.management .container{
+    width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+nav.management .left{
+    float: left;
+}
+nav.management .right{
+    float: right;
+}
+nav.management a:link{
+    color: rgb(255, 255, 255);
+}
+nav.management a:hover{
+    color: rgb(200, 200, 200);
+}
+nav.management a:active{
+    color: rgb(200, 200, 200);
+}
+nav.management a:visited{
+    color: rgb(255, 255, 255);
+}
+nav.management a:visited:hover{
+    color: rgb(200, 200, 200);
+}
+nav.management a:visited:active{
+    color: rgb(200, 200, 200);
+}
+nav .link{
+    padding-left: 20px;
+    padding-right: 20px;
+    display: inline-block;
+    line-height: 52px;
+    height: 50px;
+}
+.main .page-title{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 25px;
+    font-weight: bold;
+}
+.main.management{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 1000px;
+    box-sizing: border-box;
+    position: relative;
+}
+.main.management .page-title{
+    line-height: 50px;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+form{
+    display: none;
+}
+.input{
+    height: 40px;
+    font-size: 15px;
+    line-height: 40px;
+    border: 1px solid rgb(150, 150, 150);
+    border-radius: 2px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: rgb(245, 245, 245);
+    transition: all 0.30s ease-in-out;
+}
+.input:focus{
+    outline: 0;
+    background-color: rgb(255, 255, 255);
+}
+.button{
+    display: inline-block;
+    text-align: center;
+    height: 40px;
+    padding-left: 10px;
+    padding-right: 10px;
+    box-sizing: border-box;
+    background-color: rgb(130, 200, 114);
+    color: rgb(255, 255, 255);
+    line-height: 40px;
+    border-radius: 2px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    transition: border 0.30s ease-in-out;
+    transition: all 0.30s ease-in-out;
+    cursor: pointer;
+}
+.button:hover{
+    background-color: rgb(83, 152, 68);
+}
+.button:active{
+    background-color: rgb(83, 152, 68);
+}
+.checkbox + label{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+.main.management .float-block{
+    width: 95%;
+    border: 1px solid rgb(230, 230, 230);
+    box-sizing: border-box;
+    position: relative;
+    box-shadow: 0 0 5px 0 rgb(100, 100, 100);
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.main.management .float-block .title{
+    border-bottom: 1px solid rgb(230, 230, 230);
+    background-color: rgb(245, 245, 245);
+    height: 40px;
+    line-height: 40px;
+    padding-left: 20px;
+    padding-right: 20px;
+    box-sizing: border-box;
+}
+.main.management .float-block .content{
+    padding: 20px;
+    box-sizing: border-box;
+}
+.main.management .float-block .content{
+    overflow: hidden;
+}
+.textarea{
+    min-width: 200px;
+    border: 1px solid rgb(150, 150, 150);
+    position: relative;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 2px;
+    box-sizing: border-box;
+    display: inline-block;
+}
+.textarea textarea{
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px;
+    min-height: 200px;
+    border-radius: 2px;
+    font-size: 15px;
+    line-height: 20px;
+    box-sizing: border-box;
+    background-color: rgb(245, 245, 245);
+    transition: all 0.30s ease-in-out;
+    border: none;
+    resize: none;
+    font-family: Oxygen, Verdana, Tahoma, STHeiti, "Noto Sans CJK SC", "Microsoft YaHei", SimHei;
+    overflow:hidden;
+    height: 100%;
+    width: 100%;
+}
+.textarea textarea:focus{
+    outline: 0;
+    background-color: rgb(255, 255, 255);
+}
+.textarea pre{
+    line-height: 20px;
+    font-size: 15px;
+    display: block;
+    visibility: hidden;
+    padding: 10px;
+    padding-bottom: 60px;
+    z-index: -1;
+}
+footer.management{
+    height: 50px;
+    width: 100%;
+    margin-top: 20px;
+}
+footer.management .container{
+    line-height: 50px;
+    border-top: 1px solid rgb(230, 230, 230);
+    width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+footer.management .left{
+    float: left;
+}
+footer.management .right{
+    float: right;
+}
