@@ -1,21 +1,34 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>{% block title %}{{ page_title }}{% end %}</title>
+    <title><%block name="title">${page_title}</%block></title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
     <meta name="renderer" content="webkit">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="referrer" content="origin">
-    <link href="{{ management_url('framework.css') }}" rel="stylesheet" type="text/css">{% block css %}{% end %}
+    <link href="${management_url('framework.css')}" rel="stylesheet" type="text/css"><%block name="css"/>
 </head>
 <body>
-    {% block body %}
-    {% include "nav.htm" %}
-    {% block main %}
-    {% end %}
-    {% include "footer.htm" %}
-    {% end %}
-    <script src="{{ management_url('jquery.min.js') }}" charset="utf-8"></script>{% block js %}{% end %}
+    ${self.body()}
+    <script src="${management_url('jquery.min.js')}" charset="utf-8"></script><%block name="js"/>
 </body>
 </html>
+<%def name="header()">
+<nav class="management">
+    <div class="container">
+        <div class="left">
+            <div class="link"><a href="${config["site_url"]}/management/lobby">大厅</a></div>
+            <div class="link"><a href="${config["site_url"]}/management/working">工作室</a></div>
+            <div class="link"><a href="${config["site_url"]}/management/crda">资料室</a></div>
+            <div class="link"><a href="${config["site_url"]}/management/configuration">控制室</a></div>
+        </div>
+        <div class="right">
+        <div class="link"><a href="${config["site_url"]}/">${config["site_name"]}</a></div>
+        <div class="link"><a href="${config["site_url"]}/management/checkout">登出</a></div>
+        </div>
+    </div>
+</nav>
+</%def>
+<%def name="footer()">
+</%def>
