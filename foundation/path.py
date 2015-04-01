@@ -266,7 +266,9 @@ class GreetingPlace(RequestHandler):
             [self.settings["template_path"]],
             input_encoding="utf-8",
             output_encoding="utf-8",
-            default_filters=["decode.utf_8"])
+            default_filters=["decode.utf_8"],
+            module_directory=(self.settings["root_path"] + "/rubbish/mako")
+            )
         template = lookup.get_template(filename)
         env_kwargs = {
             "handler": self,
