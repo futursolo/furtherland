@@ -1,8 +1,59 @@
+##
+##   Copyright 2015 Futur Solo
+##
+##   Licensed under the Apache License, Version 2.0 (the "License");
+##   you may not use this file except in compliance with the License.
+##   You may obtain a copy of the License at
+##
+##       http://www.apache.org/licenses/LICENSE-2.0
+##
+##   Unless required by applicable law or agreed to in writing, software
+##   distributed under the License is distributed on an "AS IS" BASIS,
+##   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+##   See the License for the specific language governing permissions and
+##   limitations under the License.
 <%inherit file="framework.htm"/>
+<%block name="css">
+<link href="${management_url('working.css')}" rel="stylesheet" type="text/css">
+</%block>
 ${parent.header()}
     <div class="main management">
         <div class="working">
             <div class="page-title">${page_title}</div>
+            <div class="left">
+                <div class="editor">
+                    <div>
+                        <input id="working-title" type="text" class="input" placeholder="请在此输入题目">
+                    </div>
+                    <div>
+                        <textarea id="working-content"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="right">
+                <div class="float-block">
+                    <div class="title">写作提示</div>
+                    <div class="content">
+                        <div>FurtherLand支持GitHub Flavored Markdown以及绝大部分HTML5代码，请尽情使用。</div>
+                    </div>
+                </div>
+                <div class="float-block">
+                    <div class="title">发表</div>
+                    <div class="content">
+                        <div>发布时间：
+                            <input id="when-click-publish" type="checkbox" class="checkbox" form="" checked>
+                            <label for="when-click-publish">当单击发布按钮时</label></div>
+                        <div><input id="working-title" type="text" class="input" disabled value="当单击发布按钮时"></div>
+                        <div>类型：
+                            <input id="working-is-writing" name="type" type="radio" class="checkbox" form="" checked>
+                            <label for="working-is-writing">文章</label>
+                            <input id="working-is-page" name="type" type="radio" class="checkbox" form="" checked>
+                            <label for="working-is-page">页面</label></div>
+                        <div>分类：</div>
+                        <div>保存为草稿 立即发布</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 ${parent.footer()}

@@ -1,5 +1,12 @@
 # Changelog
 
+v20150401 dev
+-------------
+ - Management Enhance
+ - Changed Template system to Mako
+ - Completed Apache License Comments
+
+
 v20150331 dev
 -------------
  - Bugs Fix
