@@ -298,6 +298,7 @@ class GreetingPlace(RequestHandler):
             "config": self.config,
             "static_url": self.static_url,
             "management_url": self.management_url,
+            "public_url": self.public_url,
             "FurtherLand": self.settings["further_land"],
             "checkin_status": self.checkin_status
             }
@@ -325,6 +326,9 @@ class GreetingPlace(RequestHandler):
         path = "management/" + path
         return RequestHandler.static_url(
             self, path, include_host=include_host, **kwargs)
+
+    def public_url(self, path, include_host=None, **kwargs):
+        pass
 
     @coroutine
     def get_count(self):
@@ -428,8 +432,8 @@ class WorkingOffice(GreetingPlace):
     def get(self, method):
         self.render_list["method"] = method
         if method == "new":
-            self.render_list["origin_title"] = "进行创作"
             self.render_list["pre_working"] = None
+            self.render_list["origin_title"] = "进行创作"
         elif method == "edit":
             self.render_list["origin_title"] = "修改作品"
         else:
