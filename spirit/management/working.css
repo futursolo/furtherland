@@ -52,6 +52,9 @@ div#publish-now{
 input#publish-time{
     width: 100%;
 }
+input#slug{
+    width: 100%;
+}
 .textarea#working-content-wrapper{
     width: 100%;
     min-height: 400px;

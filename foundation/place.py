@@ -64,12 +64,12 @@ def visitor_only(func):
     return wrapper
 
 
-class GreetingPlace(RequestHandler):
+class PlacesOfInterest(RequestHandler):
     current_user = None
+    render_list = {}
 
     @coroutine
     def prepare(self):
-        self.render_list = {}
         self.memories = self.settings["historial_records"]
         self.current_user = yield self.get_current_user()
         self.config = yield self.get_config()
@@ -218,15 +218,6 @@ class GreetingPlace(RequestHandler):
         return "".join(random.sample(string.ascii_letters + string.digits,
                                      length))
 
-    def checkin_status(self, code=None):
-        if not hasattr(self, ("_checkin_status")):
-            self._checkin_status = self.get_scookie(
-                "checkin_status", arg_type="hash", default="ok")
-            self.clear_cookie("checkin_status")
-        if code is None:
-            return (self._checkin_status != "ok")
-        return (code == self._checkin_status)
-
     @coroutine
     def get_class(self):
         pass
@@ -246,28 +237,6 @@ class GreetingPlace(RequestHandler):
     @coroutine
     def issue_id(self):
         pass
-
-    @coroutine
-    def checkin(self, username, password, two):
-        user = yield self.get_user(username=username)
-        if (not user) or (self.hash(password, "sha1") != user["password"]):
-            raise Return([False, "password"])
-        if not (self.verify_otp(two, key=user["otp_key"])):
-            raise Return([False, "two"])
-        device_id = self.get_random(32)
-        raise Return([
-            True, {
-                "user_id": user["_id"],
-                "device_id": device_id,
-                "agent_auth": self.hash((device_id + user["password"]),
-                                        "sha256")
-            }])
-
-    def verify_otp(self, code, key=None):
-        if not key:
-            key = self.current_user["otp_key"]
-        totp = pyotp.TOTP(key)
-        return totp.verify(code)
 
     def make_md(self):
         return misaka.html()
@@ -297,10 +266,8 @@ class GreetingPlace(RequestHandler):
             "reverse_url": self.application.reverse_url,
             "config": self.config,
             "static_url": self.static_url,
-            "management_url": self.management_url,
             "public_url": self.public_url,
-            "FurtherLand": self.settings["further_land"],
-            "checkin_status": self.checkin_status
+            "FurtherLand": self.settings["further_land"]
             }
         env_kwargs.update(kwargs)
         return template.render(**env_kwargs)
@@ -313,19 +280,6 @@ class GreetingPlace(RequestHandler):
         if nutrition:
             page = "nutrition/" + self.config["nutrition_type"] + "/" + page
         self.finish(self.render_string(page, **self.render_list))
-
-    def management_render(self, page):
-        if "page_title" not in list(self.render_list.keys()):
-            self.render_list["page_title"] = (
-                self.render_list["origin_title"] +
-                " - " + self.config["site_name"] + "管理局")
-        page = "management/" + page
-        self.finish(self.render_string(page, **self.render_list))
-
-    def management_url(self, path, include_host=None, **kwargs):
-        path = "management/" + path
-        return RequestHandler.static_url(
-            self, path, include_host=include_host, **kwargs)
 
     def public_url(self, path, include_host=None, **kwargs):
         pass
@@ -345,18 +299,18 @@ class GreetingPlace(RequestHandler):
         return result
 
 
-class IndexPlace(GreetingPlace):
+class CentralSquare(PlacesOfInterest):
     @coroutine
     def get(self):
         self.render_list["origin_title"] = "首页"
         self.render("index.htm")
 
 
-class WritingsPlace(GreetingPlace):
+class ConferenceHall(PlacesOfInterest):
     pass
 
 
-class HistoryLibrary(GreetingPlace):
+class HistoryLibrary(PlacesOfInterest):
     pass
 
 
@@ -367,100 +321,3 @@ class SpiritPlace(StaticFileHandler):
             raise HTTPError(403)
         else:
             yield StaticFileHandler.get(self, path, include_body=include_body)
-
-
-class CheckinOffice(GreetingPlace):
-    @coroutine
-    @visitor_only
-    def get(self):
-        self.render_list["origin_title"] = "登录"
-        self.management_render("checkin.htm")
-
-    @coroutine
-    @visitor_only
-    def post(self):
-        username = self.get_arg("username", arg_type="username")
-        password = self.get_arg("password", arg_type="hash")
-        two = self.get_arg("two", arg_type="number")
-        remember = self.get_arg("remember", arg_type="boolean")
-        if not (username and password and two):
-            self.set_scookie("checkin_status", "password", expires_days=None)
-            self.redirect("/management/checkin")
-            return
-        result = yield self.checkin(
-            username=username, password=password, two=two)
-        if result[0]:
-            expires_days = None
-            if remember:
-                expires_days = 180
-            self.set_scookie(
-                "user_id", result[1]["user_id"],
-                expires_days=expires_days)
-            self.set_scookie(
-                "device_id", result[1]["device_id"],
-                expires_days=expires_days)
-            self.set_scookie(
-                "agent_auth", result[1]["agent_auth"],
-                expires_days=expires_days)
-            self.redirect(self.next_url)
-        else:
-            self.set_scookie("checkin_status", result[1], expires_days=None)
-            self.redirect("/management/checkin")
-
-
-class CheckoutOffice(GreetingPlace):
-    def get(self):
-        self.clear_cookie("user_id")
-        self.clear_cookie("device_id")
-        self.clear_cookie("agent_auth")
-        self.redirect(self.next_url)
-
-
-class LobbyOffice(GreetingPlace):
-    @coroutine
-    @authenticated
-    def get(self):
-        self.render_list["count"] = yield self.get_count()
-        self.render_list["origin_title"] = "大厅"
-        self.management_render("lobby.htm")
-
-
-class WorkingOffice(GreetingPlace):
-    @coroutine
-    @authenticated
-    @slug_validation(["hash"])
-    def get(self, method):
-        self.render_list["method"] = method
-        if method == "new":
-            self.render_list["pre_working"] = None
-            self.render_list["origin_title"] = "进行创作"
-        elif method == "edit":
-            self.render_list["origin_title"] = "修改作品"
-        else:
-            raise HTTPError(404)
-        self.render_list["page_title"] = (
-            self.render_list["origin_title"] +
-            " - " + self.config["site_name"] + "管理局" + "工作室")
-        self.management_render("working.htm")
-
-
-navigation = [
-    (r"/", IndexPlace),
-    # (r"/classes/(.*).htm", ClassesPlace),  This will be avaliable in futhre
-    # (r"/timeline", HistoryLibrary),
-    (r"/writings/(.*).htm", WritingsPlace),
-    (r"/management/checkin", CheckinOffice),
-    (r"/management/checkin/", RedirectHandler, {"url": "/management/checkin"}),
-    (r"/management/checkout", CheckoutOffice),
-    (r"/management/checkout/", RedirectHandler,
-     {"url": "/management/checkout"}),
-    (r"/management", RedirectHandler, {"url": "/management/lobby"}),
-    (r"/management/", RedirectHandler, {"url": "/management/lobby"}),
-    (r"/management/lobby", LobbyOffice),
-    (r"/management/lobby/", RedirectHandler, {"url": "/management/lobby"}),
-    (r"/management/working", RedirectHandler,
-     {"url": "/management/working/new"}),
-    (r"/management/working/", RedirectHandler,
-     {"url": "/management/working/new"}),
-    (r"/management/working/([a-zA-Z0-9]+)", WorkingOffice)
-]

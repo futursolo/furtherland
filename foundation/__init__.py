@@ -16,23 +16,48 @@
 #   limitations under the License.
 
 
-import tornado.web
-import tornado.gen
+from tornado.web import *
 import tornado.ioloop
 import tornado.process
 import tornado.netutil
 import tornado.httpserver
 import os
 
-from . import path
+from . import place
+from . import office
 from . import memory as historial
+
+
+navigation = [
+    (r"/", place.CentralSquare),
+    # (r"/classes/(.*).htm", ClassesPlace),  This will be avaliable in futhre
+    # (r"/timeline", HistoryLibrary),
+    (r"/writings/(.*).htm", place.ConferenceHall),
+
+    # Office Redirects
+    (r"/management/checkin/", RedirectHandler, {"url": "/management/checkin"}),
+    (r"/management/checkout/", RedirectHandler,
+     {"url": "/management/checkout"}),
+    (r"/management", RedirectHandler, {"url": "/management/lobby"}),
+    (r"/management/", RedirectHandler, {"url": "/management/lobby"}),
+    (r"/management/lobby/", RedirectHandler, {"url": "/management/lobby"}),
+    (r"/management/working", RedirectHandler,
+     {"url": "/management/working/new"}),
+    (r"/management/working/", RedirectHandler,
+     {"url": "/management/working/new"}),
+
+    (r"/management/checkin", office.CheckinOffice),
+    (r"/management/checkout", office.CheckoutOffice),
+    (r"/management/lobby", office.LobbyOffice),
+    (r"/management/working/([a-zA-Z0-9]+)", office.WorkingOffice)
+]
 
 
 class FurtherLand:
     def __init__(self, melody):
-        stage = tornado.web.Application(
-            handlers=path.navigation,
-            static_handler_class=path.SpiritPlace,
+        stage = Application(
+            handlers=navigation,
+            static_handler_class=place.SpiritPlace,
 
             cookie_secret=melody.secret,
             xsrf_cookies=True,
