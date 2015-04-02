@@ -14,17 +14,17 @@
 //   limitations under the License.
 
 $(".textarea textarea").keypress(function(){
-    $(this).parent(".textarea").children("pre").html($(this).val());
+    $(this).parent(".textarea").children("div").html($(this).val());
 });
 $(".textarea textarea").keydown(function(){
-    $(this).parent(".textarea").children("pre").html($(this).val());
+    $(this).parent(".textarea").children("div").html($(this).val());
 });
 $(".textarea textarea").keyup(function(){
-    $(this).parent(".textarea").children("pre").html($(this).val());
+    $(this).parent(".textarea").children("div").html($(this).val());
 });
 $(".textarea textarea").change(function(){
-    $(this).parent(".textarea").children("pre").html($(this).val());
+    $(this).parent(".textarea").children("div").html($(this).val());
 });
 $(".textarea textarea").blur(function(){
-    $(this).parent(".textarea").children("pre").html($(this).val());
+    $(this).parent(".textarea").children("div").html($(this).val());
 });

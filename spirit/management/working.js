@@ -53,3 +53,27 @@ $("#publish-time").blur(function (){
         $("#publish-time").val(unixToDatetime(Math.round($.now() / 1000)).replace(/\//g,"-"));
     }
 });
+
+function transferWorking(giveTime){
+    $("#real-title").val($("working-title").val());
+    $("#real-content")[0].innerHTML = $("#working-content")[0].innerHTML;
+    if (!giveTime && $("#when-click-publish").prop("checked")){
+        $("#real-time").val("publish");
+    }else{
+        $("#real-time").val($("#publish-time").val());
+    }
+    $("#real-status").val($("#real-slug").val());
+    $("#real-slug").val($("#slug").val());
+}
+
+$("#save-as-draft").click(function (){
+    transferWorking(false);
+    $("#real-publish").val("false");
+    $("working-form").submit();
+});
+
+$("#publish-now").click(function (){
+    transferWorking(true);
+    $("#real-publish").val("true");
+    $("working-form").submit();
+});

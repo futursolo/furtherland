@@ -23,12 +23,12 @@ ${parent.header()}
             <div class="left">
                 <div class="editor">
                     <div>
-                        <input id="working-title" type="text" class="input" placeholder="请在此输入题目">
+                        <input id="working-title" type="text" class="input" placeholder="请在此输入题目" value="${get_pre_content("title", pre_working)}">
                     </div>
                     <div>
                         <div id="working-content-wrapper" class="textarea">
-                            <pre><span></span><br></pre>
-                            <textarea id="working-content"></textarea>
+                            <div></div>
+                            <textarea id="working-content">${get_pre_content("content", pre_working)}</textarea>
                         </div>
                     </div>
                 </div>
@@ -41,19 +41,26 @@ ${parent.header()}
                     </div>
                 </div>
                 <div class="float-block">
+                    <div class="title">设置短链接</div>
+                    <div class="content">
+                        <div>必须匹配 ^([\-a-zA-Z0-9])$ ！</div>
+                        <div><input id="slug" type="text" class="input" value="${get_pre_content("slug", pre_working)}" placeholder="(Required)"></div>
+                    </div>
+                </div>
+                <div class="float-block">
                     <div class="title">发表</div>
                     <div class="content">
                         <div>发布时间：
                             <input id="when-click-publish" type="checkbox" class="checkbox" ${click_publish_time_or_not(pre_working)}>
                             <label for="when-click-publish">当单击发布按钮时</label></div>
-                        <div><input id="publish-time" type="text" class="input" disabled value="${get_pre_content("time", pre_working)}"></div>
+                        <div><input id="publish-time" type="text" class="input" value="${get_pre_content("time", pre_working)}"></div>
                         <div>类型：
-                            <input id="working-is-writing" name="type" type="radio" class="checkbox" form="working-form" checked>
+                            <input id="working-is-writing" name="working_type" type="radio" value="writing" class="checkbox" form="working-form" ${get_working_type("writing", pre_working, True)}>
                             <label for="working-is-writing">文章</label>
-                            <input id="working-is-page" name="type" type="radio" class="checkbox" form="working-form">
+                            <input id="working-is-page" name="working_type" type="radio" value="page" class="checkbox" form="working-form" ${get_working_type("writing", pre_working, False)}>
                             <label for="working-is-page">页面</label></div>
                         <div>
-                            <div id="save-as-draft" class="button">存为草稿</div>
+                            <div id="save-as-draft" class="button" ${allow_draft(pre_working)}>存为草稿</div>
                             <div id="publish-now" class="button">立即发表</div>
                         </div>
                     </div>
@@ -62,11 +69,14 @@ ${parent.header()}
         </div>
     </div>
     <form id="working-form" action="" method="post" autocomplete="off">
-        <input id="content-id" type="hidden" name="id" autocomplete="off">
-        <input id="real-title" type="hidden" name="title" autocomplete="off">
-        <textarea id="real-conetnt" name="content" autocomplete="off"></textarea>
-        <input id="real-time" type="hidden" name="time" autocomplete="off">
-        <input id="real-status" type="hidden" name="status" autocomplete="off">
+        <input id="content-id" type="hidden" name="working_id" autocomplete="off" value="${get_pre_content("id", pre_working)}">
+        <input id="real-method" type="hidden" name="working_method" value="${method}">
+        <input id="real-title" type="hidden" name="working_title" autocomplete="off">
+        <textarea id="real-conetnt" name="working_content" autocomplete="off"></textarea>
+        <input id="real-time" type="hidden" name="working_time" autocomplete="off">
+        <input id="real-status" type="hidden" name="working_status" autocomplete="off">
+        <input id="real-slug" type="hidden" name="working_slug" autocomplete="off">
+        <input id="real-publish" type="hidden" name="working_publish" autocomplete="off">
         ${xsrf_form_html()}
     </form>
 <%block name="js">
@@ -83,5 +93,17 @@ ${parent.footer()}
     def click_publish_time_or_not(pre_working):
         if (not pre_working) or pre_working["time"] == 0:
             return "checked"
-        return None
+        return ""
+
+    def get_working_type(type, pre_working, check_default=False):
+        if not(pre_working and (not check_default)) or (pre_working["type"] != type):
+            return ""
+        return "checked"
+
+    def allow_draft(pre_working):
+        if not pre_working:
+            return ""
+        if pre_working["published"]:
+            return "disabled"
+        return ""
 %>
