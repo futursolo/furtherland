@@ -22,12 +22,13 @@ import re
 import misaka
 import hashlib
 import base64
-import foundation.pyotp as pyotp
 import random
 import string
 import functools
 import mako.lookup
 import mako.template
+import time
+import datetime
 
 
 def decorator_with_args(decorator_to_enhance):
@@ -66,10 +67,10 @@ def visitor_only(func):
 
 class PlacesOfInterest(RequestHandler):
     current_user = None
-    render_list = {}
 
     @coroutine
     def prepare(self):
+        self.render_list = {}
         self.memories = self.settings["historial_records"]
         self.current_user = yield self.get_current_user()
         self.config = yield self.get_config()
@@ -170,6 +171,12 @@ class PlacesOfInterest(RequestHandler):
                 return False
             else:
                 return hash_value
+        elif arg_type == "slug":
+            hash_value = str(value)
+            if re.match(r"^([\-a-zA-Z0-9]+)$", hash_value) == None:
+                return False
+            else:
+                return hash_value
         elif arg_type == "number":
             number = str(value)
             if re.match(r"^([\-\+0-9]+)$", number) == None:
@@ -206,7 +213,7 @@ class PlacesOfInterest(RequestHandler):
 
     @coroutine
     def get_user(self, **kwargs):
-        book = self.memories.select("Users")
+        book = self.memories.select("Masters")
         condition = list(kwargs.keys())[0]
         if condition != "user_list":
             value = kwargs[condition]
@@ -217,6 +224,9 @@ class PlacesOfInterest(RequestHandler):
     def get_random(self, length):
         return "".join(random.sample(string.ascii_letters + string.digits,
                                      length))
+
+    def date_time(self, unix_time):
+        timezone = self.config["timezone"]
 
     @coroutine
     def get_class(self):
@@ -235,8 +245,11 @@ class PlacesOfInterest(RequestHandler):
         pass
 
     @coroutine
-    def issue_id(self):
-        pass
+    def issue_id(self, working_type):
+        book = self.memories.select("Configs")
+        book.find_modify({"_id": "count"}, [working_type])
+        yield book.do()
+        raise Return(int(book.result()[working_type]))
 
     def make_md(self):
         return misaka.html()

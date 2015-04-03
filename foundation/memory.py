@@ -51,13 +51,14 @@ class Element:
 
     def add(self, content):
         self.reset()
-        self._action = self._current_collection.insert(condition)
+        self._action = self._current_collection.insert(content)
         self._action_ready = True
         return self
 
     def set(self, condition, content):
         self.reset()
-        self._action = self._current_collection.update(condition, content)
+        self._action = self._current_collection.update(condition,
+                                                       {"$set": content})
         self._action_ready = True
         return self
 

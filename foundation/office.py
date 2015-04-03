@@ -19,14 +19,10 @@
 from tornado.web import *
 from tornado.gen import *
 from foundation.place import PlacesOfInterest, slug_validation, visitor_only
+import foundation.pyotp as pyotp
 
 
 class ManagementOffice(PlacesOfInterest):
-    @coroutine
-    def prepare(self):
-        self.render_list["management_url"] = self.management_url
-        self.render_list["checkin_status"] = self.checkin_status
-        yield PlacesOfInterest.prepare(self)
 
     def management_url(self, path, include_host=None, **kwargs):
         path = "management/" + path
@@ -65,6 +61,8 @@ class ManagementOffice(PlacesOfInterest):
         return totp.verify(code)
 
     def management_render(self, page):
+        self.render_list["management_url"] = self.management_url
+        self.render_list["checkin_status"] = self.checkin_status
         if "page_title" not in list(self.render_list.keys()):
             self.render_list["page_title"] = (
                 self.render_list["origin_title"] +
@@ -140,6 +138,19 @@ class WorkingOffice(ManagementOffice):
             self.render_list["pre_working"] = None
             self.render_list["origin_title"] = "进行创作"
         elif method == "edit":
+            working_type = self.get_arg("type", arg_type="hash")
+            working_id = self.get_arg("id", arg_type="number")
+            if working_type == "writing":
+                book = self.memories.select("Writings")
+            elif working_type == "page":
+                book = self.memories.select("Pages")
+            else:
+                raise HTTPError(404)
+            book.find({"_id": working_id})
+            yield book.do()
+            working = book.result()
+            working["type"] = working_type
+            self.render_list["pre_working"] = working
             self.render_list["origin_title"] = "修改作品"
         else:
             raise HTTPError(404)
@@ -152,12 +163,69 @@ class WorkingOffice(ManagementOffice):
     @authenticated
     @slug_validation(["hash"])
     def post(self, method):
-        working_id = self.get_arg("working_id", arg_type="number")
+        working = {}
+        working_type = self.get_arg("working_type", arg_type="hash")
+        if working_type == "writing":
+            book = self.memories.select("Writings")
+        elif working_type == "page":
+            book = self.memories.select("Pages")
+        else:
+            raise HTTPError(404)
         working_title = self.get_arg("working_title", arg_type="origin")
         working_content = self.get_arg("working_content", arg_type="origin")
         working_method = self.get_arg("working_method", arg_type="hash")
-        working_time = self.get_arg("working_time", arg_type="hash")
-        working_status = self.get_arg("working_status", arg_type="hash")
-        working_slug = self.get_arg("working_slug", arg_type="hash")
-        working_publish = self.get_arg("working_publish", arg_type="hash")
-        working_type = self.get_arg("working_type", arg_type="hash")
+        working_time = self.get_arg("working_time", arg_type="number")
+        working_publish = self.get_arg("working_publish", arg_type="boolean")
+        working_slug = self.get_arg("working_slug", arg_type="slug")
+
+        working["title"] = working_title
+        working["time"] = working_time
+        working["publish"] = working_publish
+        working["content"] = working_content
+        working["slug"] = working_slug
+        working["author"] = self.current_user["_id"]
+
+        if working_method == "new":
+            if working_type == "writing":
+                working_id = yield self.issue_id("Writings")
+            elif working_type == "page":
+                working_id = yield self.issue_id("Pages")
+            else:
+                raise HTTPError(500)
+            if not working_slug:
+                working_slug = str(working_id)
+            working["_id"] = working_id
+            book.add(working)
+        elif working_method == "edit":
+            working_id = self.get_arg("working_id")
+            if not working_slug:
+                working_slug = str(working_id)
+            working_id = self.get_arg("working_id", arg_type="number")
+            book.set({"_id": working_id}, working)
+        yield book.do()
+        self.redirect(
+            "/management/working/edit?type=" +
+            working_type + "&id=" + str(working_id)
+        )
+
+
+class CRDAOffice(ManagementOffice):
+    @coroutine
+    @authenticated
+    @slug_validation(["hash"])
+    def get(self, category):
+        if category == "writings":
+            book = self.memories.select("Writings")
+            self.render_list["origin_title"] = "检视文章"
+        elif category == "pages":
+            book = self.memories.select("Pages")
+            self.render_list["origin_title"] = "检视页面"
+        elif category == "replies":
+            book = self.memories.select("Replies")
+            self.render_list["origin_title"] = "检视评论"
+        else:
+            raise HTTPError(404)
+        self.render_list["page_title"] = (
+            self.render_list["origin_title"] +
+            " - " + self.config["site_name"] + "管理局" + "资料室")
+        self.management_render("crda.htm")
