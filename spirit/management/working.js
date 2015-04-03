@@ -1,3 +1,18 @@
+//
+//   Copyright 2015 Futur Solo
+//
+//   Licensed under the Apache License, Version 2.0 (the "License");
+//   you may not use this file except in compliance with the License.
+//   You may obtain a copy of the License at
+//
+//       http://www.apache.org/licenses/LICENSE-2.0
+//
+//   Unless required by applicable law or agreed to in writing, software
+//   distributed under the License is distributed on an "AS IS" BASIS,
+//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//   See the License for the specific language governing permissions and
+//   limitations under the License.
+
 function datetimeToUnix(datetime){
     var tmp_datetime = datetime.replace(/:/g,"-");
     tmp_datetime = tmp_datetime.replace(/ /g,"-");
@@ -42,38 +57,63 @@ function loadTime(){
 }
 
 $(document).ready(function (){
+    var arr = $("#publish-time").val().split(" ");
+    var dateReg = /^(?:(?!0000)[0-9]{4}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[0-9]{2}(?:0[48]|[2468][048]|[13579][26])|(?:0[48]|[2468][048]|[13579][26])00)-02-29)$/;
+    var timeReg = /^2[0-3]|[0-1]?\d:[0-5][0-9]:[0-5][0-9]$/;
+    try{
+        if (!(dateReg.test(arr[0]) && timeReg.test((arr[1] + "")))){
+            $("#publish-time").val(unixToDatetime(Math.round($("#publish-time").val())).replace(/\//g,"-"));
+        }
+    }catch (e){
+        try{
+            $("#publish-time").val(unixToDatetime(Math.round($("#publish-time").val())).replace(/\//g,"-"));
+        }catch (e2){
+            $("#publish-time").val(unixToDatetime(Math.round($.now() / 1000)));
+        }
+    }
     setTimeout(loadTime, 1);
 });
 
 $("#publish-time").blur(function (){
     var arr = $(this).val().split(" ");
     var dateReg = /^(?:(?!0000)[0-9]{4}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[0-9]{2}(?:0[48]|[2468][048]|[13579][26])|(?:0[48]|[2468][048]|[13579][26])00)-02-29)$/;
-    var timeReg = /^([0-2]{1})([0-3]{1}):{1}([0-5]{1})([0-9]{1}):{1}([0-5]{1})([0-9]{1})$/;
-    if (!(dateReg.test(arr[0]) && timeReg.test(arr[1]))){
+    var timeReg = /^2[0-3]|[0-1]?\d:[0-5][0-9]:[0-5][0-9]$/;
+    if (!(dateReg.test(arr[0]) && timeReg.test((arr[1] + "")))){
         $("#publish-time").val(unixToDatetime(Math.round($.now() / 1000)).replace(/\//g,"-"));
     }
 });
 
-function transferWorking(giveTime){
-    $("#real-title").val($("working-title").val());
-    $("#real-content")[0].innerHTML = $("#working-content")[0].innerHTML;
-    if (!giveTime && $("#when-click-publish").prop("checked")){
-        $("#real-time").val("publish");
-    }else{
-        $("#real-time").val($("#publish-time").val());
+$("#slug").blur(function (){
+    var slugReg = /^([\-a-zA-Z0-9]+)$/;
+    if (!slugReg.test($(this).val())){
+        $(this).val("");
     }
-    $("#real-status").val($("#real-slug").val());
+});
+
+function transferWorking(giveTime){
+    $("#real-title").attr("value", $("#working-title").val());
+    document.getElementById("real-content").value = document.getElementById("working-content").value;
+    if (!giveTime && $("#when-click-publish").prop("checked")){
+        $("#real-time").val("0");
+    }else{
+        $("#real-time").val(datetimeToUnix($("#publish-time").val()));
+    }
     $("#real-slug").val($("#slug").val());
+    $("input[name=\"show_type\"]").each(function (){
+        if ($(this).prop("checked")){
+            $("#real-type").val($(this).val());
+        }
+    });
 }
 
 $("#save-as-draft").click(function (){
     transferWorking(false);
     $("#real-publish").val("false");
-    $("working-form").submit();
+    $("#working-form").submit();
 });
 
 $("#publish-now").click(function (){
     transferWorking(true);
     $("#real-publish").val("true");
-    $("working-form").submit();
+    $("#working-form").submit();
 });

@@ -45,11 +45,16 @@ navigation = [
      {"url": "/management/working/new"}),
     (r"/management/working/", RedirectHandler,
      {"url": "/management/working/new"}),
+    (r"/management/crda", RedirectHandler,
+     {"url": "/management/crda/writings"}),
+    (r"/management/crda/", RedirectHandler,
+     {"url": "/management/crda/writings"}),
 
     (r"/management/checkin", office.CheckinOffice),
     (r"/management/checkout", office.CheckoutOffice),
     (r"/management/lobby", office.LobbyOffice),
-    (r"/management/working/([a-zA-Z0-9]+)", office.WorkingOffice)
+    (r"/management/working/([a-zA-Z0-9]+)", office.WorkingOffice),
+    (r"/management/crda/([a-zA-Z0-9]+)", office.CRDAOffice)
 ]
 
 

@@ -1,5 +1,11 @@
 # Changelog
 
+v20150403 dev
+-------------
+ - Bugs Fix
+ - Publish Function Works
+ - CRDA Page Added
+
 v20150402 dev
 -------------
  - Slug Feature Added
