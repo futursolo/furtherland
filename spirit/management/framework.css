@@ -228,7 +228,7 @@ form{
     outline: 0;
     background-color: rgb(255, 255, 255);
 }
-.textarea pre{
+.textarea div{
     line-height: 20px;
     font-size: 15px;
     display: block;
@@ -236,6 +236,7 @@ form{
     padding: 10px;
     padding-bottom: 60px;
     z-index: -1;
+    word-break: break-all;
 }
 footer.management{
     height: 50px;
