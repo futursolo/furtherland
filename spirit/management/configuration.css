@@ -15,32 +15,41 @@
    limitations under the License.
 
 --*/
-.main.management .crda{
+.main.management .configuration{
     overflow: hidden;
 }
-.main.management .crda .table-item{
+.main.management .configuration .config-item{
+    line-height: 60px;
     overflow: hidden;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 20px;
+    box-sizing: border-box;
+    padding-top: 10px;
+    padding-bottom: 10px;
     border-bottom: 1px solid rgb(230, 230, 230);
 }
-.main.management .crda .table-header{
-    line-height: 50px;
+.main.management .configuration .config-name{
+    width: 100px;
+    box-sizing: border-box;
+    padding-right: 20px;
+    float: left;
+    text-align: right;
+    font-weight: bold;
+}
+.main.management .configuration .config-value .input{
+    float: left;
+    width: 700px;
+}
+.main.management .configuration .save-bar{
     background-color: rgb(245, 245, 245);
-}
-.main.management .crda .table-content{
-    line-height: 40px;
-}
-.main.management .crda .content-title{
-    float: left;
-}
-.main.management .crda .content-time{
-    float: right;
-    width: 200px;
-}
-.main.management .crda .content-draft{
-    float: left;
-    font-size: 12px;
+
     padding-left: 10px;
     padding-right: 10px;
+    line-height: 50px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+.main.management .configuration #save-config{
+    float: right;
+    padding-left: 20px;
+    padding-right: 20px;
 }

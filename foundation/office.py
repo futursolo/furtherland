@@ -213,19 +213,64 @@ class CRDAOffice(ManagementOffice):
     @coroutine
     @authenticated
     @slug_validation(["hash"])
-    def get(self, category):
-        if category == "writings":
+    def get(self, area):
+        if area == "writings":
             book = self.memories.select("Writings")
             self.render_list["origin_title"] = "检视文章"
-        elif category == "pages":
+        elif area == "pages":
             book = self.memories.select("Pages")
             self.render_list["origin_title"] = "检视页面"
-        elif category == "replies":
+        elif area == "replies":
             book = self.memories.select("Replies")
             self.render_list["origin_title"] = "检视评论"
         else:
             raise HTTPError(404)
+        self.render_list["area"] = area
+        book.find({})
+        book.sort([["time", False]])
+        book.length(0, True)
+        yield book.do()
+        content_list = book.result()
+        for key in content_list:
+            if area == "writings":
+                content_list[key]["edit_link"] = (
+                    "/management/working/edit?type=writing&id=" +
+                    str(int(content_list[key]["_id"])))
+            elif area == "pages":
+                content_list[key]["edit_link"] = (
+                    "/management/working/edit?type=page&id=" +
+                    str(int(content_list[key]["_id"])))
+            elif area == "replies":
+                content_list[key]["edit_link"] = (
+                    "/management/working/edit?type=reply&id=" +
+                    str(int(content_list[key]["_id"])))
+            else:
+                raise HTTPError(500)
+        self.render_list["content"] = content_list
         self.render_list["page_title"] = (
             self.render_list["origin_title"] +
             " - " + self.config["site_name"] + "管理局" + "资料室")
         self.management_render("crda.htm")
+
+
+class ControlOffice(ManagementOffice):
+    @coroutine
+    @authenticated
+    def get(self):
+        book = self.memories.select("Configs")
+        book.find({})
+        book.length(0, True)
+        yield book.do()
+        configs = book.result()
+        self.render_list["configs"] = configs
+        print(configs)
+        self.render_list["origin_title"] = "变更设置"
+        self.render_list["page_title"] = (
+            self.render_list["origin_title"] +
+            " - " + self.config["site_name"] + "管理局" + "控制室")
+        self.management_render("configuration.htm")
+
+    @coroutine
+    @authenticated
+    def post(self):
+        pass

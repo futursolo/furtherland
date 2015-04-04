@@ -20,6 +20,29 @@ ${parent.header()}
     <div class="main management">
         <div class="crda">
             <div class="page-title">${page_title}</div>
+            <div class="float-block">
+                <div class="table-header table-item">
+                % if area == "writings":
+                    <div class="content-title">文章标题</div>
+                    <div class="content-time">发表时间</div>
+                % elif area == "pages":
+                    <div class="content-title">页面标题</div>
+                    <div class="content-time">发表时间</div>
+                % elif area == "replies":
+                    <div class="content-title">评论内容</div>
+                    <div class="content-time">发表时间</div>
+                % endif
+                </div>
+            % for key in content:
+                <div class="table-content table-item">
+                    <div class="content-title"><a href="${content[key]["edit_link"]}">${content[key]["title"]}</a></div>
+                % if ("publish" in list(content[key].keys())) and (not content[key]["publish"]):
+                    <div class="content-draft">草稿</div>
+                % endif
+                    <div class="content-time change-time">${content[key]["time"]}</div>
+                </div>
+            % endfor
+            </div>
         </div>
     </div>
 ${parent.footer()}
