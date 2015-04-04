@@ -49,12 +49,15 @@ navigation = [
      {"url": "/management/crda/writings"}),
     (r"/management/crda/", RedirectHandler,
      {"url": "/management/crda/writings"}),
+    (r"/management/configuration/", RedirectHandler,
+     {"url": "/management/configuration"}),
 
     (r"/management/checkin", office.CheckinOffice),
     (r"/management/checkout", office.CheckoutOffice),
     (r"/management/lobby", office.LobbyOffice),
     (r"/management/working/([a-zA-Z0-9]+)", office.WorkingOffice),
-    (r"/management/crda/([a-zA-Z0-9]+)", office.CRDAOffice)
+    (r"/management/crda/([a-zA-Z0-9]+)", office.CRDAOffice),
+    (r"/management/configuration", office.ControlOffice)
 ]
 
 

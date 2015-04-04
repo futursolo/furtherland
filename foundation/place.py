@@ -246,10 +246,10 @@ class PlacesOfInterest(RequestHandler):
 
     @coroutine
     def issue_id(self, working_type):
-        book = self.memories.select("Configs")
-        book.find_modify({"_id": "count"}, [working_type])
+        book = self.memories.select("Counts")
+        book.find_modify({"_id": working_type}, ["number"])
         yield book.do()
-        raise Return(int(book.result()[working_type]))
+        raise Return(int(book.result()["number"]))
 
     def make_md(self):
         return misaka.html()
