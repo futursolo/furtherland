@@ -213,13 +213,19 @@ class PlacesOfInterest(RequestHandler):
 
     @coroutine
     def get_user(self, **kwargs):
+        if not hasattr(self, "_user_list"):
+            self._user_list = {}
         book = self.memories.select("Masters")
         condition = list(kwargs.keys())[0]
         if condition != "user_list":
+            if condition not in list(self._user_list.keys()):
+                self._user_list[condition] = {}
             value = kwargs[condition]
-            book.find({condition: value}).length(1)
-        yield book.do()
-        raise Return(book.result())
+            if value not in list(self._user_list[condition].keys()):
+                book.find({condition: value}).length(1)
+                yield book.do()
+                self._user_list[condition][value] = book.result()
+        raise Return(self._user_list[condition][value])
 
     def get_random(self, length):
         return "".join(random.sample(string.ascii_letters + string.digits,
@@ -236,13 +242,13 @@ class PlacesOfInterest(RequestHandler):
     def get_writing(self, only_published=True, **kwargs):
         book = self.memories.select("Writings")
         find_condition = {}
-        if only_published == True:
+        if only_published is True:
             find_condition["publish"] = True
         if "class_id" in list(kwargs.keys()):
             if kwargs["class_id"] != 0:
                 find_condition["class_id"] = kwargs["class_id"]
-                book.find(find_condition)
-                book.length(0, force_dict=True)
+            book.find(find_condition)
+            book.length(0, force_dict=True)
         elif "slug" in list(kwargs.keys()):
             find_condition["slug"] = kwargs["slug"]
             book.find(find_condition)
@@ -332,6 +338,9 @@ class CentralSquare(PlacesOfInterest):
     @coroutine
     def get(self):
         self.render_list["contents"] = yield self.get_writing(class_id=0)
+        for key in self.render_list["contents"]:
+            self.render_list["contents"][key]["author"] = yield self.get_user(
+                _id=self.render_list["contents"][key]["author"])
         self.render_list["origin_title"] = "首页"
         self.render("index.htm")
 
