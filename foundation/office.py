@@ -263,7 +263,6 @@ class ControlOffice(ManagementOffice):
         yield book.do()
         configs = book.result()
         self.render_list["configs"] = configs
-        print(configs)
         self.render_list["origin_title"] = "变更设置"
         self.render_list["page_title"] = (
             self.render_list["origin_title"] +
