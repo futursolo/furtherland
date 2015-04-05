@@ -233,8 +233,24 @@ class PlacesOfInterest(RequestHandler):
         pass
 
     @coroutine
-    def get_writing(self):
-        pass
+    def get_writing(self, only_published=True, **kwargs):
+        book = self.memories.select("Writings")
+        find_condition = {}
+        if only_published == True:
+            find_condition["publish"] = True
+        if "class_id" in list(kwargs.keys()):
+            if kwargs["class_id"] != 0:
+                find_condition["class_id"] = kwargs["class_id"]
+                book.find(find_condition)
+                book.length(0, force_dict=True)
+        elif "slug" in list(kwargs.keys()):
+            find_condition["slug"] = kwargs["slug"]
+            book.find(find_condition)
+        elif "id" in list(kwargs.keys()):
+            find_condition["_id"] = kwargs["id"]
+            book.find(find_condition)
+        yield book.do()
+        raise Return(book.result())
 
     @coroutine
     def get_reply(self):
@@ -315,6 +331,7 @@ class PlacesOfInterest(RequestHandler):
 class CentralSquare(PlacesOfInterest):
     @coroutine
     def get(self):
+        self.render_list["contents"] = yield self.get_writing(class_id=0)
         self.render_list["origin_title"] = "首页"
         self.render("index.htm")
 
