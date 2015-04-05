@@ -1,5 +1,11 @@
 # Changelog
 
+v20150404 dev
+------------
+ - Bugs Fix
+ - Removed jQuery file and Starts to Use Microsoft Ajax Content Delivery Network
+ - Index Page Framework Finished
+
 v20150403 dev
 -------------
  - Bugs Fix
@@ -20,12 +26,10 @@ v20150401 dev
  - Font Family Update
  - Footer Added
 
-
 v20150331 dev
 -------------
  - Bugs Fix
  - Checkout function works
-
 
 v20150330 dev
 ------------
