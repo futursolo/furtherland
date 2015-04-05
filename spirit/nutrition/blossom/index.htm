@@ -14,4 +14,20 @@
 ##   limitations under the License.
 <%inherit file="framework.htm"/>
 ${parent.header()}
+<%block name="css">
+    <link href="${static_url("index.css")}" rel="stylesheet" type="text/css">
+</%block>
+<div class="main normal">
+    <div class="index">
+% for key in contents:
+    <div class="item">
+        <div class="page-title"><a href="/writings/${contents[key]["slug"]}">${contents[key]["title"]}</a></div>
+        <div class="description">
+            <span class="description-item">作者：${contents[key]["author"]["username"]}</span>
+            <span class="description-item">时间：<span class="change-time">${contents[key]["time"]}</span></span>
+        </div>
+        <div class="less-content">${contents[key]["content"]}</div>
+    </div>
+% endfor
+</div>
 ${parent.footer()}
