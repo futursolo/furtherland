@@ -1,5 +1,10 @@
 # Changelog
 
+v20150406 dev
+-------------
+ - Bugs Fix
+ - Misaka GitHub Flavored Markdown works
+
 v20150404 dev
 ------------
  - Bugs Fix
