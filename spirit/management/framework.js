@@ -33,7 +33,7 @@ function unixToDatetime(unix){
               "S+": this.getMilliseconds()
        };
        if (/(y+)/i.test(format)) {
-              format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+              format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
        }
        for (var k in date) {
               if (new RegExp("(" + k + ")").test(format)) {
@@ -70,3 +70,68 @@ $(document).ready(function (){
         }
     });
 });
+
+$.fn.listen = function(type,fn){
+    return this.each(function(){
+        $(this)[0].addEventListener(type,function(e){
+            if(!fn.call($(this),e)){
+                e.stopPropagation();
+                e.preventDefault();
+            }
+        },0);
+    });
+};
+
+$("#drag-upload-area").bind("dragenter",function(){
+    return false;
+}).bind("dragover",function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "copy";
+    return false;
+}).listen("drop",function(e){
+    var num = 1;
+    var files = e.dataTransfer.files;
+    var j = files.length;
+    for (var i=0; i<j; i++){
+        var reader = new FileReader();
+        reader.onload = function (event){
+            num ++;
+            if(num>j){
+                upload(files);
+            }
+        };
+        reader.readAsDataURL(files[i]);
+    }
+    return false;
+});
+
+function upload(files){
+    var formData = new FormData();
+    for (var i=0; i <files.length; i++){
+        formData.append("files[]",files[i]);
+    }
+    $.ajax({
+        url: "upload.php",  //server script to process data
+        type: "POST",
+        xhr: function (){
+            myXhr = $.ajaxSettings.xhr();
+            if (myXhr.upload){
+                myXhr.upload.addEventListener("progress",progressHandlingFunction, false);
+            }
+            return myXhr;
+        },
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function (){
+
+        }
+    });
+}
+function progressHandlingFunction(e){
+    if(e.lengthComputable){
+        $("progress").attr({value:e.loaded,max:e.total});
+    }
+}
