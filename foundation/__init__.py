@@ -32,7 +32,7 @@ navigation = [
     (r"/", place.CentralSquare),
     # (r"/classes/(.*).htm", ClassesPlace),  This will be avaliable in futhre
     # (r"/timeline", HistoryLibrary),
-    (r"/writings/(.*).htm", place.ConferenceHall),
+    (r"/writings/([\-a-zA-Z0-9]+).htm", place.ConferenceHall),
 
     # Office Redirects
     (r"/management/checkin/", RedirectHandler, {"url": "/management/checkin"}),
@@ -100,4 +100,4 @@ class FurtherLand:
         tornado.ioloop.IOLoop.instance().stop()
 
     def version(self):
-        return "FurtherLand v20150401 dev"
+        return "FurtherLand Sakihokori Edition"

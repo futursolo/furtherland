@@ -248,6 +248,7 @@ class PlacesOfInterest(RequestHandler):
             if kwargs["class_id"] != 0:
                 find_condition["class_id"] = kwargs["class_id"]
             book.find(find_condition)
+            book.sort([["time", False]])
             book.length(0, force_dict=True)
         elif "slug" in list(kwargs.keys()):
             find_condition["slug"] = kwargs["slug"]
@@ -273,8 +274,10 @@ class PlacesOfInterest(RequestHandler):
         yield book.do()
         raise Return(int(book.result()["number"]))
 
-    def make_md(self):
-        return misaka.html()
+    def make_md(self, content, more=True):
+        if not more:
+            content = content.split("<!--more-->")[0]
+        return misaka.html(content)
 
     def static_url(self, path, include_host=None, nutrition=True, **kwargs):
         if nutrition:
@@ -341,12 +344,24 @@ class CentralSquare(PlacesOfInterest):
         for key in self.render_list["contents"]:
             self.render_list["contents"][key]["author"] = yield self.get_user(
                 _id=self.render_list["contents"][key]["author"])
+            self.render_list["contents"][key]["content"] = self.make_md(
+                self.render_list["contents"][key]["content"], more=False)
         self.render_list["origin_title"] = "首页"
         self.render("index.htm")
 
 
 class ConferenceHall(PlacesOfInterest):
-    pass
+    @coroutine
+    @slug_validation(["slug"])
+    def get(self, writing_slug):
+        writing = yield self.get_writing(slug=writing_slug)
+        if not writing:
+            raise HTTPError(404)
+        writing["author"] = yield self.get_user(_id=writing["author"])
+        writing["content"] = self.make_md(writing["content"])
+        self.render_list["writing"] = writing
+        self.render_list["origin_title"] = writing["title"]
+        self.render("writings.htm")
 
 
 class HistoryLibrary(PlacesOfInterest):

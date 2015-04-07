@@ -1,7 +1,17 @@
 # Changelog
 
+v20150407 dev
+--------------
+ - Bugs Fix
+ - New UI
+
+v20150406 dev
+-------------
+ - Bugs Fix
+ - Misaka GitHub Flavored Markdown works
+
 v20150404 dev
-------------
+-------------
  - Bugs Fix
  - Removed jQuery file and Starts to Use Microsoft Ajax Content Delivery Network
  - Index Page Framework Finished
@@ -32,5 +42,5 @@ v20150331 dev
  - Checkout function works
 
 v20150330 dev
-------------
+-------------
  - Project initialized.

@@ -37,39 +37,43 @@
 </body>
 </html>
 <%def name="header()">
-<header class="normal" style="background-image: url(${static_url("header-background.jpg")});">
-    <div class="filter">
-        <div class="container">
-            <div class="profile">
-                <div class="avatar" style="background-image: url(${static_url("avatar.jpg")});"></div>
-                <div class="content">${config["header_profile_content"]}</div>
-            </div>
-        </div>
-    </div>
-</header>
-<nav class="normal">
+<header style="background-image: url(${static_url("haru-header.jpg")});">
     <div class="container">
-        <div class="left">
-            <div class="link"><a href="${config["site_url"]}">未来领域</a></div>
-            <div class="link"><a href="${config["site_url"]}/timeline">档案馆</a></div>
-            <div class="link"><a href="${config["site_url"]}/pages/about.htm">关于</a></div>
-        </div>
-        <div class="right">
+        <div class="check-control">
         % if not current_user:
-        <div class="link"><a href="${config["site_url"]}/management/checkin">登录</a></div>
+            <div class="right">
+                <a href="/management/checkin" class="check-button">登录</a>
+            </div>
         % else:
-        <div class="link"><a href="${config["site_url"]}/management">${config["site_name"]}管理局</a></div>
-        <div class="link"><a href="${config["site_url"]}/management/checkout">登出</a></div>
+            <div class="left">
+                <a href="/management" class="check-button">${config["site_name"]}管理局</a>
+            </div>
+            <div class="right">
+                <a href="/management/checkout" class="check-button">登出</a>
+            </div>
         % endif
         </div>
+        <div class="site-name"><a href="${config["site_url"]}">${config["site_name"]}</a></div>
+        <div class="site-description">${config["site_description"]}</div>
     </div>
-</nav>
+</header>
 </%def>
 <%def name="footer()">
-<footer class="normal">
+<footer>
     <div class="container">
-        <div class="left">&copy; 2015 <a href="${config["site_url"]}">${config["site_name"]}</a> All Rights Reserved.</div>
-        <div class="right">Powered by <a href="https://github.com/futursolo/FurtherLand">${FurtherLand.version()}</a>.</div>
+        <div class="copyright">&copy; 2015 <a href="${config["site_url"]}">${config["site_name"]}</a> All Rights Reserved.</div>
+        <div class="powered">Powered by <a href="https://github.com/futursolo/FurtherLand">${FurtherLand.version()}</a>.</div>
     </div>
 </footer>
+</%def>
+<%def name="replies()">
+<div class="replies">
+    <div class="container">
+        <div class="title">评论</div>
+        <div class="textarea" id="reply-textarea-wrapper">
+            <div></div>
+            <textarea id="reply-textarea" placeholder="廣告和Spam惡靈退散哦！"></textarea>
+        </div>
+    </div>
+</div>
 </%def>

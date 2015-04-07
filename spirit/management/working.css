@@ -33,6 +33,10 @@
     margin-top: 20px;
     margin-bottom: 20px;
 }
+.main.management .working .drag-upload-area .content{
+    text-align: center;
+
+}
 input#working-title{
     width: 100%;
     margin-top: 0;
