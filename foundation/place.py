@@ -248,6 +248,7 @@ class PlacesOfInterest(RequestHandler):
             if kwargs["class_id"] != 0:
                 find_condition["class_id"] = kwargs["class_id"]
             book.find(find_condition)
+            book.sort([["time", False]])
             book.length(0, force_dict=True)
         elif "slug" in list(kwargs.keys()):
             find_condition["slug"] = kwargs["slug"]

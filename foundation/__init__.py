@@ -100,4 +100,4 @@ class FurtherLand:
         tornado.ioloop.IOLoop.instance().stop()
 
     def version(self):
-        return "FurtherLand v20150406 dev"
+        return "FurtherLand Sakihokori Edition"
