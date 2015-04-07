@@ -15,9 +15,9 @@
    limitations under the License.
 
 --*/
-.main .index{
+.main.normal .writings{
     overflow: hidden;
 }
-.main .index .description{
+.main.normal .writings .description{
     text-align: center;
 }

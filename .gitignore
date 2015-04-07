@@ -2,6 +2,9 @@
 # Development Temporary Directory
 rubbish/
 
+# FurtherLand Public Area
+/spirit/public/*
+
 # FurtherLand Biosphere
 biosphere/
 
