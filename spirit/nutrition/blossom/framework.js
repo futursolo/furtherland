@@ -46,7 +46,29 @@ function unixToDatetime(unix){
     return now.format("yyyy-MM-dd hh:mm:ss");
 }
 
+function buildWindow(){
+    if ($(window).width() < 750){
+        $("#reply-textarea-wrapper").css("width", "100%");
+        $("#reply-id-input").css("width", "calc(100% - 150px)");
+    }else{
+        $("#reply-textarea-wrapper").css("width", "calc(100% - 370px)");
+        $("#reply-id-input").css("width", "200px");
+    }
+}
+function getCookie(name) {
+    var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+    return r ? r[1] : undefined;
+}
+
 $(document).ready(function (){
+    jQuery.postJSON = function (url, args, callback){
+        args._xsrf = getCookie("_xsrf");
+        $.ajax({url: url, data: $.param(args), dataType: "text", type: "POST",
+            success: function(response) {
+            callback(eval("(" + response + ")"));
+            }
+        });
+    };
     $(".change-time").html(function (){
         if ($(this).html() == "0"){
             return "发表时";
@@ -54,20 +76,37 @@ $(document).ready(function (){
             return unixToDatetime(Math.round($(this).html()));
         }
     });
+    buildWindow();
 });
 
-$(".textarea textarea").keypress(function(){
+$(window).resize(function (){
+    buildWindow();
+});
+
+$(".textarea textarea").keypress(function (){
     $(this).parent(".textarea").children("div").html($(this).val());
 });
-$(".textarea textarea").keydown(function(){
+$(".textarea textarea").keydown(function (){
     $(this).parent(".textarea").children("div").html($(this).val());
 });
-$(".textarea textarea").keyup(function(){
+$(".textarea textarea").keyup(function (){
     $(this).parent(".textarea").children("div").html($(this).val());
 });
-$(".textarea textarea").change(function(){
+$(".textarea textarea").change(function (){
     $(this).parent(".textarea").children("div").html($(this).val());
 });
-$(".textarea textarea").blur(function(){
+$(".textarea textarea").blur(function (){
     $(this).parent(".textarea").children("div").html($(this).val());
+});
+
+$("#publish-reply").click(function (){
+    $.post(
+        "/channel/reply",
+        {
+            name: "John",
+            time: "2pm"
+        },
+        function(data){
+            alert("Data Loaded: " + data);
+   });
 });

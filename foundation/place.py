@@ -18,6 +18,7 @@
 
 from tornado.web import *
 from tornado.gen import *
+from tornado.escape import *
 import re
 import misaka
 import hashlib
@@ -260,12 +261,22 @@ class PlacesOfInterest(RequestHandler):
         raise Return(book.result())
 
     @coroutine
-    def get_reply(self):
-        pass
-
-    @coroutine
-    def get_bread(self):
-        pass
+    def get_reply(self, only_permitted=True, **kwargs):
+        book = self.memories.select("Writings")
+        find_condition = {}
+        if only_permitted is True:
+            find_condition["permit"] = True
+        if "writing_id" in list(kwargs.keys()):
+            if kwargs["writing_id"] != 0:
+                find_condition["writing_id"] = kwargs["writing_id"]
+            book.find(find_condition)
+            book.sort([["time", True]])
+            book.length(0, force_dict=True)
+        elif "id" in list(kwargs.keys()):
+            find_condition["_id"] = kwargs["id"]
+            book.find(find_condition)
+        yield book.do()
+        raise Return(book.result())
 
     @coroutine
     def issue_id(self, working_type):
@@ -335,6 +346,14 @@ class PlacesOfInterest(RequestHandler):
         yield book.do()
         result["pages"] = book.result()
         return result
+
+    def escape(self, item, item_type="html"):
+        if item_type == "html":
+            return xhtml_escape(item)
+        elif item_type == "url":
+            return url_escape(item)
+        else:
+            raise HTTPError(500)
 
 
 class CentralSquare(PlacesOfInterest):

@@ -70,9 +70,20 @@
 <div class="replies">
     <div class="container">
         <div class="title">评论</div>
-        <div class="textarea" id="reply-textarea-wrapper">
-            <div></div>
-            <textarea id="reply-textarea" placeholder="廣告和Spam惡靈退散哦！"></textarea>
+        <div class="new-reply">
+            <div id="reply-id-input" class="id-input">
+                <input id="reply-name" type="text" class="input" placeholder="昵称">
+                <input id="reply-email" type="text" class="input" placeholder="电邮">
+                <input id="reply-homepage" type="text" class="input" placeholder="个人主页（可选）">
+            </div>
+            <div class="avatar-area">
+                <div id="reply-avatar" class="avatar" style="background-image: url(${static_url("mm.jpg")})"></div>
+                <div id="publish-reply" class="button">发表</div>
+            </div>
+            <div id="reply-textarea-wrapper" class="textarea">
+                <div></div>
+                <textarea id="reply-textarea" placeholder="廣告和Spam惡靈退散哦！"></textarea>
+            </div>
         </div>
     </div>
 </div>
