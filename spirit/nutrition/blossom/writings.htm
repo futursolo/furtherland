@@ -28,5 +28,11 @@ ${parent.header()}
             <div class="content">${writing["content"]}</div>
         </div>
 </div>
+<script>
+window.writing_id = "${writing["_id"]}";
+</script>
 ${parent.replies()}
 ${parent.footer()}
+<%block name="js">
+    <script src="${static_url("writings.js")}" charset="utf-8"></script>
+</%block>

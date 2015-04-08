@@ -55,20 +55,20 @@ function buildWindow(){
         $("#reply-id-input").css("width", "200px");
     }
 }
+
 function getCookie(name) {
     var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
     return r ? r[1] : undefined;
 }
 
+jQuery.postJSON = function(url, args, callback) {
+    args._xsrf = getCookie("_xsrf");
+    $.ajax({url: url, data: $.param(args), dataType: "text", type: "POST",
+        success: function(response) {
+            callback(response);
+    }});
+};
 $(document).ready(function (){
-    jQuery.postJSON = function (url, args, callback){
-        args._xsrf = getCookie("_xsrf");
-        $.ajax({url: url, data: $.param(args), dataType: "text", type: "POST",
-            success: function(response) {
-            callback(eval("(" + response + ")"));
-            }
-        });
-    };
     $(".change-time").html(function (){
         if ($(this).html() == "0"){
             return "发表时";
@@ -76,11 +76,6 @@ $(document).ready(function (){
             return unixToDatetime(Math.round($(this).html()));
         }
     });
-    buildWindow();
-});
-
-$(window).resize(function (){
-    buildWindow();
 });
 
 $(".textarea textarea").keypress(function (){
@@ -99,14 +94,93 @@ $(".textarea textarea").blur(function (){
     $(this).parent(".textarea").children("div").html($(this).val());
 });
 
-$("#publish-reply").click(function (){
-    $.post(
-        "/channel/reply",
-        {
-            name: "John",
-            time: "2pm"
-        },
+function getReplyData(){
+    result = {};
+    result.writing = $("#reply-writing").val();
+    result.name = $("#reply-name").val();
+    result.email = $("#reply-email").val();
+    result.homepage = $("#reply-homepage").val();
+    if ($("#reply-textarea").val().length <= 10){
+        throw("一个好的评论的长度应该大于10个字，难道不是么？");
+    }
+    result.content = $("#reply-textarea").val();
+    result.action = "new";
+    return result;
+}
+
+function buildReplyArea(){
+    replyData = {};
+    replyData.action = "get";
+    replyData.method = "list";
+    replyData.writing = window.writing_id;
+    $.postJSON("/channel/reply",
+        replyData,
         function(data){
-            alert("Data Loaded: " + data);
-   });
+            jsonData = JSON.parse(data);
+            $.each(jsonData, function (key, item){
+                $("#reply-list").prepend(function (){
+                    result = "<div class=\"reply-block\">";
+                    result += "<div class=\"reply-avatar\" style=\"background-image: url(/channel/avatar/" +
+                    item.emailmd5 + "?s=200&d=mm);\"></div><div class=\"reply-name\">" + item.name + "</div><div class=\"reply-time change-time\">" + unixToDatetime(Math.round(item.time)) + "</div><div class=\"reply-body\">" + item.content + "</div>";
+                    result += "</div>";
+                    return result;
+                });
+            });
+        }
+    );
+}
+
+function showNewReply(id){
+    replyData = {};
+    replyData.action = "get";
+    replyData.method = "single";
+    replyData.reply = id;
+    $.postJSON("/channel/reply",
+        replyData,
+        function(data){
+            $("#reply-list").prepend(function (){
+                jsonData = JSON.parse(data);
+                result = "<div class=\"reply-block\">";
+                result += "<div class=\"reply-avatar\" style=\"background-image: url(/channel/avatar/" +
+                jsonData.emailmd5 + "?s=200&d=mm);\"></div><div class=\"reply-name\">" + jsonData.name + "</div><div class=\"reply-time change-time\">" + unixToDatetime(Math.round(jsonData.time)) + "</div><div class=\"reply-body\">" + jsonData.content + "</div>";
+                result += "</div>";
+                return result;
+            });
+        }
+    );
+}
+
+function handleError(e){
+    $("#reply-alert").html(e);
+    $("#reply-alert").show();
+}
+
+function clearCurrentReply(){
+    $("#reply-textarea").val("");
+}
+
+$("#publish-reply").click(function (){
+    $("#reply-alert").hide();
+    try{
+    replyData = getReplyData();
+    if (replyData !== false){
+        try{
+            $.postJSON("/channel/reply",
+                replyData,
+                function(data){
+                    result = JSON.parse(data);
+                    if (result.success){
+                        showNewReply(result.id);
+                        clearCurrentReply();
+                    }else{
+                        throw("233");
+                    }
+                }
+            );
+       }catch(e){
+           throw("发生了未知错误，请稍候再试。");
+       }
+   }}catch(e){
+       handleError(e);
+   }
 });

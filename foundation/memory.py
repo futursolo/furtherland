@@ -132,7 +132,8 @@ class Element:
                 while (yield self._action.fetch_next):
                     item = self._action.next_object()
                     self._result[item[self._dict_key]] = item
-                if self._length == 1 and (not self._force_dict):
+                if (len(self._result) != 0 and
+                   self._length == 1 and (not self._force_dict)):
                     self._result = self._result[list(self._result.keys())[0]]
             else:
                 self._result = yield self._action

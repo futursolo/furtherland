@@ -203,8 +203,10 @@ class PlacesOfInterest(RequestHandler):
             else:
                 return link
 
-    def hash(self, target, method):
-        target = base64.b64encode(target.encode(encoding="utf-8"))
+    def hash(self, target, method, b64=True):
+        target = target.encode(encoding="utf-8")
+        if b64:
+            target = base64.b64encode(target)
         if method == "sha1":
             return hashlib.sha1(target).hexdigest()
         if method == "sha256":
@@ -262,7 +264,7 @@ class PlacesOfInterest(RequestHandler):
 
     @coroutine
     def get_reply(self, only_permitted=True, **kwargs):
-        book = self.memories.select("Writings")
+        book = self.memories.select("Replies")
         find_condition = {}
         if only_permitted is True:
             find_condition["permit"] = True
