@@ -25,6 +25,7 @@ import os
 
 from . import place
 from . import office
+from . import internal
 from . import memory as historial
 
 
@@ -57,7 +58,10 @@ navigation = [
     (r"/management/lobby", office.LobbyOffice),
     (r"/management/working/([a-zA-Z0-9]+)", office.WorkingOffice),
     (r"/management/crda/([a-zA-Z0-9]+)", office.CRDAOffice),
-    (r"/management/configuration", office.ControlOffice)
+    (r"/management/configuration", office.ControlOffice),
+
+    (r"/channel/avatar/([a-zA-Z0-9]+)", internal.AvatarArea),
+    (r"/channel/reply", internal.ReplyArea)
 ]
 
 

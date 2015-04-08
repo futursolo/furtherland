@@ -1,7 +1,13 @@
 # Changelog
 
+v20150408 dev
+-------------
+ - Bugs Fix
+ - Gravatar Cache Function Works
+ - Reply Function Works
+
 v20150407 dev
---------------
+-------------
  - Bugs Fix
  - New UI
 
