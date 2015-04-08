@@ -23,6 +23,7 @@ html, body{
     background-repeat: no-repeat;
     font-size: 15px;
     color: rgb(100, 100, 100);
+    word-break: break-all;
 }
 a:link{
     text-decoration: none;
@@ -153,7 +154,6 @@ header .site-description{
 }
 .textarea{
     min-width: 200px;
-    border: 1px solid rgb(150, 150, 150);
     position: relative;
     margin-top: 10px;
     min-height: 100px;
@@ -171,18 +171,21 @@ header .site-description{
     font-size: 15px;
     line-height: 20px;
     box-sizing: border-box;
-    background-color: rgb(245, 245, 245);
+    border: 1px solid rgb(200, 200, 200);
     transition: all 0.30s ease-in-out;
-    border: none;
     resize: none;
     font-family: Oxygen, Verdana, Tahoma, STHeiti, "Noto Sans CJK SC", "Microsoft YaHei", SimHei;
     overflow:hidden;
     height: 100%;
     width: 100%;
 }
+
+.textarea textarea:hover{
+    border: 1px solid rgb(150, 150, 150);
+}
 .textarea textarea:focus{
     outline: 0;
-    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(150, 150, 150);
 }
 .textarea div{
     line-height: 20px;
@@ -200,14 +203,105 @@ header .site-description{
 .replies .title{
     font-size: 20px;
     font-weight: bold;
+    margin-left: 10px;
+    margin-right: 10px;
 }
-
+.replies .new-reply .id-input{
+    display: inline-block;
+    width: 200px;
+    position: relative;
+    vertical-align: top;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.replies .new-reply .id-input .input{
+    width: 100%;
+}
+.replies .new-reply .avatar-area{
+    display: inline-block;
+    width: 100px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.replies .new-reply .avatar-area .avatar{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 100px;
+    width: 100px;
+    border-radius: 500px;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.replies .new-reply .avatar-area .button{
+    width: 100px;
+}
+.input{
+    height: 40px;
+    font-size: 15px;
+    line-height: 40px;
+    border: 1px solid rgb(200, 200, 200);
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    transition: all 0.30s ease-in-out;
+}
+.input:hover{
+    border: 1px solid rgb(150, 150, 150);
+}
+input:focus{
+    outline: 0;
+    border: 1px solid rgb(150, 150, 150);
+}
+.button{
+    display: inline-block;
+    text-align: center;
+    height: 40px;
+    padding-left: 10px;
+    padding-right: 10px;
+    box-sizing: border-box;
+    background-color: rgb(130, 200, 114);
+    color: rgb(255, 255, 255);
+    line-height: 40px;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    transition: border 0.30s ease-in-out;
+    transition: all 0.30s ease-in-out;
+    cursor: pointer;
+}
+.button:hover{
+    background-color: rgb(83, 152, 68);
+}
+.button:active{
+    background-color: rgb(83, 152, 68);
+}
 .replies .container{
     border-top: rgb(230, 230, 230) 5px dashed;
     padding-top: 10px;
 }
+.replies .loggedin{
+    text-align: center;
+    line-height: 60px;
+    font-size: 25px;
+    font-weight: bold;
+    height: 100%;
+    padding-top: 30px;
+    padding-bottom: 10px;
+}
+.replies #reply-alert{
+    text-align: center;
+    color: rgb(231, 76, 60);
+    font-weight: bold;
+}
 div#reply-textarea-wrapper{
-    width: 100%;
+    width: calc(100% - 370px);
+    display: inline-block;
+    vertical-align: top;
+    min-height: 160px;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 form{
     display: none;
