@@ -1,5 +1,11 @@
 # Changelog
 
+v20150409 dev
+-------------
+ - Bugs Fix
+ - New Reply Style
+ - Reply GitHub Flavored Markdown Support
+
 v20150408 dev
 -------------
  - Bugs Fix

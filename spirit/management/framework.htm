@@ -31,26 +31,26 @@
 </body>
 </html>
 <%def name="header()">
-<nav class="management">
+<header>
     <div class="container">
         <div class="left">
-            <div class="link"><a href="${config["site_url"]}/management/lobby">大厅</a></div>
-            <div class="link"><a href="${config["site_url"]}/management/working">工作室</a></div>
-            <div class="link"><a href="${config["site_url"]}/management/crda">资料室</a></div>
-            <div class="link"><a href="${config["site_url"]}/management/configuration">控制室</a></div>
+            <div class="link"><a href="${config["site_url"]}/management/lobby">${config["lobby_name"]}</a></div>
+            <div class="link"><a href="${config["site_url"]}/management/working">${config["working_name"]}</a></div>
+            <div class="link"><a href="${config["site_url"]}/management/crda">${config["crda_name"]}</a></div>
+            <div class="link"><a href="${config["site_url"]}/management/configuration">${config["configuration_name"]}</a></div>
         </div>
         <div class="right">
         <div class="link"><a href="${config["site_url"]}/">${config["site_name"]}</a></div>
         <div class="link"><a href="${config["site_url"]}/management/checkout">登出</a></div>
         </div>
     </div>
-</nav>
+</header>
 </%def>
 <%def name="footer()">
-<footer class="management">
+<footer>
     <div class="container">
-        <div class="left">&copy; 2015 <a href="${config["site_url"]}">${config["site_name"]}</a> All Rights Reserved.</div>
-        <div class="right">Powered by <a href="https://github.com/futursolo/FurtherLand">${FurtherLand.version()}</a>.</div>
+        <div class="copyright">&copy; 2015 <a href="${config["site_url"]}">${config["site_name"]}</a> All Rights Reserved.</div>
+        <div class="powered">Powered by <a href="https://github.com/futursolo/FurtherLand">${FurtherLand.version()}</a>.</div>
     </div>
 </footer>
 </%def>

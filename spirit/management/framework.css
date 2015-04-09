@@ -58,41 +58,43 @@ input{
     font-family: Oxygen, Verdana, Tahoma, STHeiti, "Noto Sans CJK SC", "Microsoft YaHei", SimHei;
     box-sizing: border-box;
 }
-nav.management{
+header{
     height: 50px;
     width: 100%;
     background-color: rgba(0, 0, 0, 0.5);
 }
-nav.management .container{
-    width: 1000px;
+header .container{
+    max-width: 1000px;
+    width: 100%;
+    position: relative;
     margin-left: auto;
     margin-right: auto;
 }
-nav.management .left{
+header .left{
     float: left;
 }
-nav.management .right{
+header .right{
     float: right;
 }
-nav.management a:link{
+header a:link{
     color: rgb(255, 255, 255);
 }
-nav.management a:hover{
+header a:hover{
     color: rgb(200, 200, 200);
 }
-nav.management a:active{
+header a:active{
     color: rgb(200, 200, 200);
 }
-nav.management a:visited{
+header a:visited{
     color: rgb(255, 255, 255);
 }
-nav.management a:visited:hover{
+header a:visited:hover{
     color: rgb(200, 200, 200);
 }
-nav.management a:visited:active{
+header a:visited:active{
     color: rgb(200, 200, 200);
 }
-nav .link{
+header .link{
     padding-left: 20px;
     padding-right: 20px;
     display: inline-block;
@@ -105,7 +107,7 @@ nav .link{
     font-size: 25px;
     font-weight: bold;
 }
-.main.management{
+.main{
     margin-left: auto;
     margin-right: auto;
     margin-top: 10px;
@@ -114,7 +116,7 @@ nav .link{
     box-sizing: border-box;
     position: relative;
 }
-.main.management .page-title{
+.main .page-title{
     line-height: 50px;
     text-align: center;
     margin-top: 20px;
@@ -127,18 +129,20 @@ form{
     height: 40px;
     font-size: 15px;
     line-height: 40px;
-    border: 1px solid rgb(150, 150, 150);
-    border-radius: 2px;
+    border: 1px solid rgb(200, 200, 200);
+    border-radius: 5px;
     padding-left: 10px;
     padding-right: 10px;
     margin-top: 10px;
     margin-bottom: 10px;
-    background-color: rgb(245, 245, 245);
     transition: all 0.30s ease-in-out;
+}
+.input:hover{
+    border: 1px solid rgb(150, 150, 150);
 }
 .input:focus{
     outline: 0;
-    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(150, 150, 150);
 }
 .button{
     display: inline-block;
@@ -168,7 +172,7 @@ form{
     margin-bottom: 10px;
     display: inline-block;
 }
-.main.management .float-block{
+.main .float-block{
     width: 95%;
     border: 1px solid rgb(230, 230, 230);
     box-sizing: border-box;
@@ -179,7 +183,7 @@ form{
     margin-top: 20px;
     margin-bottom: 20px;
 }
-.main.management .float-block .title{
+.main .float-block .title{
     border-bottom: 1px solid rgb(230, 230, 230);
     background-color: rgb(245, 245, 245);
     height: 40px;
@@ -188,11 +192,11 @@ form{
     padding-right: 20px;
     box-sizing: border-box;
 }
-.main.management .float-block .content{
+.main .float-block .content{
     padding: 20px;
     box-sizing: border-box;
 }
-.main.management .float-block .content{
+.main .float-block .content{
     overflow: hidden;
 }
 .textarea{
@@ -238,21 +242,17 @@ form{
     z-index: -1;
     word-break: break-all;
 }
-footer.management{
-    height: 50px;
+footer{
     width: 100%;
     margin-top: 20px;
 }
-footer.management .container{
-    line-height: 50px;
+footer .container{
+    line-height: 30px;
     border-top: 1px solid rgb(230, 230, 230);
-    width: 1000px;
+    padding-top: 10px;
+    width: 100%;
+    max-width: 1000px;
+    text-align: center;
     margin-left: auto;
     margin-right: auto;
-}
-footer.management .left{
-    float: left;
-}
-footer.management .right{
-    float: right;
 }
