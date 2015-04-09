@@ -250,7 +250,7 @@ header .site-description{
 .input:hover{
     border: 1px solid rgb(150, 150, 150);
 }
-input:focus{
+.input:focus{
     outline: 0;
     border: 1px solid rgb(150, 150, 150);
 }
@@ -302,6 +302,53 @@ div#reply-textarea-wrapper{
     min-height: 160px;
     margin-left: 10px;
     margin-right: 10px;
+}
+.replies .reply-block{
+    padding: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    position: relative;
+}
+.replies .no-reply{
+    padding: 10px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    box-sizing: border-box;
+    font-size: 20px;
+    font-weight: bold;
+    color: rgb(150, 150, 150);
+    width: 100%;
+    text-align: center;
+    position: relative;
+}
+.replies .reply-block .reply-avatar{
+    height: 80px;
+    width: 80px;
+    display: inline-block;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 500px;
+}
+.replies .reply-block .reply-content{
+    width: calc(100% - 80px);
+    padding-left: 20px;
+    padding-right: 10px;
+    box-sizing: border-box;
+    display: inline-block;
+    vertical-align: top;
+}
+.replies .reply-block .reply-content .reply-name{
+    font-weight: bold;
+    padding-top: 10px;
+    color: rgb(50, 50, 50);
+}
+.replies .reply-block .reply-content .reply-time{
+    color: rgb(150, 150, 150);
+    font-size: 12px;
+}
+.replies .reply-block .reply-content .reply-body{
+    line-height: 1.1;
 }
 form{
     display: none;

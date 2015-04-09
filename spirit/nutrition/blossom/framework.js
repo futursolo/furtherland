@@ -116,13 +116,18 @@ function buildReplyArea(){
     $.postJSON("/channel/reply",
         replyData,
         function(data){
+            if (data == "{}"){
+                $("#reply-list").prepend(function (){
+                    return "<div class=\"no-reply\">成为第一个评论的人吧！</div>";
+                });
+            }
             jsonData = JSON.parse(data);
             $.each(jsonData, function (key, item){
-                $("#reply-list").prepend(function (){
+                $("#reply-list").append(function (){
                     result = "<div class=\"reply-block\">";
                     result += "<div class=\"reply-avatar\" style=\"background-image: url(/channel/avatar/" +
-                    item.emailmd5 + "?s=200&d=mm);\"></div><div class=\"reply-name\">" + item.name + "</div><div class=\"reply-time change-time\">" + unixToDatetime(Math.round(item.time)) + "</div><div class=\"reply-body\">" + item.content + "</div>";
-                    result += "</div>";
+                    item.emailmd5 + "?s=200&d=mm);\"></div><div class=\"reply-content\"><div class=\"reply-name\">" + item.name + "</div><div class=\"reply-time change-time\">发表于：" + unixToDatetime(Math.round(item.time)) + "</div><div class=\"reply-body\">" + item.content + "</div>";
+                    result += "</div></div>";
                     return result;
                 });
             });
@@ -138,12 +143,13 @@ function showNewReply(id){
     $.postJSON("/channel/reply",
         replyData,
         function(data){
-            $("#reply-list").prepend(function (){
+            $("#reply-list").append(function (){
                 jsonData = JSON.parse(data);
                 result = "<div class=\"reply-block\">";
                 result += "<div class=\"reply-avatar\" style=\"background-image: url(/channel/avatar/" +
-                jsonData.emailmd5 + "?s=200&d=mm);\"></div><div class=\"reply-name\">" + jsonData.name + "</div><div class=\"reply-time change-time\">" + unixToDatetime(Math.round(jsonData.time)) + "</div><div class=\"reply-body\">" + jsonData.content + "</div>";
-                result += "</div>";
+                jsonData.emailmd5 + "?s=200&d=mm);\"></div><div class=\"reply-content\"><div class=\"reply-name\">" + jsonData.name + "</div><div class=\"reply-time change-time\">发表于：" + unixToDatetime(Math.round(jsonData.time)) + "</div><div class=\"reply-body\">" + jsonData.content + "</div>";
+                result += "</div></div>";
+                $(".no-reply").hide();
                 return result;
             });
         }
@@ -162,25 +168,37 @@ function clearCurrentReply(){
 $("#publish-reply").click(function (){
     $("#reply-alert").hide();
     try{
-    replyData = getReplyData();
-    if (replyData !== false){
-        try{
-            $.postJSON("/channel/reply",
-                replyData,
-                function(data){
-                    result = JSON.parse(data);
-                    if (result.success){
-                        showNewReply(result.id);
-                        clearCurrentReply();
-                    }else{
-                        throw("233");
+        replyData = getReplyData();
+        if (replyData !== false){
+            try{
+                $.postJSON("/channel/reply",
+                    replyData,
+                    function(data){
+                        result = JSON.parse(data);
+                        if (result.success){
+                            showNewReply(result.id);
+                            clearCurrentReply();
+                        }else{
+                            try{
+                                throw(result.reason);
+                            }catch(e){
+                                if (e == "waitforcheck"){
+                                    clearCurrentReply();
+                                    handleError("感谢你的回复，你的回复需要审核，稍后即可看到。");
+                                }else if (e == "incomplation"){
+                                    handleError("请将信息填写完整后再试。");
+                                }else{
+                                    handleError("发生了未知错误，请稍候再试。");
+                                }
+                            }
+                        }
                     }
-                }
-            );
-       }catch(e){
-           throw("发生了未知错误，请稍候再试。");
-       }
-   }}catch(e){
+                );
+            }catch(e){
+                throw("发生了未知错误，请稍候再试。");
+            }
+        }
+    }catch(e){
        handleError(e);
-   }
+    }
 });

@@ -94,16 +94,11 @@ class ReplyArea(PlacesOfInterest):
             if method == "list" and writing_id:
                 result = yield self.get_reply(writing_id=writing_id)
                 for key in result:
-                    result[key]["emailmd5"] = self.hash(
-                        result[key]["email"].lower(), "md5")
-                    result[key]["email"] = None
-                    result[key]["ip"] = None
+                    result[key]["content"] = self.make_md(
+                        result[key]["content"])
             elif method == "single" and reply_id:
                 result = yield self.get_reply(id=reply_id)
-                result["emailmd5"] = self.hash(result["email"].lower(),
-                                               "md5", b64=False)
-                result["email"] = None
-                result["ip"] = None
+                result["content"] = self.make_md(result["content"])
             else:
                 raise HTTPError(500)
             self.finish(json.dumps(result))
@@ -115,6 +110,14 @@ class ReplyArea(PlacesOfInterest):
                 reply["name"] = self.get_arg("name", arg_type="origin")
                 reply["email"] = self.get_arg("email", arg_type="mail_address")
                 reply["homepage"] = self.get_arg("homepage", arg_type="link")
+                if not (reply["name"] and reply["email"]):
+                    result = {
+                        "success": False,
+                        "reason": "incomplation"
+                    }
+                    self.finish(json.dumps(result))
+                    return
+                reply["name"] = self.escape(reply["name"], item_type="html")
                 reply["permit"] = False
             else:
                 reply["master"] = True
@@ -124,6 +127,8 @@ class ReplyArea(PlacesOfInterest):
                 reply["permit"] = True
             reply["ip"] = self.remote_ip
             reply["time"] = int(time.time())
+            reply["emailmd5"] = self.hash(reply["email"].lower(),
+                                          "md5", b64=False)
             content = self.escape(self.get_arg("content", arg_type="origin"),
                                   item_type="html")
             reply["content"] = content
@@ -133,10 +138,13 @@ class ReplyArea(PlacesOfInterest):
             result = {}
             try:
                 yield book.do()
-                result["success"] = True
+                result["success"] = reply["master"]
                 result["id"] = reply["_id"]
+                if not reply["master"]:
+                    result["reason"] = "waitforcheck"
             except:
                 result["success"] = False
+                result["reason"] = "unkonwn"
             self.finish(json.dumps(result))
         else:
             raise HTTPError(500)
