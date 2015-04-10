@@ -1,10 +1,17 @@
 # Changelog
 
+v20150410 dev
+-------------
+ - Bugs Fix
+ - New Management Office Reaction Header
+ - New Management Lobby Office Page UI
+
 v20150409 dev
 -------------
  - Bugs Fix
  - New Reply Style
  - Reply GitHub Flavored Markdown Support
+ - New Checkin Page UI
 
 v20150408 dev
 -------------

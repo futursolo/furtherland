@@ -124,7 +124,7 @@ class LobbyOffice(ManagementOffice):
     @authenticated
     def get(self):
         self.render_list["count"] = yield self.get_count()
-        self.render_list["origin_title"] = "大厅"
+        self.render_list["origin_title"] = self.config["lobby_name"]
         self.management_render("lobby.htm")
 
 
@@ -156,7 +156,7 @@ class WorkingOffice(ManagementOffice):
             raise HTTPError(404)
         self.render_list["page_title"] = (
             self.render_list["origin_title"] +
-            " - " + self.config["site_name"] + "管理局" + "工作室")
+            " - " + self.config["office_name"] + self.config["working_name"])
         self.management_render("working.htm")
 
     @coroutine
@@ -249,7 +249,7 @@ class CRDAOffice(ManagementOffice):
         self.render_list["content"] = content_list
         self.render_list["page_title"] = (
             self.render_list["origin_title"] +
-            " - " + self.config["site_name"] + "管理局" + "资料室")
+            " - " + self.config["office_name"] + self.config["crda_name"])
         self.management_render("crda.htm")
 
 
@@ -266,7 +266,8 @@ class ControlOffice(ManagementOffice):
         self.render_list["origin_title"] = "变更设置"
         self.render_list["page_title"] = (
             self.render_list["origin_title"] +
-            " - " + self.config["site_name"] + "管理局" + "控制室")
+            " - " + self.config["office_name"] +
+            self.config["configuration_name"])
         self.management_render("configuration.htm")
 
     @coroutine
