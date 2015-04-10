@@ -23,16 +23,20 @@ html, body{
     background-repeat: no-repeat;
     font-size: 15px;
     color: rgb(100, 100, 100);
+    background-color: rgb(245, 245, 245);
 }
 a:link{
     text-decoration: none;
     color: rgb(100, 100, 100);
     transition: all 0.30s ease-in-out;
+    border-bottom: 1px solid rgba(100, 100, 100, 0);
 }
 a:hover{
     text-decoration: none;
     color: rgb(100, 100, 100);
     transition: all 0.30s ease-in-out;
+    border-bottom: 1px solid rgba(100, 100, 100, 1);
+
 }
 a:active{
     text-decoration: none;
@@ -43,11 +47,13 @@ a:visited{
     text-decoration: none;
     color: rgb(100, 100, 100);
     transition: all 0.30s ease-in-out;
+    border-bottom: 1px solid rgba(100, 100, 100, 0);
 }
 a:visited:hover{
     text-decoration: none;
     color: rgb(100, 100, 100);
     transition: all 0.30s ease-in-out;
+    border-bottom: 1px solid rgba(100, 100, 100, 1);
 }
 a:visited:active{
     text-decoration: none;
@@ -58,41 +64,138 @@ input{
     font-family: Oxygen, Verdana, Tahoma, STHeiti, "Noto Sans CJK SC", "Microsoft YaHei", SimHei;
     box-sizing: border-box;
 }
-nav.management{
+header{
     height: 50px;
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgb(50, 50, 50);
+    box-sizing: border-box;
 }
-nav.management .container{
-    width: 1000px;
+header .container{
+    max-width: 1000px;
+    width: 100%;
+    position: relative;
     margin-left: auto;
     margin-right: auto;
 }
-nav.management .left{
+header .list-button{
+    height: 50px;
+    width: 50px;
+    display: none;
+    position: relative;
+    transform: rotate(0deg);
+    transition: all 0.50s ease-in-out;
+}
+header .list-button .up-line{
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate3d(0, -6px, 0);
+    transition: all 0.20s 0.30s ease-in-out;
+}
+header .list-button .up-line:before{
+    content: "";
+    width: 20px;
+    height: 3px;
+    position: absolute;
+    background-color: rgb(255, 255, 255);
+    top: 23px;
+    left: 15px;
+    transform: rotate(0deg);
+    transition: all 0.30s ease-in-out;
+}
+header .list-button .down-line{
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate3d(0, 6px, 0);
+    transition: all 0.20s 0.30s ease-in-out;
+}
+header .list-button .down-line:before{
+    content: "";
+    width: 20px;
+    height: 3px;
+    position: absolute;
+    background-color: rgb(255, 255, 255);
+    top: 23px;
+    left: 15px;
+    transform: rotate(0deg);
+    transition: all 0.30s ease-in-out;
+}
+header .list-button.active{
+    transform: rotate(90deg);
+}
+header .list-button.active .up-line{
+transform: translate3d(0, 0px, 0);
+transition: all 0.20s ease-in-out;
+}
+header .list-button.active .down-line{
+transform: translate3d(0, 0px, 0);
+transition: all 0.20s ease-in-out;
+}
+header .list-button.active .up-line:before{
+    transform: rotate(45deg);
+    transition: all 0.30s 0.20s ease-in-out;
+}
+header .list-button.active .down-line:before{
+    transform: rotate(-45deg);
+    transition: all 0.30s 0.20s ease-in-out;
+}
+header .list{
+    max-height: 0;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: absolute;
+    background-color: rgb(50, 50, 50);
+    transition: all 0.50s ease-in-out;
+    top: 50px;
+    left: 0;
+    z-index: 1;
+}
+header .list.active{
+    max-height: 320px;
+
+}
+header .list .list-item{
+    height: 50px;
+    line-height: 50px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-top: 1px solid rgb(70, 70, 70);
+}
+header .left{
     float: left;
 }
-nav.management .right{
+header .right{
     float: right;
 }
-nav.management a:link{
-    color: rgb(255, 255, 255);
+header a{
+    border-bottom: none !important;
 }
-nav.management a:hover{
-    color: rgb(200, 200, 200);
+header a:link{
+    color: rgb(200, 200, 200) !important;}
+header a:hover{
+color: rgb(255, 255, 255) !important;
 }
-nav.management a:active{
-    color: rgb(200, 200, 200);
+header a:active{
+color: rgb(255, 255, 255) !important;}
+header a:visited{
+    color: rgb(200, 200, 200) !important
 }
-nav.management a:visited{
-    color: rgb(255, 255, 255);
+header a:visited:hover{
+color: rgb(255, 255, 255) !important;
 }
-nav.management a:visited:hover{
-    color: rgb(200, 200, 200);
+header a:visited:active{
+color: rgb(255, 255, 255) !important;
 }
-nav.management a:visited:active{
-    color: rgb(200, 200, 200);
-}
-nav .link{
+header .link{
     padding-left: 20px;
     padding-right: 20px;
     display: inline-block;
@@ -105,16 +208,27 @@ nav .link{
     font-size: 25px;
     font-weight: bold;
 }
-.main.management{
+.main{
     margin-left: auto;
     margin-right: auto;
     margin-top: 10px;
     margin-bottom: 10px;
-    width: 1000px;
+    width: 100%;
     box-sizing: border-box;
     position: relative;
 }
-.main.management .page-title{
+.main .container{
+    max-width: 1000px;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    overflow: hidden;
+}
+.main .page-title{
     line-height: 50px;
     text-align: center;
     margin-top: 20px;
@@ -127,18 +241,20 @@ form{
     height: 40px;
     font-size: 15px;
     line-height: 40px;
-    border: 1px solid rgb(150, 150, 150);
-    border-radius: 2px;
+    border: 1px solid rgb(200, 200, 200);
+    border-radius: 5px;
     padding-left: 10px;
     padding-right: 10px;
     margin-top: 10px;
     margin-bottom: 10px;
-    background-color: rgb(245, 245, 245);
     transition: all 0.30s ease-in-out;
+}
+.input:hover{
+    border: 1px solid rgb(150, 150, 150);
 }
 .input:focus{
     outline: 0;
-    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(150, 150, 150);
 }
 .button{
     display: inline-block;
@@ -168,32 +284,27 @@ form{
     margin-bottom: 10px;
     display: inline-block;
 }
-.main.management .float-block{
-    width: 95%;
-    border: 1px solid rgb(230, 230, 230);
+.main .float-block{
+    width: 100%;
     box-sizing: border-box;
     position: relative;
-    box-shadow: 0 0 5px 0 rgb(100, 100, 100);
-    margin-left: auto;
-    margin-right: auto;
+    background-color: rgb(255, 255, 255);
     margin-top: 20px;
     margin-bottom: 20px;
 }
-.main.management .float-block .title{
+.main .float-block .title{
     border-bottom: 1px solid rgb(230, 230, 230);
-    background-color: rgb(245, 245, 245);
     height: 40px;
     line-height: 40px;
     padding-left: 20px;
     padding-right: 20px;
     box-sizing: border-box;
 }
-.main.management .float-block .content{
+.main .float-block .content{
     padding: 20px;
     box-sizing: border-box;
-}
-.main.management .float-block .content{
     overflow: hidden;
+    position: relative;
 }
 .textarea{
     min-width: 200px;
@@ -238,21 +349,19 @@ form{
     z-index: -1;
     word-break: break-all;
 }
-footer.management{
-    height: 50px;
+footer{
     width: 100%;
     margin-top: 20px;
+    box-sizing: border-box;
 }
-footer.management .container{
-    line-height: 50px;
+footer .container{
+    line-height: 30px;
     border-top: 1px solid rgb(230, 230, 230);
-    width: 1000px;
+    padding: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1000px;
+    text-align: center;
     margin-left: auto;
     margin-right: auto;
-}
-footer.management .left{
-    float: left;
-}
-footer.management .right{
-    float: right;
 }

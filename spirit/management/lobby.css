@@ -15,21 +15,26 @@
    limitations under the License.
 
 --*/
-.main.management .lobby{
-    overflow: hidden;
-}
-.main.management .lobby .left{
-    float: left;
-    width: 50%;
-}
-.main.management .lobby .right{
-    float: right;
-    width: 50%;
-}
-.main.management .lobby .editor{
-    width: 90%;
+.main .crda-status .item{
+    width: 32.5%;
+    min-width: 100px;
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    line-height:  40px;
+    font-size: 25px;
+    font-weight: bold;
+}
+.main .teleport .item{
+    width: 24%;
+    min-width: 200px;
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    line-height:  40px;
+    font-size: 25px;
 }
