@@ -263,20 +263,23 @@ class PlacesOfInterest(RequestHandler):
         raise Return(book.result())
 
     @coroutine
-    def get_reply(self, only_permitted=True, **kwargs):
+    def get_reply(self, only_permitted=True, with_privacy=False, **kwargs):
         book = self.memories.select("Replies")
+        ignore = None
+        if not with_privacy:
+            ignore = ["email", "ip"]
         find_condition = {}
         if only_permitted is True:
             find_condition["permit"] = True
         if "writing_id" in list(kwargs.keys()):
             if kwargs["writing_id"] != 0:
                 find_condition["writing_id"] = kwargs["writing_id"]
-            book.find(find_condition)
+            book.find(find_condition, ignore)
             book.sort([["time", True]])
             book.length(0, force_dict=True)
         elif "id" in list(kwargs.keys()):
             find_condition["_id"] = kwargs["id"]
-            book.find(find_condition)
+            book.find(find_condition, ignore)
         yield book.do()
         raise Return(book.result())
 
@@ -347,7 +350,7 @@ class PlacesOfInterest(RequestHandler):
         book = self.memories.select("Pages").count()
         yield book.do()
         result["pages"] = book.result()
-        return result
+        raise Return(result)
 
     def escape(self, item, item_type="html"):
         if item_type == "html":
