@@ -32,6 +32,18 @@
 </html>
 <%def name="header()">
 <header>
+    <div class="list-button">
+        <div class="up-line"></div>
+        <div class="down-line"></div>
+    </div>
+    <div class="list">
+        <a href="${config["site_url"]}/management/lobby"><div class="list-item">${config["lobby_name"]}</div></a>
+        <a href="${config["site_url"]}/management/working"><div class="list-item">${config["working_name"]}</div></a>
+        <a href="${config["site_url"]}/management/crda"><div class="list-item">${config["crda_name"]}</div></a>
+        <a href="${config["site_url"]}/management/configuration"><div class="list-item">${config["configuration_name"]}</div></a>
+        <a href="${config["site_url"]}/"><div class="list-item">${config["site_name"]}</div></a>
+        <a href="${config["site_url"]}/management/checkout"><div class="list-item">登出</div></a>
+    </div>
     <div class="container">
         <div class="left">
             <div class="link"><a href="${config["site_url"]}/management/lobby">${config["lobby_name"]}</a></div>

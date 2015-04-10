@@ -126,7 +126,6 @@ function upload(files){
         contentType: false,
         processData: false,
         success: function (){
-
         }
     });
 }
@@ -135,3 +134,36 @@ function progressHandlingFunction(e){
         $("progress").attr({value:e.loaded,max:e.total});
     }
 }
+
+function buildHeader(){
+    if ($(window).width() < 600){
+        $("header .list-button").show();
+        $("header .left").hide();
+        $("header .right").hide();
+        $("header .list").show();
+    }else{
+        $("header .list-button").hide();
+        $("header .left").show();
+        $("header .right").show();
+        $("header .list").hide();
+        $("header .list").removeClass("active");
+        $("header .list-button").removeClass("active");
+    }
+}
+
+$("header .list-button").click(function (){
+    if (!$("header .list").hasClass("active")){
+        $("header .list").addClass("active");
+        $(this).addClass("active");
+    }else{
+        $("header .list").removeClass("active");
+        $(this).removeClass("active");
+    }
+});
+
+$(window).resize(function (){
+    buildHeader();
+});
+$(document).ready(function (){
+    buildHeader();
+});

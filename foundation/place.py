@@ -350,7 +350,7 @@ class PlacesOfInterest(RequestHandler):
         book = self.memories.select("Pages").count()
         yield book.do()
         result["pages"] = book.result()
-        return result
+        raise Return(result)
 
     def escape(self, item, item_type="html"):
         if item_type == "html":
