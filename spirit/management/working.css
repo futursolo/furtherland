@@ -15,27 +15,48 @@
    limitations under the License.
 
 --*/
-.main.management .working{
-    overflow: hidden;
+.main .left{
+    display: inline-block;
+    position: relative;
+    box-sizing: border-box;
+    vertical-align: top;
+    width: 69.5%;
+    padding-left: 10px;
+    padding-right: 10px;
 }
-.main.management .working .left{
-    float: left;
-    width: 70%;
+.main .right{
+    display: inline-block;
+    position: relative;
+    box-sizing: border-box;
+    vertical-align: top;
+    width: 29.5%;
+    padding-left: 10px;
+    padding-right: 10px;
 }
-.main.management .working .right{
-    float: right;
-    width: 30%;
-}
-.main.management .working .editor{
-    width: 95%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-.main.management .working .drag-upload-area .content{
+.main .drag-upload-area .content{
     text-align: center;
-
+}
+span.editor-preview-switch{
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 25px;
+    height: 25px;
+    padding-left: 5px;
+    padding-right: 5px;
+    cursor: pointer;
+}
+span.editor-preview-switch:hover{
+    display: inline-block;
+    background-color: rgb(245, 245, 245);
+}
+span.editor-preview-switch.active{
+    background-color: rgb(240, 240, 240) !important;
+}
+.preview{
+    display: none;
+    min-height: 500px;
+    width: 100%;
+    box-sizing: border-box;
 }
 input#working-title{
     width: 100%;
@@ -62,4 +83,5 @@ input#slug{
 .textarea#working-content-wrapper{
     width: 100%;
     min-height: 400px;
+    margin-bottom: 0;
 }

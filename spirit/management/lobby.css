@@ -15,6 +15,10 @@
    limitations under the License.
 
 --*/
+.main .container{
+    padding-left: 10px;
+    padding-right: 10px;
+}
 .main .crda-status .item{
     width: 32.5%;
     min-width: 100px;

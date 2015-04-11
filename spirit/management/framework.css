@@ -24,6 +24,7 @@ html, body{
     font-size: 15px;
     color: rgb(100, 100, 100);
     background-color: rgb(245, 245, 245);
+    word-break: break-all;
 }
 a:link{
     text-decoration: none;
@@ -126,7 +127,7 @@ header .list-button .down-line:before{
     transition: all 0.30s ease-in-out;
 }
 header .list-button.active{
-    transform: rotate(90deg);
+    transform: rotate(180deg);
 }
 header .list-button.active .up-line{
 transform: translate3d(0, 0px, 0);
@@ -224,8 +225,6 @@ header .link{
     position: relative;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 10px;
-    padding-right: 10px;
     overflow: hidden;
 }
 .main .page-title{
@@ -308,11 +307,11 @@ form{
 }
 .textarea{
     min-width: 200px;
-    border: 1px solid rgb(150, 150, 150);
     position: relative;
     margin-top: 10px;
+    min-height: 100px;
     margin-bottom: 10px;
-    border-radius: 2px;
+    border-radius: 5px;
     box-sizing: border-box;
     display: inline-block;
 }
@@ -321,23 +320,25 @@ form{
     top: 0;
     left: 0;
     padding: 10px;
-    min-height: 200px;
-    border-radius: 2px;
+    border-radius: 5px;
     font-size: 15px;
     line-height: 20px;
     box-sizing: border-box;
-    background-color: rgb(245, 245, 245);
+    border: 1px solid rgb(200, 200, 200);
     transition: all 0.30s ease-in-out;
-    border: none;
     resize: none;
     font-family: Oxygen, Verdana, Tahoma, STHeiti, "Noto Sans CJK SC", "Microsoft YaHei", SimHei;
     overflow:hidden;
     height: 100%;
     width: 100%;
 }
+
+.textarea textarea:hover{
+    border: 1px solid rgb(150, 150, 150);
+}
 .textarea textarea:focus{
     outline: 0;
-    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(150, 150, 150);
 }
 .textarea div{
     line-height: 20px;

@@ -148,3 +148,11 @@ class ReplyArea(PlacesOfInterest):
             self.finish(json.dumps(result))
         else:
             raise HTTPError(500)
+
+
+class PreviewArea(PlacesOfInterest):
+    @coroutine
+    @authenticated
+    def post(self):
+        content = self.get_arg("content", arg_type="origin", default="")
+        self.finish(self.make_md(content))
