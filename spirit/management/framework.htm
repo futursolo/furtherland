@@ -66,3 +66,16 @@
     </div>
 </footer>
 </%def>
+<%def name="public()">
+<div class="public" id="public-area">
+    <div class="container">
+        <div class="title">${config["public_name"]}<span class="close-button">×</span></div>
+        <div class="bar">
+            <span class="upload-now selector">现在上传</span>
+            <span class="select-from-public selector">从以前的文件中选择</span>
+        </div>
+        <div class="content upload-file"></div>
+        <div class="content file-selector"></div>
+    </div>
+</div>
+</%def>

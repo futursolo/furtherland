@@ -61,6 +61,20 @@ $(".textarea textarea").change(function(){
 $(".textarea textarea").blur(function(){
     $(this).parent(".textarea").children("div").html($(this).val());
 });
+
+function getCookie(name) {
+    var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+    return r ? r[1] : undefined;
+}
+
+jQuery.postJSON = function(url, args, callback) {
+    args._xsrf = getCookie("_xsrf");
+    $.ajax({url: url, data: $.param(args), dataType: "text", type: "POST",
+        success: function(response) {
+            callback(response);
+    }});
+};
+
 $(document).ready(function (){
     $(".change-time").html(function (){
         if ($(this).html() == "0"){
@@ -161,9 +175,33 @@ $("header .list-button").click(function (){
     }
 });
 
+function resizePublic(){
+    if ($(window).width() < 900){
+        $(".public").removeClass("big");
+    }else{
+        $(".public").addClass("big");
+    }
+}
+
 $(window).resize(function (){
     buildHeader();
+    resizePublic();
 });
 $(document).ready(function (){
     buildHeader();
+    resizePublic();
+});
+
+function getPreview(content, cb){
+    data = {};
+    data.content = content;
+    $.postJSON("/channel/preview", data, cb);
+}
+
+$(".open-public").click(function (){
+    $("#public-area").fadeIn("300");
+});
+
+$(".public .close-button").click(function (){
+    $("#public-area").fadeOut("300");
 });

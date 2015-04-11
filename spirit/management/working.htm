@@ -17,20 +17,24 @@
 <link href="${management_url("working.css")}" rel="stylesheet" type="text/css">
 </%block>
 ${parent.header()}
-    <div class="main management">
-        <div class="working">
+${parent.public()}
+    <div class="main">
+        <div class="container">
             <div class="page-title">${page_title}</div>
             <div class="left">
-                <div class="editor">
-                    <div>
-                        <input id="working-title" type="text" class="input" placeholder="请在此输入题目" value="${get_pre_content("title", pre_working)}">
+                <div class="float-block">
+                    <div class="title">
+                        <span id="show-editor" class="editor-preview-switch active">创作</span>
+                        <span id="show-preview" class="editor-preview-switch">预览</span>
                     </div>
-                    <div>
+                    <div class="editor content">
+                        <input id="working-title" type="text" class="input" placeholder="请在此输入题目" value="${get_pre_content("title", pre_working)}">
                         <div id="working-content-wrapper" class="textarea">
                             <div></div>
                             <textarea id="working-content">${get_pre_content("content", pre_working)}</textarea>
                         </div>
                     </div>
+                    <div class="preview content"></div>
                 </div>
             </div>
             <div class="right">
@@ -43,7 +47,7 @@ ${parent.header()}
                 <div class="float-block drag-upload-area">
                     <div class="title">文件</div>
                     <div class="content">
-                        <div>拖放文件到这里来上传 或<br><span id="upload-button" class="button">从「公共区域」选择文件</span></div>
+                        <span class="button open-public">打开「${config["public_name"]}」</span>
                     </div>
                 </div>
                 <div class="float-block">
@@ -58,7 +62,7 @@ ${parent.header()}
                     <div class="content">
                         <div>发布时间：
                             <input id="when-click-publish" type="checkbox" class="checkbox" ${click_publish_time_or_not(pre_working)}>
-                            <label for="when-click-publish">当单击发布按钮时</label></div>
+                            <label for="when-click-publish">当单击发表按钮时</label></div>
                         <div><input id="publish-time" type="text" class="input" value="${get_pre_content("time", pre_working)}"></div>
                         <div>类型：
                             <input id="working-is-writing" name="show_type" type="radio" value="writing" class="checkbox" ${get_working_type("writing", pre_working, True)}>

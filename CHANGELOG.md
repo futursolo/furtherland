@@ -1,5 +1,10 @@
 # Changelog
 
+v20150411 dev
+-------------
+ - Bugs Fix
+ - Working Preview Function Works
+
 v20150410 dev
 -------------
  - Bugs Fix
