@@ -117,3 +117,40 @@ $("#publish-now").click(function (){
     $("#real-publish").val("true");
     $("#working-form").submit();
 });
+
+function buildEditor(){
+    if ($(window).width() < 900){
+        $(".main .left").css("width", "100%");
+        $(".main .right").css("width", "100%");
+    }else{
+        $(".main .left").css("width", "69.5%");
+        $(".main .right").css("width", "29.5%");
+    }
+}
+
+$("#show-editor").click(function (){
+    $(this).addClass("active");
+    $("#show-preview").removeClass("active");
+    $(".editor.content").show();
+    $(".preview.content").hide();
+});
+
+function writePreviewContent(data){
+    $(".preview.content").html(data);
+}
+
+$("#show-preview").click(function (){
+    $(this).addClass("active");
+    $("#show-editor").removeClass("active");
+    getPreview($("#working-content").val(), writePreviewContent);
+    $(".preview.content").show();
+    $(".editor.content").hide();
+});
+
+
+$(window).resize(function (){
+    buildEditor();
+});
+$(document).ready(function (){
+    buildEditor();
+});
