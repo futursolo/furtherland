@@ -175,11 +175,21 @@ $("header .list-button").click(function (){
     }
 });
 
+function resizePublic(){
+    if ($(window).width() < 900){
+        $(".public").removeClass("big");
+    }else{
+        $(".public").addClass("big");
+    }
+}
+
 $(window).resize(function (){
     buildHeader();
+    resizePublic();
 });
 $(document).ready(function (){
     buildHeader();
+    resizePublic();
 });
 
 function getPreview(content, cb){
@@ -187,3 +197,11 @@ function getPreview(content, cb){
     data.content = content;
     $.postJSON("/channel/preview", data, cb);
 }
+
+$(".open-public").click(function (){
+    $("#public-area").fadeIn("300");
+});
+
+$(".public .close-button").click(function (){
+    $("#public-area").fadeOut("300");
+});

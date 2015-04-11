@@ -17,6 +17,7 @@
 <link href="${management_url("working.css")}" rel="stylesheet" type="text/css">
 </%block>
 ${parent.header()}
+${parent.public()}
     <div class="main">
         <div class="container">
             <div class="page-title">${page_title}</div>
@@ -46,7 +47,7 @@ ${parent.header()}
                 <div class="float-block drag-upload-area">
                     <div class="title">文件</div>
                     <div class="content">
-                        <div>拖放文件到这里来上传 或<br><span id="upload-button" class="button">从「公共区域」选择文件</span></div>
+                        <span class="button open-public">打开「${config["public_name"]}」</span>
                     </div>
                 </div>
                 <div class="float-block">
