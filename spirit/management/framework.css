@@ -247,6 +247,7 @@ form{
     margin-top: 10px;
     margin-bottom: 10px;
     transition: all 0.30s ease-in-out;
+    background-color: rgb(255, 255, 255);
 }
 .input:hover{
     border: 1px solid rgb(150, 150, 150);
@@ -392,17 +393,19 @@ footer .container{
     width: calc(100% - 40px);
 }
 .public .title{
-    height: 40px;
-    line-height: 40px;
+    height: 50px;
+    line-height: 50px;
+    font-size: 20px;
     position :relative;
     padding-left: 20px;
     box-sizing: border-box;
 }
 .public .close-button{
-    height: 40px;
-    width: 40px;
+    height: 50px;
+    width: 50px;
+    line-height: 46px;
     font-weight: bold;
-    font-size: 25px;
+    font-size: 30px;
     text-align: center;
     position: absolute;
     top: 0;
@@ -419,12 +422,108 @@ footer .container{
     width: 50%;
     display: inline-block;
     float: left;
-    border: 1px solid rgb(230, 230, 230);
+    border: 1px solid rgb(200, 200, 200);
     text-align: center;
     line-height: 48px;
     box-sizing: border-box;
+    transition: all 0.20s ease-in-out;
+    cursor: pointer;
+}
+.public .bar .selector.active{
+    background-color: rgb(230, 230, 230);
+    border: none;
+    border-top: 1px solid rgb(200, 200, 200);
+    border-bottom: 1px solid rgb(230, 230, 230);
 }
 .public .content{
     width: 100%;
-    height: calc(100% - 90px);
+    height: calc(100% - 100px);
+    display: none;
+}
+.public .content.active{
+    display: table;
+}
+.public .content.upload-now .cell{
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+.public .uploading{
+    display: none;
+    position: absolute;
+    top: 100px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 100px);
+    z-index: 12;
+    background-color: rgb(255, 255, 255);
+    transition: all 0.20s ease-in-out;
+}
+.public .uploading .content{
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+.public .uploading .process-bar{
+    height: 15px;
+    width: 250px;
+    box-sizing: border-box;
+    border: 2px solid rgb(100, 100, 100);
+    border-radius: 500px;
+    display: inline-block;
+    position: relative;
+    padding: 2px;
+}
+
+.public .uploading .process-bar .done{
+    height: 100%;
+    width: 0;
+    box-sizing: border-box;
+    border-radius: 500px;
+    background-color: rgb(82, 167, 231);
+    transition: all 0.10s ease-in-out;
+}
+
+input#public-hidden-file-selector{
+    display: none;
+}
+.public .content.upload-now #public-this-file-list{
+    display: none;
+    width: 100%;
+}
+.public .file-item{
+    height: 50px;
+    width: 100%;
+    border-bottom: 1px solid rgb(200, 200, 200);
+    line-height: 49px;
+    font-size: 20px;
+    padding-left: 20px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+.public .file-item .filename{
+    width: calc(100% - 200px);
+    height: 49px;
+    overflow: hidden;
+    display: inline-block;
+}
+.public .file-item .time{
+    float: right;
+    display: block;
+    padding-right: 20px;
+}
+.public .content.select-from-public .file-type{
+    height: 50px;
+    box-sizing: border-box;
+    border-bottom: 1px solid rgb(200, 200, 200);
+    padding-left: 20px;
+    padding-right: 20px;
+    line-height: 49px;
+
+}
+.public .content.select-from-public .public-file-list{
+    width: 100%;
+    height: calc(100% - 50px);
+    display: block;
+    overflow: auto;
 }

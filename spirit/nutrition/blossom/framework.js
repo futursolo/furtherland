@@ -76,6 +76,9 @@ $(document).ready(function (){
             return unixToDatetime(Math.round($(this).html()));
         }
     });
+    $('pre code').each(function (i, block){
+        hljs.highlightBlock(block);
+    });
 });
 
 $(".textarea textarea").keypress(function (){

@@ -85,3 +85,9 @@ input#slug{
     min-height: 400px;
     margin-bottom: 0;
 }
+div#publish-alert{
+    text-align: center;
+    color: rgb(231, 76, 60);
+    font-weight: bold;
+    display: none;
+}
