@@ -61,8 +61,10 @@ navigation = [
     (r"/management/configuration", office.ControlOffice),
 
     (r"/channel/avatar/([a-zA-Z0-9]+)", internal.AvatarArea),
+    (r"/channel/public", internal.PublicArea),
     (r"/channel/reply", internal.ReplyArea),
-    (r"/channel/preview", internal.PreviewArea)
+    (r"/channel/preview", internal.PreviewArea),
+    (r"/channel/slug_verify", internal.SlugVerifyArea)
 ]
 
 
