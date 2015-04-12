@@ -1,5 +1,11 @@
 # Changelog
 
+v20150412 dev
+-------------
+ - Bugs Fix
+ - Public Area (File Upload) Works
+ - Working Submit Validation Works
+
 v20150411 dev
 -------------
  - Bugs Fix
