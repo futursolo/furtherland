@@ -107,16 +107,52 @@ function transferWorking(giveTime){
 }
 
 $("#save-as-draft").click(function (){
+    $("#publish-alert").hide();
     transferWorking(false);
     $("#real-publish").val("false");
-    $("#working-form").submit();
+    if ($("#real-slug").val() !== "" && $("#real-title").val() !== "" && document.getElementById("real-content").value !== ""){
+        slugVerify(function (json){
+            var result = JSON.parse(json);
+            if (result.status){
+                $("#working-form").submit();
+            }else{
+                $("#publish-alert").html("相同的短链接已经存在，请更换！");
+                $("#publish-alert").show();
+            }
+        });
+    }else{
+        $("#publish-alert").html("题目、内容以及短链接都需要填写，请检查！");
+        $("#publish-alert").show();
+    }
 });
 
 $("#publish-now").click(function (){
+    $("#publish-alert").hide();
     transferWorking(true);
     $("#real-publish").val("true");
-    $("#working-form").submit();
+    if ($("#real-slug").val() !== "" && $("#real-title").val() !== "" && document.getElementById("real-content").value !== ""){
+        slugVerify(function (json){
+            var result = JSON.parse(json);
+            if (result.status){
+                $("#working-form").submit();
+            }else{
+                $("#publish-alert").html("这个短链接已经存在，请换一个后再试！");
+                $("#publish-alert").show();
+            }
+        });
+    }else{
+        $("#publish-alert").html("题目、内容以及短链接都是必填项目，请检查！");
+        $("#publish-alert").show();
+    }
 });
+
+function slugVerify(cb){
+    result = {
+        "slug": $("#real-slug").val(),
+        "working": $("#real-type").val()
+    };
+    $.postJSON("/channel/slug_verify", result, cb);
+}
 
 function buildEditor(){
     if ($(window).width() < 900){

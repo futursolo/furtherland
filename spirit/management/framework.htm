@@ -68,14 +68,40 @@
 </%def>
 <%def name="public()">
 <div class="public" id="public-area">
+    <script>
+        window.siteURL = "${config["site_url"]}";
+    </script>
     <div class="container">
         <div class="title">${config["public_name"]}<span class="close-button">×</span></div>
         <div class="bar">
-            <span class="upload-now selector">现在上传</span>
-            <span class="select-from-public selector">从以前的文件中选择</span>
+            <span class="upload-now selector active">现在上传</span>
+            <span class="select-from-public selector">从已存在的文件中选择</span>
         </div>
-        <div class="content upload-file"></div>
-        <div class="content file-selector"></div>
+        <div class="content upload-now active">
+            <div class="cell file-uploader">
+                <div class="tips">将文件拖动到这里来上传 或</div>
+                <div id="file-select-button" class="button">选择文件</div>
+                <input id="public-hidden-file-selector" name="files[]" type="file">
+            </div>
+        </div>
+        <div class="content select-from-public">
+            <div class="file-type">
+                <span>插入类型：</span>
+                <input id="public-insert-as-link" type="radio" name="public-insert-file-type" checked>
+                <label for="public-insert-as-link">链接</label>
+                <input id="public-insert-as-image" type="radio" name="public-insert-file-type">
+                <label for="public-insert-as-image">图片</label>
+            </div>
+            <div class="public-file-list"></div>
+        </div>
+        <div class="uploading">
+            <div class="content">
+                <div>正在上传...</div>
+                <div class="process-bar">
+                    <div class="done"></div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </%def>
