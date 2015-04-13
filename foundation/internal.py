@@ -229,6 +229,34 @@ class ReplyArea(PlacesOfInterest):
                 result["success"] = False
                 result["reason"] = "unkonwn"
             self.finish(json.dumps(result))
+        elif action == "permit":
+            if not self.current_user:
+                raise HTTPError(500)
+            reply_id = self.get_arg("reply", arg_type="number")
+            permit = self.get_arg("permit", arg_type="boolean")
+            if permit is None:
+                raise HTTPError(500)
+            book = self.memories.select("Replies")
+            book.find({"_id": reply_id})
+            yield book.do()
+            reply = book.result()
+            if not reply:
+                raise HTTPError(404)
+            if reply["permit"] == permit:
+                self.finish(json.dumps({"status": True}))
+                return
+            book = self.memories.select("Replies")
+            book.set({"_id": reply_id}, {"permit": permit})
+            yield book.do()
+            self.finish(json.dumps({"status": True}))
+        elif action == "earse":
+            if not self.current_user:
+                raise HTTPError(500)
+            reply_id = self.get_arg("reply", arg_type="number")
+            book = self.memories.select("Replies")
+            book.earse({"_id": reply_id})
+            yield book.do()
+            self.finish(json.dumps({"status": True}))
         else:
             raise HTTPError(500)
 
@@ -246,9 +274,8 @@ class SlugVerifyArea(PlacesOfInterest):
     @authenticated
     def post(self):
         slug = self.get_arg("slug", arg_type="slug")
-        working_type = self.get_arg("working", arg_type="hash")
-        print(slug)
-        print(working_type)
+        working_type = self.get_arg("type", arg_type="hash")
+        working_id = self.get_arg("working", arg_type="number")
         if not(slug and working_type):
             raise HTTPError(500)
         if working_type == "writing":
@@ -257,7 +284,9 @@ class SlugVerifyArea(PlacesOfInterest):
             book = self.memories.select("Pages")
         book.find({"slug": slug})
         yield book.do()
-        if (book.result()):
+        working = book.result()
+        if working and (
+         working_id is not False and working["_id"] != working_id):
             self.finish(json.dumps({"status": False}))
         else:
             self.finish(json.dumps({"status": True}))

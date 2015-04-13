@@ -85,6 +85,9 @@ header .container{
     padding: 10px;
     box-sizing: border-box;
 }
+header .container img{
+    max-width: 100%;
+}
 header .check-control{
     position: absolute;
     top: 0;
@@ -140,11 +143,14 @@ header .site-description{
     margin-top: 10px;
     margin-bottom: 10px;
     width: 100%;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
     max-width: 1000px;
     box-sizing: border-box;
     position: relative;
+}
+.main .container{
+    overflow: hidden;
 }
 .main .page-title{
     line-height: 50px;
@@ -296,12 +302,10 @@ header .site-description{
     font-weight: bold;
 }
 div#reply-textarea-wrapper{
-    width: calc(100% - 370px);
+    width: calc(100% - 350px);
     display: inline-block;
     vertical-align: top;
     min-height: 160px;
-    margin-left: 10px;
-    margin-right: 10px;
 }
 .replies .reply-block{
     padding: 10px;

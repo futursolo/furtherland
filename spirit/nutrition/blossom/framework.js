@@ -51,7 +51,7 @@ function buildWindow(){
         $("#reply-textarea-wrapper").css("width", "100%");
         $("#reply-id-input").css("width", "calc(100% - 150px)");
     }else{
-        $("#reply-textarea-wrapper").css("width", "calc(100% - 370px)");
+        $("#reply-textarea-wrapper").css("width", "calc(100% - 350px)");
         $("#reply-id-input").css("width", "200px");
     }
 }
@@ -68,6 +68,7 @@ jQuery.postJSON = function(url, args, callback) {
             callback(response);
     }});
 };
+
 $(document).ready(function (){
     $(".change-time").html(function (){
         if ($(this).html() == "0"){

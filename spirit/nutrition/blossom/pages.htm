@@ -15,24 +15,17 @@
 <%inherit file="framework.htm"/>
 ${parent.header()}
 <%block name="css">
-    <link href="${static_url("writings.css")}" rel="stylesheet" type="text/css">
+    <link href="${static_url("pages.css")}" rel="stylesheet" type="text/css">
 </%block>
 <div class="main">
     <div class="container">
         <div class="item">
-            <div class="page-title">${writing["title"]}</div>
+            <div class="page-title">${page["title"]}</div>
             <div class="description">
-                <span class="description-item">作者：${writing["author"]["username"]}</span>
-                <span class="description-item">时间：<span class="change-time">${writing["time"]}</span></span>
+                <span class="description-item">作者：${page["author"]["username"]}</span>
+                <span class="description-item">时间：<span class="change-time">${page["time"]}</span></span>
             </div>
-            <div class="content">${writing["content"]}</div>
+            <div class="content">${page["content"]}</div>
         </div>
 </div>
-<script>
-window.writing_id = "${writing["_id"]}";
-</script>
-${parent.replies()}
 ${parent.footer()}
-<%block name="js">
-    <script src="${static_url("writings.js")}" charset="utf-8"></script>
-</%block>

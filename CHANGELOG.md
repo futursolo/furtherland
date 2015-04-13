@@ -1,5 +1,14 @@
 # Changelog
 
+v20150413 dev
+-------------
+ - Bugs Fix
+ - Working Management Function Works
+ - Reply Management Function Works
+ - Pages Funciton Works
+ - Configuration Modify Function Works
+ - Code Highlights Works
+
 v20150412 dev
 -------------
  - Bugs Fix
