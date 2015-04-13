@@ -15,19 +15,22 @@
    limitations under the License.
 
 --*/
-.main.management .configuration{
-    overflow: hidden;
+.main .container{
+    padding-left: 10px;
+    padding-right: 10px;
 }
-.main.management .configuration .config-item{
+.main .float-block{
+    padding-top: 20px;
+}
+.main .config-item{
     line-height: 60px;
     overflow: hidden;
     padding-left: 20px;
     box-sizing: border-box;
     padding-top: 10px;
     padding-bottom: 10px;
-    border-bottom: 1px solid rgb(230, 230, 230);
 }
-.main.management .configuration .config-name{
+.main .config-name{
     width: 100px;
     box-sizing: border-box;
     padding-right: 20px;
@@ -35,20 +38,19 @@
     text-align: right;
     font-weight: bold;
 }
-.main.management .configuration .config-value .input{
+.main .config-value .input{
     float: left;
-    width: 700px;
+    width: calc(100% - 130px);
 }
-.main.management .configuration .save-bar{
-    background-color: rgb(245, 245, 245);
-
+.main .save-bar{
     padding-left: 10px;
-    padding-right: 10px;
+    padding-right: 30px;
     line-height: 50px;
     box-sizing: border-box;
     overflow: hidden;
+    border-top: 1px solid rgb(230, 230, 230);
 }
-.main.management .configuration #save-config{
+.main #save-config{
     float: right;
     padding-left: 20px;
     padding-right: 20px;
