@@ -240,12 +240,6 @@ class CRDAOffice(ManagementOffice):
                 content_list[key]["edit_link"] = (
                     "/management/working/edit?type=page&id=" +
                     str(int(content_list[key]["_id"])))
-            elif area == "replies":
-                content_list[key]["edit_link"] = (
-                    "/management/working/edit?type=reply&id=" +
-                    str(int(content_list[key]["_id"])))
-            else:
-                raise HTTPError(500)
         self.render_list["content"] = content_list
         self.render_list["page_title"] = (
             self.render_list["origin_title"] +
