@@ -34,6 +34,7 @@ navigation = [
     # (r"/classes/(.*).htm", ClassesPlace),  This will be avaliable in futhre
     # (r"/timeline", HistoryLibrary),
     (r"/writings/([\-a-zA-Z0-9]+).htm", place.ConferenceHall),
+    (r"/pages/([\-a-zA-Z0-9]+).htm", place.MemorialWall),
 
     # Office Redirects
     (r"/management/checkin/", RedirectHandler, {"url": "/management/checkin"}),

@@ -18,7 +18,7 @@ ${parent.header()}
     <link href="${static_url("index.css")}" rel="stylesheet" type="text/css">
 </%block>
 <div class="main">
-    <div class="index">
+    <div class="container">
     % for key in contents:
         <div class="item">
             <div class="page-title"><a href="/writings/${contents[key]["slug"]}.htm">${contents[key]["title"]}</a></div>

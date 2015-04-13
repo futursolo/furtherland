@@ -263,6 +263,27 @@ class PlacesOfInterest(RequestHandler):
         raise Return(book.result())
 
     @coroutine
+    def get_page(self, only_published=True, **kwargs):
+        book = self.memories.select("Pages")
+        find_condition = {}
+        if only_published is True:
+            find_condition["publish"] = True
+        if "class_id" in list(kwargs.keys()):
+            if kwargs["class_id"] != 0:
+                find_condition["class_id"] = kwargs["class_id"]
+            book.find(find_condition)
+            book.sort([["time", False]])
+            book.length(0, force_dict=True)
+        elif "slug" in list(kwargs.keys()):
+            find_condition["slug"] = kwargs["slug"]
+            book.find(find_condition)
+        elif "id" in list(kwargs.keys()):
+            find_condition["_id"] = kwargs["id"]
+            book.find(find_condition)
+        yield book.do()
+        raise Return(book.result())
+
+    @coroutine
     def get_reply(self, only_permitted=True, with_privacy=False, **kwargs):
         book = self.memories.select("Replies")
         ignore = None
@@ -386,6 +407,20 @@ class ConferenceHall(PlacesOfInterest):
         self.render_list["writing"] = writing
         self.render_list["origin_title"] = writing["title"]
         self.render("writings.htm")
+
+
+class MemorialWall(PlacesOfInterest):
+    @coroutine
+    @slug_validation(["slug"])
+    def get(self, page_slug):
+        page = yield self.get_page(slug=page_slug)
+        if not page:
+            raise HTTPError(404)
+        page["author"] = yield self.get_user(_id=page["author"])
+        page["content"] = self.make_md(page["content"])
+        self.render_list["page"] = page
+        self.render_list["origin_title"] = page["title"]
+        self.render("pages.htm")
 
 
 class HistoryLibrary(PlacesOfInterest):

@@ -19,6 +19,7 @@
 from tornado.web import *
 from tornado.gen import *
 from foundation.place import PlacesOfInterest, slug_validation, visitor_only
+from collections import OrderedDict
 import foundation.pyotp as pyotp
 
 
@@ -240,6 +241,9 @@ class CRDAOffice(ManagementOffice):
                 content_list[key]["edit_link"] = (
                     "/management/working/edit?type=page&id=" +
                     str(int(content_list[key]["_id"])))
+            elif area == "replies":
+                content_list[key]["content"] = self.make_md(
+                    content_list[key]["content"])
         self.render_list["content"] = content_list
         self.render_list["page_title"] = (
             self.render_list["origin_title"] +
@@ -267,4 +271,23 @@ class ControlOffice(ManagementOffice):
     @coroutine
     @authenticated
     def post(self):
-        pass
+        post_config = OrderedDict()
+        post_config["site_name"] = self.get_arg("site_name", arg_type="origin")
+        post_config["site_description"] = self.get_arg(
+            "site_description", arg_type="origin")
+        post_config["site_keywords"] = self.get_arg(
+            "site_keywords", arg_type="origin")
+        post_config["site_url"] = self.get_arg("site_url", arg_type="link")
+        nutrition_type = self.get_arg("nutrition_type", arg_type="hash")
+        for key in post_config:
+            if not post_config[key]:
+                raise HTTPError(500)
+        book = self.memories.select("Configs")
+        book.find({}).length(0, force_dict=True)
+        yield book.do()
+        origin_config = book.result()
+        for key in post_config:
+            if origin_config[key] != post_config[key]:
+                book.set({"_id": key}, {"value": post_config[key]})
+                yield book.do()
+        self.redirect("/management/configuration")
