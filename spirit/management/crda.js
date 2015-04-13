@@ -16,3 +16,29 @@
 $(".main .type-selector span").click(function (){
     window.location.href = $(this).attr("location");
 });
+$(".main .permit-reply").click(function (){
+    $.postJSON("/channel/reply", {
+        "action": "permit",
+        "reply": $(this).attr("reply"),
+        "permit": true
+    }, function (data){
+        window.location.reload();
+    });
+});
+$(".main .unpermit-reply").click(function (){
+    $.postJSON("/channel/reply", {
+        "action": "permit",
+        "reply": $(this).attr("reply"),
+        "permit": false
+    }, function (data){
+        window.location.reload();
+    });
+});
+$(".main .delete-reply").click(function (){
+    $.postJSON("/channel/reply", {
+        "action": "earse",
+        "reply": $(this).attr("reply")
+    }, function (data){
+        window.location.reload();
+    });
+});

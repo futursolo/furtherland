@@ -34,6 +34,11 @@ ${parent.header()}
                     <label for="check-replies">评论</label>
                 </span>
             </div>
+    % if len(list(content.keys())) == 0:
+        <div class="float-block">
+            <div class="no-content">不要找了，这里什么也没有啦(*'▽')！</div>
+        </div>
+    % else:
             <div class="float-block">
                 <div class="table-header table-item">
                 % if area == "writings":
@@ -61,17 +66,28 @@ ${parent.header()}
                 <div class="table-reply-content table-item">
                     <div class="reply-avatar" style="background-image: url(/channel/avatar/${content[key]["emailmd5"]}?s=200&d=mm)"></div>
                     <div class="reply-content">
-                        <div class="reply-name">${content[key]["name"]}</div>
-                    % if not content[key]["permit"]:
-                        <div class="reply-notchecked">待审核</div>
-                    % endif
+                        <div class="reply-name">
+                            ${content[key]["name"]}
+                        % if not content[key]["permit"]:
+                            <span class="reply-notchecked">待审核</span>
+                        % endif
+                        </div>
                         <div class="reply-time">发表于：<span class="change-time">${content[key]["time"]}</span></div>
                         <div class="reply-body">${content[key]["content"]}</div>
+                        <div class="reply-control">
+                        % if not content[key]["permit"]:
+                            <span class="reply-action permit-reply" reply="${content[key]["_id"]}">通过之</span>
+                        % else:
+                            <span class="reply-action unpermit-reply" reply="${content[key]["_id"]}">撤销通过</span>
+                        % endif
+                            <span class="reply-action delete-reply" reply="${content[key]["_id"]}">刪除</span>
+                        </div>
                     </div>
                 </div>
             % endfor
         % endif
             </div>
+    % endif
         </div>
     </div>
 ${parent.footer()}

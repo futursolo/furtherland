@@ -34,7 +34,7 @@
     border-bottom: 1px solid rgb(230, 230, 230);
 }
 .main .table-header{
-    line-height: 50px;
+    line-height: 40px;
     background-color: rgb(255, 255, 255);
 }
 .main .table-content{
@@ -53,6 +53,56 @@
 .main .content-draft{
     float: left;
     font-size: 12px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.main .table-reply-content{
+    padding: 10px;
+    box-sizing: border-box;
+}
+.main .reply-action{
+    line-height: 2;
+    display: inline-block;
+    font-size: 13px;
+    cursor: pointer;
+}
+.main .table-reply-content .reply-avatar{
+    height: 80px;
+    width: 80px;
+    display: inline-block;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 500px;
+}
+.main .table-reply-content .reply-content{
+    width: calc(100% - 90px);
+    padding-left: 20px;
+    padding-right: 10px;
+    box-sizing: border-box;
+    display: inline-block;
+    vertical-align: top;
+}
+.main .table-reply-content .reply-content .reply-name{
+    font-weight: bold;
+    padding-top: 10px;
+    color: rgb(50, 50, 50);
+}
+.main .table-reply-content .reply-content .reply-notchecked{
+    font-weight: normal;
+    color: rgb(231, 76, 60);
+}
+.main .table-reply-content .reply-content .reply-time{
+    color: rgb(150, 150, 150);
+    font-size: 12px;
+}
+.main .table-reply-content .reply-content .reply-body{
+    line-height: 1.1;
+}
+.main .no-content{
+    text-align: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
     padding-left: 10px;
     padding-right: 10px;
 }
