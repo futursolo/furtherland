@@ -15,30 +15,42 @@
    limitations under the License.
 
 --*/
-.main.management .crda{
-    overflow: hidden;
+.main .type-selector{
+    margin-left: 10px;
+    margin-right: 10px;
+    width: calc(100% - 20px);
+    box-sizing: border-box;
 }
-.main.management .crda .table-item{
+.main .float-block{
+    margin-left: 10px;
+    margin-right: 10px;
+    width: calc(100% - 20px);
+    box-sizing: border-box;
+}
+.main .table-item{
     overflow: hidden;
     padding-left: 10px;
     padding-right: 10px;
     border-bottom: 1px solid rgb(230, 230, 230);
 }
-.main.management .crda .table-header{
+.main .table-header{
     line-height: 50px;
-    background-color: rgb(245, 245, 245);
+    background-color: rgb(255, 255, 255);
 }
-.main.management .crda .table-content{
+.main .table-content{
     line-height: 40px;
 }
-.main.management .crda .content-title{
+.main .content-title{
     float: left;
+    max-width: calc(100% - 250px);
+    overflow: hidden;
+    height: 40px;
 }
-.main.management .crda .content-time{
+.main .content-time{
     float: right;
     width: 200px;
 }
-.main.management .crda .content-draft{
+.main .content-draft{
     float: left;
     font-size: 12px;
     padding-left: 10px;

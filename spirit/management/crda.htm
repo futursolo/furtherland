@@ -17,9 +17,23 @@
 <link href="${management_url("crda.css")}" rel="stylesheet" type="text/css">
 </%block>
 ${parent.header()}
-    <div class="main management">
-        <div class="crda">
+    <div class="main">
+        <div class="container">
             <div class="page-title">${page_title}</div>
+            <div class="type-selector">
+                <span location="${config["site_url"]}/management/crda/writings">
+                    <input id="check-writings" type="radio" name="check-type" ${current_check(area, "writings")}>
+                    <label for="check-writings">文章</label>
+                </span>
+                <span location="${config["site_url"]}/management/crda/pages">
+                    <input id="check-pages" type="radio" name="check-type" ${current_check(area, "pages")}>
+                    <label for="check-pages">页面</label>
+                </span>
+                <span location="${config["site_url"]}/management/crda/replies">
+                    <input id="check-replies" type="radio" name="check-type" ${current_check(area, "replies")}>
+                    <label for="check-replies">评论</label>
+                </span>
+            </div>
             <div class="float-block">
                 <div class="table-header table-item">
                 % if area == "writings":
@@ -29,10 +43,10 @@ ${parent.header()}
                     <div class="content-title">页面标题</div>
                     <div class="content-time">发表时间</div>
                 % elif area == "replies":
-                    <div class="content-title">评论内容</div>
-                    <div class="content-time">发表时间</div>
+                    <div class="content-title">评论列表</div>
                 % endif
                 </div>
+        % if area == "writings" or area == "pages":
             % for key in content:
                 <div class="table-content table-item">
                     <div class="content-title"><a href="${content[key]["edit_link"]}">${content[key]["title"]}</a></div>
@@ -42,7 +56,31 @@ ${parent.header()}
                     <div class="content-time change-time">${content[key]["time"]}</div>
                 </div>
             % endfor
+        % else:
+            % for key in content:
+                <div class="table-reply-content table-item">
+                    <div class="reply-avatar" style="background-image: url(/channel/avatar/${content[key]["emailmd5"]}?s=200&d=mm)"></div>
+                    <div class="reply-content">
+                        <div class="reply-name">${content[key]["name"]}</div>
+                    % if not content[key]["permit"]:
+                        <div class="reply-notchecked">待审核</div>
+                    % endif
+                        <div class="reply-time">发表于：<span class="change-time">${content[key]["time"]}</span></div>
+                        <div class="reply-body">${content[key]["content"]}</div>
+                    </div>
+                </div>
+            % endfor
+        % endif
             </div>
         </div>
     </div>
 ${parent.footer()}
+<%block name="js">
+    <script src="${management_url("crda.js")}" charset="utf-8"></script>
+</%block>
+<%!
+    def current_check(area, this):
+        if area == this:
+            return "checked"
+        return ""
+%>
