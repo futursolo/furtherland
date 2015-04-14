@@ -244,6 +244,8 @@ class CRDAOffice(ManagementOffice):
             elif area == "replies":
                 content_list[key]["content"] = self.make_md(
                     content_list[key]["content"])
+                content_list[key]["_id"] = int(
+                    content_list[key]["_id"])
         self.render_list["content"] = content_list
         self.render_list["page_title"] = (
             self.render_list["origin_title"] +

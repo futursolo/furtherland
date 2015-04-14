@@ -430,7 +430,8 @@ class HistoryLibrary(PlacesOfInterest):
 class SpiritPlace(StaticFileHandler):
     @coroutine
     def get(self, path, include_body=True):
-        if re.match(r"^(.*)\.(htm|json|tpl|csv|mo|po|py|pyc)$", path) != None:
+        if re.match(
+         r"^(.*)\.(htm|json|tpl|csv|mo|po|py|pyc|pyx)$", path) is not None:
             raise HTTPError(403)
         else:
             yield StaticFileHandler.get(self, path, include_body=include_body)
