@@ -179,9 +179,12 @@ class ReplyArea(PlacesOfInterest):
                 for key in result:
                     result[key]["content"] = self.make_md(
                         result[key]["content"])
+                    result[key]["_id"] = int(
+                        result[key]["_id"])
             elif method == "single" and reply_id:
                 result = yield self.get_reply(id=reply_id)
                 result["content"] = self.make_md(result["content"])
+                result["_id"] = int(result["_id"])
             else:
                 raise HTTPError(500)
             self.finish(json.dumps(result))
