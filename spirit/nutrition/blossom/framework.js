@@ -130,7 +130,7 @@ function buildReplyArea(){
                 $("#reply-list").append(function (){
                     result = "<div class=\"reply-block\">";
                     result += "<div class=\"reply-avatar\" style=\"background-image: url(/channel/avatar/" +
-                    item.emailmd5 + "?s=200&d=mm);\"></div><div class=\"reply-content\"><div class=\"reply-name\">" + item.name + "</div><div class=\"reply-time change-time\">发表于：" + unixToDatetime(Math.round(item.time)) + "</div><div class=\"reply-body\">" + item.content + "</div>";
+                    item.emailmd5 + "?s=200&d=mm);\"></div><div class=\"reply-content\"><div class=\"reply-name\"><a herf=\"" + item.homepage + "\">" + item.name + "</a></div><div class=\"reply-time change-time\">发表于：" + unixToDatetime(Math.round(item.time)) + "</div><div class=\"reply-body\">" + item.content + "</div>";
                     result += "</div></div>";
                     return result;
                 });
@@ -151,7 +151,7 @@ function showNewReply(id){
                 jsonData = JSON.parse(data);
                 result = "<div class=\"reply-block\">";
                 result += "<div class=\"reply-avatar\" style=\"background-image: url(/channel/avatar/" +
-                jsonData.emailmd5 + "?s=200&d=mm);\"></div><div class=\"reply-content\"><div class=\"reply-name\">" + jsonData.name + "</div><div class=\"reply-time change-time\">发表于：" + unixToDatetime(Math.round(jsonData.time)) + "</div><div class=\"reply-body\">" + jsonData.content + "</div>";
+                jsonData.emailmd5 + "?s=200&d=mm);\"></div><div class=\"reply-content\"><div class=\"reply-name\"><a herf=\"" + item.homepage + "\">" + jsonData.name + "</a></div><div class=\"reply-time change-time\">发表于：" + unixToDatetime(Math.round(jsonData.time)) + "</div><div class=\"reply-body\">" + jsonData.content + "</div>";
                 result += "</div></div>";
                 $(".no-reply").hide();
                 return result;
