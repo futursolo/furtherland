@@ -1,5 +1,11 @@
 # Changelog
 
+v20150417 dev
+-------------
+ - Bugs Fix
+ - Supports for Public Library(Database Without Authentication)
+ - Melody Options Updated
+
 v20150414 dev
 -------------
  - Bugs Fix

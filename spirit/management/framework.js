@@ -45,23 +45,15 @@ function unixToDatetime(unix){
     var now = new Date(parseInt(unix) * 1000);
     return now.format("yyyy-MM-dd hh:mm:ss");
 }
-
-$(".textarea textarea").keypress(function(){
-    $(this).parent(".textarea").children("div").html($(this).val());
-});
-$(".textarea textarea").keydown(function(){
-    $(this).parent(".textarea").children("div").html($(this).val());
-});
-$(".textarea textarea").keyup(function(){
-    $(this).parent(".textarea").children("div").html($(this).val());
-});
-$(".textarea textarea").change(function(){
-    $(this).parent(".textarea").children("div").html($(this).val());
-});
-$(".textarea textarea").blur(function(){
-    $(this).parent(".textarea").children("div").html($(this).val());
-});
-
+function adjustTextarea(selector) {
+    $(selector).parent(".textarea").children(".hidden-textarea").val($(selector).val());
+    $(selector).parent(".textarea").height($(selector).parent(".textarea").children(".hidden-textarea")[0].scrollHeight + 39);
+}
+$(".textarea .visible-textarea").keypress(function(){adjustTextarea(this);});
+$(".textarea .visible-textarea").keydown(function(){adjustTextarea(this);});
+$(".textarea .visible-textarea").keyup(function(){adjustTextarea(this);});
+$(".textarea .visible-textarea").change(function(){adjustTextarea(this);});
+$(".textarea .visible-textarea").blur(function(){adjustTextarea(this);});
 function getCookie(name) {
     var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
     return r ? r[1] : undefined;
@@ -76,6 +68,7 @@ jQuery.postJSON = function(url, args, callback) {
 };
 
 $(document).ready(function (){
+    adjustTextarea(".textarea .visible-textarea");
     $(".change-time").html(function (){
         if ($(this).html() == "0"){
             return "发表时";

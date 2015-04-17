@@ -316,7 +316,7 @@ form{
     box-sizing: border-box;
     display: inline-block;
 }
-.textarea textarea{
+.textarea .visible-textarea{
     position: absolute;
     top: 0;
     left: 0;
@@ -334,22 +334,28 @@ form{
     width: 100%;
 }
 
-.textarea textarea:hover{
+.textarea .visible-textarea:hover{
     border: 1px solid rgb(150, 150, 150);
 }
-.textarea textarea:focus{
+.textarea .visible-textarea:focus{
     outline: 0;
     border: 1px solid rgb(150, 150, 150);
 }
-.textarea div{
-    line-height: 20px;
-    font-size: 15px;
-    display: block;
-    visibility: hidden;
+.textarea .hidden-textarea{
     padding: 10px;
-    padding-bottom: 60px;
+    border-radius: 5px;
+    font-size: 15px;
+    line-height: 20px;
+    box-sizing: border-box;
+    border: 1px solid rgb(200, 200, 200);
+    transition: all 0.30s ease-in-out;
+    resize: none;
+    font-family: Oxygen, Verdana, Tahoma, STHeiti, "Noto Sans CJK SC", "Microsoft YaHei", SimHei;
+    overflow:hidden;
+    width: 100%;
     z-index: -1;
-    word-break: break-all;
+    visibility: hidden;
+    opacity: 0;
 }
 footer{
     width: 100%;

@@ -22,16 +22,24 @@ secret = ""
 base = __file__
 # There the FurtherLand exactly located
 
+dev = False
+# Turn it to True if you are building FurtherLand
+# Make Sure to Turn it to False when FurtherLand is ready to Serve Visitors
+
 listen_ip = "127.0.0.1"
-listen_port = 3000
+listen_port = 1741
 # The place the FurtherLand will rise
 
 library = {
     "host": "",
     "port": "",
+    "auth": True,
     "user": "",
     "passwd": "",
     "database": "",
     "prefix": ""
 }
 # This is the Library of FurtherLand
+# If the Library is open to Public(Connect Without Authentication),
+# Turn auth option to False and leave user and passwd arguments blank
+# BUT DO NOT REMOVE THEM!
