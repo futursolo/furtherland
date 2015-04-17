@@ -30,8 +30,8 @@ ${parent.public()}
                     <div class="editor content">
                         <input id="working-title" type="text" class="input" placeholder="请在此输入题目" value="${get_pre_content("title", pre_working)}">
                         <div id="working-content-wrapper" class="textarea">
-                            <div></div>
-                            <textarea id="working-content">${get_pre_content("content", pre_working)}</textarea>
+                            <textarea class="hidden-textarea"></textarea>
+                            <textarea class="visible-textarea" id="working-content">${get_pre_content("content", pre_working)}</textarea>
                         </div>
                     </div>
                     <div class="preview content"></div>

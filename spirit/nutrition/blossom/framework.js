@@ -69,7 +69,18 @@ jQuery.postJSON = function(url, args, callback) {
     }});
 };
 
+function adjustTextarea(selector) {
+    $(selector).parent(".textarea").children(".hidden-textarea").val($(selector).val());
+    $(selector).parent(".textarea").height($(selector).parent(".textarea").children(".hidden-textarea")[0].scrollHeight + 39);
+}
+$(".textarea .visible-textarea").keypress(function(){adjustTextarea(this);});
+$(".textarea .visible-textarea").keydown(function(){adjustTextarea(this);});
+$(".textarea .visible-textarea").keyup(function(){adjustTextarea(this);});
+$(".textarea .visible-textarea").change(function(){adjustTextarea(this);});
+$(".textarea .visible-textarea").blur(function(){adjustTextarea(this);});
+
 $(document).ready(function (){
+    adjustTextarea(".textarea .visible-textarea");
     $(".change-time").html(function (){
         if ($(this).html() == "0"){
             return "发表时";
@@ -80,22 +91,6 @@ $(document).ready(function (){
     $('pre code').each(function (i, block){
         hljs.highlightBlock(block);
     });
-});
-
-$(".textarea textarea").keypress(function (){
-    $(this).parent(".textarea").children("div").html($(this).val());
-});
-$(".textarea textarea").keydown(function (){
-    $(this).parent(".textarea").children("div").html($(this).val());
-});
-$(".textarea textarea").keyup(function (){
-    $(this).parent(".textarea").children("div").html($(this).val());
-});
-$(".textarea textarea").change(function (){
-    $(this).parent(".textarea").children("div").html($(this).val());
-});
-$(".textarea textarea").blur(function (){
-    $(this).parent(".textarea").children("div").html($(this).val());
 });
 
 function getReplyData(){
