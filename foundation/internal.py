@@ -105,16 +105,23 @@ class AvatarArea(PlacesOfInterest):
             yield book.do()
             avatar_info = book.result()
             if not avatar_info:
-                os.removedirs(file_path)
-                raise HTTPError(500)
-            if (current_time - avatar_info["time"]) <= (15 * 24 * 60 * 60):
+                os.remove(file_path)
+                book.earse(
+                    {
+                        "filename": str(size),
+                        "email_md5": slug,
+                        "type": "avatar"
+                    }
+                )
+                yield book.do()
+            elif (current_time - avatar_info["time"]) <= (15 * 24 * 60 * 60):
                 self.set_header(
                     "content-type", avatar_info["content_type"])
                 with open(file_path, "rb") as f:
                     self.finish(f.read())
                 return
             else:
-                os.removedirs(file_path)
+                os.remove(file_path)
                 book.earse(
                     {
                         "filename": str(size),

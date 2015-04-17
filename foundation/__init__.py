@@ -88,7 +88,7 @@ class FurtherLand:
             historial_records=historial.Records(melody.library),
 
             autoescape=None,
-            debug=True,
+            debug=melody.dev,
             static_url_prefix="/spirit/",
             further_land=self
         )

@@ -166,10 +166,12 @@ class Element:
 class Records:
     def __init__(self, library):
         self.library = library
+        credentials = ""
+        if self.library["auth"]:
+            credentials = (
+               self.library["user"] + ":" + self.library["passwd"] + "@")
         self.connection = motor.MotorClient(
-            "mongodb://" + self.library["user"] +
-            ":" + self.library["passwd"] +
-            "@" + self.library["host"] + ":" +
+            "mongodb://" + credentials + self.library["host"] + ":" +
             str(self.library["port"]) +
             "/" + self.library["database"])
         self.database = self.connection[
