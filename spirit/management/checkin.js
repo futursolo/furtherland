@@ -22,3 +22,16 @@ $("#checkin-button").click(function() {
     $("#real-two").val($("#origin-two").val());
     $("#checkin-form").submit();
 });
+function adjustTitle() {
+    if ($(window).width() < 500){
+        $(".checkin-title").css("font-size", "20px");
+    }else{
+        $(".checkin-title").css("font-size", "25px");
+    }
+}
+$(document).ready(function() {
+    adjustTitle();
+});
+$(window).resize(function() {
+    adjustTitle();
+});
