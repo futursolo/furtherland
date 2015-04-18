@@ -42,6 +42,10 @@
     float: left;
     width: calc(100% - 130px);
 }
+.main .config-value .textarea{
+    float: left;
+    width: calc(100% - 130px);
+}
 .main .save-bar{
     padding-left: 10px;
     padding-right: 30px;

@@ -92,6 +92,9 @@
     font-weight: normal;
     color: rgb(231, 76, 60);
 }
+.main .table-reply-content .reply-content .reply-privacy{
+    font-size: 13px;
+}
 .main .table-reply-content .reply-content .reply-time{
     color: rgb(150, 150, 150);
     font-size: 12px;

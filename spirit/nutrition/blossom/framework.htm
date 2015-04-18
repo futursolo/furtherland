@@ -35,7 +35,8 @@
     ${self.body()}
     <script src="//ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.3.min.js" charset="utf-8"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
-    <script src="${static_url("framework.js")}" charset="utf-8"></script><%block name="js"/>
+    <script src="${static_url("framework.js")}" charset="utf-8"></script>
+    ${config["trace_code"]}<%block name="js"/>
 </body>
 </html>
 <%def name="header()">
