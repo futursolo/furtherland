@@ -24,7 +24,6 @@ import foundation.pyotp as pyotp
 
 
 class ManagementOffice(PlacesOfInterest):
-
     def management_url(self, path, include_host=None, **kwargs):
         path = "management/" + path
         return RequestHandler.static_url(
@@ -280,7 +279,10 @@ class ControlOffice(ManagementOffice):
         post_config["site_keywords"] = self.get_arg(
             "site_keywords", arg_type="origin")
         post_config["site_url"] = self.get_arg("site_url", arg_type="link")
-        nutrition_type = self.get_arg("nutrition_type", arg_type="hash")
+        post_config["nutrition_type"] = self.get_arg(
+            "nutrition_type", arg_type="hash")
+        post_config["trace_code"] = self.get_arg(
+            "trace_code", arg_type="origin")
         for key in post_config:
             if not post_config[key]:
                 raise HTTPError(500)

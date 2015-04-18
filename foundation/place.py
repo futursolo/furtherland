@@ -78,8 +78,7 @@ class PlacesOfInterest(RequestHandler):
 
         self.next_url = self.get_arg("next", arg_type="link", default="/")
         self.remote_ip = self.request.headers.get(
-            "X-Forwarded-For",
-            self.request.headers.get(
+            "X-Forwarded-For", self.request.headers.get(
                 "X-Real-Ip", self.request.remote_ip))
         self.using_ssl = (self.request.headers.get(
             "X-Scheme", "http") == "https")
@@ -331,19 +330,22 @@ class PlacesOfInterest(RequestHandler):
             module_directory=(self.settings["root_path"] + "/rubbish/mako")
             )
         template = lookup.get_template(filename)
-        env_kwargs = {
-            "handler": self,
-            "request": self.request,
-            "current_user": self.current_user,
-            "locale": self.locale,
-            "_": self.locale.translate,
-            "xsrf_form_html": self.xsrf_form_html,
-            "reverse_url": self.application.reverse_url,
-            "config": self.config,
-            "static_url": self.static_url,
-            "public_url": self.public_url,
-            "FurtherLand": self.settings["further_land"]
+        if not kwargs.pop("__without_database", False):
+            env_kwargs = {
+                "handler": self,
+                "request": self.request,
+                "current_user": self.current_user,
+                "locale": self.locale,
+                "_": self.locale.translate,
+                "xsrf_form_html": self.xsrf_form_html,
+                "reverse_url": self.application.reverse_url,
+                "config": self.config,
+                "static_url": self.static_url,
+                "public_url": self.public_url,
+                "FurtherLand": self.settings["further_land"]
             }
+        else:
+            env_kwargs = {}
         env_kwargs.update(kwargs)
         return template.render(**env_kwargs)
 
@@ -380,6 +382,25 @@ class PlacesOfInterest(RequestHandler):
             return url_escape(item)
         else:
             raise HTTPError(500)
+
+    def write_error(self, status_code, **kwargs):
+        if self.settings.get("serve_traceback") and "exc_info" in kwargs:
+            self.set_header("Content-Type", "text/plain")
+            for line in traceback.format_exception(*kwargs["exc_info"]):
+                self.write(line)
+            self.finish()
+        else:
+            if status_code == 404:
+                self.render_list["origin_title"] = "出错了！"
+                self.render("404.htm")
+            else:
+                self.render_list["status_code"] = status_code
+                self.render_list["error_message"] = self._reason
+                self.finish(
+                    self.render_string(
+                        "management/error.htm",
+                        __without_database=True,
+                        **self.render_list))
 
 
 class CentralSquare(PlacesOfInterest):
@@ -435,3 +456,10 @@ class SpiritPlace(StaticFileHandler):
             raise HTTPError(403)
         else:
             yield StaticFileHandler.get(self, path, include_body=include_body)
+
+
+class NotFoundHandler(PlacesOfInterest):
+    def get(self, *args, **kwargs):
+        raise HTTPError(404)
+
+    post = get

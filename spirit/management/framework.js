@@ -46,8 +46,10 @@ function unixToDatetime(unix){
     return now.format("yyyy-MM-dd hh:mm:ss");
 }
 function adjustTextarea(selector) {
-    $(selector).parent(".textarea").children(".hidden-textarea").val($(selector).val());
-    $(selector).parent(".textarea").height($(selector).parent(".textarea").children(".hidden-textarea")[0].scrollHeight + 39);
+    if (typeof $(selector).parent(".textarea").children(".hidden-textarea")[0] !== "undefined"){
+        $(selector).parent(".textarea").children(".hidden-textarea").val($(selector).val());
+        $(selector).parent(".textarea").height($(selector).parent(".textarea").children(".hidden-textarea")[0].scrollHeight + 39);
+    }
 }
 $(".textarea .visible-textarea").keypress(function(){adjustTextarea(this);});
 $(".textarea .visible-textarea").keydown(function(){adjustTextarea(this);});
