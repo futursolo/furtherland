@@ -1,5 +1,12 @@
 # Changelog
 
+v20150418 dev
+-------------
+ - Bugs Fix
+ - Supports for Analytical Code(Such as Google Analytics)
+ - Management Office Reply Details
+ - Custom Error Pages
+
 v20150417 dev
 -------------
  - Bugs Fix
