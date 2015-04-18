@@ -41,6 +41,15 @@ ${parent.header()}
                     <div class="config-name">主题</div>
                     <div class="config-value"><input type="text" class="input transfer" name="nutrition_type" value="${configs["nutrition_type"]["value"]}"></div>
                 </div>
+                <div class="config-item">
+                    <div class="config-name">跟踪代码</div>
+                    <div class="config-value">
+                        <div class="textarea">
+                            <textarea class="hidden-textarea"></textarea>
+                            <textarea class="visible-textarea transfer" name="trace_code">${configs["trace_code"]["value"]}</textarea>
+                        </div>
+                    </div>
+                </div>
                 <div class="save-bar">
                     <div id="save-config" class="button">保存设置</div>
                 </div>
@@ -51,6 +60,7 @@ ${parent.header()}
                 <input type="hidden" name="site_keywords" id="real-site_keywords">
                 <input type="hidden" name="site_url" id="real-site_url">
                 <input type="hidden" name="nutrition_type" id="real-nutrition_type">
+                <textarea name="trace_code" id="real-trace_code"></textarea>
                 ${xsrf_form_html()}
             </form>
         </div>

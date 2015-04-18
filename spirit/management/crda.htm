@@ -67,10 +67,14 @@ ${parent.header()}
                     <div class="reply-avatar" style="background-image: url(/channel/avatar/${content[key]["emailmd5"]}?s=200&d=mm)"></div>
                     <div class="reply-content">
                         <div class="reply-name">
-                            ${content[key]["name"]}
+                            <a href="${content[key]["homepage"]}">${content[key]["name"]}</a>
                         % if not content[key]["permit"]:
                             <span class="reply-notchecked">待审核</span>
                         % endif
+                        </div>
+                        <div class="reply-privacy">
+                            <span class="reply-email"><a href="mailto:${content[key]["email"]}">${content[key]["email"]}</a></span>
+                            <span class="reply-ip">${content[key]["ip"]}</span>
                         </div>
                         <div class="reply-time">发表于：<span class="change-time">${content[key]["time"]}</span></div>
                         <div class="reply-body">${content[key]["content"]}</div>

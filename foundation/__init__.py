@@ -65,7 +65,8 @@ navigation = [
     (r"/channel/public", internal.PublicArea),
     (r"/channel/reply", internal.ReplyArea),
     (r"/channel/preview", internal.PreviewArea),
-    (r"/channel/slug_verify", internal.SlugVerifyArea)
+    (r"/channel/slug_verify", internal.SlugVerifyArea),
+    (r"(.*)", place.NotFoundHandler)
 ]
 
 
@@ -92,14 +93,16 @@ class FurtherLand:
             static_url_prefix="/spirit/",
             further_land=self
         )
+        # Build A Port
+        port = tornado.netutil.bind_sockets(
+            melody.listen_port, address=melody.listen_ip)
         try:
             # Build Multi Land Enterance
             tornado.process.fork_processes(0, max_restarts=100)
         except:
             pass
         self.land = tornado.httpserver.HTTPServer(stage)
-        self.land.add_sockets(tornado.netutil.bind_sockets(
-            melody.listen_port, address=melody.listen_ip))
+        self.land.add_sockets(port)
 
     def rise(self):
             tornado.ioloop.IOLoop.instance().start()
