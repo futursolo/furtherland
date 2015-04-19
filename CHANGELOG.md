@@ -7,6 +7,8 @@ v20150419 dev
  - Replies Supports Code Highlights
  - Management Office Replies Supports Code Highlights
  - Site Favicon Supports
+ - Switch Content Delivery Network from Microsoft to CloudFlare
+ - 404 Page Message Updates
 
 v20150418 dev
 -------------
