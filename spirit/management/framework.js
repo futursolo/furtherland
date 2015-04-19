@@ -198,6 +198,9 @@ $(window).resize(function (){
 $(document).ready(function (){
     buildHeader();
     resizePublic();
+    $(".reply-body pre code").each(function (i, block){
+        hljs.highlightBlock(block);
+    });
 });
 
 function getPreview(content, cb){

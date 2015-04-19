@@ -57,6 +57,11 @@ span.editor-preview-switch.active{
     min-height: 500px;
     width: 100%;
     box-sizing: border-box;
+    word-break: break-all;
+    position: relative;
+}
+.preview *{
+    max-width: 100%;
 }
 input#working-title{
     width: 100%;
