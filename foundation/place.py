@@ -347,6 +347,7 @@ class PlacesOfInterest(RequestHandler):
         else:
             env_kwargs = {}
         env_kwargs.update(kwargs)
+        self.xsrf_form_html()
         return template.render(**env_kwargs)
 
     def render(self, page, nutrition=True):

@@ -131,6 +131,9 @@ function buildReplyArea(){
                     result += "</div></div>";
                     return result;
                 });
+                $(".reply-block").find("pre code").each(function(i, block) {
+                    hljs.highlightBlock(block);
+                });
             });
         }
     );
@@ -144,6 +147,7 @@ function showNewReply(id){
     $.postJSON("/channel/reply",
         replyData,
         function(data){
+            var selector;
             $("#reply-list").append(function (){
                 jsonData = JSON.parse(data);
                 result = "<div class=\"reply-block\">";
@@ -151,7 +155,11 @@ function showNewReply(id){
                 jsonData.emailmd5 + "?s=200&d=mm);\"></div><div class=\"reply-content\"><div class=\"reply-name\"><a href=\"" + jsonData.homepage + "\">" + jsonData.name + "</a></div><div class=\"reply-time change-time\">发表于：" + unixToDatetime(Math.round(jsonData.time)) + "</div><div class=\"reply-body\">" + jsonData.content + "</div>";
                 result += "</div></div>";
                 $(".no-reply").hide();
+                selector = this;
                 return result;
+            });
+            $(selector).find("pre code").each(function(i, block) {
+                hljs.highlightBlock(block);
             });
         }
     );

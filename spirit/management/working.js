@@ -141,6 +141,9 @@ $("#show-editor").click(function (){
 
 function writePreviewContent(data){
     $(".preview.content").html(data);
+    $(".preview.content pre code").each(function(i, block) {
+        hljs.highlightBlock(block);
+    });
 }
 
 $("#show-preview").click(function (){

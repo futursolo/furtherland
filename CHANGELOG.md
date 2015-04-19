@@ -1,5 +1,13 @@
 # Changelog
 
+v20150419 dev
+-------------
+ - Bugs Fix
+ - Management Office Working Page Preview Supports Code Highlights
+ - Replies Supports Code Highlights
+ - Management Office Replies Supports Code Highlights
+ - Site Favicon Supports
+
 v20150418 dev
 -------------
  - Bugs Fix
