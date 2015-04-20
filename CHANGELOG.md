@@ -1,5 +1,13 @@
 # Changelog
 
+v20150420 dev
+-------------
+ - Bugs Fix
+ - Moved Template Files to Factory Folder
+ - NotFoundHandler Renamed to LostAndFoundPlace
+ - SpiritPlace Removed
+ - robots.txt Added
+
 v20150419 dev
 -------------
  - Bugs Fix
