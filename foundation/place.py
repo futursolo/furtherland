@@ -449,17 +449,7 @@ class HistoryLibrary(PlacesOfInterest):
     pass
 
 
-class SpiritPlace(StaticFileHandler):
-    @coroutine
-    def get(self, path, include_body=True):
-        if re.match(
-         r"^(.*)\.(htm|json|tpl|csv|mo|po|py|pyc|pyx)$", path) is not None:
-            raise HTTPError(403)
-        else:
-            yield StaticFileHandler.get(self, path, include_body=include_body)
-
-
-class NotFoundHandler(PlacesOfInterest):
+class LostAndFoundPlace(PlacesOfInterest):
     def get(self, *args, **kwargs):
         raise HTTPError(404)
 

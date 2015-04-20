@@ -66,7 +66,7 @@ navigation = [
     (r"/channel/reply", internal.ReplyArea),
     (r"/channel/preview", internal.PreviewArea),
     (r"/channel/slug_verify", internal.SlugVerifyArea),
-    (r"(.*)", place.NotFoundHandler)
+    (r"(.*)", place.LostAndFoundPlace)
 ]
 
 
@@ -74,7 +74,6 @@ class FurtherLand:
     def __init__(self, melody):
         stage = Application(
             handlers=navigation,
-            static_handler_class=place.SpiritPlace,
 
             cookie_secret=melody.secret,
             xsrf_cookies=True,
@@ -82,7 +81,7 @@ class FurtherLand:
             static_path=os.path.join(
                 os.path.split(os.path.realpath(melody.base))[0], "spirit"),
             template_path=os.path.join(
-                os.path.split(os.path.realpath(melody.base))[0], "spirit"),
+                os.path.split(os.path.realpath(melody.base))[0], "factory"),
 
             login_url="/management/checkin",
 
