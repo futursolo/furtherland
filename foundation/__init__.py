@@ -90,7 +90,8 @@ class FurtherLand:
             autoescape=None,
             debug=melody.dev,
             static_url_prefix="/spirit/",
-            further_land=self
+            further_land=self,
+            safe_land=melody.safeland
         )
         # Build A Port
         port = tornado.netutil.bind_sockets(

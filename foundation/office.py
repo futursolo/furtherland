@@ -97,13 +97,13 @@ class CheckinOffice(ManagementOffice):
                 expires_days = 180
             self.set_scookie(
                 "user_id", result[1]["user_id"],
-                expires_days=expires_days)
+                expires_days=expires_days, httponly=True)
             self.set_scookie(
                 "device_id", result[1]["device_id"],
-                expires_days=expires_days)
+                expires_days=expires_days, httponly=True)
             self.set_scookie(
                 "agent_auth", result[1]["agent_auth"],
-                expires_days=expires_days)
+                expires_days=expires_days, httponly=True)
             self.redirect(self.next_url)
         else:
             self.set_scookie("checkin_status", result[1], expires_days=None)

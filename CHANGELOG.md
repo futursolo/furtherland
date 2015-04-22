@@ -1,5 +1,10 @@
 # Changelog
 
+v20150422 dev
+-------------
+ - Safe Land Option(HSTS, Secure Attributed Cookies, etc.)
+ - Starts to Use Httponly Cookies
+
 v20150420 dev
 -------------
  - Bugs Fix

@@ -22,6 +22,11 @@ secret = ""
 base = __file__
 # There the FurtherLand exactly located
 
+safeland = False
+# Turn it to True if you want your Visitors to Visit FurtherLand in HTTPS only.
+# Furthermore, this will also enable some HTTPS only Protection, such as:
+# Secure Only Cookies, HSTS Header, etc.
+
 dev = False
 # Turn it to True if you are building FurtherLand
 # Make Sure to Turn it to False when FurtherLand is ready to Serve Visitors
