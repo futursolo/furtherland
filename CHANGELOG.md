@@ -1,5 +1,10 @@
 # Changelog
 
+v20150424 dev
+-------------
+ - Anti Base64 and Javascript Protocol XSS Function
+ - Use Asyncio Event Loop if Possible
+
 v20150422 dev
 -------------
  - Safe Land Option(HSTS, Secure Attributed Cookies, etc.)
