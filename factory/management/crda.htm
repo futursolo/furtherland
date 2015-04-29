@@ -17,6 +17,21 @@
 <link href="${management_url("crda.css")}" rel="stylesheet" type="text/css">
 </%block>
 ${parent.header()}
+    <div class="reply-editor">
+        <div class="container">
+            <div class="title">编辑评论<span class="close-button">×</span></div>
+            <div class="content">
+                <div class="line"><input id="reply-editor-name" type="text" class="input" placeholder="昵称"></div>
+                <div class="line"><input id="reply-editor-email" type="text" class="input" placeholder="电邮"></div>
+                <div class="line"><input id="reply-editor-homepage" type="text" class="input" placeholder="个人主页"></div>
+                <div id="reply-editor-content-wrapper" class="textarea">
+                    <textarea class="hidden-textarea"></textarea>
+                    <textarea class="visible-textarea" id="reply-editor-content" placeholder="内容"></textarea>
+                </div>
+                <div class="line"><div class="button">提交更改</div></div>
+            </div>
+        </div>
+    </div>
     <div class="main">
         <div class="container">
             <div class="page-title">${page_title}</div>
@@ -76,7 +91,7 @@ ${parent.header()}
                             <span class="reply-email"><a href="mailto:${content[key]["email"]}">${content[key]["email"]}</a></span>
                             <span class="reply-ip">${content[key]["ip"]}</span>
                         </div>
-                        <div class="reply-time">发表于：<span class="change-time">${content[key]["time"]}</span></div>
+                        <div class="reply-time">于 <span class="change-time">${content[key]["time"]}</span> 发表在 <a target="_blank" href="${config["site_url"]}/writings/${content[key]["writing"]["slug"]}.htm">${content[key]["writing"]["title"]}</a></div>
                         <div class="reply-body">${content[key]["content"]}</div>
                         <div class="reply-control">
                         % if not content[key]["permit"]:
@@ -85,6 +100,7 @@ ${parent.header()}
                             <span class="reply-action unpermit-reply" reply="${content[key]["_id"]}">撤销通过</span>
                         % endif
                             <span class="reply-action delete-reply" reply="${content[key]["_id"]}">刪除</span>
+                            <span class="reply-action edit-reply" reply="${content[key]["_id"]}" json='${content[key]["json"]}'>编辑</span>
                         </div>
                     </div>
                 </div>

@@ -262,6 +262,11 @@ class PlacesOfInterest(RequestHandler):
             book.find(find_condition)
             book.sort([["time", False]])
             book.length(0, force_dict=True)
+        elif "writing_list" in list(kwargs.keys()):
+            find_condition["_id"] = {"$in": kwargs["writing_list"]}
+            book.find(find_condition, ["content"])
+            book.sort([["time", False]])
+            book.length(0, force_dict=True)
         elif "slug" in list(kwargs.keys()):
             find_condition["slug"] = kwargs["slug"]
             book.find(find_condition)
@@ -336,8 +341,7 @@ class PlacesOfInterest(RequestHandler):
             [self.settings["template_path"]],
             input_encoding="utf-8",
             output_encoding="utf-8",
-            default_filters=["decode.utf_8"],
-            module_directory=(self.settings["root_path"] + "/rubbish/mako")
+            default_filters=["decode.utf_8"]
             )
         template = lookup.get_template(filename)
         if not kwargs.pop("__without_database", False):

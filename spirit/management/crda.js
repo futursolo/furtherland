@@ -42,3 +42,35 @@ $(".main .delete-reply").click(function (){
         window.location.reload();
     });
 });
+
+function resizeReplyEditor(){
+    if ($(window).width() < 900){
+        $(".reply-editor").removeClass("big");
+    }else{
+        $(".reply-editor").addClass("big");
+    }
+}
+$(window).resize(function (){
+    resizeReplyEditor();
+});
+$(document).ready(function (){
+    resizeReplyEditor();
+});
+
+function fillReplyEditor(selector){
+    replyContent = JSON.parse($(selector).attr("json"));
+    $("#reply-editor-name").val(replyContent.name);
+    $("#reply-editor-email").val(replyContent.email);
+    $("#reply-editor-homepage").val(replyContent.homepage);
+    $("#reply-editor-content").val(replyContent.content);
+    $("#reply-editor-content").change();
+}
+
+$(".main .edit-reply").click(function (){
+    $(".reply-editor").fadeIn("300");
+    fillReplyEditor(this);
+});
+
+$(".reply-editor .close-button").click(function (){
+    $(".reply-editor").fadeOut("300");
+});
