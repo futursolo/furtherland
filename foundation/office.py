@@ -21,6 +21,7 @@ from tornado.gen import *
 from foundation.place import PlacesOfInterest, slug_validation, visitor_only
 from collections import OrderedDict
 import foundation.pyotp as pyotp
+import json
 
 
 class ManagementOffice(PlacesOfInterest):
@@ -231,6 +232,7 @@ class CRDAOffice(ManagementOffice):
         book.length(0, True)
         yield book.do()
         content_list = book.result()
+        writing_list = []
         for key in content_list:
             if area == "writings":
                 content_list[key]["edit_link"] = (
@@ -245,11 +247,37 @@ class CRDAOffice(ManagementOffice):
                     content_list[key]["content"])
                 content_list[key]["_id"] = int(
                     content_list[key]["_id"])
+                if content_list[key]["writing_id"] not in writing_list:
+                    writing_list.append(content_list[key]["writing_id"])
+        if area == "replies":
+            writing_list = yield self.get_writing(writing_list=writing_list)
+            for key in content_list:
+                content_list[key]["writing"] = writing_list[
+                    content_list[key]["writing_id"]]
+                content_list[key]["json"] = json.dumps(content_list[key])
         self.render_list["content"] = content_list
         self.render_list["page_title"] = (
             self.render_list["origin_title"] +
             " - " + self.config["office_name"] + self.config["crda_name"])
         self.management_render("crda.htm")
+
+    @coroutine
+    @authenticated
+    @slug_validation(["hash"])
+    def post(self, area):
+        if area == "writings":
+            book = self.memories.select("Writings")
+            raise HTTPError(500)
+        elif area == "pages":
+            book = self.memories.select("Pages")
+            raise HTTPError(500)
+        elif area == "replies":
+            book = self.memories.select("Replies")
+            action = self.get_arg("action", arg_type="hash")
+            if action == "edit":
+                pass
+        else:
+            raise HTTPError(404)
 
 
 class ControlOffice(ManagementOffice):
