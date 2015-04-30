@@ -1,5 +1,21 @@
 # Changelog
 
+v20150429 dev
+-------------
+ - Reply Management Pages has more details about the Replies
+ - Disabled Mako Module Folder to Prevent 500 Errors in C10K Test
+ - Reply Edit Function Works
+
+v20150424 dev
+-------------
+ - Anti Base64 and Javascript Protocol XSS Function
+ - Use Asyncio Event Loop if Possible
+
+v20150422 dev
+-------------
+ - Safe Land Option(HSTS, Secure Attributed Cookies, etc.)
+ - Starts to Use Httponly Cookies
+
 v20150420 dev
 -------------
  - Bugs Fix

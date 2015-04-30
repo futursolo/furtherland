@@ -76,7 +76,7 @@ ${parent.header()}
                             <span class="reply-email"><a href="mailto:${content[key]["email"]}">${content[key]["email"]}</a></span>
                             <span class="reply-ip">${content[key]["ip"]}</span>
                         </div>
-                        <div class="reply-time">发表于：<span class="change-time">${content[key]["time"]}</span></div>
+                        <div class="reply-time">于 <span class="change-time">${content[key]["time"]}</span> 发表在 <a target="_blank" href="${config["site_url"]}/writings/${content[key]["writing"]["slug"]}.htm">${content[key]["writing"]["title"]}</a></div>
                         <div class="reply-body">${content[key]["content"]}</div>
                         <div class="reply-control">
                         % if not content[key]["permit"]:
@@ -85,6 +85,24 @@ ${parent.header()}
                             <span class="reply-action unpermit-reply" reply="${content[key]["_id"]}">撤销通过</span>
                         % endif
                             <span class="reply-action delete-reply" reply="${content[key]["_id"]}">刪除</span>
+                            <span class="reply-action edit-reply" reply="${content[key]["_id"]}">编辑</span>
+                            <span class="reply-action unedit-reply" reply="${content[key]["_id"]}">取消编辑</span>
+                        </div>
+                        <div class="reply-editor" id="reply-editor-${content[key]["_id"]}">
+                            <div class="content">
+                                <div class="center-line">
+                                    <div class="input-line"><input class="reply-editor-name input" type="text" placeholder="昵称" value="${content[key]["name"]}"></div>
+                                    <div class="input-line"><input class="reply-editor-email input" type="text" placeholder="电邮" value="${content[key]["email"]}"></div>
+                                    <div class="input-line"><input class="reply-editor-homepage input" type="text" placeholder="个人主页" value="${content[key]["homepage"]}"></div>
+                                </div>
+                                <div class="line content-line">
+                                    <div class="textarea reply-editor-content-wrapper">
+                                        <textarea class="hidden-textarea"></textarea>
+                                        <textarea class="visible-textarea reply-editor-content" placeholder="内容">${content[key]["content"]}</textarea>
+                                    </div>
+                                </div>
+                                <div class="line center-line"><div class="button post-reply-change" reply="${content[key]["_id"]}">提交更改</div></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -94,6 +112,15 @@ ${parent.header()}
     % endif
         </div>
     </div>
+    <form id="hidden-reply-editor-form" method="post" action="">
+        <input name="action" value="edit">
+        <input id="real-reply-id" type="hidden" name="reply">
+        <input id="real-reply-name" type="hidden" name="name">
+        <input id="real-reply-email" type="hidden" name="email">
+        <input id="real-reply-homepage" type="hidden" name="homepage">
+        <textarea id="real-reply-content" name="content"></textarea>
+        ${xsrf_form_html()}
+    </form>
 ${parent.footer()}
 <%block name="js">
     <script src="${management_url("crda.js")}" charset="utf-8"></script>

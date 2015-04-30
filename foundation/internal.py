@@ -24,6 +24,7 @@ from foundation.place import PlacesOfInterest, slug_validation, visitor_only
 import json
 import os
 import time
+import re
 
 
 class PublicArea(PlacesOfInterest):
@@ -224,6 +225,11 @@ class ReplyArea(PlacesOfInterest):
                                           "md5", b64=False)
             content = self.escape(self.get_arg("content", arg_type="origin"),
                                   item_type="html")
+            content = re.sub(
+                re.compile(r"(data:)", re.IGNORECASE), "data：", content)
+            content = re.sub(
+                re.compile(
+                    r"(javascript:)", re.IGNORECASE), "javascript：", content)
             reply["content"] = content
             reply["_id"] = yield self.issue_id("Replies")
             book = self.memories.select("Replies")

@@ -109,3 +109,47 @@
     padding-left: 10px;
     padding-right: 10px;
 }
+.reply-editor{
+    height: 0;
+    overflow: hidden;
+}
+.reply-editor .content{
+    position: relative;
+    padding-left: 10px;
+    padding-right: 10px;
+    box-sizing: border-box;
+    height: calc(100% - 50px);
+    overflow: auto;
+}
+.reply-editor .input-line{
+    display: inline-block;
+    box-sizing: border-box;
+    width: 100%;
+}
+.reply-editor.big .input-line{
+    width: 32.5%;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.reply-editor .center-line{
+    text-align: center;
+}
+.reply-editor .input-line input{
+    width: 100%;
+}
+.reply-editor.big .line{
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+    box-sizing: border-box;
+    text-align: center;
+}
+.reply-editor-content-wrapper{
+    width: 100%;
+}
+.reply-editor.big .reply-editor-content-wrapper{
+    width: 99%;
+}
+.reply-control .unedit-reply{
+    display: none;
+}
