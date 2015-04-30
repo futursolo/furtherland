@@ -67,7 +67,7 @@ function postReply(selector){
 }
 
 $(".main .edit-reply").click(function (){
-    $("#reply-editor-" + $(this).attr("reply")).children(".reply-editor-content").change();
+    $("#reply-editor-" + $(this).attr("reply")).find(".reply-editor-content").change();
     $("#reply-editor-" + $(this).attr("reply")).css("height", "auto");
     $(this).hide();
     $(".main .unedit-reply[reply=\"" + $(this).attr("reply") + "\"]").show();
