@@ -21,6 +21,7 @@ from tornado.gen import *
 from foundation.place import PlacesOfInterest, slug_validation, visitor_only
 from collections import OrderedDict
 import foundation.pyotp as pyotp
+import json
 
 
 class ManagementOffice(PlacesOfInterest):
@@ -97,13 +98,13 @@ class CheckinOffice(ManagementOffice):
                 expires_days = 180
             self.set_scookie(
                 "user_id", result[1]["user_id"],
-                expires_days=expires_days)
+                expires_days=expires_days, httponly=True)
             self.set_scookie(
                 "device_id", result[1]["device_id"],
-                expires_days=expires_days)
+                expires_days=expires_days, httponly=True)
             self.set_scookie(
                 "agent_auth", result[1]["agent_auth"],
-                expires_days=expires_days)
+                expires_days=expires_days, httponly=True)
             self.redirect(self.next_url)
         else:
             self.set_scookie("checkin_status", result[1], expires_days=None)
@@ -231,6 +232,7 @@ class CRDAOffice(ManagementOffice):
         book.length(0, True)
         yield book.do()
         content_list = book.result()
+        writing_list = []
         for key in content_list:
             if area == "writings":
                 content_list[key]["edit_link"] = (
@@ -245,11 +247,56 @@ class CRDAOffice(ManagementOffice):
                     content_list[key]["content"])
                 content_list[key]["_id"] = int(
                     content_list[key]["_id"])
+                if content_list[key]["writing_id"] not in writing_list:
+                    writing_list.append(content_list[key]["writing_id"])
+        if area == "replies":
+            writing_list = yield self.get_writing(writing_list=writing_list)
+            for key in content_list:
+                content_list[key]["writing"] = writing_list[
+                    content_list[key]["writing_id"]]
         self.render_list["content"] = content_list
         self.render_list["page_title"] = (
             self.render_list["origin_title"] +
             " - " + self.config["office_name"] + self.config["crda_name"])
         self.management_render("crda.htm")
+
+    @coroutine
+    @authenticated
+    @slug_validation(["hash"])
+    def post(self, area):
+        if area == "writings":
+            book = self.memories.select("Writings")
+            raise HTTPError(500)
+        elif area == "pages":
+            book = self.memories.select("Pages")
+            raise HTTPError(500)
+        elif area == "replies":
+            book = self.memories.select("Replies")
+            action = self.get_arg("action", arg_type="hash")
+            if action == "edit":
+                reply_id = self.get_arg("reply", arg_type="number")
+                reply_name = self.get_arg("name", arg_type="origin")
+                reply_homepage = self.get_arg("homepage", arg_type="origin")
+                reply_email = self.get_arg("email", arg_type="mail_address")
+                reply_content = self.get_arg("content", arg_type="origin")
+                print(reply_id)
+                print(reply_name)
+                print(reply_homepage)
+                print(reply_email)
+                print(reply_content)
+                if not (reply_id and reply_name and reply_homepage and
+                        reply_email and reply_content):
+                    raise HTTPError(500)
+                reply = {}
+                reply["name"] = reply_name
+                reply["homepage"] = reply_homepage
+                reply["email"] = reply_email
+                reply["content"] = reply_content
+                book.set({"_id": reply_id}, reply)
+                yield book.do()
+                self.redirect("/management/crda/replies")
+        else:
+            raise HTTPError(500)
 
 
 class ControlOffice(ManagementOffice):

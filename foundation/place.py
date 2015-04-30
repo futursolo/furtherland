@@ -82,6 +82,10 @@ class PlacesOfInterest(RequestHandler):
                 "X-Real-Ip", self.request.remote_ip))
         self.using_ssl = (self.request.headers.get(
             "X-Scheme", "http") == "https")
+        self.safe_land = self.settings["safe_land"]
+        if self.safe_land:
+            self.set_header("strict-transport-security",
+                            "max-age=39420000")
 
     @coroutine
     def get_config(self):
@@ -143,7 +147,7 @@ class PlacesOfInterest(RequestHandler):
         else:
             return self.value_validation(arg_type, result)
 
-    def set_scookie(self, arg, value="", expires_days=30):
+    def set_scookie(self, arg, value="", expires_days=30, httponly=False):
         str_value = ""
         try:
             str_value = str(value.decode())
@@ -152,7 +156,13 @@ class PlacesOfInterest(RequestHandler):
                 str_value = str(value)
             except:
                 str_value = value
-        RequestHandler.set_secure_cookie(self, arg, str_value, expires_days)
+        if self.safe_land:
+            secure = True
+        else:
+            secure = False
+        RequestHandler.set_secure_cookie(
+            self, arg, str_value, expires_days,
+            httponly=httponly, secure=secure)
 
     def value_validation(self, arg_type, value):
         if arg_type == "origin":
@@ -252,6 +262,11 @@ class PlacesOfInterest(RequestHandler):
             book.find(find_condition)
             book.sort([["time", False]])
             book.length(0, force_dict=True)
+        elif "writing_list" in list(kwargs.keys()):
+            find_condition["_id"] = {"$in": kwargs["writing_list"]}
+            book.find(find_condition, ["content"])
+            book.sort([["time", False]])
+            book.length(0, force_dict=True)
         elif "slug" in list(kwargs.keys()):
             find_condition["slug"] = kwargs["slug"]
             book.find(find_condition)
@@ -326,8 +341,7 @@ class PlacesOfInterest(RequestHandler):
             [self.settings["template_path"]],
             input_encoding="utf-8",
             output_encoding="utf-8",
-            default_filters=["decode.utf_8"],
-            module_directory=(self.settings["root_path"] + "/rubbish/mako")
+            default_filters=["decode.utf_8"]
             )
         template = lookup.get_template(filename)
         if not kwargs.pop("__without_database", False):

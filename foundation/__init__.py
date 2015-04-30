@@ -90,7 +90,8 @@ class FurtherLand:
             autoescape=None,
             debug=melody.dev,
             static_url_prefix="/spirit/",
-            further_land=self
+            further_land=self,
+            safe_land=melody.safeland
         )
         # Build A Port
         port = tornado.netutil.bind_sockets(
@@ -104,10 +105,19 @@ class FurtherLand:
         self.land.add_sockets(port)
 
     def rise(self):
-            tornado.ioloop.IOLoop.instance().start()
+        try:
+            import asyncio
+            import tornado.platform
+            import tornado.ioloop
+            tornado.ioloop.IOLoop.configure(
+                "tornado.platform.asyncio.AsyncIOLoop")
+            print("FurtherLand is Using Asyncio Event Loop.")
+        except:
+            import tornado.ioloop
+        tornado.ioloop.IOLoop.current().start()
 
     def set(self):
-        tornado.ioloop.IOLoop.instance().stop()
+        tornado.ioloop.IOLoop.current().stop()
 
     def version(self):
         return "FurtherLand Sakihokori Edition"
