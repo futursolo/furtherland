@@ -17,21 +17,6 @@
 <link href="${management_url("crda.css")}" rel="stylesheet" type="text/css">
 </%block>
 ${parent.header()}
-    <div class="reply-editor">
-        <div class="container">
-            <div class="title">编辑评论<span class="close-button">×</span></div>
-            <div class="content">
-                <div class="line"><input id="reply-editor-name" type="text" class="input" placeholder="昵称"></div>
-                <div class="line"><input id="reply-editor-email" type="text" class="input" placeholder="电邮"></div>
-                <div class="line"><input id="reply-editor-homepage" type="text" class="input" placeholder="个人主页"></div>
-                <div id="reply-editor-content-wrapper" class="textarea">
-                    <textarea class="hidden-textarea"></textarea>
-                    <textarea class="visible-textarea" id="reply-editor-content" placeholder="内容"></textarea>
-                </div>
-                <div class="line"><div class="button">提交更改</div></div>
-            </div>
-        </div>
-    </div>
     <div class="main">
         <div class="container">
             <div class="page-title">${page_title}</div>
@@ -100,7 +85,24 @@ ${parent.header()}
                             <span class="reply-action unpermit-reply" reply="${content[key]["_id"]}">撤销通过</span>
                         % endif
                             <span class="reply-action delete-reply" reply="${content[key]["_id"]}">刪除</span>
-                            <span class="reply-action edit-reply" reply="${content[key]["_id"]}" json='${content[key]["json"]}'>编辑</span>
+                            <span class="reply-action edit-reply" reply="${content[key]["_id"]}">编辑</span>
+                            <span class="reply-action unedit-reply" reply="${content[key]["_id"]}">取消编辑</span>
+                        </div>
+                        <div class="reply-editor" id="reply-editor-${content[key]["_id"]}">
+                            <div class="content">
+                                <div class="center-line">
+                                    <div class="input-line"><input class="reply-editor-name input" type="text" placeholder="昵称" value="${content[key]["name"]}"></div>
+                                    <div class="input-line"><input class="reply-editor-email input" type="text" placeholder="电邮" value="${content[key]["email"]}"></div>
+                                    <div class="input-line"><input class="reply-editor-homepage input" type="text" placeholder="个人主页" value="${content[key]["homepage"]}"></div>
+                                </div>
+                                <div class="line content-line">
+                                    <div class="textarea reply-editor-content-wrapper">
+                                        <textarea class="hidden-textarea"></textarea>
+                                        <textarea class="visible-textarea reply-editor-content" placeholder="内容">${content[key]["content"]}</textarea>
+                                    </div>
+                                </div>
+                                <div class="line center-line"><div class="button post-reply-change" reply="${content[key]["_id"]}">提交更改</div></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -110,6 +112,15 @@ ${parent.header()}
     % endif
         </div>
     </div>
+    <form id="hidden-reply-editor-form" method="post" action="">
+        <input name="action" value="edit">
+        <input id="real-reply-id" type="hidden" name="reply">
+        <input id="real-reply-name" type="hidden" name="name">
+        <input id="real-reply-email" type="hidden" name="email">
+        <input id="real-reply-homepage" type="hidden" name="homepage">
+        <textarea id="real-reply-content" name="content"></textarea>
+        ${xsrf_form_html()}
+    </form>
 ${parent.footer()}
 <%block name="js">
     <script src="${management_url("crda.js")}" charset="utf-8"></script>

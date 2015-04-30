@@ -254,7 +254,6 @@ class CRDAOffice(ManagementOffice):
             for key in content_list:
                 content_list[key]["writing"] = writing_list[
                     content_list[key]["writing_id"]]
-                content_list[key]["json"] = json.dumps(content_list[key])
         self.render_list["content"] = content_list
         self.render_list["page_title"] = (
             self.render_list["origin_title"] +
@@ -275,9 +274,29 @@ class CRDAOffice(ManagementOffice):
             book = self.memories.select("Replies")
             action = self.get_arg("action", arg_type="hash")
             if action == "edit":
-                pass
+                reply_id = self.get_arg("reply", arg_type="number")
+                reply_name = self.get_arg("name", arg_type="origin")
+                reply_homepage = self.get_arg("homepage", arg_type="origin")
+                reply_email = self.get_arg("email", arg_type="mail_address")
+                reply_content = self.get_arg("content", arg_type="origin")
+                print(reply_id)
+                print(reply_name)
+                print(reply_homepage)
+                print(reply_email)
+                print(reply_content)
+                if not (reply_id and reply_name and reply_homepage and
+                        reply_email and reply_content):
+                    raise HTTPError(500)
+                reply = {}
+                reply["name"] = reply_name
+                reply["homepage"] = reply_homepage
+                reply["email"] = reply_email
+                reply["content"] = reply_content
+                book.set({"_id": reply_id}, reply)
+                yield book.do()
+                self.redirect("/management/crda/replies")
         else:
-            raise HTTPError(404)
+            raise HTTPError(500)
 
 
 class ControlOffice(ManagementOffice):

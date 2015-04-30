@@ -60,6 +60,8 @@ class Element:
         self._action = self._current_collection.update(condition,
                                                        {"$set": content})
         self._action_ready = True
+        print(condition)
+        print(content)
         return self
 
     def find_modify(self, condition, update, method="inc", new=True):
