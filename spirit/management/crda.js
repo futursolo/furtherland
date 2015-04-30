@@ -44,7 +44,7 @@ $(".main .delete-reply").click(function (){
 });
 
 function resizeReplyEditor(){
-    if ($(window).width() < 900){
+    if ($(window).width() < 800){
         $(".reply-editor").removeClass("big");
     }else{
         $(".reply-editor").addClass("big");
@@ -57,20 +57,26 @@ $(document).ready(function (){
     resizeReplyEditor();
 });
 
-function fillReplyEditor(selector){
-    replyContent = JSON.parse($(selector).attr("json"));
-    $("#reply-editor-name").val(replyContent.name);
-    $("#reply-editor-email").val(replyContent.email);
-    $("#reply-editor-homepage").val(replyContent.homepage);
-    $("#reply-editor-content").val(replyContent.content);
-    $("#reply-editor-content").change();
+function postReply(selector){
+    $("#real-reply-id").val($(selector).attr("reply"));
+    $("#real-reply-name").val($("#reply-editor-" + $(selector).attr("reply")).find(".reply-editor-name").val());
+    $("#real-reply-email").val($("#reply-editor-" + $(selector).attr("reply")).find(".reply-editor-email").val());
+    $("#real-reply-homepage").val($("#reply-editor-" + $(selector).attr("reply")).find(".reply-editor-homepage").val());
+    $("#real-reply-content").val($("#reply-editor-" + $(selector).attr("reply")).find(".reply-editor-content").val());
+    $("#hidden-reply-editor-form").submit();
 }
 
 $(".main .edit-reply").click(function (){
-    $(".reply-editor").fadeIn("300");
-    fillReplyEditor(this);
+    $("#reply-editor-" + $(this).attr("reply")).children(".reply-editor-content").change();
+    $("#reply-editor-" + $(this).attr("reply")).css("height", "auto");
+    $(this).hide();
+    $(".main .unedit-reply[reply=\"" + $(this).attr("reply") + "\"]").show();
 });
-
-$(".reply-editor .close-button").click(function (){
-    $(".reply-editor").fadeOut("300");
+$(".main .unedit-reply").click(function (){
+    $("#reply-editor-" + $(this).attr("reply")).css("height", "0");
+    $(this).hide();
+    $(".main .edit-reply[reply=\"" + $(this).attr("reply") + "\"]").show();
+});
+$(".main .post-reply-change").click(function (){
+    postReply(this);
 });

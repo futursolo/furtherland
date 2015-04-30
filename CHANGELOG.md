@@ -4,6 +4,7 @@ v20150429 dev
 -------------
  - Reply Management Pages has more details about the Replies
  - Disabled Mako Module Folder to Prevent 500 Errors in C10K Test
+ - Reply Edit Function Works
 
 v20150424 dev
 -------------

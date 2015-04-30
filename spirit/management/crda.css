@@ -110,52 +110,46 @@
     padding-right: 10px;
 }
 .reply-editor{
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 10;
-    width: 100%;
-    height: 100%;
-    display: none;
-    background-color: rgba(0, 0, 0, 0.8);
-}
-.reply-editor .container{
-    position: relative;
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    max-width: 1000px;
-    background-color: rgb(255, 255, 255);
-    margin-left: auto;
-    margin-right: auto;
-}
-.reply-editor.big .container{
-    margin-top: 20px;
-    height: calc(100% - 40px);
-    width: calc(100% - 40px);
-}
-.reply-editor .title{
-    height: 50px;
-    line-height: 50px;
-    font-size: 20px;
-    position :relative;
-    padding-left: 20px;
-    box-sizing: border-box;
-}
-.reply-editor .close-button{
-    height: 50px;
-    width: 50px;
-    line-height: 46px;
-    font-weight: bold;
-    font-size: 30px;
-    text-align: center;
-    position: absolute;
-    top: 0;
-    right: 0;
-    cursor: pointer;
+    height: 0;
+    overflow: hidden;
 }
 .reply-editor .content{
     position: relative;
-    padding: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
     box-sizing: border-box;
+    height: calc(100% - 50px);
+    overflow: auto;
+}
+.reply-editor .input-line{
+    display: inline-block;
+    box-sizing: border-box;
+    width: 100%;
+}
+.reply-editor.big .input-line{
+    width: 32.5%;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.reply-editor .center-line{
+    text-align: center;
+}
+.reply-editor .input-line input{
+    width: 100%;
+}
+.reply-editor.big .line{
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+    box-sizing: border-box;
+    text-align: center;
+}
+.reply-editor-content-wrapper{
+    width: 100%;
+}
+.reply-editor.big .reply-editor-content-wrapper{
+    width: 99%;
+}
+.reply-control .unedit-reply{
+    display: none;
 }
