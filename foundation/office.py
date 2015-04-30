@@ -279,11 +279,6 @@ class CRDAOffice(ManagementOffice):
                 reply_homepage = self.get_arg("homepage", arg_type="origin")
                 reply_email = self.get_arg("email", arg_type="mail_address")
                 reply_content = self.get_arg("content", arg_type="origin")
-                print(reply_id)
-                print(reply_name)
-                print(reply_homepage)
-                print(reply_email)
-                print(reply_content)
                 if not (reply_id and reply_name and reply_homepage and
                         reply_email and reply_content):
                     raise HTTPError(500)
