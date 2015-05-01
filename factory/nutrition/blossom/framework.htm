@@ -64,6 +64,7 @@
 <%def name="footer()">
 <footer>
     <div class="container">
+        <div class="information">处理时间：${used_time}ms 数据库查询：${db_action}次</div>
         <div class="copyright">&copy; 2015 <a href="${config["site_url"]}">${config["site_name"]}</a> All Rights Reserved.</div>
         <div class="powered">Powered by <a href="https://github.com/futursolo/FurtherLand">${FurtherLand.version()}</a>.</div>
     </div>

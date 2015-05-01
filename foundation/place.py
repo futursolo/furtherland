@@ -29,7 +29,6 @@ import functools
 import mako.lookup
 import mako.template
 import time
-import datetime
 
 
 def decorator_with_args(decorator_to_enhance):
@@ -47,10 +46,11 @@ def slug_validation(func, *args, **kwargs):
         valid_list = args[0]
         new_slug = []
         for number in range(0, len(valid_list)):
-            try:
-                new_slug.append(self.value_validation(
-                    valid_list[number], func_args[number]))
-            except:
+            value = self.value_validation(
+                valid_list[number], func_args[number])
+            if value is not False:
+                new_slug.append(value)
+            else:
                 raise HTTPError(404)
         return func(self, *new_slug, **func_kwargs)
     return wrapper
@@ -69,10 +69,23 @@ def visitor_only(func):
 class PlacesOfInterest(RequestHandler):
     current_user = None
 
+    class Memories:
+        def __init__(self, place):
+            self.place = place
+            self.historial_records = self.place.settings["historial_records"]
+            self.historial_records.initialize()
+
+        def select(self, *args, **kwargs):
+            self.place.db_action += 1
+            return self.historial_records.select(*args, **kwargs)
+
     @coroutine
     def prepare(self):
+        self.start_time = time.time()
+        self.db_action = 0
+        self.furtherland = self.settings["further_land"]
         self.render_list = {}
-        self.memories = self.settings["historial_records"]
+        self.memories = self.Memories(self)
         self.current_user = yield self.get_current_user()
         self.config = yield self.get_config()
 
@@ -89,15 +102,15 @@ class PlacesOfInterest(RequestHandler):
 
     @coroutine
     def get_config(self):
-        if not hasattr(self, "_config"):
+        if len(self.furtherland.config_preload) == 0:
             book = self.memories.select("Configs")
             book.find().length(0)
             yield book.do()
-            self._config = {}
             result = book.result()
             for key in result:
-                self._config[result[key]["_id"]] = result[key]["value"]
-        raise Return(self._config)
+                self.furtherland.config_preload[
+                    result[key]["_id"]] = result[key]["value"]
+        raise Return(self.furtherland.config_preload)
 
     @coroutine
     def get_current_user(self):
@@ -118,50 +131,34 @@ class PlacesOfInterest(RequestHandler):
 
     def get_arg(self, arg, default=None, arg_type="origin"):
         result = RequestHandler.get_argument(self, arg, None)
-        try:
+        if isinstance(result, bytes):
             result = str(result.decode())
-        except:
-            try:
-                result = str(result)
-            except:
-                pass
+        else:
+            result = str(result)
         if (not result) or (result == "None"):
             return default
-        else:
-            return self.value_validation(arg_type, result)
+        return self.value_validation(arg_type, result)
 
     def get_scookie(self, arg, default=None, arg_type="origin"):
         result = RequestHandler.get_secure_cookie(
             self, arg, None, max_age_days=181)
-        if not result:
-            return default
-        try:
+        if isinstance(result, bytes):
             result = str(result.decode())
-        except:
-            try:
-                result = str(result)
-            except:
-                pass
+        else:
+            result = str(result)
         if (not result) or (result == "None"):
             return default
-        else:
-            return self.value_validation(arg_type, result)
+        return self.value_validation(arg_type, result)
 
     def set_scookie(self, arg, value="", expires_days=30, httponly=False):
-        str_value = ""
-        try:
-            str_value = str(value.decode())
-        except:
-            try:
-                str_value = str(value)
-            except:
-                str_value = value
+        if not isinstance(value, str):
+            value = str(value)
         if self.safe_land:
             secure = True
         else:
             secure = False
         RequestHandler.set_secure_cookie(
-            self, arg, str_value, expires_days,
+            self, arg, value, expires_days,
             httponly=httponly, secure=secure)
 
     def value_validation(self, arg_type, value):
@@ -242,9 +239,6 @@ class PlacesOfInterest(RequestHandler):
     def get_random(self, length):
         return "".join(random.sample(string.ascii_letters + string.digits,
                                      length))
-
-    def date_time(self, unix_time):
-        timezone = self.config["timezone"]
 
     @coroutine
     def get_class(self):
@@ -337,13 +331,9 @@ class PlacesOfInterest(RequestHandler):
             self, path, include_host=include_host, **kwargs)
 
     def render_string(self, filename, **kwargs):
-        lookup = mako.lookup.TemplateLookup(
-            [self.settings["template_path"]],
-            input_encoding="utf-8",
-            output_encoding="utf-8",
-            default_filters=["decode.utf_8"]
-            )
-        template = lookup.get_template(filename)
+        if filename not in self.furtherland.factory_preload.keys():
+            self.furtherland.factory_preload[
+                filename] = self.furtherland.factory.get_template(filename)
         if not kwargs.pop("__without_database", False):
             env_kwargs = {
                 "handler": self,
@@ -356,13 +346,15 @@ class PlacesOfInterest(RequestHandler):
                 "config": self.config,
                 "static_url": self.static_url,
                 "public_url": self.public_url,
-                "FurtherLand": self.settings["further_land"]
+                "FurtherLand": self.furtherland,
+                "used_time": int((time.time() - self.start_time) * 1000),
+                "db_action": self.db_action
             }
         else:
             env_kwargs = {}
         env_kwargs.update(kwargs)
         self.xsrf_form_html()
-        return template.render(**env_kwargs)
+        return self.furtherland.factory_preload[filename].render(**env_kwargs)
 
     def render(self, page, nutrition=True):
         if "page_title" not in list(self.render_list.keys()):
