@@ -336,4 +336,10 @@ class ControlOffice(ManagementOffice):
             if origin_config[key] != post_config[key]:
                 book.set({"_id": key}, {"value": post_config[key]})
                 yield book.do()
-        self.redirect("/management/configuration")
+        self.redirect("/management/rerise")
+
+
+class ReriseOffice(ManagementOffice):
+    def get(self):
+        self.render_list["origin_title"] = "重新启动"
+        self.management_render("rerise.htm")
