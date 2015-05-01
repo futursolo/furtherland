@@ -22,11 +22,14 @@ import tornado.process
 import tornado.netutil
 import tornado.httpserver
 import os
+import mako
 
 from . import place
 from . import office
 from . import internal
 from . import memory as historial
+from multiprocessing import Pipe
+from multiprocessing.connection import Connection
 
 
 navigation = [
@@ -60,19 +63,55 @@ navigation = [
     (r"/management/working/([a-zA-Z0-9]+)", office.WorkingOffice),
     (r"/management/crda/([a-zA-Z0-9]+)", office.CRDAOffice),
     (r"/management/configuration", office.ControlOffice),
+    (r"/management/rerise", office.ReriseOffice),
 
     (r"/channel/avatar/([a-zA-Z0-9]+)", internal.AvatarArea),
     (r"/channel/public", internal.PublicArea),
     (r"/channel/reply", internal.ReplyArea),
     (r"/channel/preview", internal.PreviewArea),
     (r"/channel/slug_verify", internal.SlugVerifyArea),
+    (r"/channel/selfkill", internal.SelfKillArea),
     (r"(.*)", place.LostAndFoundPlace)
 ]
 
 
+class Stage(Application):
+    def __init__(self, *args, **kwargs):
+        self._conn_main_recv, self._conn_main_send = Pipe()
+        self.furtherland = kwargs["further_land"]
+        Application.__init__(self, *args, **kwargs)
+
+    def setup(self, ioloop):
+        self._conn_child_recv, self._conn_child_send = Pipe()
+        if not tornado.process.task_id():
+            ioloop.add_handler(self._conn_main_recv.fileno(),
+                               self._handle_child_event,
+                               ioloop.READ)
+
+    def communicate(self, data):
+        self._conn_main_send.send((self._conn_child_send.fileno(), data))
+        return self._conn_child_recv.recv()
+
+    def _handle_child_event(self, fd, events):
+        conn_fileno, data = self._conn_main_recv.recv()
+        if data == "exit":
+            print("FurtherLand will set in a short period.")
+            import os
+            import signal
+            while True:
+                os.killpg(
+                    os.getpgid(self.furtherland.identity), signal.SIGKILL)
+        Connection(conn_fileno).send("acknowledged")
+
+
 class FurtherLand:
     def __init__(self, melody):
-        stage = Application(
+        import os
+        self.identity = os.getpid()
+        # Build A Port
+        self.port = tornado.netutil.bind_sockets(
+            melody.listen_port, address=melody.listen_ip)
+        self.stage = Stage(
             handlers=navigation,
 
             cookie_secret=melody.secret,
@@ -93,27 +132,35 @@ class FurtherLand:
             further_land=self,
             safe_land=melody.safeland
         )
-        # Build A Port
-        port = tornado.netutil.bind_sockets(
-            melody.listen_port, address=melody.listen_ip)
         try:
             # Build Multi Land Enterance
-            tornado.process.fork_processes(0, max_restarts=100)
+            tornado.process.fork_processes(
+                tornado.process.cpu_count() * 2, max_restarts=100)
         except:
             pass
-        self.land = tornado.httpserver.HTTPServer(stage)
-        self.land.add_sockets(port)
+        self.factory_preload = {}
+        self.config_preload = {}
+        self.factory = mako.lookup.TemplateLookup(
+            [os.path.join(
+                os.path.split(os.path.realpath(melody.base))[0], "factory")],
+            input_encoding="utf-8",
+            output_encoding="utf-8",
+            default_filters=["decode.utf_8"]
+            )
 
     def rise(self):
+        import tornado.ioloop
         try:
             import asyncio
-            import tornado.platform
-            import tornado.ioloop
             tornado.ioloop.IOLoop.configure(
                 "tornado.platform.asyncio.AsyncIOLoop")
             print("FurtherLand is Using Asyncio Event Loop.")
         except:
-            import tornado.ioloop
+            pass
+        self.land = tornado.httpserver.HTTPServer(self.stage)
+        self.land.add_sockets(self.port)
+        if hasattr(self.stage, "setup"):
+            self.stage.setup(tornado.ioloop.IOLoop.current())
         tornado.ioloop.IOLoop.current().start()
 
     def set(self):

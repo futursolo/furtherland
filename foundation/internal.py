@@ -306,3 +306,10 @@ class SlugVerifyArea(PlacesOfInterest):
             self.finish(json.dumps({"status": False}))
         else:
             self.finish(json.dumps({"status": True}))
+
+
+class SelfKillArea(PlacesOfInterest):
+    @authenticated
+    def get(self):
+        self.finish("ok!")
+        self.furtherland.stage.communicate("exit")

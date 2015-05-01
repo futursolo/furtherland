@@ -19,6 +19,7 @@
 from tornado.gen import *
 from collections import OrderedDict
 import motor
+import tornado.web
 
 
 class Element:
@@ -166,6 +167,11 @@ class Element:
 class Records:
     def __init__(self, library):
         self.library = library
+        self._initialized = False
+
+    def initialize(self):
+        if self._initialized:
+            return
         credentials = ""
         if self.library["auth"]:
             credentials = (
@@ -176,12 +182,16 @@ class Records:
             "/" + self.library["database"])
         self.database = self.connection[
             self.library["database"]]
+        self._initialized = True
 
     def select(self, collection):
+        if not self._initialized:
+            raise tornado.web.HTTPError(500)
         _current_collection = self.database[
             self.library["prefix"] + collection]
         return Element(collection=_current_collection, dict_key="_id")
 
     def __del__(self):
-        self.connection.disconnect()
-        del self.connection
+        if self._initialized:
+            self.connection.disconnect()
+            del self.connection
