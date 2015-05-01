@@ -1,5 +1,13 @@
 # Changelog
 
+v20150501 dev
+-------------
+ - Bugs Fix
+ - Performance Optimization
+ - Config Preload Function
+ - Template Preload Function
+ - Footer Used Time and DB Actions Function
+
 v20150430 dev
 -------------
  - Bugs Fix
