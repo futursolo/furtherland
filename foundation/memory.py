@@ -44,7 +44,7 @@ class Element:
         self._length = 1
         return self
 
-    def earse(self, condition):
+    def erase(self, condition):
         self.reset()
         self._action = self._current_collection.remove(condition)
         self._action_ready = True
@@ -143,6 +143,7 @@ class Element:
             self._allow_filter = False
         else:
             raise Exception
+        return self
 
     def result(self):
         if self._result_ready:
