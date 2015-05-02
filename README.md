@@ -7,8 +7,7 @@ FurtherLand is in development, DO NOT USE it in production environment unless yo
 
 Requirements
 ------------
- - Python>=3.2.5 or Pypy3>=2.4.0 (FurtherLand will not work under Python2 or pypy)
- - Gevent (GitVersion, Optional)
+ - Python>=3.3(FurtherLand will not work under Python2)
  - Virtualenv>=12.0.5
  - Tornado>=4.0
  - Motor>=0.4

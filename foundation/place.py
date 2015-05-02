@@ -110,7 +110,7 @@ class PlacesOfInterest(RequestHandler):
             for key in result:
                 self.furtherland.config_preload[
                     result[key]["_id"]] = result[key]["value"]
-        raise Return(self.furtherland.config_preload)
+        return (self.furtherland.config_preload)
 
     @coroutine
     def get_current_user(self):
@@ -127,7 +127,7 @@ class PlacesOfInterest(RequestHandler):
                     self._current_user = None
                 else:
                     self._current_user = user
-            raise Return(self._current_user)
+            return (self._current_user)
 
     def get_arg(self, arg, default=None, arg_type="origin"):
         result = RequestHandler.get_argument(self, arg, None)
@@ -222,19 +222,19 @@ class PlacesOfInterest(RequestHandler):
 
     @coroutine
     def get_user(self, **kwargs):
-        if not hasattr(self, "_user_list"):
-            self._user_list = {}
-        book = self.memories.select("Masters")
         condition = list(kwargs.keys())[0]
+        value = kwargs[condition]
         if condition != "user_list":
-            if condition not in list(self._user_list.keys()):
-                self._user_list[condition] = {}
-            value = kwargs[condition]
-            if value not in list(self._user_list[condition].keys()):
+            if condition not in self.furtherland.master_preload.keys():
+                self.furtherland.master_preload[condition] = {}
+            if value not in self.furtherland.master_preload[condition].keys(
+             ):
+                book = self.memories.select("Masters")
                 book.find({condition: value}).length(1)
                 yield book.do()
-                self._user_list[condition][value] = book.result()
-        raise Return(self._user_list[condition][value])
+                self.furtherland.master_preload[condition][value] = (
+                    book.result())
+        return self.furtherland.master_preload[condition][value]
 
     def get_random(self, length):
         return "".join(random.sample(string.ascii_letters + string.digits,
@@ -250,25 +250,25 @@ class PlacesOfInterest(RequestHandler):
         find_condition = {}
         if only_published is True:
             find_condition["publish"] = True
-        if "class_id" in list(kwargs.keys()):
+        if "class_id" in kwargs.keys():
             if kwargs["class_id"] != 0:
                 find_condition["class_id"] = kwargs["class_id"]
             book.find(find_condition)
             book.sort([["time", False]])
             book.length(0, force_dict=True)
-        elif "writing_list" in list(kwargs.keys()):
+        elif "writing_list" in kwargs.keys():
             find_condition["_id"] = {"$in": kwargs["writing_list"]}
             book.find(find_condition, ["content"])
             book.sort([["time", False]])
             book.length(0, force_dict=True)
-        elif "slug" in list(kwargs.keys()):
+        elif "slug" in kwargs.keys():
             find_condition["slug"] = kwargs["slug"]
             book.find(find_condition)
-        elif "id" in list(kwargs.keys()):
+        elif "id" in kwargs.keys():
             find_condition["_id"] = kwargs["id"]
             book.find(find_condition)
         yield book.do()
-        raise Return(book.result())
+        return book.result()
 
     @coroutine
     def get_page(self, only_published=True, **kwargs):
@@ -276,20 +276,20 @@ class PlacesOfInterest(RequestHandler):
         find_condition = {}
         if only_published is True:
             find_condition["publish"] = True
-        if "class_id" in list(kwargs.keys()):
+        if "class_id" in kwargs.keys():
             if kwargs["class_id"] != 0:
                 find_condition["class_id"] = kwargs["class_id"]
             book.find(find_condition)
             book.sort([["time", False]])
             book.length(0, force_dict=True)
-        elif "slug" in list(kwargs.keys()):
+        elif "slug" in kwargs.keys():
             find_condition["slug"] = kwargs["slug"]
             book.find(find_condition)
-        elif "id" in list(kwargs.keys()):
+        elif "id" in kwargs.keys():
             find_condition["_id"] = kwargs["id"]
             book.find(find_condition)
         yield book.do()
-        raise Return(book.result())
+        return book.result()
 
     @coroutine
     def get_reply(self, only_permitted=True, with_privacy=False, **kwargs):
@@ -300,24 +300,24 @@ class PlacesOfInterest(RequestHandler):
         find_condition = {}
         if only_permitted is True:
             find_condition["permit"] = True
-        if "writing_id" in list(kwargs.keys()):
+        if "writing_id" in kwargs.keys():
             if kwargs["writing_id"] != 0:
                 find_condition["writing_id"] = kwargs["writing_id"]
             book.find(find_condition, ignore)
             book.sort([["time", True]])
             book.length(0, force_dict=True)
-        elif "id" in list(kwargs.keys()):
+        elif "id" in kwargs.keys():
             find_condition["_id"] = kwargs["id"]
             book.find(find_condition, ignore)
         yield book.do()
-        raise Return(book.result())
+        return book.result()
 
     @coroutine
     def issue_id(self, working_type):
         book = self.memories.select("Counts")
         book.find_modify({"_id": working_type}, ["number"])
         yield book.do()
-        raise Return(int(book.result()["number"]))
+        return int(book.result()["number"])
 
     def make_md(self, content, more=True):
         if not more:
@@ -345,7 +345,6 @@ class PlacesOfInterest(RequestHandler):
                 "reverse_url": self.application.reverse_url,
                 "config": self.config,
                 "static_url": self.static_url,
-                "public_url": self.public_url,
                 "FurtherLand": self.furtherland,
                 "used_time": int((time.time() - self.start_time) * 1000),
                 "db_action": self.db_action
@@ -357,16 +356,14 @@ class PlacesOfInterest(RequestHandler):
         return self.furtherland.factory_preload[filename].render(**env_kwargs)
 
     def render(self, page, nutrition=True):
-        if "page_title" not in list(self.render_list.keys()):
+        if ("page_title" not in self.render_list.keys() and
+           "origin_title" in self.render_list.keys()):
             self.render_list["page_title"] = (
                 self.render_list["origin_title"] +
                 " - " + self.config["site_name"])
         if nutrition:
             page = "nutrition/" + self.config["nutrition_type"] + "/" + page
         self.finish(self.render_string(page, **self.render_list))
-
-    def public_url(self, path, include_host=None, **kwargs):
-        pass
 
     @coroutine
     def get_count(self):
@@ -380,7 +377,7 @@ class PlacesOfInterest(RequestHandler):
         book = self.memories.select("Pages").count()
         yield book.do()
         result["pages"] = book.result()
-        raise Return(result)
+        return result
 
     def escape(self, item, item_type="html"):
         if item_type == "html":

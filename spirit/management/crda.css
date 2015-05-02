@@ -42,7 +42,7 @@
 }
 .main .content-title{
     float: left;
-    max-width: calc(100% - 250px);
+    max-width: calc(100% - 300px);
     overflow: hidden;
     height: 40px;
 }
@@ -56,6 +56,13 @@
     padding-left: 10px;
     padding-right: 10px;
 }
+.main .content-erase{
+    float: left;
+    font-size: 12px;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: rgb(231, 76, 60);
+}
 .main .table-reply-content{
     padding: 10px;
     box-sizing: border-box;
@@ -65,6 +72,9 @@
     display: inline-block;
     font-size: 13px;
     cursor: pointer;
+}
+.main .reply-action.delete-reply{
+    color: rgb(231, 76, 60);
 }
 .main .table-reply-content .reply-avatar{
     height: 80px;

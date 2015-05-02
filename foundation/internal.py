@@ -107,7 +107,7 @@ class AvatarArea(PlacesOfInterest):
             avatar_info = book.result()
             if not avatar_info:
                 os.remove(file_path)
-                book.earse(
+                book.erase(
                     {
                         "filename": str(size),
                         "email_md5": slug,
@@ -123,7 +123,7 @@ class AvatarArea(PlacesOfInterest):
                 return
             else:
                 os.remove(file_path)
-                book.earse(
+                book.erase(
                     {
                         "filename": str(size),
                         "email_md5": slug,
@@ -159,7 +159,7 @@ class AvatarArea(PlacesOfInterest):
             {"filename": str(size), "email_md5": slug, "type": "avatar"})
         yield book.do()
         if book.result():
-            book.earse(
+            book.erase(
                 {
                     "filename": str(size),
                     "email_md5": slug,
@@ -265,12 +265,34 @@ class ReplyArea(PlacesOfInterest):
             book.set({"_id": reply_id}, {"permit": permit})
             yield book.do()
             self.finish(json.dumps({"status": True}))
-        elif action == "earse":
+        elif action == "erase":
             if not self.current_user:
                 raise HTTPError(500)
             reply_id = self.get_arg("reply", arg_type="number")
             book = self.memories.select("Replies")
-            book.earse({"_id": reply_id})
+            book.erase({"_id": reply_id})
+            yield book.do()
+            self.finish(json.dumps({"status": True}))
+        else:
+            raise HTTPError(500)
+
+
+class ContentArea(PlacesOfInterest):
+    @coroutine
+    @authenticated
+    def post(self):
+        action = self.get_arg("action", arg_type="hash")
+        content_type = self.get_arg("type", arg_type="hash")
+        content_id = self.get_arg("content", arg_type="number")
+        if action == "erase":
+            if not self.current_user:
+                raise HTTPError(500)
+            reply_id = self.get_arg("reply", arg_type="number")
+            if content_type == "writing":
+                book = self.memories.select("Writings")
+            elif content_type == "page":
+                book = self.memories.select("Pages")
+            book.erase({"_id": content_id})
             yield book.do()
             self.finish(json.dumps({"status": True}))
         else:

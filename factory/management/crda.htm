@@ -58,6 +58,11 @@ ${parent.header()}
                 % if ("publish" in list(content[key].keys())) and (not content[key]["publish"]):
                     <div class="content-draft">草稿</div>
                 % endif
+                % if area == "writings":
+                    <div class="content-erase" type="writing" content="${content[key]["_id"]}">删除</div>
+                % elif area == "pages":
+                    <div class="content-erase" type="page" content="${content[key]["_id"]}">删除</div>
+                % endif
                     <div class="content-time change-time">${content[key]["time"]}</div>
                 </div>
             % endfor

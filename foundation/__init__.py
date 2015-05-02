@@ -36,8 +36,8 @@ navigation = [
     (r"/", place.CentralSquare),
     # (r"/classes/(.*).htm", ClassesPlace),  This will be avaliable in futhre
     # (r"/timeline", HistoryLibrary),
-    (r"/writings/([\-a-zA-Z0-9]+).htm", place.ConferenceHall),
-    (r"/pages/([\-a-zA-Z0-9]+).htm", place.MemorialWall),
+    (r"/writings/(.*).htm", place.ConferenceHall),
+    (r"/pages/(.*).htm", place.MemorialWall),
 
     # Office Redirects
     (r"/management/checkin/", RedirectHandler, {"url": "/management/checkin"}),
@@ -60,17 +60,18 @@ navigation = [
     (r"/management/checkin", office.CheckinOffice),
     (r"/management/checkout", office.CheckoutOffice),
     (r"/management/lobby", office.LobbyOffice),
-    (r"/management/working/([a-zA-Z0-9]+)", office.WorkingOffice),
-    (r"/management/crda/([a-zA-Z0-9]+)", office.CRDAOffice),
+    (r"/management/working/(.*)", office.WorkingOffice),
+    (r"/management/crda/(.*)", office.CRDAOffice),
     (r"/management/configuration", office.ControlOffice),
     (r"/management/rerise", office.ReriseOffice),
 
-    (r"/channel/avatar/([a-zA-Z0-9]+)", internal.AvatarArea),
+    (r"/channel/avatar/(.*)", internal.AvatarArea),
     (r"/channel/public", internal.PublicArea),
     (r"/channel/reply", internal.ReplyArea),
     (r"/channel/preview", internal.PreviewArea),
     (r"/channel/slug_verify", internal.SlugVerifyArea),
     (r"/channel/selfkill", internal.SelfKillArea),
+    (r"/channel/content", internal.ContentArea),
     (r"(.*)", place.LostAndFoundPlace)
 ]
 
@@ -140,13 +141,14 @@ class FurtherLand:
             pass
         self.factory_preload = {}
         self.config_preload = {}
+        self.master_preload = {}
         self.factory = mako.lookup.TemplateLookup(
             [os.path.join(
                 os.path.split(os.path.realpath(melody.base))[0], "factory")],
             input_encoding="utf-8",
             output_encoding="utf-8",
             default_filters=["decode.utf_8"]
-            )
+        )
 
     def rise(self):
         import tornado.ioloop
