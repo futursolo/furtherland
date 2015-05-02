@@ -16,6 +16,15 @@
 $(".main .type-selector span").click(function (){
     window.location.href = $(this).attr("location");
 });
+$(".main .content-erase").click(function (){
+    $.postJSON("/channel/content", {
+        "action": "erase",
+        "type": $(this).attr("type"),
+        "content": $(this).attr("content"),
+    }, function (data){
+        window.location.reload();
+    });
+});
 $(".main .permit-reply").click(function (){
     $.postJSON("/channel/reply", {
         "action": "permit",
@@ -36,7 +45,7 @@ $(".main .unpermit-reply").click(function (){
 });
 $(".main .delete-reply").click(function (){
     $.postJSON("/channel/reply", {
-        "action": "earse",
+        "action": "erase",
         "reply": $(this).attr("reply")
     }, function (data){
         window.location.reload();

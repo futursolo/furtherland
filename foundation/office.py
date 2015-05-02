@@ -43,17 +43,17 @@ class ManagementOffice(PlacesOfInterest):
     def checkin(self, username, password, two):
         user = yield self.get_user(username=username)
         if (not user) or (self.hash(password, "sha1") != user["password"]):
-            raise Return([False, "password"])
+            return [False, "password"]
         if not (self.verify_otp(two, key=user["otp_key"])):
-            raise Return([False, "two"])
+            return [False, "two"]
         device_id = self.get_random(32)
-        raise Return([
+        return [
             True, {
                 "user_id": user["_id"],
                 "device_id": device_id,
                 "agent_auth": self.hash((device_id + user["password"]),
                                         "sha256")
-            }])
+            }]
 
     def verify_otp(self, code, key=None):
         if not key:
@@ -64,10 +64,10 @@ class ManagementOffice(PlacesOfInterest):
     def management_render(self, page):
         self.render_list["management_url"] = self.management_url
         self.render_list["checkin_status"] = self.checkin_status
-        if "page_title" not in list(self.render_list.keys()):
+        if "page_title" not in self.render_list.keys():
             self.render_list["page_title"] = (
                 self.render_list["origin_title"] +
-                " - " + self.config["site_name"] + "管理局")
+                " - " + self.config["office_name"])
         page = "management/" + page
         self.finish(self.render_string(page, **self.render_list))
 
@@ -252,6 +252,9 @@ class CRDAOffice(ManagementOffice):
         if area == "replies":
             writing_list = yield self.get_writing(writing_list=writing_list)
             for key in content_list:
+                if content_list[key]["writing_id"] not in writing_list.keys():
+                    del content_list[key]
+                    continue
                 content_list[key]["writing"] = writing_list[
                     content_list[key]["writing_id"]]
         self.render_list["content"] = content_list
@@ -340,6 +343,7 @@ class ControlOffice(ManagementOffice):
 
 
 class ReriseOffice(ManagementOffice):
+    @authenticated
     def get(self):
         self.render_list["origin_title"] = "重新启动"
         self.management_render("rerise.htm")

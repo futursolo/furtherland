@@ -1,5 +1,14 @@
 # Changelog
 
+v20150502 dev
+-------------
+ - Bugs Fix
+ - Stop Support for pypy3(Because it is slower than normal Python3) and update minimal Python version to 3.3
+ - Master Information Preload Function
+ - Public URL function Removed
+ - Writings and Pages Erase Function
+ - Fixed a serious Spelling Mistake
+
 v20150501 dev
 -------------
  - Bugs Fix
