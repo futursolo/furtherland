@@ -29,6 +29,8 @@ import functools
 import mako.lookup
 import mako.template
 import time
+import datetime
+import feedgen.feed
 
 
 def decorator_with_args(decorator_to_enhance):
@@ -87,6 +89,7 @@ class PlacesOfInterest(RequestHandler):
         self.render_list = {}
         self.memories = self.Memories(self)
         self.current_user = yield self.get_current_user()
+        self.current_visitor = yield self.get_current_visitor()
         self.config = yield self.get_config()
 
         self.next_url = self.get_arg("next", arg_type="link", default="/")
@@ -127,7 +130,7 @@ class PlacesOfInterest(RequestHandler):
                     self._current_user = None
                 else:
                     self._current_user = user
-            return (self._current_user)
+        return (self._current_user)
 
     def get_arg(self, arg, default=None, arg_type="origin"):
         result = RequestHandler.get_argument(self, arg, None)
@@ -339,6 +342,7 @@ class PlacesOfInterest(RequestHandler):
                 "handler": self,
                 "request": self.request,
                 "current_user": self.current_user,
+                "current_visitor": self.current_visitor,
                 "locale": self.locale,
                 "_": self.locale.translate,
                 "xsrf_form_html": self.xsrf_form_html,
@@ -406,6 +410,56 @@ class PlacesOfInterest(RequestHandler):
                         __without_database=True,
                         **self.render_list))
 
+    @coroutine
+    def get_current_visitor(self):
+        book = self.memories.select("Visitors")
+        book.find({
+            "_id": self.get_scookie("visitor_id", arg_type="number"),
+            "visitor_auth": self.get_scookie("visitor_auth",
+                                             arg_type="hash")
+        })
+        yield book.do()
+        result = book.result()
+        if result:
+            return result
+        self.clear_cookie("visitor_id")
+        self.clear_cookie("visitor_auth")
+        return None
+
+    @coroutine
+    def checkin_visitor(self, oauth_type, visitor):
+        book = self.memories.select("Visitors")
+        if oauth_type is "github":
+            book.find({
+                "oauth_type": "github",
+                "oauth_id": visitor["id"]
+            })
+            yield book.do()
+            result = book.result()
+            if result:
+                return {
+                    "visitor_id": result["_id"],
+                    "visitor_auth": result["visitor_auth"]
+                }
+            visitor_info = {
+                "_id": (yield self.issue_id("Visitors")),
+                "oauth_type": "github",
+                "oauth_id": visitor["id"],
+                "login_name": visitor.get("login"),
+                "access_token": visitor.get("access_token"),
+                "avatar_url": visitor.get("avatar_url"),
+                "name": visitor.get("name"),
+                "email": visitor.get("email"),
+                "homepage": visitor.get("blog"),
+                "visitor_auth": self.get_random(32)
+            }
+        book.add(visitor_info)
+        yield book.do()
+        return {
+            "visitor_id": visitor_info["_id"],
+            "visitor_auth": visitor_info["visitor_auth"]
+        }
+
 
 class CentralSquare(PlacesOfInterest):
     @coroutine
@@ -446,6 +500,49 @@ class MemorialWall(PlacesOfInterest):
         self.render_list["page"] = page
         self.render_list["origin_title"] = page["title"]
         self.render("pages.htm")
+
+
+class NewsAnnouncement(PlacesOfInterest):
+    @coroutine
+    def get(self):
+
+        self.set_header("Content-Type", "application/xml; charset=\"utf-8\"")
+
+        content = yield self.get_writing(class_id=0)
+
+        fg = feedgen.feed.FeedGenerator()
+        update_time = 0
+        author = yield self.get_user(_id=1)
+        fg.id(self.config["site_url"])
+        fg.title(self.config["site_name"])
+        fg.author({"name": author["username"], "email": author["email"]})
+        fg.link(href=self.config["site_url"], rel="alternate")
+        fg.link(href=self.config["site_url"] + "/feed.xml", rel="self")
+        fg.language("zh-CN")
+        fg.logo(self.config["site_url"] + "/spirit/favicon.jpg")
+
+        for key in content.keys():
+            current = fg.add_entry()
+            current.id((self.config["site_url"] + "/writings/{0}.htm").format(
+                content[key]["slug"])
+            )
+            current.link(href=(self.config[
+                "site_url"] + "/writings/{0}.htm").format(
+                    content[key]["slug"]))
+            current.title(content[key]["title"])
+            current.content(self.make_md(content[key]["content"]))
+            if content[key]["time"] > update_time:
+                update_time = content[key]["time"]
+            current.updated(
+                datetime.datetime.fromtimestamp(content[key]["time"]).replace(
+                    tzinfo=datetime.timezone.utc))
+
+            fg.updated(datetime.datetime.fromtimestamp(
+                update_time).replace(
+                    tzinfo=datetime.timezone.utc))
+
+        atomfeed = fg.atom_str(pretty=True)
+        self.write(atomfeed)
 
 
 class HistoryLibrary(PlacesOfInterest):

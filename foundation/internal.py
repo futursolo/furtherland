@@ -198,27 +198,20 @@ class ReplyArea(PlacesOfInterest):
             self.finish(json.dumps(result))
         elif action == "new":
             reply = OrderedDict()
+            reply["permit"] = True
             reply["writing_id"] = writing_id
-            if not self.current_user:
-                reply["master"] = False
-                reply["name"] = self.get_arg("name", arg_type="origin")
-                reply["email"] = self.get_arg("email", arg_type="mail_address")
-                reply["homepage"] = self.get_arg("homepage", arg_type="link")
-                if not (reply["name"] and reply["email"]):
-                    result = {
-                        "success": False,
-                        "reason": "incomplation"
-                    }
-                    self.finish(json.dumps(result))
-                    return
-                reply["name"] = self.escape(reply["name"], item_type="html")
-                reply["permit"] = False
-            else:
+            if self.current_user:
                 reply["master"] = True
                 reply["name"] = self.current_user["username"]
                 reply["email"] = self.current_user["email"]
                 reply["homepage"] = self.current_user["homepage"]
-                reply["permit"] = True
+            elif self.current_visitor:
+                reply["master"] = False
+                reply["name"] = self.current_visitor["name"]
+                reply["email"] = self.current_visitor["email"]
+                reply["homepage"] = self.current_visitor["homepage"]
+            else:
+                raise HTTPError(403)
             reply["ip"] = self.remote_ip
             reply["time"] = int(time.time())
             reply["emailmd5"] = self.hash(reply["email"].lower(),
@@ -237,10 +230,8 @@ class ReplyArea(PlacesOfInterest):
             result = {}
             try:
                 yield book.do()
-                result["success"] = reply["master"]
+                result["success"] = True
                 result["id"] = reply["_id"]
-                if not reply["master"]:
-                    result["reason"] = "waitforcheck"
             except:
                 result["success"] = False
                 result["reason"] = "unkonwn"
