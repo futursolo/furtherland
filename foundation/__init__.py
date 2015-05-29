@@ -27,6 +27,7 @@ import mako
 from . import place
 from . import office
 from . import internal
+from . import visitor
 from . import memory as historial
 from multiprocessing import Pipe
 from multiprocessing.connection import Connection
@@ -36,6 +37,7 @@ navigation = [
     (r"/", place.CentralSquare),
     # (r"/classes/(.*).htm", ClassesPlace),  This will be avaliable in futhre
     # (r"/timeline", HistoryLibrary),
+    (r"/feed.xml", place.NewsAnnouncement),
     (r"/writings/(.*).htm", place.ConferenceHall),
     (r"/pages/(.*).htm", place.MemorialWall),
 
@@ -72,6 +74,10 @@ navigation = [
     (r"/channel/slug_verify", internal.SlugVerifyArea),
     (r"/channel/selfkill", internal.SelfKillArea),
     (r"/channel/content", internal.ContentArea),
+
+    (r"/visitor/github", visitor.VisitorGitHubCheckinPlace),
+    (r"/visitor/checkout", visitor.VisitorCheckoutOffice),
+
     (r"(.*)", place.LostAndFoundPlace)
 ]
 
@@ -152,13 +158,6 @@ class FurtherLand:
 
     def rise(self):
         import tornado.ioloop
-        try:
-            import asyncio
-            tornado.ioloop.IOLoop.configure(
-                "tornado.platform.asyncio.AsyncIOLoop")
-            print("FurtherLand is Using Asyncio Event Loop.")
-        except:
-            pass
         self.land = tornado.httpserver.HTTPServer(self.stage)
         self.land.add_sockets(self.port)
         if hasattr(self.stage, "setup"):

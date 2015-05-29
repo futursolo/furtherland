@@ -13,6 +13,8 @@ Requirements
  - Motor>=0.4
  - Misaka>=1.0.2
  - Mako>=1.0.1
+ - PyCurl>=7.19.3
+ - Feedgen>=0.3.1
 
 License
 -------
