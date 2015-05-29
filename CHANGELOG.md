@@ -1,5 +1,12 @@
 # Changelog
 
+v20150529 dev
+-------------
+ - Bugs Fix
+ - Stop Using Asyncio Event Loop Because it is slower than Tornado IO Loop
+ - Reply Area GitHub OAuth System Works
+ - Atom RSS Feed System Works
+
 v20150502 dev
 -------------
  - Bugs Fix

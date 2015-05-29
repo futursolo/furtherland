@@ -46,16 +46,6 @@ function unixToDatetime(unix){
     return now.format("yyyy-MM-dd hh:mm:ss");
 }
 
-function buildWindow(){
-    if ($(window).width() < 750){
-        $("#reply-textarea-wrapper").css("width", "100%");
-        $("#reply-id-input").css("width", "calc(100% - 150px)");
-    }else{
-        $("#reply-textarea-wrapper").css("width", "calc(100% - 350px)");
-        $("#reply-id-input").css("width", "200px");
-    }
-}
-
 function getCookie(name) {
     var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
     return r ? r[1] : undefined;
@@ -98,9 +88,6 @@ $(document).ready(function (){
 function getReplyData(){
     result = {};
     result.writing = $("#reply-writing").val();
-    result.name = $("#reply-name").val();
-    result.email = $("#reply-email").val();
-    result.homepage = $("#reply-homepage").val();
     if ($("#reply-textarea").val().length <= 10){
         throw("一个好的评论的长度应该大于10个字，难道不是么？");
     }
@@ -193,18 +180,20 @@ $("#publish-reply").click(function (){
                             }catch(e){
                                 if (e == "waitforcheck"){
                                     clearCurrentReply();
-                                    handleError("感谢你的回复，你的回复需要审核，稍后即可看到。");
+                                    handleError("感謝你的回覆，你的回覆需要審核，稍後即可看到。");
                                 }else if (e == "incomplation"){
-                                    handleError("请将信息填写完整后再试。");
+                                    handleError("請將信息填寫完整後再試。");
+                                }else if (e == "toofast"){
+                                    handleError("你的發表速度過快，請在1024s後重試。");
                                 }else{
-                                    handleError("发生了未知错误，请稍候再试。");
+                                    handleError("發生了未知錯誤，請稍候再試。");
                                 }
                             }
                         }
                     }
                 );
             }catch(e){
-                throw("发生了未知错误，请稍候再试。");
+                throw("發生了未知錯誤，請稍候再試。");
             }
         }
     }catch(e){
