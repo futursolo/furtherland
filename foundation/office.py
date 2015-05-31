@@ -347,3 +347,11 @@ class ReriseOffice(ManagementOffice):
     def get(self):
         self.render_list["origin_title"] = "重新启动"
         self.management_render("rerise.htm")
+
+
+class NewOffice(ManagementOffice):
+    @authenticated
+    def get(self, slug):
+        self.render_list["origin_title"] = ""
+        self.render_list["page_title"] = self.config["office_name"]
+        self.management_render("office.htm")

@@ -66,6 +66,7 @@ navigation = [
     (r"/management/crda/(.*)", office.CRDAOffice),
     (r"/management/configuration", office.ControlOffice),
     (r"/management/rerise", office.ReriseOffice),
+    (r"/management/(.*)", office.NewOffice),
 
     (r"/channel/avatar/(.*)", internal.AvatarArea),
     (r"/channel/public", internal.PublicArea),

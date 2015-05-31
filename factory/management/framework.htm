@@ -23,13 +23,13 @@
     <meta name="referrer" content="origin">
     <meta name="format-detection" content="telephone=no">
     <link href="//fonts.googleapis.com/css?family=Oxygen:400,700" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/default.min.css">
+    <link rel="stylesheet" href="${management_url("highlight.min.css")}">
     <link href="${management_url("framework.css")}" rel="stylesheet" type="text/css"><%block name="css"/>
 </head>
 <body>
     ${self.body()}
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js" charset="utf-8"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
+    <script src="${management_url("jquery.min.js")}" charset="utf-8"></script>
+    <script src="${management_url("highlight.min.js")}"></script>
     <script src="${management_url("framework.js")}" charset="utf-8"></script><%block name="js"/>
 </body>
 </html>

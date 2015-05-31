@@ -1,0 +1,303 @@
+[
+    {
+        "name": "Configs",
+        "documents": [
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": "site_name"
+                },
+                "value": {
+                    "type": "prepared",
+                    "content": "FurtherLand"
+                }
+            },
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": "site_url"
+                },
+                "value": {
+                    "type": "prepared",
+                    "content": ""
+                }
+            },
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": "nutrition_type"
+                },
+                "value": {
+                    "type": "prepared",
+                    "content": "blossom"
+                }
+            },
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": "site_description"
+                },
+                "value": {
+                    "type": "prepared",
+                    "content": "Nobody knows the Future, Why not fight up?"
+                }
+            },
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": "site_keywords"
+                },
+                "value": {
+                    "type": "prepared",
+                    "content": "FurtherLand, Python"
+                }
+            },
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": "trace_code"
+                },
+                "value": {
+                    "type": "prepared",
+                    "content": "<script></script>"
+                }
+            },
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": "github_client_id"
+                },
+                "value": {
+                    "type": "preferred",
+                    "content": ""
+                }
+            },
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": "github_client_secret"
+                },
+                "value": {
+                    "type": "preferred",
+                    "content": ""
+                }
+            },
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": "configuration_name"
+                },
+                "value": {
+                    "type": "prepared",
+                    "content": "设置"
+                }
+            },
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": "crda_name"
+                },
+                "value": {
+                    "type": "prepared",
+                    "content": "管理"
+                }
+            },
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": "lobby_name"
+                },
+                "value": {
+                    "type": "prepared",
+                    "content": "首页"
+                }
+            },
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": "public_name"
+                },
+                "value": {
+                    "type": "prepared",
+                    "content": "文件上传"
+                }
+            },
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": "working_name"
+                },
+                "value": {
+                    "type": "prepared",
+                    "content": "创作"
+                }
+            },
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": "office_name"
+                },
+                "value": {
+                    "type": "prepared",
+                    "content": "控制台"
+                }
+            },
+        ]
+    },
+    {
+        "name": "Classes",
+        "documents": []
+    },
+    {
+        "name": "Counts",
+        "documents": [
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": "Classes"
+                },
+                "value": {
+                    "type": "prepared",
+                    "content": 0
+                }
+            },
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": "Masters"
+                },
+                "value": {
+                    "type": "prepared",
+                    "content": 1
+                }
+            },
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": "Pages"
+                },
+                "value": {
+                    "type": "prepared",
+                    "content": 0
+                }
+            },
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": "Publics"
+                },
+                "value": {
+                    "type": "prepared",
+                    "content": 0
+                }
+            },
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": "Replies"
+                },
+                "value": {
+                    "type": "prepared",
+                    "content": 0
+                }
+            },
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": "Tags"
+                },
+                "value": {
+                    "type": "prepared",
+                    "content": 0
+                }
+            },
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": "Visitors"
+                },
+                "value": {
+                    "type": "prepared",
+                    "content": 0
+                }
+            },
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": "Writings"
+                },
+                "value": {
+                    "type": "prepared",
+                    "content": 0
+                }
+            },
+        ]
+    },
+    {
+        "name": "Masters",
+        "documents": [
+            {
+                "_id": {
+                    "type": "prepared",
+                    "content": 1
+                },
+                "role": {
+                    "type": "prepared",
+                    "content": "master"
+                },
+                "username": {
+                    "type": "required",
+                    "content": ""
+                },
+                "email": {
+                    "type": "required",
+                    "content": ""
+                },
+                "password": {
+                    "type": "required",
+                    "content": ""
+                },
+                "otp_key": {
+                    "type": "required",
+                    "content": ""
+                },
+                "last_login": {
+                    "type": "prepared",
+                    "content": 0
+                },
+                "created": {
+                    "type": "prepared",
+                    "content": 0
+                },
+                "homepage": {
+                    "type": "required",
+                    "content": ""
+                }
+            },
+        ]
+    },
+    {
+        "name": "Pages",
+        "documents": []
+    },
+    {
+        "name": "Publics",
+        "documents": []
+    },
+    {
+        "name": "Replies",
+        "documents": []
+    },
+    {
+        "name": "Tags",
+        "documents": []
+    },
+    {
+        "name": "Visitors",
+        "documents": []
+    },
+    {
+        "name": "Writings",
+        "documents": []
+    }
+]
