@@ -1,5 +1,10 @@
 # Changelog
 
+v20150531 dev
+-------------
+ - Stop Using Static File Content Delivery Network to Prevent Connection Problems
+
+
 v20150529 dev
 -------------
  - Bugs Fix
