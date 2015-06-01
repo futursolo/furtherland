@@ -26,6 +26,76 @@ html, body{
     background-color: rgb(245, 245, 245);
     word-break: break-all;
 }
+.load-layout{
+    height: 100%;
+    width: 100%;
+    z-index: 100;
+    background-color: rgb(245, 245, 245);
+    position: absolute;
+    display: none;
+    opacity: 0;
+    transition: all 0.30s ease-in-out;
+}
+.table{
+    height: 100%;
+    width: 100%;
+    display: table;
+}
+.table-cell{
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+.load-layout.visible{
+    opacity: 1;
+}
+header{
+    z-index: 1;
+}
+.main{
+    width: 100%;
+    height: calc(100% - 64px);
+    position: relative;
+}
 aside{
     width: 300px;
+    min-height: 100%;
+    position:absolute;
+    left: 0;
+    transform: translate(-400px, 0);
+    top: 0;
+    transition: all 0.50s ease-in-out;
+}
+aside.visible{
+    transform: translate(0, 0);
+}
+.lobby{
+    box-sizing: border-box;
+    padding: 20px;
+}
+.tile{
+    display: inline-block;
+    position: relative;
+    text-align: center;
+    width: 300px;
+    height: 400px;
+    margin: 20px;
+}
+.tile .tile-container{
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+    border-radius: 2px;
+    background-color: rgb(255, 255, 255);
+}
+.tile .tile-tips-list{
+    height: 150px;
+}
+.tile .tile-name{
+    font-size: 40px;
+    line-height: 100px;
+}
+.tile .tile-content{
+    font-size: 40px;
+    line-height: 100px;
 }
