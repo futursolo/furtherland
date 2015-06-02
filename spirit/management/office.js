@@ -20,10 +20,9 @@ document.querySelector("#menu-button").addEventListener("click", function (e) {
 });
 document.querySelector("#reload").addEventListener("click", function (e) {
     if (!window.loading){
-        showLoadLayout();
-        setTimeout(function () {
-            hideLoadLayout();
-        }, 1500);
+        loadLayout(function (callback) {
+            setTimeout(callback, 1500);
+        });
     }
 });
 
@@ -34,24 +33,40 @@ Array.prototype.forEach.call(document.querySelectorAll(".aside-item"), function 
     });
 });
 
-function showLoadLayout() {
+function loadLayout(callback) {
     window.loading = true;
-    document.querySelector(".load-layout").style.display = "block";
+    document.querySelector(".load-layout").style.height = "100%";
+    document.querySelector(".load-layout").style.width = "100%";
     document.querySelector(".load-layout").classList.add("visible");
-    document.querySelector(".load-layout paper-spinner").active = true;
-}
-
-function hideLoadLayout() {
-    document.querySelector(".load-layout").classList.remove("visible");
-    setTimeout(function () {
-        document.querySelector(".load-layout").style.display = "none";
-        window.loading = false;
-    }, 300);
+    function hideLoadLayout() {
+        document.querySelector(".load-layout").classList.remove("visible");
+        setTimeout(function () {
+        document.querySelector(".load-layout").style.height = "0";
+        document.querySelector(".load-layout").style.width = "0";
+            window.loading = false;
+        }, 300);
+    }
+    setTimeout(callback, 300, hideLoadLayout);
 }
 
 function toggle(event) {
     var spinners = event.target.parentElement.querySelectorAll('paper-spinner');
-    Array.prototype.forEach.call(spinners, function(spinner) {
+    Array.prototype.forEach.call(spinners, function (spinner) {
         spinner.active = !spinner.active;
     });
 }
+
+document.querySelector("#switch-to-lobby").addEventListener("click", function () {
+    loadLayout(function (callback) {
+        document.querySelector(".main-part.current").classList.remove("current");
+        document.querySelector(".main-part.lobby").classList.add("current");
+        callback();
+    });
+});
+document.querySelector("#switch-to-working").addEventListener("click", function () {
+    loadLayout(function (callback) {
+        document.querySelector(".main-part.current").classList.remove("current");
+        document.querySelector(".main-part.working").classList.add("current");
+        callback();
+    });
+});
