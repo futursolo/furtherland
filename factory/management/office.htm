@@ -10,6 +10,7 @@
     <script src="${management_url("bower_components/webcomponentsjs/webcomponents.min.js")}"></script>
     <link rel="import" href="${management_url("bower_components/paper-styles/paper-styles.html")}">
     <link rel="import" href="${management_url("bower_components/iron-icons/iron-icons.html")}">
+    <link rel="import" href="${management_url("bower_components/iron-icons/editor-icons.html")}">
     <link rel="import" href="${management_url("bower_components/paper-button/paper-button.html")}">
     <link href="//fonts.googleapis.com/css?family=Oxygen:400,700" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="${management_url("highlight.min.css")}">
@@ -21,11 +22,19 @@
     <link rel="import" href="${management_url("bower_components/paper-icon-button/paper-icon-button.html")}">
     <link rel="import" href="${management_url("bower_components/paper-spinner/paper-spinner.html")}">
     <link rel="import" href="${management_url("bower_components/paper-button/paper-button.html")}">
+    <link rel="import" href="${management_url("bower_components/paper-fab/paper-fab.html")}">
+    <link rel="import" href="${management_url("bower_components/paper-checkbox/paper-checkbox.html")}">
+    <link rel="import" href="${management_url("bower_components/paper-radio-group/paper-radio-group.html")}">
     <link href="${management_url("office.css")}" rel="stylesheet" type="text/css">
+    <style is="custom-style">
+        :root {
+            --default-primary-color: rgb(54, 134, 190);
+        }
+    </style>
 </head>
 <body>
     <header>
-        <paper-toolbar>
+        <paper-toolbar id="header-toolbar">
             <paper-icon-button icon="menu" id="menu-button"></paper-icon-button>
                 <div title>${config["office_name"]}</div>
                 <paper-icon-button icon="refresh" id="reload"></paper-icon-button>
@@ -42,16 +51,20 @@
         <aside>
             <paper-material elevation="2">
                 <paper-menu>
-                    <paper-icon-item class="aside-item">
+                    <paper-icon-item class="aside-item" id="switch-to-lobby">
                         <iron-icon icon="inbox" item-icon></iron-icon>${config["lobby_name"]}
                     </paper-icon-item>
-                    <paper-icon-item class="aside-item">${config["working_name"]}</paper-icon-item>
-                    <paper-icon-item class="aside-item">${config["crda_name"]}</paper-icon-item>
-                    <paper-icon-item class="aside-item">${config["configuration_name"]}</paper-icon-item>
+                    <paper-icon-item id="switch-to-working" class="aside-item">${config["working_name"]}</paper-icon-item>
+                    <paper-icon-item id="switch-to-crda" class="aside-item">${config["crda_name"]}</paper-icon-item>
+                    <paper-icon-item id="switch-to-cofiguration" class="aside-item">${config["configuration_name"]}</paper-icon-item>
                 </paper-menu>
             </paper-material>
         </aside>
-        <div class="lobby">
+    % if slug == "lobby":
+        <div class="main-part lobby current">
+    % else:
+        <div class="main-part lobby">
+    % endif
             <div class="table">
                 <div class="table-cell">
                     <div class="tile" id="working-num">
@@ -63,16 +76,6 @@
                             </div>
                             <paper-button raised class="manage-working">管理文章<iron-icon icon="chevron-right"></iron-icon></paper-button>
                             <style>
-                                .manage-working{
-                                    color: var(--paper-light-blue-500);
-                                    --paper-button-flat-focus-color: var(--paper-light-blue-50);
-                                }
-                                .manage-working:hover{
-                                  background: var(--paper-light-blue-50);
-                                }
-                                .manage-working[active]{
-                                    background-color: rgb(255, 255, 255);
-                                }
                             </style>
                         </paper-material>
                     </div>
@@ -99,6 +102,48 @@
                     </div>
                 </div>
             </div>
+            <div class="float">
+                <paper-fab icon="create" id="write-new-float-button"></paper-fab>
+            </div>
+        </div>
+    % if slug == "working":
+        <div class="main-part working current">
+    % else:
+        <div class="main-part working">
+    % endif
+            <div class="working-info">
+                <div class="working-title">
+                    <paper-input-container id="working-title-input">
+                        <label>标题</label>
+                        <input is="iron-input">
+                    </paper-input-container>
+                </div>
+                <div class="working-slug">
+                    <paper-input-container id="working-slug-input">
+                        <label>短链接</label>
+                        <input is="iron-input">
+                    </paper-input-container>
+                </div>
+                <div class="working-time">
+                    <paper-input-container id="working-time-input">
+                        <label>发表时间</label>
+                        <input is="iron-input">
+                    </paper-input-container>
+                    <paper-checkbox id="working-time-is-when-published" checked>当单击发表按钮时</paper-checkbox>
+                </div>
+                <div class="working-type">
+                    <paper-radio-group selected="writing">
+                        <paper-radio-button name="writing">文章</paper-radio-button>
+                        <paper-radio-button name="page">页面</paper-radio-button>
+                    </paper-radio-group>
+                </div>
+            </div>
+            <div class="editor"></div>
+            <div class="preview"></div>
+        </div>
+        <div class="float">
+            <paper-fab icon="inbox" id="draft-working-buttton"></paper-fab><br><br>
+            <paper-fab icon="editor:publish" id="publish-working-buttton"></paper-fab>
         </div>
     </div>
     <script src="${management_url("highlight.min.js")}"></script>
