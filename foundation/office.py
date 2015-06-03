@@ -351,7 +351,9 @@ class ReriseOffice(ManagementOffice):
 
 class NewOffice(ManagementOffice):
     @authenticated
-    def get(self, slug):
+    def get(self, slug, sub_slug=None):
         self.render_list["origin_title"] = ""
         self.render_list["page_title"] = self.config["office_name"]
+        self.render_list["slug"] = slug
+        self.render_list["sub_slug"] = sub_slug
         self.management_render("office.htm")

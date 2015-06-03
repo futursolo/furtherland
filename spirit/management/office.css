@@ -26,6 +26,187 @@ html, body{
     background-color: rgb(245, 245, 245);
     word-break: break-all;
 }
+.load-layout{
+    height: 0;
+    width: 0;
+    z-index: 100;
+    background-color: rgb(245, 245, 245);
+    position: absolute;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.30s ease-in-out;
+}
+.table{
+    height: 100%;
+    width: 100%;
+    display: table;
+}
+.table-cell{
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+.load-layout.visible{
+    opacity: 1;
+}
+header{
+    z-index: 1;
+}
+paper-toolbar#header-toolbar{
+    background-color: rgb(54, 134, 190);
+}
+textarea, input{
+    font-family: Oxygen, Verdana, Tahoma, STHeiti, "Noto Sans CJK SC", "Microsoft YaHei", SimHei;
+}
+.main{
+    width: 100%;
+    height: calc(100% - 64px);
+    position: relative;
+}
 aside{
     width: 300px;
+    min-height: 100%;
+    position:absolute;
+    left: 0;
+    transform: translate(-400px, 0);
+    top: 0;
+    transition: all 0.50s ease-in-out;
+    z-index: 10;
+}
+aside.visible{
+    transform: translate(0, 0);
+}
+.main-part{
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    display: none;
+}
+.main-part.current{
+    display: block;
+}
+.lobby{
+    padding: 20px;
+}
+.tile{
+    display: inline-block;
+    position: relative;
+    text-align: center;
+    width: 300px;
+    height: 400px;
+    margin: 20px;
+}
+.tile .tile-container{
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+    border-radius: 2px;
+    background-color: rgb(255, 255, 255);
+}
+.tile .tile-tips-list{
+    height: 150px;
+}
+.tile .tile-name{
+    font-size: 40px;
+    line-height: 100px;
+}
+.tile .tile-content{
+    font-size: 40px;
+    line-height: 100px;
+}
+.manage-working{
+    color: rgb(255, 255, 255);
+    background-color: rgb(66, 133, 244);;
+}
+.manage-working[active]{
+    background-color: rgba(66, 133, 244, 0.25);
+}
+.manage-page{
+    color: rgb(255, 255, 255);
+    background-color: rgb(76, 175, 80);;
+}
+.manage-page[active]{
+    background-color: rgba(76, 175, 80, 0.25);
+}
+.manage-reply{
+    color: rgb(255, 255, 255);
+    background-color: rgb(255, 152, 0);;
+}
+.manage-reply[active]{
+    background-color: rgba(255, 152, 0, 0.25);
+}
+.float{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}
+.float paper-fab{
+    background-color: rgb(244, 67, 54);
+}
+.float paper-fab[active]{
+    background-color: rgba(244, 67, 54, 0.25);
+}
+.main-part.working{
+    background-color: rgb(255, 255, 255);
+}
+.working .working-info{
+    display: none;
+}
+.working #working-title-input{
+    z-index: 1;
+    position: relative;
+}
+.working .editor{
+    height: calc(100% - 55px);
+    width: 50%;
+    display: inline-block;
+    vertical-align: top;
+    position: absolute;
+    top: 53px;
+    left: 0;
+    box-sizing: border-box;
+    border-right: 1px solid rgb(230, 230, 230);
+}
+.working .preview{
+    height: calc(100% - 55px);
+    width: 50%;
+    display: inline-block;
+    vertical-align: top;
+    position: absolute;
+    top: 53px;
+    right: 0;
+    box-sizing: border-box;
+    border-left: 1px solid rgb(230, 230, 230);
+}
+textarea#editor-textarea{
+    resize: none;
+    outline: 0;
+    border: none;
+    height: calc(100% - 45px);
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    padding-top: 0;
+    font-size: 15px;
+    line-height: 20px;
+    color: rgb(100, 100, 100);
+}
+.working .working-description{
+    height: 40px;
+    box-sizing: border-box;
+    padding-left: 10px;
+    line-height: 40px;
+    font-size: 15px;
+    color: rgb(150, 150, 150);
+}
+.working div#working-preview-area{
+    height: calc(100% - 45px);
+    width: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+    padding: 10px;
+    padding-top: 0;
+    font-size: 15px;
+    line-height: 20px;
+    color: rgb(100, 100, 100);
 }
