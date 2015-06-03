@@ -70,3 +70,13 @@ document.querySelector("#switch-to-working").addEventListener("click", function 
         callback();
     });
 });
+function previewText(event) {
+    document.querySelector("#working-preview-area").innerHTML = marked(document.querySelector("#editor-textarea").value);
+    //PreviewText
+}
+
+document.querySelector("#editor-textarea").addEventListener("change", previewText);
+document.querySelector("#editor-textarea").addEventListener("keypress", previewText);
+document.querySelector("#editor-textarea").addEventListener("keydown", previewText);
+document.querySelector("#editor-textarea").addEventListener("keyup", previewText);
+document.querySelector("#editor-textarea").addEventListener("blur", previewText);
