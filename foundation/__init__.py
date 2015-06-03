@@ -61,11 +61,7 @@ navigation = [
 
     (r"/management/checkin", office.CheckinOffice),
     (r"/management/checkout", office.CheckoutOffice),
-    (r"/management/lobby", office.LobbyOffice),
-    (r"/management/working/(.*)", office.WorkingOffice),
-    (r"/management/crda/(.*)", office.CRDAOffice),
-    (r"/management/configuration", office.ControlOffice),
-    (r"/management/rerise", office.ReriseOffice),
+    (r"/management/(.*)/(.*)", office.NewOffice),
     (r"/management/(.*)", office.NewOffice),
 
     (r"/channel/avatar/(.*)", internal.AvatarArea),
