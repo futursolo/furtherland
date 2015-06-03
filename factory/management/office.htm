@@ -111,13 +111,21 @@
     % else:
         <div class="main-part working">
     % endif
+            <div class="working-title">
+                <paper-input-container id="working-title-input">
+                    <label>&nbsp;&nbsp;标题</label>
+                    <input is="iron-input">
+                </paper-input-container>
+            </div>
+            <div class="editor">
+                <div class="working-description">创作</div>
+                <textarea id="editor-textarea"></textarea>
+            </div>
+            <div class="preview">
+                <div class="working-description">预览</div>
+                <div id="working-preview-area"></div>
+            </div>
             <div class="working-info">
-                <div class="working-title">
-                    <paper-input-container id="working-title-input">
-                        <label>标题</label>
-                        <input is="iron-input">
-                    </paper-input-container>
-                </div>
                 <div class="working-slug">
                     <paper-input-container id="working-slug-input">
                         <label>短链接</label>
@@ -138,14 +146,13 @@
                     </paper-radio-group>
                 </div>
             </div>
-            <div class="editor"></div>
-            <div class="preview"></div>
         </div>
         <div class="float">
             <paper-fab icon="inbox" id="draft-working-buttton"></paper-fab><br><br>
             <paper-fab icon="editor:publish" id="publish-working-buttton"></paper-fab>
         </div>
     </div>
+    <script src="${management_url("marked.js")}"></script>
     <script src="${management_url("highlight.min.js")}"></script>
     <script src="${management_url("office.js")}" charset="utf-8"></script>
 </body>

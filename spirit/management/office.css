@@ -55,6 +55,9 @@ header{
 paper-toolbar#header-toolbar{
     background-color: rgb(54, 134, 190);
 }
+textarea, input{
+    font-family: Oxygen, Verdana, Tahoma, STHeiti, "Noto Sans CJK SC", "Microsoft YaHei", SimHei;
+}
 .main{
     width: 100%;
     height: calc(100% - 64px);
@@ -146,8 +149,64 @@ aside.visible{
 .main-part.working{
     background-color: rgb(255, 255, 255);
 }
-.working-info{
+.working .working-info{
+    display: none;
+}
+.working #working-title-input{
+    z-index: 1;
+    position: relative;
+}
+.working .editor{
+    height: calc(100% - 55px);
+    width: 50%;
+    display: inline-block;
+    vertical-align: top;
+    position: absolute;
+    top: 53px;
+    left: 0;
     box-sizing: border-box;
-    padding-left: 20px;
-    padding-right: 20px;
+    border-right: 1px solid rgb(230, 230, 230);
+}
+.working .preview{
+    height: calc(100% - 55px);
+    width: 50%;
+    display: inline-block;
+    vertical-align: top;
+    position: absolute;
+    top: 53px;
+    right: 0;
+    box-sizing: border-box;
+    border-left: 1px solid rgb(230, 230, 230);
+}
+textarea#editor-textarea{
+    resize: none;
+    outline: 0;
+    border: none;
+    height: calc(100% - 45px);
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    padding-top: 0;
+    font-size: 15px;
+    line-height: 20px;
+    color: rgb(100, 100, 100);
+}
+.working .working-description{
+    height: 40px;
+    box-sizing: border-box;
+    padding-left: 10px;
+    line-height: 40px;
+    font-size: 15px;
+    color: rgb(150, 150, 150);
+}
+.working div#working-preview-area{
+    height: calc(100% - 45px);
+    width: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+    padding: 10px;
+    padding-top: 0;
+    font-size: 15px;
+    line-height: 20px;
+    color: rgb(100, 100, 100);
 }
