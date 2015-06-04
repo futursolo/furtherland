@@ -135,6 +135,24 @@ aside.visible{
 .manage-reply[active]{
     background-color: rgba(255, 152, 0, 0.25);
 }
+.working .working-title{
+    position: relative;
+    top: 0;
+    right: 0;
+}
+.working .working-title .show-working-info{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 2;
+}
+.working .working-title .show-working-info #show-working-info-buttton{
+    color: rgb(255, 255, 255);
+    background-color: rgb(66, 133, 244);;
+}
+.working .working-title .show-working-info #show-working-info-buttton[active]{
+    background-color: rgba(66, 133, 244, 0.25);
+}
 .float{
     position: fixed;
     bottom: 20px;
@@ -150,7 +168,26 @@ aside.visible{
     background-color: rgb(255, 255, 255);
 }
 .working .working-info{
-    display: none;
+height: calc(100% - 64px);
+    width: 400px;
+    max-width: 100%;
+    position: fixed;
+    top: 64px;
+    right: 0;
+    transform: translate(400px, 0);
+    transition: all 0.30s ease-in-out;
+    z-index: 3;
+}
+.working .working-info .container{
+    height: 100%;
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+    box-sizing: border-box;
+    position: relative;
+    padding: 10px;
+}
+.working .working-info.visible{
+    transform: translate(0, 0);
 }
 .working #working-title-input{
     z-index: 1;
@@ -209,4 +246,18 @@ textarea#editor-textarea{
     font-size: 15px;
     line-height: 20px;
     color: rgb(100, 100, 100);
+    position: relative;
+}
+.working #working-preview-area *{
+    max-width: 100%;
+}
+.working .working-info .working-info-title{
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+.working .working-info #working-info-close-button{
+    position: absolute;
+    top: 14px;
+    left: 14px;
 }

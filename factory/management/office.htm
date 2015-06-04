@@ -116,6 +116,9 @@
                     <label>&nbsp;&nbsp;标题</label>
                     <input is="iron-input">
                 </paper-input-container>
+                <div class="show-working-info">
+                    <paper-fab icon="settings" mini id="show-working-info-buttton"></paper-fab><br><br>
+                </div>
             </div>
             <div class="editor">
                 <div class="working-description">创作</div>
@@ -126,30 +129,30 @@
                 <div id="working-preview-area"></div>
             </div>
             <div class="working-info">
-                <div class="working-slug">
-                    <paper-input-container id="working-slug-input">
-                        <label>短链接</label>
-                        <input is="iron-input">
-                    </paper-input-container>
-                </div>
-                <div class="working-time">
-                    <paper-input-container id="working-time-input">
-                        <label>发表时间</label>
-                        <input is="iron-input">
-                    </paper-input-container>
-                    <paper-checkbox id="working-time-is-when-published" checked>当单击发表按钮时</paper-checkbox>
-                </div>
-                <div class="working-type">
-                    <paper-radio-group selected="writing">
-                        <paper-radio-button name="writing">文章</paper-radio-button>
-                        <paper-radio-button name="page">页面</paper-radio-button>
-                    </paper-radio-group>
-                </div>
+                <paper-material elevation="4" class="container">
+                    <div class="working-info-title">
+                        <iron-icon icon="close" id="working-info-close-button"></iron-icon>文章信息
+                    </div>
+                    <div class="working-slug">
+                        <paper-input id="working-info-slug-input" label="短链接" auto-validate pattern="[\-a-zA-Z0-9]*" error-message="链接形式：[\-a-zA-Z0-9]* !"></paper-input>
+                        <div id="working-info-slug-preview"></div>
+                    </div>
+                    <div class="working-time">
+                        <paper-input id="working-time-input" label="发表时间"></paper-input>
+                        <paper-checkbox id="working-time-is-when-published" checked>当单击发表按钮时</paper-checkbox>
+                    </div>
+                    <div class="working-type">
+                        <paper-radio-group selected="writing">
+                            <paper-radio-button name="writing" toggles="false">文章</paper-radio-button>
+                            <paper-radio-button name="page" toggles="false">页面</paper-radio-button>
+                        </paper-radio-group>
+                    </div>
+                </paper-material>
             </div>
-        </div>
-        <div class="float">
-            <paper-fab icon="inbox" id="draft-working-buttton"></paper-fab><br><br>
-            <paper-fab icon="editor:publish" id="publish-working-buttton"></paper-fab>
+            <div class="float">
+                <paper-fab icon="archive" id="draft-working-buttton"></paper-fab><br><br>
+                <paper-fab icon="editor:publish" id="publish-working-buttton"></paper-fab>
+            </div>
         </div>
     </div>
     <script src="${management_url("marked.js")}"></script>
