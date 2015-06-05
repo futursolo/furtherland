@@ -13,7 +13,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-window.loading = false;
+window.loading = true;
 
 function datetimeToUnix(datetime){
     var tmp_datetime = datetime.replace(/:/g,"-");
@@ -24,28 +24,26 @@ function datetimeToUnix(datetime){
 }
 
 function unixToDatetime(unix){
-    Date.prototype.format = function(format) {
-       var date = {
-              "M+": this.getMonth() + 1,
-              "d+": this.getDate(),
-              "h+": this.getHours(),
-              "m+": this.getMinutes(),
-              "s+": this.getSeconds(),
-              "q+": Math.floor((this.getMonth() + 3) / 3),
-              "S+": this.getMilliseconds()
-       };
-       if (/(y+)/i.test(format)) {
-              format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-       }
-       for (var k in date) {
-              if (new RegExp("(" + k + ")").test(format)) {
-                     format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
-              }
-       }
-       return format;
-   };
     var now = new Date(parseInt(unix) * 1000);
-    return now.format("yyyy-MM-dd hh:mm:ss");
+    var targetFormat = "yyyy-MM-dd hh:mm:ss";
+    var date = {
+           "M+": now.getMonth() + 1,
+           "d+": now.getDate(),
+           "h+": now.getHours(),
+           "m+": now.getMinutes(),
+           "s+": now.getSeconds(),
+           "q+": Math.floor((now.getMonth() + 3) / 3),
+           "S+": now.getMilliseconds()
+    };
+    if (/(y+)/i.test(targetFormat)) {
+        targetFormat = targetFormat.replace(RegExp.$1, (now.getFullYear() + "").substr(4 - RegExp.$1.length));
+    }
+    for (var k in date) {
+           if (new RegExp("(" + k + ")").test(targetFormat)) {
+               targetFormat = targetFormat.replace(RegExp.$1, RegExp.$1.length == 1 ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+           }
+    }
+    return targetFormat;
 }
 
 function collectionHas(a, b) {
@@ -97,23 +95,23 @@ function loadLayout(callback) {
     setTimeout(callback, 300, hideLoadLayout);
 }
 
-function toggle(event) {
-    var spinners = event.target.parentElement.querySelectorAll('paper-spinner');
-    Array.prototype.forEach.call(spinners, function (spinner) {
-        spinner.active = !spinner.active;
+function switchToLobby() {
+    loadLayout(function (callback) {
+        if (document.querySelector(".main-part.current")){
+            document.querySelector(".main-part.current").classList.remove("current");
+        }
+        document.querySelector(".main-part.lobby").classList.add("current");
+        //Ajax Load Lobby Information
+        callback();
     });
 }
 
-document.querySelector("#switch-to-lobby").addEventListener("click", function () {
-    loadLayout(function (callback) {
-        document.querySelector(".main-part.current").classList.remove("current");
-        document.querySelector(".main-part.lobby").classList.add("current");
-        callback();
-    });
-});
+document.querySelector("#switch-to-lobby").addEventListener("click", switchToLobby);
 document.querySelector("#switch-to-working").addEventListener("click", function () {
     loadLayout(function (callback) {
-        document.querySelector(".main-part.current").classList.remove("current");
+        if (document.querySelector(".main-part.current")){
+            document.querySelector(".main-part.current").classList.remove("current");
+        }
         document.querySelector(".main-part.working").classList.add("current");
         callback();
     });
@@ -137,7 +135,7 @@ document.querySelector("#editor-textarea").addEventListener("keyup", previewText
 document.querySelector("#editor-textarea").addEventListener("blur", previewText);
 document.querySelector("#editor-textarea").addEventListener("scroll", syncHeight);
 
-document.querySelector("#show-working-info-buttton").addEventListener("click", function () {
+document.querySelector("#publish-working-buttton").addEventListener("click", function () {
     document.querySelector(".working .working-info").classList.add("visible");
 });
 document.querySelector("#working-info-close-button").addEventListener("click", function () {
@@ -147,13 +145,19 @@ document.querySelector("#working-info-close-button").addEventListener("click", f
 function previewSlug() {
     if (!document.querySelector("#working-info-slug-input paper-input-container").invalid && document.querySelector("#working-info-slug-input").value !== "") {
         document.querySelector("#working-info-slug-preview").innerHTML = window.location.host;
-        document.querySelector("#working-info-slug-preview").innerHTML += "/writings/";
+        if (document.querySelector("#working-type-radio-group").selected == "writing"){
+            document.querySelector("#working-info-slug-preview").innerHTML += "/writings/";
+        } else {
+            document.querySelector("#working-info-slug-preview").innerHTML += "/pages/";
+        }
         document.querySelector("#working-info-slug-preview").innerHTML += document.querySelector("#working-info-slug-input").value;
         document.querySelector("#working-info-slug-preview").innerHTML += ".htm";
         return;
     }
      document.querySelector("#working-info-slug-preview").innerHTML = "";
 }
+
+document.querySelector("#working-type-radio-group").addEventListener("click", previewSlug);
 
 document.querySelector("#working-info-slug-input").addEventListener("change", previewSlug);
 document.querySelector("#working-info-slug-input").addEventListener("keypress", previewSlug);
@@ -206,3 +210,26 @@ window.addEventListener("load", function () {
         });
     });
 });
+
+function hidePublicArea() {
+    document.querySelector("#public-area").classList.remove("visible");
+    setTimeout(function () {
+    document.querySelector("#public-area").style.height = "0";
+    document.querySelector("#public-area").style.width = "0";
+    }, 300);
+}
+
+function showPublicArea() {
+    document.querySelector("#public-area").style.height = "100%";
+    document.querySelector("#public-area").style.width = "100%";
+    document.querySelector("#public-area").classList.add("visible");
+}
+document.querySelector("#open-public-area-button").addEventListener("click", showPublicArea);
+
+function buildWindow(slug, sub_slug) {
+    if (document.querySelector("#switch-to-" + slug)) {
+        document.querySelector("#switch-to-" + slug).click();
+    } else {
+        window.location.href = window.location.host + "/404";
+    }
+}

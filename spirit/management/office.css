@@ -31,7 +31,7 @@ html, body{
     width: 0;
     z-index: 100;
     background-color: rgb(245, 245, 245);
-    position: absolute;
+    position: fixed;
     overflow: hidden;
     opacity: 0;
     transition: opacity 0.30s ease-in-out;
@@ -260,4 +260,58 @@ textarea#editor-textarea{
     position: absolute;
     top: 14px;
     left: 14px;
+}
+.working .working-info #working-info-slug-preview{
+    min-height: 40px;
+}
+.working .working-info .working-type .title{
+    padding-top: 20px;
+}
+.working .publish-area{
+    height: 40px;
+}
+.working .working-info .create-tips .title{
+    font-size: 20px;
+    line-height: 30px;
+    margin-top:20px;
+    margin-bottom:20px;
+    font-weight: bold;
+    text-align: center;
+}
+.working #working-save-as-draft-button{
+    float: right;
+    color: rgb(54, 134, 190);
+}
+.working #working-save-as-draft-button[active]{
+    background-color: rgba(54, 134, 190, 0.25);
+}
+.working #working-publish-now-button{
+    color: rgb(76, 175, 80);
+    float: right;
+}
+.working #working-publish-now-button[active]{
+    background-color: rgba(76, 175, 80, 0.25);
+}
+div#public-area{
+    height: 0;
+    width: 0;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.4);
+    position: fixed;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.30s ease-in-out;
+}
+div#public-area.visible{
+    opacity: 1;
+}
+div#public-area .container{
+    max-width: 900px;
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    border-radius: 2px;
+    background-color: rgb(255, 255, 255);
 }
