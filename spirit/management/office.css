@@ -31,7 +31,7 @@ html, body{
     width: 0;
     z-index: 100;
     background-color: rgb(245, 245, 245);
-    position: absolute;
+    position: fixed;
     overflow: hidden;
     opacity: 0;
     transition: opacity 0.30s ease-in-out;
@@ -135,6 +135,24 @@ aside.visible{
 .manage-reply[active]{
     background-color: rgba(255, 152, 0, 0.25);
 }
+.working .working-title{
+    position: relative;
+    top: 0;
+    right: 0;
+}
+.working .working-title .show-working-info{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 2;
+}
+.working .working-title .show-working-info #show-working-info-buttton{
+    color: rgb(255, 255, 255);
+    background-color: rgb(66, 133, 244);;
+}
+.working .working-title .show-working-info #show-working-info-buttton[active]{
+    background-color: rgba(66, 133, 244, 0.25);
+}
 .float{
     position: fixed;
     bottom: 20px;
@@ -150,7 +168,26 @@ aside.visible{
     background-color: rgb(255, 255, 255);
 }
 .working .working-info{
-    display: none;
+height: calc(100% - 64px);
+    width: 400px;
+    max-width: 100%;
+    position: fixed;
+    top: 64px;
+    right: 0;
+    transform: translate(400px, 0);
+    transition: all 0.30s ease-in-out;
+    z-index: 3;
+}
+.working .working-info .container{
+    height: 100%;
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+    box-sizing: border-box;
+    position: relative;
+    padding: 10px;
+}
+.working .working-info.visible{
+    transform: translate(0, 0);
 }
 .working #working-title-input{
     z-index: 1;
@@ -209,4 +246,72 @@ textarea#editor-textarea{
     font-size: 15px;
     line-height: 20px;
     color: rgb(100, 100, 100);
+    position: relative;
+}
+.working #working-preview-area *{
+    max-width: 100%;
+}
+.working .working-info .working-info-title{
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+.working .working-info #working-info-close-button{
+    position: absolute;
+    top: 14px;
+    left: 14px;
+}
+.working .working-info #working-info-slug-preview{
+    min-height: 40px;
+}
+.working .working-info .working-type .title{
+    padding-top: 20px;
+}
+.working .publish-area{
+    height: 40px;
+}
+.working .working-info .create-tips .title{
+    font-size: 20px;
+    line-height: 30px;
+    margin-top:20px;
+    margin-bottom:20px;
+    font-weight: bold;
+    text-align: center;
+}
+.working #working-save-as-draft-button{
+    float: right;
+    color: rgb(54, 134, 190);
+}
+.working #working-save-as-draft-button[active]{
+    background-color: rgba(54, 134, 190, 0.25);
+}
+.working #working-publish-now-button{
+    color: rgb(76, 175, 80);
+    float: right;
+}
+.working #working-publish-now-button[active]{
+    background-color: rgba(76, 175, 80, 0.25);
+}
+div#public-area{
+    height: 0;
+    width: 0;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.4);
+    position: fixed;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.30s ease-in-out;
+}
+div#public-area.visible{
+    opacity: 1;
+}
+div#public-area .container{
+    max-width: 900px;
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    border-radius: 2px;
+    background-color: rgb(255, 255, 255);
 }

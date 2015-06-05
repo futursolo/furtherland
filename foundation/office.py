@@ -124,7 +124,7 @@ class LobbyOffice(ManagementOffice):
     @coroutine
     @authenticated
     def get(self):
-        self.render_list["count"] = yield self.get_count()
+
         self.render_list["origin_title"] = self.config["lobby_name"]
         self.management_render("lobby.htm")
 
@@ -350,6 +350,7 @@ class ReriseOffice(ManagementOffice):
 
 
 class NewOffice(ManagementOffice):
+    @coroutine
     @authenticated
     def get(self, slug, sub_slug=None):
         self.render_list["origin_title"] = ""
@@ -357,3 +358,19 @@ class NewOffice(ManagementOffice):
         self.render_list["slug"] = slug
         self.render_list["sub_slug"] = sub_slug
         self.management_render("office.htm")
+
+
+class ActionOffice(ManagementOffice):
+    @coroutine
+    @authenticated
+    def post(self):
+        action = self.get_arg("action", default=None, arg_type="hash")
+        if hasattr(self, action):
+            yield getattr(self, action)()
+        else:
+            raise HTTPError(500)
+
+    @coroutine
+    def count(self):
+        info = yield self.get_count()
+        self.finish(json.dumps(info))
