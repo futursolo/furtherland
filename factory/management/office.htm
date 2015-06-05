@@ -33,6 +33,48 @@
     </style>
 </head>
 <body>
+    <div class="load-layout visible" style="height: 100%; width: 100%;">
+        <div class="table">
+            <div class="table-cell">
+                <paper-spinner active></paper-spinner>
+            </div>
+        </div>
+    </div>
+    <div class="public" id="public-area">
+        <paper-material elevation="4" class="container">
+            <div class="title">${config["public_name"]}<span class="close-button">×</span></div>
+            <div class="bar">
+                <span class="upload-now selector active">现在上传</span>
+                <span class="select-from-public selector">从已存在的文件中选择</span>
+            </div>
+            <div class="content upload-now active">
+                <div class="cell file-uploader">
+                    <div class="tips">将文件拖动到这里来上传 或</div>
+                    <div id="file-select-button" class="button">选择文件</div>
+                    <input id="public-hidden-file-selector" name="files[]" type="file">
+                </div>
+            </div>
+            <div class="content select-from-public">
+                <div class="file-type">
+                    <span>插入类型：</span>
+                    <input id="public-insert-as-link" type="radio" name="public-insert-file-type" checked>
+                    <label for="public-insert-as-link">链接</label>
+                    <input id="public-insert-as-image" type="radio" name="public-insert-file-type">
+                    <label for="public-insert-as-image">图片</label>
+                </div>
+                <div class="public-file-list"></div>
+            </div>
+            <div class="uploading">
+                <div class="content">
+                    <div>正在上传...</div>
+                    <div class="process-bar">
+                        <div class="done"></div>
+                    </div>
+                </div>
+            </div>
+        </paper-material>
+    </div>
+    </div>
     <header>
         <paper-toolbar id="header-toolbar">
             <paper-icon-button icon="menu" id="menu-button"></paper-icon-button>
@@ -41,13 +83,6 @@
             </paper-toolbar>
     </header>
     <div class="main">
-        <div class="load-layout">
-            <div class="table">
-                <div class="table-cell">
-                    <paper-spinner active></paper-spinner>
-                </div>
-            </div>
-        </div>
         <aside>
             <paper-material elevation="2">
                 <paper-menu>
@@ -60,7 +95,7 @@
                 </paper-menu>
             </paper-material>
         </aside>
-    % if slug == "lobby":
+    % if  == "lobby":
         <div class="main-part lobby current">
     % else:
         <div class="main-part lobby">
@@ -116,9 +151,6 @@
                     <label>&nbsp;&nbsp;标题</label>
                     <input is="iron-input">
                 </paper-input-container>
-                <div class="show-working-info">
-                    <paper-fab icon="settings" mini id="show-working-info-buttton"></paper-fab><br><br>
-                </div>
             </div>
             <div class="editor">
                 <div class="working-description">创作</div>
@@ -131,7 +163,7 @@
             <div class="working-info">
                 <paper-material elevation="4" class="container">
                     <div class="working-info-title">
-                        <iron-icon icon="close" id="working-info-close-button"></iron-icon>文章信息
+                        <iron-icon icon="close" id="working-info-close-button"></iron-icon>作品信息
                     </div>
                     <div class="working-slug">
                         <paper-input id="working-info-slug-input" label="短链接" auto-validate pattern="[\-a-zA-Z0-9]*" error-message="链接形式：[\-a-zA-Z0-9]* !"></paper-input>
@@ -142,15 +174,26 @@
                         <paper-checkbox id="working-time-is-when-published" checked>当单击发表按钮时</paper-checkbox>
                     </div>
                     <div class="working-type">
-                        <paper-radio-group selected="writing">
+                        <div class="title">作品类型：</div>
+                        <paper-radio-group selected="writing" id="working-type-radio-group">
                             <paper-radio-button name="writing" toggles="false">文章</paper-radio-button>
                             <paper-radio-button name="page" toggles="false">页面</paper-radio-button>
                         </paper-radio-group>
                     </div>
+                    <div class="publish-area">
+                        <paper-button id="working-publish-now-button">立即发表</paper-button>
+                        <paper-button id="working-save-as-draft-button">存为草稿</paper-button>
+                    </div>
+                    <div class="create-tips">
+                        <div class="title">创作提示</div>
+                        <div class="content">
+                            <div>FurtherLand支持GitHub Flavored Markdown以及绝大部分HTML5代码，请尽情使用。</div>
+                        </div>
+                    </div>
                 </paper-material>
             </div>
             <div class="float">
-                <paper-fab icon="archive" id="draft-working-buttton"></paper-fab><br><br>
+                <paper-fab icon="archive" id="open-public-area-button"></paper-fab><br><br>
                 <paper-fab icon="editor:publish" id="publish-working-buttton"></paper-fab>
             </div>
         </div>
@@ -158,5 +201,10 @@
     <script src="${management_url("marked.js")}"></script>
     <script src="${management_url("highlight.min.js")}"></script>
     <script src="${management_url("office.js")}" charset="utf-8"></script>
+    <script>
+        window.addEventListener("load", function () {
+            buildWindow(${slug}, ${sub_slug});
+        });
+    </script>
 </body>
 </html>
