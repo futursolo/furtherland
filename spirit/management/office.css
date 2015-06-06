@@ -49,6 +49,9 @@ html, body{
 .load-layout.visible{
     opacity: 1;
 }
+paper-toast.load-failed{
+    z-index: 101;
+}
 header{
     z-index: 1;
 }
@@ -114,11 +117,11 @@ aside.visible{
     font-size: 40px;
     line-height: 100px;
 }
-.manage-working{
+.manage-writing{
     color: rgb(255, 255, 255);
     background-color: rgb(66, 133, 244);;
 }
-.manage-working[active]{
+.manage-writing[active]{
     background-color: rgba(66, 133, 244, 0.25);
 }
 .manage-page{
