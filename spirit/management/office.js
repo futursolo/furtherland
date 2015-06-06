@@ -15,6 +15,11 @@
 
 window.loading = true;
 
+function getCookie(name) {
+    var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+    return r ? r[1] : undefined;
+}
+
 function datetimeToUnix(datetime){
     var tmp_datetime = datetime.replace(/:/g,"-");
     tmp_datetime = tmp_datetime.replace(/ /g,"-");
@@ -100,22 +105,56 @@ function switchToLobby() {
         if (document.querySelector(".main-part.current")){
             document.querySelector(".main-part.current").classList.remove("current");
         }
+        window.history.pushState(null,null,"//" + window.location.host + "/management/lobby");
         document.querySelector(".main-part.lobby").classList.add("current");
-        //Ajax Load Lobby Information
+        ajaxObject = new XMLHttpRequest();
+        ajaxObject.open("POST", "/management/api", true);
+        queryString = new FormData();
+        queryString.append("_xsrf", getCookie("_xsrf"));
+        queryString.append("action", "count");
+        function showError() {
+            document.querySelector(".load-layout .loading-failed").show();
+        }
+        ajaxObject.addEventListener("load", function () {
+            if (this.status >= 200 && this.status < 400) {
+                var resp = JSON.parse(this.response);
+                document.querySelector(".main-part.lobby #writing-num .tile-content").innerHTML = resp.writings;
+                document.querySelector(".main-part.lobby #page-num .tile-content").innerHTML = resp.pages;
+                document.querySelector(".main-part.lobby #reply-num .tile-content").innerHTML = resp.replies;
+                callback();
+                return;
+            }
+            if (this.readyState == 4 && (this.status < 200 || this.status >= 400)) {
+                showError();
+            }
+        });
+        ajaxObject.addEventListener("error", showError);
+        ajaxObject.send(queryString);
+    });
+}
+
+function switchToWorking(edit, type, id) {
+    edit = (typeof edit === "undefined") ? false : edit;
+    type = (typeof type === "undefined") ? "writing" : type;
+    id = (typeof id === "undefined") ? "-1" : id;
+    loadLayout(function (callback) {
+        if (document.querySelector(".main-part.current")){
+            document.querySelector(".main-part.current").classList.remove("current");
+        }
+        url = "/management/working/";
+        if (edit !== true){
+            url += "new";
+        } else {
+            url += "edit?type=" + type + "&id=" + id;
+        }
+        window.history.pushState(null,null,"//" + window.location.host + url);
+        document.querySelector(".main-part.working").classList.add("current");
         callback();
     });
 }
 
 document.querySelector("#switch-to-lobby").addEventListener("click", switchToLobby);
-document.querySelector("#switch-to-working").addEventListener("click", function () {
-    loadLayout(function (callback) {
-        if (document.querySelector(".main-part.current")){
-            document.querySelector(".main-part.current").classList.remove("current");
-        }
-        document.querySelector(".main-part.working").classList.add("current");
-        callback();
-    });
-});
+document.querySelector("#switch-to-working").addEventListener("click", switchToWorking);
 function previewText(event) {
     document.querySelector("#working-preview-area").innerHTML = marked(document.querySelector("#editor-textarea").value);
     syncHeight();
@@ -232,4 +271,39 @@ function buildWindow(slug, sub_slug) {
     } else {
         window.location.href = window.location.host + "/404";
     }
+}
+
+function sendWorking() {
+    queryString = new FormData();
+    queryString.append("_xsrf", getCookie("_xsrf"));
+    queryString.append("action", "save_working");
+    queryString.append("working_type", "count");
+    queryString.append("working_title", "count");
+    queryString.append("working_content", "count");
+    queryString.append("working_method", "count");
+    queryString.append("working_time", "count");
+    queryString.append("working_publish", "count");
+    queryString.append("working_slug", "count");
+    queryString.append("working_id", "count");
+
+    ajaxObject = new XMLHttpRequest();
+    ajaxObject.open("POST", "/management/api", true);
+    function showError() {
+        document.querySelector(".load-layout .loading-failed").show();
+    }
+    ajaxObject.addEventListener("load", function () {
+        if (this.status >= 200 && this.status < 400) {
+            var resp = JSON.parse(this.response);
+            document.querySelector(".main-part.lobby #writing-num .tile-content").innerHTML = resp.writings;
+            document.querySelector(".main-part.lobby #page-num .tile-content").innerHTML = resp.pages;
+            document.querySelector(".main-part.lobby #reply-num .tile-content").innerHTML = resp.replies;
+            callback();
+            return;
+        }
+        if (this.readyState == 4 && (this.status < 200 || this.status >= 400)) {
+            showError();
+        }
+    });
+    ajaxObject.addEventListener("error", showError);
+    ajaxObject.send(queryString);
 }
