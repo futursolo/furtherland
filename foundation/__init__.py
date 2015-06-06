@@ -61,6 +61,7 @@ navigation = [
 
     (r"/management/checkin", office.CheckinOffice),
     (r"/management/checkout", office.CheckoutOffice),
+    (r"/management/api", office.ActionOffice),
     (r"/management/(.*)/(.*)", office.NewOffice),
     (r"/management/(.*)", office.NewOffice),
 

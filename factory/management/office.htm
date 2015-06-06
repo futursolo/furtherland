@@ -25,6 +25,7 @@
     <link rel="import" href="${management_url("bower_components/paper-fab/paper-fab.html")}">
     <link rel="import" href="${management_url("bower_components/paper-checkbox/paper-checkbox.html")}">
     <link rel="import" href="${management_url("bower_components/paper-radio-group/paper-radio-group.html")}">
+    <link rel="import" href="${management_url("bower_components/paper-toast/paper-toast.html")}">
     <link href="${management_url("office.css")}" rel="stylesheet" type="text/css">
     <style is="custom-style">
         :root {
@@ -39,6 +40,9 @@
                 <paper-spinner active></paper-spinner>
             </div>
         </div>
+        <paper-toast class="loading-failed" text="抱歉，发生了未知错误。">
+            <span role="button" tabindex="0" style="color: #eeff41;margin: 10px" onclick="window.location.reload();">重新加载</span>
+        </paper-toast>
     </div>
     <div class="public" id="public-area">
         <paper-material elevation="4" class="container">
@@ -95,21 +99,17 @@
                 </paper-menu>
             </paper-material>
         </aside>
-    % if  == "lobby":
-        <div class="main-part lobby current">
-    % else:
         <div class="main-part lobby">
-    % endif
             <div class="table">
                 <div class="table-cell">
-                    <div class="tile" id="working-num">
+                    <div class="tile" id="writing-num">
                         <paper-material elevation="2" class="tile-container">
                             <div class="tile-name">文章</div>
                             <div class="tile-content">0</div>
                             <div class="tile-tips-list">
                                 <div class="tile-tips">其中有0篇草稿</div>
                             </div>
-                            <paper-button raised class="manage-working">管理文章<iron-icon icon="chevron-right"></iron-icon></paper-button>
+                            <paper-button raised class="manage-writing">管理文章<iron-icon icon="chevron-right"></iron-icon></paper-button>
                             <style>
                             </style>
                         </paper-material>
@@ -141,11 +141,7 @@
                 <paper-fab icon="create" id="write-new-float-button"></paper-fab>
             </div>
         </div>
-    % if slug == "working":
-        <div class="main-part working current">
-    % else:
         <div class="main-part working">
-    % endif
             <div class="working-title">
                 <paper-input-container id="working-title-input">
                     <label>&nbsp;&nbsp;标题</label>
@@ -190,6 +186,9 @@
                             <div>FurtherLand支持GitHub Flavored Markdown以及绝大部分HTML5代码，请尽情使用。</div>
                         </div>
                     </div>
+                    <input id="working-real-id" type="hidden" autocomplete="off" value="">
+                    <input id="working-real-method" type="hidden" value="" autocomplete="off">
+                    <input id="working-real-publish" type="hidden" autocomplete="off">
                 </paper-material>
             </div>
             <div class="float">
@@ -203,7 +202,7 @@
     <script src="${management_url("office.js")}" charset="utf-8"></script>
     <script>
         window.addEventListener("load", function () {
-            buildWindow(${slug}, ${sub_slug});
+            buildWindow("${slug}", "${sub_slug}");
         });
     </script>
 </body>
