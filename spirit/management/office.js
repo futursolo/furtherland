@@ -107,29 +107,31 @@ function switchToLobby() {
         }
         window.history.pushState(null,null,"//" + window.location.host + "/management/lobby");
         document.querySelector(".main-part.lobby").classList.add("current");
-        ajaxObject = new XMLHttpRequest();
-        ajaxObject.open("POST", "/management/api", true);
+
         queryString = new FormData();
         queryString.append("_xsrf", getCookie("_xsrf"));
         queryString.append("action", "count");
-        function showError() {
+
+        fetch("/management/api", {
+            "method": "post",
+            "credentials": "include",
+            "body": queryString
+        }).then(function (resp) {
+            if (resp.status >= 200 && resp.status < 400) {
+                return resp.json();
+            }
+            throw new Error(resp.statusText);
+        }).then(function (resp) {
+            var data = resp;
+            console.log(data);
+            document.querySelector(".main-part.lobby #writing-num .tile-content").innerHTML = data.writings;
+            document.querySelector(".main-part.lobby #page-num .tile-content").innerHTML = data.pages;
+            document.querySelector(".main-part.lobby #reply-num .tile-content").innerHTML = data.replies;
+            callback();
+        }).catch(function (error) {
+            console.log(error);
             document.querySelector(".load-layout .loading-failed").show();
-        }
-        ajaxObject.addEventListener("load", function () {
-            if (this.status >= 200 && this.status < 400) {
-                var resp = JSON.parse(this.response);
-                document.querySelector(".main-part.lobby #writing-num .tile-content").innerHTML = resp.writings;
-                document.querySelector(".main-part.lobby #page-num .tile-content").innerHTML = resp.pages;
-                document.querySelector(".main-part.lobby #reply-num .tile-content").innerHTML = resp.replies;
-                callback();
-                return;
-            }
-            if (this.readyState == 4 && (this.status < 200 || this.status >= 400)) {
-                showError();
-            }
         });
-        ajaxObject.addEventListener("error", showError);
-        ajaxObject.send(queryString);
     });
 }
 
@@ -142,12 +144,25 @@ function switchToWorking(edit, type, id) {
             document.querySelector(".main-part.current").classList.remove("current");
         }
         url = "/management/working/";
-        if (edit !== true){
+        if (edit !== true) {
             url += "new";
         } else {
             url += "edit?type=" + type + "&id=" + id;
         }
         window.history.pushState(null,null,"//" + window.location.host + url);
+        if (edit !== true) {
+            document.querySelector("#working-type-radio-group").selected = "writing";
+            document.querySelector("#working-title-input input").value = "";
+            document.querySelector("#editor-textarea").value = "";
+            document.querySelector("#working-real-method").value = "new";
+            document.querySelector("#working-time-is-when-published").checked = true;
+            document.querySelector("#working-info-slug-input").value = "";
+            document.querySelector("#working-real-id").value = "";
+            previewSlug();
+            previewText();
+        } else {
+
+        }
         document.querySelector(".main-part.working").classList.add("current");
         callback();
     });
@@ -273,37 +288,37 @@ function buildWindow(slug, sub_slug) {
     }
 }
 
-function sendWorking() {
+function sendWorking(publish) {
     queryString = new FormData();
     queryString.append("_xsrf", getCookie("_xsrf"));
     queryString.append("action", "save_working");
-    queryString.append("working_type", "count");
-    queryString.append("working_title", "count");
-    queryString.append("working_content", "count");
-    queryString.append("working_method", "count");
-    queryString.append("working_time", "count");
-    queryString.append("working_publish", "count");
-    queryString.append("working_slug", "count");
-    queryString.append("working_id", "count");
-
-    ajaxObject = new XMLHttpRequest();
-    ajaxObject.open("POST", "/management/api", true);
-    function showError() {
-        document.querySelector(".load-layout .loading-failed").show();
+    queryString.append("working_type", document.querySelector("#working-type-radio-group").selected);
+    queryString.append("working_title", document.querySelector("#working-title-input input").value);
+    queryString.append("working_content", document.querySelector("#editor-textarea").value);
+    queryString.append("working_method", document.querySelector("#working-real-method").value);
+    queryString.append("working_time", datetimeToUnix(document.querySelector("#working-time-input").value));
+    if (publish) {
+        queryString.append("working_publish", "true");
+    } else {
+        queryString.append("working_publish", "false");
     }
-    ajaxObject.addEventListener("load", function () {
-        if (this.status >= 200 && this.status < 400) {
-            var resp = JSON.parse(this.response);
-            document.querySelector(".main-part.lobby #writing-num .tile-content").innerHTML = resp.writings;
-            document.querySelector(".main-part.lobby #page-num .tile-content").innerHTML = resp.pages;
-            document.querySelector(".main-part.lobby #reply-num .tile-content").innerHTML = resp.replies;
-            callback();
-            return;
+    queryString.append("working_slug", document.querySelector("#working-info-slug-input").value);
+    queryString.append("working_id", document.querySelector("#working-real-id").value);
+
+    fetch("/management/api", {
+        "method": "post",
+        "credentials": "include",
+        "body": queryString
+    }).then(function (resp) {
+        if (response.status >= 200 && response.status < 400) {
+            return response;
         }
-        if (this.readyState == 4 && (this.status < 200 || this.status >= 400)) {
-            showError();
-        }
+        throw response.status + "";
+    }).then(function (resp) {
+        return resp.json();
+    }).then(function () {
+        return;
+    }).catch(function (error) {
+        document.querySelector(".load-layout .loading-failed").show();
     });
-    ajaxObject.addEventListener("error", showError);
-    ajaxObject.send(queryString);
 }
