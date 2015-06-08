@@ -316,7 +316,7 @@ function sendWorking(publish) {
         throw response.status + "";
     }).then(function (resp) {
         return resp.json();
-    }).then(function () {
+    }).then(function (json) {
         return;
     }).catch(function (error) {
         document.querySelector(".load-layout .loading-failed").show();
