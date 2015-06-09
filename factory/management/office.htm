@@ -195,7 +195,12 @@
                 <paper-fab icon="editor:publish" id="publish-working-buttton"></paper-fab>
             </div>
             <div class="toast-notification">
-
+                <paper-toast class="save-success" text="作品保存成功。">
+                    <span role="button" tabindex="0" style="color: #eeff41;margin: 10px" onclick="window.location.reload();">立即查看</span>
+                </paper-toast>
+                <paper-toast class="save-failed" text="抱歉，发生了未知错误。">
+                    <span role="button" tabindex="0" style="color: #eeff41;margin: 10px" onclick="window.location.reload();">重新加载</span>
+                </paper-toast>
             </div>
         </div>
     </div>
