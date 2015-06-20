@@ -26,46 +26,73 @@ html, body{
     background-color: rgb(245, 245, 245);
     word-break: break-all;
 }
-.load-layout{
+
+textarea, input{
+    font-family: Oxygen, Verdana, Tahoma, STHeiti, "Noto Sans CJK SC", "Microsoft YaHei", SimHei;
+}
+
+.load{
     height: 0;
     width: 0;
     z-index: 100;
+    display: table;
     background-color: rgb(245, 245, 245);
     position: fixed;
     overflow: hidden;
     opacity: 0;
     transition: opacity 0.30s ease-in-out;
 }
-.table{
-    height: 100%;
-    width: 100%;
-    display: table;
-}
-.table-cell{
+.load > .container{
     display: table-cell;
     vertical-align: middle;
     text-align: center;
 }
-.load-layout.visible{
+.load.visible{
     opacity: 1;
 }
-paper-toast.load-failed{
+.load .failed{
     z-index: 101;
 }
+
+.public{
+    height: 0;
+    width: 0;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.4);
+    position: fixed;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.30s ease-in-out;
+}
+.public.visible{
+    opacity: 1;
+}
+.public > .container{
+    max-width: 900px;
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    border-radius: 2px;
+    background-color: rgb(255, 255, 255);
+}
+
 header{
     z-index: 1;
+    height: 64px;
 }
-paper-toolbar#header-toolbar{
+header > .toolbar{
     background-color: rgb(54, 134, 190);
+    height: 64px !important;
 }
-textarea, input{
-    font-family: Oxygen, Verdana, Tahoma, STHeiti, "Noto Sans CJK SC", "Microsoft YaHei", SimHei;
-}
+
 .main{
     width: 100%;
     height: calc(100% - 64px);
     position: relative;
 }
+
 aside{
     width: 300px;
     min-height: 100%;
@@ -79,19 +106,22 @@ aside{
 aside.visible{
     transform: translate(0, 0);
 }
-.main-part{
+
+.main > .container{
     height: 100%;
     width: 100%;
     box-sizing: border-box;
     display: none;
 }
-.main-part.current{
+.main > .current{
     display: block;
 }
-.lobby{
+
+.main > .lobby{
     padding: 20px;
 }
-.tile{
+
+.main > .lobby .tile{
     display: inline-block;
     position: relative;
     text-align: center;
@@ -99,104 +129,85 @@ aside.visible{
     height: 400px;
     margin: 20px;
 }
-.tile .tile-container{
+.main > .lobby .tile > .container{
     height: 100%;
     width: 100%;
     padding: 10px;
     border-radius: 2px;
     background-color: rgb(255, 255, 255);
 }
-.tile .tile-tips-list{
+.main > .lobby .tile > .container > .tips-list{
     height: 150px;
 }
-.tile .tile-name{
+.main > .lobby .tile > .container > .name{
     font-size: 40px;
     line-height: 100px;
 }
-.tile .tile-content{
+.main > .lobby .tile > .container > .content{
     font-size: 40px;
     line-height: 100px;
 }
-.manage-writing{
+
+.main > .lobby .manage-writing{
     color: rgb(255, 255, 255);
     background-color: rgb(66, 133, 244);;
 }
-.manage-writing[active]{
+.main > .lobby .manage-writing[active]{
     background-color: rgba(66, 133, 244, 0.25);
 }
-.manage-page{
+.main > .lobby .manage-page{
     color: rgb(255, 255, 255);
     background-color: rgb(76, 175, 80);;
 }
-.manage-page[active]{
+.main > .lobby .manage-page[active]{
     background-color: rgba(76, 175, 80, 0.25);
 }
-.manage-reply{
+.main > .lobby .manage-reply{
     color: rgb(255, 255, 255);
     background-color: rgb(255, 152, 0);;
 }
-.manage-reply[active]{
+.main > .lobby .manage-reply[active]{
     background-color: rgba(255, 152, 0, 0.25);
 }
-.working .working-title{
-    position: relative;
-    top: 0;
-    right: 0;
-}
-.working .working-title .show-working-info{
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    z-index: 2;
-}
-.working .working-title .show-working-info #show-working-info-buttton{
-    color: rgb(255, 255, 255);
-    background-color: rgb(66, 133, 244);;
-}
-.working .working-title .show-working-info #show-working-info-buttton[active]{
-    background-color: rgba(66, 133, 244, 0.25);
-}
-.float{
+
+
+.main > .lobby > .float{
     position: fixed;
     bottom: 20px;
     right: 20px;
 }
-.float paper-fab{
+.main > .lobby > .float paper-fab{
     background-color: rgb(244, 67, 54);
 }
-.float paper-fab[active]{
+.main > .lobby > .float paper-fab[active]{
     background-color: rgba(244, 67, 54, 0.25);
 }
-.main-part.working{
+
+.main > .working{
     background-color: rgb(255, 255, 255);
 }
-.working .working-info{
-height: calc(100% - 64px);
-    width: 400px;
-    max-width: 100%;
-    position: fixed;
-    top: 64px;
-    right: 0;
-    transform: translate(400px, 0);
-    transition: all 0.30s ease-in-out;
-    z-index: 3;
-}
-.working .working-info .container{
-    height: 100%;
-    width: 100%;
-    background-color: rgb(255, 255, 255);
-    box-sizing: border-box;
+
+.main > .working > .title-container{
     position: relative;
-    padding: 10px;
+    top: 0;
+    right: 0;
 }
-.working .working-info.visible{
-    transform: translate(0, 0);
-}
-.working #working-title-input{
+
+.main > .working > .title-container > .title-input{
     z-index: 1;
     position: relative;
 }
-.working .editor{
+
+.main > .working .description{
+    height: 40px;
+    box-sizing: border-box;
+    padding-left: 10px;
+    line-height: 40px;
+    font-size: 15px;
+    color: rgb(150, 150, 150);
+}
+
+.main > .working > .editor-container{
     height: calc(100% - 55px);
     width: 50%;
     display: inline-block;
@@ -207,7 +218,22 @@ height: calc(100% - 64px);
     box-sizing: border-box;
     border-right: 1px solid rgb(230, 230, 230);
 }
-.working .preview{
+
+.main > .working > .editor-container .editor-textarea{
+    resize: none;
+    border: none;
+    height: calc(100% - 45px);
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    padding-top: 0;
+    font-size: 15px;
+    line-height: 20px;
+    color: rgb(100, 100, 100);
+    outline: 0;
+}
+
+.main > .working > .preview-container{
     height: calc(100% - 55px);
     width: 50%;
     display: inline-block;
@@ -218,28 +244,8 @@ height: calc(100% - 64px);
     box-sizing: border-box;
     border-left: 1px solid rgb(230, 230, 230);
 }
-textarea#editor-textarea{
-    resize: none;
-    outline: 0;
-    border: none;
-    height: calc(100% - 45px);
-    width: 100%;
-    box-sizing: border-box;
-    padding: 10px;
-    padding-top: 0;
-    font-size: 15px;
-    line-height: 20px;
-    color: rgb(100, 100, 100);
-}
-.working .working-description{
-    height: 40px;
-    box-sizing: border-box;
-    padding-left: 10px;
-    line-height: 40px;
-    font-size: 15px;
-    color: rgb(150, 150, 150);
-}
-.working div#working-preview-area{
+
+.main > .working > .preview-container preview-div{
     height: calc(100% - 45px);
     width: 100%;
     box-sizing: border-box;
@@ -251,29 +257,53 @@ textarea#editor-textarea{
     color: rgb(100, 100, 100);
     position: relative;
 }
-.working #working-preview-area *{
+.main > .working > .preview-container preview-div *{
     max-width: 100%;
 }
-.working .working-info .working-info-title{
+
+.main > .working > .info-container{
+height: calc(100% - 64px);
+    width: 400px;
+    max-width: 100%;
+    position: fixed;
+    top: 64px;
+    right: 0;
+    transform: translate(400px, 0);
+    transition: all 0.30s ease-in-out;
+    z-index: 3;
+}
+.main > .working .info-container > .container{
+    height: 100%;
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+    box-sizing: border-box;
+    position: relative;
+    padding: 10px;
+}
+.main > .working .info-container.visible{
+    transform: translate(0, 0);
+}
+
+.main > .working .info-container > .container > .title-container{
     text-align: center;
     font-size: 20px;
     font-weight: bold;
 }
-.working .working-info #working-info-close-button{
+.main > .working .info-container > .container > .title-container .close-button{
     position: absolute;
     top: 14px;
     left: 14px;
 }
-.working .working-info #working-info-slug-preview{
+.main > .working .info-container > .container > .slug-container .slug-preview{
     min-height: 40px;
 }
-.working .working-info .working-type .title{
+.main > .working .info-container > .container > .type-container .title{
     padding-top: 20px;
 }
-.working .publish-area{
+.main > .working .info-container > .container > .save-container{
     height: 40px;
 }
-.working .working-info .create-tips .title{
+.main > .working .info-container > .container > .tips-container .title{
     font-size: 20px;
     line-height: 30px;
     margin-top:20px;
@@ -281,40 +311,31 @@ textarea#editor-textarea{
     font-weight: bold;
     text-align: center;
 }
-.working #working-save-as-draft-button{
-    float: right;
-    color: rgb(54, 134, 190);
-}
-.working #working-save-as-draft-button[active]{
-    background-color: rgba(54, 134, 190, 0.25);
-}
-.working #working-publish-now-button{
+
+.main > .working .info-container > .container > .save-container .publish-button{
     color: rgb(76, 175, 80);
     float: right;
 }
-.working #working-publish-now-button[active]{
+.main > .working .info-container > .container > .save-container .publish-button[active]{
     background-color: rgba(76, 175, 80, 0.25);
 }
-div#public-area{
-    height: 0;
-    width: 0;
-    z-index: 100;
-    background-color: rgba(0, 0, 0, 0.4);
+
+.main > .working .info-container > .container > .save-container .draft-button{
+    float: right;
+    color: rgb(54, 134, 190);
+}
+.main > .working .info-container > .container > .save-container .draft-button[active]{
+    background-color: rgba(54, 134, 190, 0.25);
+}
+
+.main > .working .float{
     position: fixed;
-    overflow: hidden;
-    opacity: 0;
-    transition: opacity 0.30s ease-in-out;
+    bottom: 20px;
+    right: 20px;
 }
-div#public-area.visible{
-    opacity: 1;
+.main > .working .float paper-fab{
+    background-color: rgb(244, 67, 54);
 }
-div#public-area .container{
-    max-width: 900px;
-    width: calc(100% - 40px);
-    height: calc(100% - 40px);
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 20px;
-    border-radius: 2px;
-    background-color: rgb(255, 255, 255);
+.main > .working .float paper-fab[active]{
+    background-color: rgba(244, 67, 54, 0.25);
 }
