@@ -117,13 +117,20 @@ aside.visible{
     display: block;
 }
 
-.main > .lobby{
+.main > .lobby.current{
     padding: 20px;
+    display: table;
+}
+
+.main > .lobby > .container{
+    display: table-cell;
+    text-align: center;
 }
 
 .main > .lobby .tile{
     display: inline-block;
     position: relative;
+    vertical-align: middle;
     text-align: center;
     width: 300px;
     height: 400px;
@@ -171,15 +178,15 @@ aside.visible{
 }
 
 
-.main > .lobby > .float{
+.main > .lobby > .float-container{
     position: fixed;
     bottom: 20px;
     right: 20px;
 }
-.main > .lobby > .float paper-fab{
+.main > .lobby > .float-container paper-fab{
     background-color: rgb(244, 67, 54);
 }
-.main > .lobby > .float paper-fab[active]{
+.main > .lobby > .float-container paper-fab[active]{
     background-color: rgba(244, 67, 54, 0.25);
 }
 
@@ -245,7 +252,7 @@ aside.visible{
     border-left: 1px solid rgb(230, 230, 230);
 }
 
-.main > .working > .preview-container preview-div{
+.main > .working > .preview-container .preview-div{
     height: calc(100% - 45px);
     width: 100%;
     box-sizing: border-box;
@@ -257,7 +264,7 @@ aside.visible{
     color: rgb(100, 100, 100);
     position: relative;
 }
-.main > .working > .preview-container preview-div *{
+.main > .working > .preview-container .preview-div *{
     max-width: 100%;
 }
 
@@ -328,14 +335,14 @@ height: calc(100% - 64px);
     background-color: rgba(54, 134, 190, 0.25);
 }
 
-.main > .working .float{
+.main > .working .float-container{
     position: fixed;
     bottom: 20px;
     right: 20px;
 }
-.main > .working .float paper-fab{
+.main > .working .float-container paper-fab{
     background-color: rgb(244, 67, 54);
 }
-.main > .working .float paper-fab[active]{
+.main > .working .float-container paper-fab[active]{
     background-color: rgba(244, 67, 54, 0.25);
 }
