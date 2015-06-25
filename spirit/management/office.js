@@ -66,8 +66,16 @@ var objects = {
     ".main > .working .method-input": _(".main > .container.working  > .info-container .hidden-container > .method-input"),
     ".main > .working .publish-or-not": _(".main > .container.working  > .info-container .hidden-container > .publish-or-not"),
 
+    ".main > .working .publish-button": _(".main > .container.working  > .info-container .save-container > .publish-button"),
+    ".main > .working .draft-button": _(".main > .container.working  > .info-container .save-container > .draft-button"),
+
     ".main > .working .float-container .publish-fab": _(".main > .container.working  > .float-container > .publish-fab"),
-    ".main > .working .float-container .open-public-fab": _(".main > .container.working  > .float-container > .open-public-fab")
+    ".main > .working .float-container .open-public-fab": _(".main > .container.working  > .float-container > .open-public-fab"),
+
+    ".main > .working .toast-container .draft-success": _(".main > .container.working  > .toast-container > .draft-success"),
+    ".main > .working .toast-container .publish-success": _(".main > .container.working  > .toast-container > .publish-success"),
+    ".main > .working .toast-container .info-required": _(".main > .container.working  > .toast-container > .info-required"),
+    ".main > .working .toast-container .save-failed": _(".main > .container.working  > .toast-container > .save-failed")
 };
 
 function getCookie(name) {
@@ -403,11 +411,17 @@ objects[".main > .working .time-input"].addEventListener("blur", function () {
 
 objects[".main > .working .float-container .open-public-fab"].addEventListener("click", showPublic);
 
-function sendWorking(publish) {
+function sendWorking() {
+    if (objects[".main > .working .slug-input"].value === "" ||
+        objects[".main > .working .title-input"].value === "" ||
+        objects[".main > .working .editor-textarea"].value === "") {
+            objects[".main > .working .toast-container .info-required"].show();
+            return;
+        }
+
     queryString = new FormData();
     queryString.append("_xsrf", getCookie("_xsrf"));
     queryString.append("action", "save_working");
-
 
     queryString.append("working_title", objects[".main > .working .title-input"].value);
     queryString.append("working_content", objects[".main > .working .editor-textarea"].value);
@@ -415,11 +429,7 @@ function sendWorking(publish) {
     queryString.append("working_type", objects[".main > .working .type-radio-group"].selected);
     queryString.append("working_method", objects[".main > .working .method-input"].value);
     queryString.append("working_time", datetimeToUnix(objects[".main > .working .time-input"].value));
-    if (publish) {
-        queryString.append("working_publish", "true");
-    } else {
-        queryString.append("working_publish", "false");
-    }
+    queryString.append("working_publish", objects[".main > .working .publish-or-not"].value);
     queryString.append("working_slug", objects[".main > .working .slug-input"].value);
     queryString.append("working_id", objects[".main > .working .id-input"].value);
 
@@ -435,11 +445,40 @@ function sendWorking(publish) {
     }).then(function (resp) {
         return resp.json();
     }).then(function (json) {
-        return;
+        if (!json.succeed) {
+            if (!json.reason) {
+                throw new Error("unknown");
+            } else {
+                throw new Error(json.reason);
+            }
+        }
+        if (json.publish) {
+            objects[".main > .working .toast-container .publish-success"].querySelector("a").href = json.url;
+            objects[".main > .working .toast-container .publish-success"].show();
+        } else {
+            objects[".main > .working .toast-container .draft-success"].show();
+        }
     }).catch(function (error) {
-        document.querySelector(".load-layout .loading-failed").show();
+        if (error == "slug") {
+            objects[".main > .working .toast-container .save-failed"].text =
+                "相同的短链接已经存在，请更换！";
+        } else {
+            objects[".main > .working .toast-container .save-failed"].text =
+                "抱歉，发生了未知错误。";
+        }
+        objects[".main > .working .toast-container .save-failed"].show();
     });
 }
+
+objects[".main > .working .publish-button"].addEventListener("click", function () {
+    objects[".main > .working .publish-or-not"].value = "true";
+    sendWorking();
+});
+
+objects[".main > .working .draft-button"].addEventListener("click", function () {
+    objects[".main > .working .publish-or-not"].value = "false";
+    sendWorking();
+});
 
 function buildWindow(slug, sub_slug) {
     if (slug == "lobby") {

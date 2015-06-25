@@ -326,7 +326,8 @@ class ActionOffice(ManagementOffice):
         elif working_type == "page":
             book = self.memories.select("Pages")
         else:
-            raise HTTPError(404)
+            raise HTTPError(500)
+
         working_title = self.get_arg("working_title", arg_type="origin")
         working_content = self.get_arg("working_content", arg_type="origin")
         working_method = self.get_arg("working_method", arg_type="hash")
@@ -340,6 +341,21 @@ class ActionOffice(ManagementOffice):
         working["content"] = working_content
         working["slug"] = working_slug
         working["author"] = self.current_user["_id"]
+
+        working_id = self.get_arg("working_id", arg_type="number")
+        if not(working_slug and working_type):
+            raise HTTPError(500)
+        if working_type == "writing":
+            book = self.memories.select("Writings")
+        elif working_type == "page":
+            book = self.memories.select("Pages")
+        book.find({"slug": working_slug})
+        yield book.do()
+        working = book.result()
+        if working and (
+         working_id is not False and working["_id"] != working_id):
+            self.finish(json.dumps({"succeed": False, "reason": "slug"}))
+            return
 
         if working_method == "new":
             if working_type == "writing":
@@ -359,4 +375,8 @@ class ActionOffice(ManagementOffice):
             working_id = self.get_arg("working_id", arg_type="number")
             book.set({"_id": working_id}, working)
         yield book.do()
-        self.write(json.dumps({"succeed": True, "url": ""}))
+        self.finish(json.dumps({
+            "succeed": True,
+            "publish": working_publish,
+            "url": "/" + working_type + "/" + working_slug + ".htm"
+        }))
