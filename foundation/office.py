@@ -306,7 +306,7 @@ class ActionOffice(ManagementOffice):
     @coroutine
     @authenticated
     def post(self):
-        action = self.get_arg("action", default=None, arg_type="hash")
+        action = self.get_arg("action", default=None, arg_type="link")
         if hasattr(self, action):
             yield getattr(self, action)()
         else:
@@ -351,9 +351,9 @@ class ActionOffice(ManagementOffice):
             book = self.memories.select("Pages")
         book.find({"slug": working_slug})
         yield book.do()
-        working = book.result()
-        if working and (
-         working_id is not False and working["_id"] != working_id):
+        slug_result = book.result()
+        if slug_result and (
+         slug_result is not False and slug_result["_id"] != working_id):
             self.finish(json.dumps({"succeed": False, "reason": "slug"}))
             return
 
@@ -378,5 +378,8 @@ class ActionOffice(ManagementOffice):
         self.finish(json.dumps({
             "succeed": True,
             "publish": working_publish,
-            "url": "/" + working_type + "/" + working_slug + ".htm"
+            "working_id": working_id,
+            "working_type": working_type,
+            "working_publish": working_publish,
+            "url": "/" + working_type + "s/" + working_slug + ".htm"
         }))

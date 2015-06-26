@@ -379,7 +379,6 @@ function showWorking(edit, type, id) {
         } else {
             finishShowing();
         }
-
     });
 }
 
@@ -438,8 +437,8 @@ function sendWorking() {
         "credentials": "include",
         "body": queryString
     }).then(function (resp) {
-        if (response.status >= 200 && response.status < 400) {
-            return response;
+        if (resp.status >= 200 && resp.status < 400) {
+            return resp;
         }
         throw response.status + "";
     }).then(function (resp) {
@@ -447,9 +446,9 @@ function sendWorking() {
     }).then(function (json) {
         if (!json.succeed) {
             if (!json.reason) {
-                throw new Error("unknown");
+                throw "unknown";
             } else {
-                throw new Error(json.reason);
+                throw json.reason;
             }
         }
         if (json.publish) {
@@ -458,6 +457,15 @@ function sendWorking() {
         } else {
             objects[".main > .working .toast-container .draft-success"].show();
         }
+        pushState("/management/working/edit?type=" + json.working_type + "&id=" + json.working_id);
+        objects[".main > .working .type-radio-group"].selected = json.working_type;
+        objects[".main > .working .id-input"].value = json.working_id;
+        objects[".main > .working .method-input"].value = "edit";
+
+        if (json.working_publish) {
+            objects[".main > .working .draft-button"].style.display = "none";
+        }
+
     }).catch(function (error) {
         if (error == "slug") {
             objects[".main > .working .toast-container .save-failed"].text =
@@ -466,6 +474,7 @@ function sendWorking() {
             objects[".main > .working .toast-container .save-failed"].text =
                 "抱歉，发生了未知错误。";
         }
+        console.log(error);
         objects[".main > .working .toast-container .save-failed"].show();
     });
 }
@@ -479,6 +488,11 @@ objects[".main > .working .draft-button"].addEventListener("click", function () 
     objects[".main > .working .publish-or-not"].value = "false";
     sendWorking();
 });
+
+function showCRDA(type) {
+    type = (typeof type === "undefined") ? "writing" : type;
+    
+}
 
 function buildWindow(slug, sub_slug) {
     if (slug == "lobby") {
