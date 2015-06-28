@@ -75,7 +75,9 @@ var objects = {
     ".main > .working .toast-container .draft-success": _(".main > .container.working  > .toast-container > .draft-success"),
     ".main > .working .toast-container .publish-success": _(".main > .container.working  > .toast-container > .publish-success"),
     ".main > .working .toast-container .info-required": _(".main > .container.working  > .toast-container > .info-required"),
-    ".main > .working .toast-container .save-failed": _(".main > .container.working  > .toast-container > .save-failed")
+    ".main > .working .toast-container .save-failed": _(".main > .container.working  > .toast-container > .save-failed"),
+
+    ".main > .crda": _(".main > .crda")
 };
 
 function getCookie(name) {
@@ -317,7 +319,8 @@ objects[".main > .working .editor-textarea"].addEventListener("scroll", syncHeig
 
 function previewSlug() {
     preview = objects[".main > .working .slug-preview"];
-    if (!objects[".main > .working .slug-input"].querySelector("paper-input-container").invalid && objects[".main > .working .slug-input"].value !== "") {
+    if (!objects[".main > .working .slug-input"].querySelector("paper-input-container").invalid &&
+        objects[".main > .working .slug-input"].value !== "") {
 
         preview.innerHTML = window.location.host;
 
@@ -491,14 +494,25 @@ objects[".main > .working .draft-button"].addEventListener("click", function () 
 
 function showCRDA(type) {
     type = (typeof type === "undefined") ? "writing" : type;
-    
+    loadLayout(function (callback) {
+        hideCurrentMainContainer();
+        pushState("/management/crda/" + type);
+
+        objects[".main > .crda"].classList.add("current");
+
+        loadLobbyData(callback);
+    });
 }
+
+objects[".main aside .show-crda"].addEventListener("click", showCRDA);
 
 function buildWindow(slug, sub_slug) {
     if (slug == "lobby") {
         showLobby();
     } else if (slug == "working") {
         showWorking(sub_slug, getVars.type, getVars.id);
+    } else if (slug == "crda") {
+        showCRDA(sub_slug);
     } else {
         //need a more graceful way to deal with 404 Error.
         window.location.href = "//" + window.location.host + "/404";
