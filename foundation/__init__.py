@@ -113,6 +113,7 @@ class FurtherLand:
     def __init__(self, melody):
         import os
         self.identity = os.getpid()
+        self.melody = melody
         # Build A Port
         self.port = tornado.netutil.bind_sockets(
             melody.listen_port, address=melody.listen_ip)
@@ -155,15 +156,21 @@ class FurtherLand:
         )
 
     def rise(self):
-        import tornado.ioloop
-        self.land = tornado.httpserver.HTTPServer(self.stage)
-        self.land.add_sockets(self.port)
-        if hasattr(self.stage, "setup"):
-            self.stage.setup(tornado.ioloop.IOLoop.current())
-        tornado.ioloop.IOLoop.current().start()
+        try:
+            print("FurtherLand has been risen on %s:%s." % (
+                self.melody.listen_ip, str(self.melody.listen_port)))
+            import tornado.ioloop
+            self.land = tornado.httpserver.HTTPServer(self.stage)
+            self.land.add_sockets(self.port)
+            if hasattr(self.stage, "setup"):
+                self.stage.setup(tornado.ioloop.IOLoop.current())
+            tornado.ioloop.IOLoop.current().start()
+        except:
+            self.set()
 
     def set(self):
         tornado.ioloop.IOLoop.current().stop()
+        print("FurtherLand set.")
 
     def version(self):
         return "FurtherLand Sakihokori Edition"
