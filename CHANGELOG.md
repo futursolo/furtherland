@@ -1,9 +1,13 @@
 # Changelog
 
+v20150629 dev
+-------------
+ - More Graceful FurtherLand Rising Method
+ - Polymer Framework Added
+
 v20150531 dev
 -------------
  - Stop Using Static File Content Delivery Network to Prevent Connection Problems
-
 
 v20150529 dev
 -------------
@@ -15,7 +19,7 @@ v20150529 dev
 v20150502 dev
 -------------
  - Bugs Fix
- - Stop Support for pypy3(Because it is slower than normal Python3) and update minimal Python version to 3.3
+ - Stop Support for pypy3(Because it is slower than normal Python3 on Tornado) and update minimal Python version to 3.3
  - Master Information Preload Function
  - Public URL function Removed
  - Writings and Pages Erase Function
