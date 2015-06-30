@@ -346,3 +346,9 @@ height: calc(100% - 64px);
 .main > .working .float-container paper-fab[active]{
     background-color: rgba(244, 67, 54, 0.25);
 }
+.main > .crda .type-selector{
+    background-color: rgb(54, 134, 190);
+}
+.main > .crda .main-container{
+
+}
