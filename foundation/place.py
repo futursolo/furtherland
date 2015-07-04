@@ -333,6 +333,11 @@ class PlacesOfInterest(RequestHandler):
         return RequestHandler.static_url(
             self, path, include_host=include_host, **kwargs)
 
+    def bower_url(self, path, include_host=None, **kwargs):
+        path = "bower/" + path
+        return RequestHandler.static_url(
+            self, path, include_host=include_host, **kwargs)
+
     def render_string(self, filename, **kwargs):
         if filename not in self.furtherland.factory_preload.keys():
             self.furtherland.factory_preload[
@@ -349,6 +354,7 @@ class PlacesOfInterest(RequestHandler):
                 "reverse_url": self.application.reverse_url,
                 "config": self.config,
                 "static_url": self.static_url,
+                "bower_url": self.bower_url,
                 "FurtherLand": self.furtherland,
                 "used_time": int((time.time() - self.start_time) * 1000),
                 "db_action": self.db_action
