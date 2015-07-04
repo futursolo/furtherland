@@ -4,6 +4,7 @@ v20150704 dev
 -------------
  - Bugs Fix
  - Virtualenv has been removed from Requirements List, please use venv Python Standard Library as instead.
+ - Formally Start to use Polymer Framework
 
 v20150629 dev
 -------------
