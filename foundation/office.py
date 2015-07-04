@@ -319,7 +319,6 @@ class ActionOffice(ManagementOffice):
 
     @coroutine
     def save_working(self):
-        working = {}
         working_type = self.get_arg("working_type", arg_type="hash")
         if working_type == "writing":
             book = self.memories.select("Writings")
@@ -328,58 +327,154 @@ class ActionOffice(ManagementOffice):
         else:
             raise HTTPError(500)
 
-        working_title = self.get_arg("working_title", arg_type="origin")
-        working_content = self.get_arg("working_content", arg_type="origin")
         working_method = self.get_arg("working_method", arg_type="hash")
-        working_time = self.get_arg("working_time", arg_type="number")
-        working_publish = self.get_arg("working_publish", arg_type="boolean")
-        working_slug = self.get_arg("working_slug", arg_type="slug")
-
-        working["title"] = working_title
-        working["time"] = working_time
-        working["publish"] = working_publish
-        working["content"] = working_content
-        working["slug"] = working_slug
-        working["author"] = self.current_user["_id"]
 
         working_id = self.get_arg("working_id", arg_type="number")
-        if not(working_slug and working_type):
-            raise HTTPError(500)
-        if working_type == "writing":
-            book = self.memories.select("Writings")
-        elif working_type == "page":
-            book = self.memories.select("Pages")
-        book.find({"slug": working_slug})
-        yield book.do()
-        slug_result = book.result()
-        if slug_result and (
-         slug_result is not False and slug_result["_id"] != working_id):
-            self.finish(json.dumps({"succeed": False, "reason": "slug"}))
-            return
+
+        def make_working():
+            working = {}
+            working["title"] = self.get_arg("working_title", arg_type="origin")
+            working["content"] = self.get_arg("working_content",
+                                              arg_type="origin")
+            working["time"] = self.get_arg("working_time", arg_type="number")
+            working["publish"] = self.get_arg("working_publish",
+                                              arg_type="boolean")
+            working["slug"] = self.get_arg("working_slug", arg_type="slug")
+            working["author"] = self.current_user["_id"]
+            if not working["slug"]:
+                raise HTTPError(500)
+            return working
+
+        def check_slug(slug):
+            book.find({"slug": slug})
+            yield book.do()
+            slug_result = book.result()
+            if slug_result and (
+             slug_result is not False and slug_result["_id"] != working_id):
+                self.finish(json.dumps({"succeed": False, "reason": "slug"}))
+                return False
+            return True
 
         if working_method == "new":
+            working = make_working()
+            if not check_slug(working["slug"]):
+                return
             if working_type == "writing":
                 working_id = yield self.issue_id("Writings")
             elif working_type == "page":
                 working_id = yield self.issue_id("Pages")
             else:
                 raise HTTPError(500)
-            if not working_slug:
-                working_slug = str(working_id)
             working["_id"] = working_id
             book.add(working)
         elif working_method == "edit":
-            working_id = self.get_arg("working_id", arg_type="number")
-            if not working_slug:
-                working_slug = str(working_id)
-            working_id = self.get_arg("working_id", arg_type="number")
+            working = make_working()
+            if not check_slug(working["slug"]):
+                return
             book.set({"_id": working_id}, working)
+        elif working_method == "erase":
+            book.erase({"_id": working_id})
+        else:
+            raise HTTPError(500)
         yield book.do()
         self.finish(json.dumps({
             "succeed": True,
-            "publish": working_publish,
-            "working_id": working_id,
-            "working_type": working_type,
-            "working_publish": working_publish,
-            "url": "/" + working_type + "s/" + working_slug + ".htm"
+            "id": working_id,
         }))
+
+    @coroutine
+    def load_working(self):
+        working_type = self.get_arg("type", arg_type="hash")
+        working_id = self.get_arg("id", arg_type="number")
+        if working_type == "writing":
+            book = self.memories.select("Writings")
+        elif working_type == "page":
+            book = self.memories.select("Pages")
+        else:
+            raise HTTPError(500)
+        book.find({"_id": working_id})
+        yield book.do()
+        working = book.result()
+        self.finish(json.dumps(working))
+
+    @coroutine
+    def load_crda(self):
+        type = self.get_arg("type", arg_type="hash")
+
+        if type == "writings":
+            book = self.memories.select("Writings")
+            book.find({}, ["content"])
+        elif type == "pages":
+            book = self.memories.select("Pages")
+            book.find({}, ["content"])
+        elif type == "replies":
+            book = self.memories.select("Replies")
+            book.find({})
+            writing_list = []
+        else:
+            raise HTTPError(500)
+
+        book.sort([["time", False]])
+        book.length(0, True)
+        yield book.do()
+        content_list = book.result()
+
+        if type == "replies":
+            for key in content_list:
+                content_list[key]["content"] = self.make_md(
+                    content_list[key]["content"])
+                content_list[key]["_id"] = int(
+                    content_list[key]["_id"])
+                if content_list[key]["writing_id"] not in writing_list:
+                    writing_list.append(content_list[key]["writing_id"])
+
+            writing_list = yield self.get_writing(writing_list=writing_list)
+            for key in content_list:
+                if content_list[key]["writing_id"] not in writing_list.keys():
+                    del content_list[key]
+                    continue
+                content_list[key]["writing"] = writing_list[
+                    content_list[key]["writing_id"]]
+
+        self.finish(json.dumps(list(content_list.values())))
+
+    @coroutine
+    def save_crda(self):
+        content_type = self.get_arg("type", arg_type="hash")
+        content_id = self.get_arg("content", arg_type="number")
+        if type == "writings" or type == "pages":
+            if action == "erase":
+                if not self.current_user:
+                    raise HTTPError(500)
+                reply_id = self.get_arg("reply", arg_type="number")
+                if content_type == "writing":
+                    book = self.memories.select("Writings")
+                elif content_type == "page":
+                    book = self.memories.select("Pages")
+                book.erase({"_id": content_id})
+                yield book.do()
+                self.finish(json.dumps({"status": True}))
+            else:
+                raise HTTPError(500)
+        elif area == "replies":
+            book = self.memories.select("Replies")
+            action = self.get_arg("action", arg_type="hash")
+            if action == "edit":
+                reply_id = self.get_arg("reply", arg_type="number")
+                reply_name = self.get_arg("name", arg_type="origin")
+                reply_homepage = self.get_arg("homepage", arg_type="origin")
+                reply_email = self.get_arg("email", arg_type="mail_address")
+                reply_content = self.get_arg("content", arg_type="origin")
+                if not (reply_id and reply_name and reply_homepage and
+                        reply_email and reply_content):
+                    raise HTTPError(500)
+                reply = {}
+                reply["name"] = reply_name
+                reply["homepage"] = reply_homepage
+                reply["email"] = reply_email
+                reply["content"] = reply_content
+                book.set({"_id": reply_id}, reply)
+                yield book.do()
+                self.redirect("/management/crda/replies")
+        else:
+            raise HTTPError(500)

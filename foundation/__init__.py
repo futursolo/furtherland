@@ -35,7 +35,7 @@ from multiprocessing.connection import Connection
 
 navigation = [
     (r"/", place.CentralSquare),
-    # (r"/classes/(.*).htm", ClassesPlace),  This will be avaliable in futhre
+    # (r"/classes/(.*).htm", ClassesPlace),  This will be avaliable in future
     # (r"/timeline", HistoryLibrary),
     (r"/feed.xml", place.NewsAnnouncement),
     (r"/writings/(.*).htm", place.ConferenceHall),
@@ -68,10 +68,7 @@ navigation = [
     (r"/channel/avatar/(.*)", internal.AvatarArea),
     (r"/channel/public", internal.PublicArea),
     (r"/channel/reply", internal.ReplyArea),
-    (r"/channel/preview", internal.PreviewArea),
-    (r"/channel/slug_verify", internal.SlugVerifyArea),
     (r"/channel/selfkill", internal.SelfKillArea),
-    (r"/channel/content", internal.ContentArea),
 
     (r"/visitor/github", visitor.VisitorGitHubCheckinPlace),
     (r"/visitor/checkout", visitor.VisitorCheckoutOffice),

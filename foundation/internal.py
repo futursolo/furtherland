@@ -268,59 +268,6 @@ class ReplyArea(PlacesOfInterest):
             raise HTTPError(500)
 
 
-class ContentArea(PlacesOfInterest):
-    @coroutine
-    @authenticated
-    def post(self):
-        action = self.get_arg("action", arg_type="hash")
-        content_type = self.get_arg("type", arg_type="hash")
-        content_id = self.get_arg("content", arg_type="number")
-        if action == "erase":
-            if not self.current_user:
-                raise HTTPError(500)
-            reply_id = self.get_arg("reply", arg_type="number")
-            if content_type == "writing":
-                book = self.memories.select("Writings")
-            elif content_type == "page":
-                book = self.memories.select("Pages")
-            book.erase({"_id": content_id})
-            yield book.do()
-            self.finish(json.dumps({"status": True}))
-        else:
-            raise HTTPError(500)
-
-
-class PreviewArea(PlacesOfInterest):
-    @coroutine
-    @authenticated
-    def post(self):
-        content = self.get_arg("content", arg_type="origin", default="")
-        self.finish(self.make_md(content))
-
-
-class SlugVerifyArea(PlacesOfInterest):
-    @coroutine
-    @authenticated
-    def post(self):
-        slug = self.get_arg("slug", arg_type="slug")
-        working_type = self.get_arg("type", arg_type="hash")
-        working_id = self.get_arg("working", arg_type="number")
-        if not(slug and working_type):
-            raise HTTPError(500)
-        if working_type == "writing":
-            book = self.memories.select("Writings")
-        elif working_type == "page":
-            book = self.memories.select("Pages")
-        book.find({"slug": slug})
-        yield book.do()
-        working = book.result()
-        if working and (
-         working_id is not False and working["_id"] != working_id):
-            self.finish(json.dumps({"status": False}))
-        else:
-            self.finish(json.dumps({"status": True}))
-
-
 class SelfKillArea(PlacesOfInterest):
     @authenticated
     def get(self):
