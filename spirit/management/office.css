@@ -34,7 +34,7 @@ textarea, input{
 .load{
     height: 0;
     width: 0;
-    z-index: 100;
+    z-index: 1000;
     display: table;
     background-color: rgb(245, 245, 245);
     position: fixed;
@@ -51,7 +51,54 @@ textarea, input{
     opacity: 1;
 }
 .load .failed{
-    z-index: 101;
+    z-index: 1001;
+}
+
+.confirm{
+    height: 0;
+    width: 0;
+    z-index: 105;
+    display: table;
+    background-color: rgba(0, 0, 0, 0.4);
+    position: fixed;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.30s ease-in-out;
+    top: -10000px;
+    left: -10000px;
+}
+.confirm.visible{
+    opacity: 1;
+}
+.confirm > .container{
+    display: table-cell;
+    vertical-align: middle;
+}
+.confirm .dialog{
+    max-width: 500px;
+    box-sizing: border-box;
+    padding: 20px;
+    padding-bottom: 55px;
+    width: calc(100% - 40px);
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    border-radius: 2px;
+    background-color: rgb(255, 255, 255);
+    position: relative;
+}
+.confirm .message{
+    padding-bottom: 50px;
+    font-size: 18px;
+}
+.confirm paper-button{
+    float: right;
+}
+.confirm .continue{
+    color: rgb(54, 134, 190);
+}
+.confirm .continue[active]{
+    background-color: rgba(54, 134, 190, 0.25);
 }
 
 .public{
@@ -298,9 +345,18 @@ height: calc(100% - 64px);
 }
 .main > .working .info-container > .container > .title-container .close-button{
     position: absolute;
-    top: 14px;
-    left: 14px;
+    height: 24px;
+    width: 24px;
+    line-height: 20px;
+    top: 4px;
+    left: 4px;
+
 }
+
+.main > .working .info-container > .container > .type-container > .type-radio-group{
+    outline: 0;
+}
+
 .main > .working .info-container > .container > .slug-container .slug-preview{
     min-height: 40px;
 }
@@ -346,9 +402,68 @@ height: calc(100% - 64px);
 .main > .working .float-container paper-fab[active]{
     background-color: rgba(244, 67, 54, 0.25);
 }
+
 .main > .crda .type-selector{
     background-color: rgb(54, 134, 190);
+    color: rgb(255, 255, 255);
 }
 .main > .crda .main-container{
+    background-color: rgb(245, 245, 245);
+    height: calc(100% - 48px);
+    overflow-y: auto;
+}
 
+.main > .crda .main-container .workings-list{
+    background-color: rgb(255, 255, 255);
+    border-radius: 2px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: none;
+    max-width: 1200px;
+    width: 100%;
+}
+.main > .crda .main-container .workings-list.current{
+    display: block;
+}
+.main > .crda .main-container .workings-list .item{
+    box-sizing: border-box;
+    padding: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
+    position: relative;
+}
+.main > .crda .main-container .workings-list .item .title{
+    line-height: 24px;
+    display: inline-block;
+    font-size: 20px;
+    width: calc(100% - 64px);
+    box-sizing: border-box;
+    padding-left: 20px;
+}
+.main > .crda .main-container .workings-list .item a:link{
+    color: rgb(100, 100, 100);
+}
+.main > .crda .main-container .workings-list .item a:visited{
+    color: rgb(100, 100, 100);
+}
+.main > .crda .main-container .workings-list .item .launch-working{
+    z-index: 3;
+}
+.main > .crda .main-container .workings-list .item .remove{
+    color: rgb(244, 67, 54);
+    display: inline-block;
+    z-index: 3;
+}
+.main > .crda .main-container .workings-list .no-content{
+    box-sizing: border-box;
+    padding: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
+    line-height: 40px;
+    position: relative;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
 }

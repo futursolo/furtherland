@@ -27,12 +27,17 @@ var objects = {
     ".load": _(".load"),
     ".load .failed": _(".load .failed"),
 
+    ".confirm": _(".confirm"),
+    ".confirm .message": _(".confirm .message"),
+    ".confirm .cancel": _(".confirm .cancel"),
+    ".confirm .continue": _(".confirm .continue"),
+
     ".public": _(".public"),
 
     "header .toggle-sidebar": _("header .toggle-sidebar"),
-    "header .reload-page": _("header .reload-page"),
 
     ".main aside": _(".main aside"),
+    ".main aside paper-menu": _(".main aside paper-menu"),
     ".main aside .show-lobby": _(".main aside .show-lobby"),
     ".main aside .show-working": _(".main aside .show-working"),
     ".main aside .show-crda": _(".main aside .show-crda"),
@@ -42,6 +47,12 @@ var objects = {
     ".main > .lobby .writing-num .content": _(".main > .container.lobby .tile.writing-num .content"),
     ".main > .lobby .page-num .content": _(".main > .container.lobby .tile.page-num .content"),
     ".main > .lobby .reply-num .content": _(".main > .container.lobby .tile.reply-num .content"),
+
+    ".main > .lobby .writing-num .manage-writing": _(".main > .container.lobby .tile.writing-num .manage-writing"),
+    ".main > .lobby .page-num .manage-page": _(".main > .container.lobby .tile.page-num .manage-page"),
+    ".main > .lobby .reply-num .manage-reply": _(".main > .container.lobby .tile.reply-num .manage-reply"),
+
+    ".main > .lobby .float-container .create-new-fab": _(".main > .container.lobby .float-container .create-new-fab"),
 
 
     ".main > .working": _(".main > .working"),
@@ -53,6 +64,8 @@ var objects = {
     ".main > .working .slug-preview": _(".main > .container.working  > .info-container .slug-container > .slug-preview"),
 
     ".main > .working .type-radio-group": _(".main > .container.working  > .info-container .type-container > .type-radio-group"),
+    ".main > .working .type-radio-group paper-radio-button[name=writing]": _(".main > .container.working  > .info-container .type-container > .type-radio-group paper-radio-button[name=writing]"),
+    ".main > .working .type-radio-group paper-radio-button[name=page]": _(".main > .container.working  > .info-container .type-container > .type-radio-group paper-radio-button[name=page]"),
 
     ".main > .working .time-checkbox": _(".main > .container.working  > .info-container .time-container > .time-checkbox"),
     ".main > .working .time-input": _(".main > .container.working > .info-container .time-container > .time-input"),
@@ -77,7 +90,17 @@ var objects = {
     ".main > .working .toast-container .info-required": _(".main > .container.working  > .toast-container > .info-required"),
     ".main > .working .toast-container .save-failed": _(".main > .container.working  > .toast-container > .save-failed"),
 
-    ".main > .crda": _(".main > .crda")
+    ".main > .crda": _(".main > .container.crda"),
+    ".main > .crda .type-selector": _(".main > .container.crda .type-selector"),
+    ".main > .crda .type-selector .writings": _(".main > .container.crda .type-selector  .writings"),
+    ".main > .crda .type-selector .pages": _(".main > .container.crda .type-selector  .pages"),
+    ".main > .crda .type-selector .replies": _(".main > .container.crda .type-selector  .replies"),
+    ".main > .crda .type-selector .publics": _(".main > .container.crda .type-selector  .publics"),
+
+    ".main > .crda .main-container .writings": _(".main > .container.crda .main-container  .writings"),
+    ".main > .crda .main-container .pages": _(".main > .container.crda .main-container  .pages"),
+    ".main > .crda .main-container .replies": _(".main > .container.crda .main-container  .replies"),
+    ".main > .crda .main-container .publics": _(".main > .container.crda .main-container  .publics"),
 };
 
 function getCookie(name) {
@@ -140,13 +163,6 @@ function findParentBySelector(elm, selector) {
     return cur;
 }
 
-function hideCurrentMainContainer() {
-    current = _(".main > .container.current");
-    if (current){
-        current.classList.remove("current");
-    }
-}
-
 function pushState(uri) {
     if (uri) {
         window.history.pushState(null,null,"//" + window.location.host + uri);
@@ -168,32 +184,63 @@ var getVars = (function () {
 
 function loadLayout(callback) {
     window.loading = true;
+    setTimeout(function () {
+        Array.prototype.forEach.call(_All(".visible"), function (element) {
+            element.classList.remove("visible");
+        });
+        Array.prototype.forEach.call(_All(".current"), function (element) {
+            element.classList.remove("current");
+        });
+        objects[".load"].style.height = "100%";
+        objects[".load"].style.width = "100%";
+        objects[".load"].classList.add("visible");
 
-    objects[".load"].style.height = "100%";
-    objects[".load"].style.width = "100%";
-    objects[".load"].classList.add("visible");
+        function hideLoadLayout() {
+            objects[".load"].classList.remove("visible");
+            setTimeout(function () {
+                objects[".load"].style.height = "0";
+                objects[".load"].style.width = "0";
+                window.loading = false;
+            }, 300);
+        }
+        setTimeout(callback, 300, hideLoadLayout);
+    }, 100);
+}
 
-    function hideLoadLayout() {
-        objects[".load"].classList.remove("visible");
+function acquireConfirm(message, callback) {
+    if (message == "remove") {
+        message = "你确认要移除它吗？这个操作是不可以逆转的。";
+    }
+    objects[".confirm .message"].innerHTML = message;
+    function finishConfirm() {
+        objects[".confirm"].classList.remove("visible");
         setTimeout(function () {
-            objects[".load"].style.height = "0";
-            objects[".load"].style.width = "0";
-            window.loading = false;
+        objects[".confirm"].style.height = "0";
+        objects[".confirm"].style.width = "0";
+        objects[".confirm"].style.top = "-10000px";
+        objects[".confirm"].style.left = "-10000px";
+
         }, 300);
     }
-
-    setTimeout(callback, 300, hideLoadLayout);
+    objects[".confirm .cancel"] .onclick = function () {
+        finishConfirm();
+    };
+    objects[".confirm .continue"] .onclick = function () {
+        finishConfirm();
+        callback();
+    };
+    objects[".confirm"].style.height = "100%";
+    objects[".confirm"].style.width = "100%";
+    objects[".confirm"].style.top = "0px";
+    objects[".confirm"].style.left = "0px";
+    objects[".confirm"].classList.add("visible");
 }
 
 //Change Default Bahavior of paper-radio-button
 window.addEventListener("load", function () {
     Array.prototype.forEach.call(
         _All("paper-radio-button"), function (element) {
-            element.addEventListener("click", function (e) {
-                var element = e.srcElement || e.target;
-                if (findParentBySelector(element, "paper-radio-button") !== null) {
-                    element = findParentBySelector(element, "paper-radio-button");
-                }
+            element.addEventListener("click", function () {
                 element.checked = true;
             });
         }
@@ -228,12 +275,10 @@ function loadLobbyData(callback) {
             return resp.json();
         }
         throw new Error(resp.statusText);
-    }).then(function (resp) {
-        var data = resp;
-        console.log(data);
-        objects[".main > .lobby .writing-num .content"].innerHTML = data.writings;
-        objects[".main > .lobby .page-num .content"].innerHTML = data.pages;
-        objects[".main > .lobby .reply-num .content"].innerHTML = data.replies;
+    }).then(function (json) {
+        objects[".main > .lobby .writing-num .content"].innerHTML = json.writings;
+        objects[".main > .lobby .page-num .content"].innerHTML = json.pages;
+        objects[".main > .lobby .reply-num .content"].innerHTML = json.replies;
         if (callback) {
             callback();
         }
@@ -245,11 +290,11 @@ function loadLobbyData(callback) {
 
 function showLobby() {
     loadLayout(function (callback) {
-        hideCurrentMainContainer();
         pushState("/management/lobby");
 
         objects[".main > .lobby"].classList.add("current");
 
+        objects[".main aside paper-menu"].selected = 0;
         loadLobbyData(callback);
     });
 }
@@ -284,20 +329,6 @@ objects["header .toggle-sidebar"].addEventListener("click", function (e) {
     objects[".main aside"].classList.toggle("visible");
 });
 
-objects["header .reload-page"].addEventListener("click", function (e) {
-    if (!window.loading){
-        loadLayout(function (callback) {
-            setTimeout(callback, 1500);
-        });
-    }
-});
-
-Array.prototype.forEach.call(_All(".main aside .aside-item"), function (element) {
-    element.addEventListener("click", function (e) {
-        objects[".main aside"].classList.remove("visible");
-    });
-});
-
 function syncHeight() {
     editor = objects[".main > .working .editor-textarea"];
     preview = objects[".main > .working .preview-div"];
@@ -305,7 +336,7 @@ function syncHeight() {
     preview.scrollTop = (preview.scrollHeight - preview.offsetHeight) * percentage;
 }
 
-function previewText(event) {
+function previewText() {
     objects[".main > .working .preview-div"].innerHTML = marked(objects[".main > .working .editor-textarea"].value);
     syncHeight();
 }
@@ -352,6 +383,11 @@ function clearPreviousWorking() {
 
     objects[".main > .working .id-input"].value = "";
     objects[".main > .working .method-input"].value = "new";
+    objects[".main > .working .draft-button"].style.display = "block";
+
+    objects[".main > .working .type-radio-group paper-radio-button[name=writing]"].removeAttribute("disabled");
+    objects[".main > .working .type-radio-group paper-radio-button[name=page]"].removeAttribute("disabled");
+
 }
 
 function showWorking(edit, type, id) {
@@ -360,8 +396,7 @@ function showWorking(edit, type, id) {
     id = (typeof id === "undefined") ? "-1" : id;
 
     loadLayout(function (callback) {
-
-        hideCurrentMainContainer();
+        objects[".main aside paper-menu"].selected = 1;
 
         uri = "/management/working/";
         if (edit !== true) {
@@ -372,20 +407,61 @@ function showWorking(edit, type, id) {
         pushState(uri);
         clearPreviousWorking();
 
-        function finishShowing() {
-            objects[".main > .working"].classList.add("current");
-            callback();
-        }
+        objects[".main > .working"].classList.add("current");
 
         if (edit === true) {
-            //Load Draft from Database
+            queryString = new FormData();
+            queryString.append("_xsrf", getCookie("_xsrf"));
+            queryString.append("action", "load_working");
+            queryString.append("type", type);
+            queryString.append("id", id);
+
+            fetch("/management/api", {
+                "method": "post",
+                "credentials": "include",
+                "body": queryString
+            }).then(function (resp) {
+                if (resp.status >= 200 && resp.status < 400) {
+                    return resp.json();
+                }
+                throw new Error(resp.statusText);
+            }).then(function (json) {
+                objects[".main > .working .id-input"].value = json._id;
+                objects[".main > .working .editor-textarea"].value = json.content;
+                objects[".main > .working .slug-input"].value = json.slug;
+                if (json.time === 0) {
+                    objects[".main > .working .time-checkbox"].checked = true;
+                } else {
+                    objects[".main > .working .time-checkbox"].checked = false;
+                    objects[".main > .working .time-input"].value = unixToDatetime(json.time);
+                }
+
+                objects[".main > .working .type-radio-group"].selected = type;
+
+                objects[".main > .working .type-radio-group paper-radio-button[name=writing]"].setAttribute("disabled", null);
+                objects[".main > .working .type-radio-group paper-radio-button[name=page]"].setAttribute("disabled", null);
+
+                if (json.publish) {
+                    objects[".main > .working .draft-button"].style.display = "none";
+                }
+                objects[".main > .working .title-input"].value = json.title;
+                objects[".main > .working .method-input"].value = "edit";
+                previewSlug();
+                previewText();
+                callback();
+            }).catch(function (error) {
+                console.log(error);
+                objects[".load .failed"].show();
+            });
         } else {
-            finishShowing();
+            callback();
         }
     });
 }
 
 objects[".main aside .show-working"].addEventListener("click", showWorking);
+
+objects[".main > .lobby .float-container .create-new-fab"].addEventListener("click", showWorking);
 
 objects[".main > .working .float-container .publish-fab"].addEventListener("click", function () {
     objects[".main > .working .info-container"].classList.add("visible");
@@ -393,7 +469,6 @@ objects[".main > .working .float-container .publish-fab"].addEventListener("clic
 objects[".main > .working .info-container .close-button"].addEventListener("click", function () {
     objects[".main > .working .info-container"].classList.remove("visible");
 });
-
 
 objects[".main > .working .type-radio-group"].addEventListener("click", previewSlug);
 
@@ -430,7 +505,16 @@ function sendWorking() {
 
     queryString.append("working_type", objects[".main > .working .type-radio-group"].selected);
     queryString.append("working_method", objects[".main > .working .method-input"].value);
-    queryString.append("working_time", datetimeToUnix(objects[".main > .working .time-input"].value));
+
+    var publishTime = 0;
+
+    if (objects[".main > .working .time-checkbox"].checked && objects[".main > .working .publish-or-not"].value == "false") {
+        queryString.append("working_time", "0");
+    } else {
+        publishTime = objects[".main > .working .time-input"].value;
+        queryString.append("working_time", datetimeToUnix(publishTime));
+    }
+
     queryString.append("working_publish", objects[".main > .working .publish-or-not"].value);
     queryString.append("working_slug", objects[".main > .working .slug-input"].value);
     queryString.append("working_id", objects[".main > .working .id-input"].value);
@@ -441,11 +525,9 @@ function sendWorking() {
         "body": queryString
     }).then(function (resp) {
         if (resp.status >= 200 && resp.status < 400) {
-            return resp;
+            return resp.json();
         }
         throw response.status + "";
-    }).then(function (resp) {
-        return resp.json();
     }).then(function (json) {
         if (!json.succeed) {
             if (!json.reason) {
@@ -454,20 +536,24 @@ function sendWorking() {
                 throw json.reason;
             }
         }
-        if (json.publish) {
-            objects[".main > .working .toast-container .publish-success"].querySelector("a").href = json.url;
+        if (objects[".main > .working .publish-or-not"].value == "true") {
+            objects[".main > .working .toast-container .publish-success"].querySelector("a").href = "/" +
+                objects[".main > .working .type-radio-group"].selected + "s/" +
+                objects[".main > .working .slug-input"].value + ".htm";
             objects[".main > .working .toast-container .publish-success"].show();
+            objects[".main > .working .draft-button"].style.display = "none";
+            objects[".main > .working .time-checkbox"].checked = false;
+            objects[".main > .working .time-input"].value = publishTime;
         } else {
             objects[".main > .working .toast-container .draft-success"].show();
         }
-        pushState("/management/working/edit?type=" + json.working_type + "&id=" + json.working_id);
-        objects[".main > .working .type-radio-group"].selected = json.working_type;
-        objects[".main > .working .id-input"].value = json.working_id;
+        objects[".main > .working .info-container"].classList.remove("visible");
+        pushState("/management/working/edit?type=" + objects[".main > .working .type-radio-group"].selected + "&id=" + json.id);
+        objects[".main > .working .id-input"].value = json.id;
         objects[".main > .working .method-input"].value = "edit";
 
-        if (json.working_publish) {
-            objects[".main > .working .draft-button"].style.display = "none";
-        }
+        objects[".main > .working .type-radio-group paper-radio-button[name=writing]"].setAttribute("disabled", null);
+        objects[".main > .working .type-radio-group paper-radio-button[name=page]"].setAttribute("disabled", null);
 
     }).catch(function (error) {
         if (error == "slug") {
@@ -492,24 +578,200 @@ objects[".main > .working .draft-button"].addEventListener("click", function () 
     sendWorking();
 });
 
+function bindCRDAEvent() {
+    Array.prototype.forEach.call(
+        _All(".main > .crda .main-container .workings-list .item"), function (element) {
+            element.addEventListener("click", function () {
+                showWorking(true, element.getAttribute("type"), element.getAttribute("id"));
+            });
+        }
+    );
+    Array.prototype.forEach.call(
+        _All(".main > .crda .main-container .workings-list .item .launch-working"), function (element) {
+            element.addEventListener("click", function (event) {
+                event.stopPropagation();
+            });
+            element.addEventListener("mousedown", function (event) {
+                event.stopPropagation();
+            });
+        }
+    );
+    Array.prototype.forEach.call(
+        _All(".main > .crda .main-container .workings-list .item .remove"), function (element) {
+            element.addEventListener("click", function (event) {
+                event.stopPropagation();
+                acquireConfirm("remove", function () {
+                    queryString = new FormData();
+                    queryString.append("_xsrf", getCookie("_xsrf"));
+                    queryString.append("action", "save_working");
+                    queryString.append("working_method", "erase");
+                    queryString.append("working_type", element.getAttribute("type"));
+                    queryString.append("working_id", element.getAttribute("id"));
+
+                    fetch("/management/api", {
+                        "method": "post",
+                        "credentials": "include",
+                        "body": queryString
+                    }).then(function (resp) {
+                        if (resp.status >= 200 && resp.status < 400) {
+                            return resp.json();
+                        }
+                        throw new Error(resp.statusText);
+                    }).then(function (json) {
+                        if (json.succeed) {
+                            element.parentNode.style.transition = "opacity 0.30s ease-in-out";
+                            element.parentNode.style.opacity = "0";
+                            setTimeout(function () {
+                                parent = element.parentNode.parentNode;
+                                element.parentNode.parentNode.removeChild(element.parentNode);
+                                if (!_(".main > .crda .main-container .workings-list .item")) {
+                                    _(".main > .crda .main-container .workings-list.current").innerHTML += "<div class=\"no-content\">不要找了，这里什么也没有啦(*'▽')！</div>";
+                                }
+                            }, 300);
+                        } else {
+                            throw new Error("unknown");
+                        }
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                });
+            });
+            element.addEventListener("mousedown", function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            });
+        }
+    );
+}
+
+function loadCRDAData(type, callback) {
+    queryString = new FormData();
+    queryString.append("_xsrf", getCookie("_xsrf"));
+    queryString.append("action", "load_crda");
+    queryString.append("type", type);
+
+    fetch("/management/api", {
+        "method": "post",
+        "credentials": "include",
+        "body": queryString
+    }).then(function (resp) {
+        if (resp.status >= 200 && resp.status < 400) {
+            return resp.json();
+        }
+        throw new Error(resp.statusText);
+    }).then(function (json) {
+        var contentList = "";
+        var currentObject;
+        var key;
+        if (type == "writings") {
+            currentObject = objects[".main > .crda .main-container .writings"];
+            for (key in json) {
+                content = json[key];
+                if (contentList !== "") {
+                    contentList += "<div style=\"height: 1px; background-color: rgb(233, 233, 233);\"></div>";
+                }
+                item = "<div class=\"item\" id=\"" + content._id + "\" type=\"writing\">";
+                if (!content.publish) {
+                    item += "<iron-icon icon=\"editor:border-color\" title=\"该作品仍为草稿\"></iron-icon>";
+                } else {
+                    item += "<a target=\"_blank\" href=\"/writings/" + content.slug + ".htm\">";
+                    item += "<iron-icon icon=\"launch\" title=\"打开作品\" class=\"launch-working\"></iron-icon></a>";
+                }
+                item += "<div class=\"title\">" + content.title + "</div>";
+                item += "<paper-icon-button class=\"remove\" id=\"" + content._id + "\" type=\"writing\" icon=\"remove-circle-outline\" title=\"移除作品\"></paper-icon-button><paper-ripple style=\"color: rgba(54, 134, 190, 0.75);\"></paper-ripple></div>";
+                contentList += item;
+            }
+        } else if (type == "pages") {
+            currentObject = objects[".main > .crda .main-container .pages"];
+            for (key in json) {
+                content = json[key];
+                if (contentList !== "") {
+                    contentList += "<div style=\"height: 1px; background-color: rgb(233, 233, 233);\"></div>";
+                }
+                item = "<div class=\"item\" id=\"" + content._id + "\" type=\"page\">";
+                if (!content.publish) {
+                    item += "<iron-icon icon=\"editor:border-color\" title=\"该作品仍为草稿\"></iron-icon>";
+                } else {
+                    item += "<a target=\"_blank\" href=\"/pages/" + content.slug + ".htm\">";
+                    item += "<iron-icon icon=\"launch\" title=\"打开作品\" class=\"launch-working\"></iron-icon></a>";
+                }
+                item += "<div class=\"title\">" + content.title + "</div>";
+                item += "<paper-icon-button class=\"remove\" id=\"" + content._id + "\" type=\"page\" icon=\"remove-circle-outline\" title=\"移除作品\"></paper-icon-button><paper-ripple style=\"color: rgba(54, 134, 190, 0.75);\"></paper-ripple></div>";
+                contentList += item;
+            }
+        } else if (type == "replies") {
+            currentObject = objects[".main > .crda .main-container .replies"];
+        } else if (type == "publics") {
+            currentObject = objects[".main > .crda .main-container .publics"];
+        } else {
+            throw new Error("unknown");
+        }
+        if (contentList === "") {
+            contentList += "<div class=\"no-content\">不要找了，这里什么也没有啦(*'▽')！</div>";
+        }
+        currentObject.innerHTML = contentList;
+        currentObject.classList.add("current");
+        bindCRDAEvent();
+        if (callback) {
+            callback();
+        }
+    }).catch(function (error) {
+        console.log(error);
+        objects[".load .failed"].show();
+    });
+}
+
 function showCRDA(type) {
-    type = (typeof type === "undefined") ? "writing" : type;
+    type = (typeof type !== "string") ? "writings" : type;
+
+    current = _(".main > .crda .main-container .workings-list.current");
+    if (current) {
+        current.innerHTML = "";
+    }
     loadLayout(function (callback) {
-        hideCurrentMainContainer();
+        objects[".main aside paper-menu"].selected = 2;
         pushState("/management/crda/" + type);
 
         objects[".main > .crda"].classList.add("current");
 
-        loadLobbyData(callback);
+        loadCRDAData(type, callback);
     });
 }
 
+objects[".main > .crda .type-selector .writings"].addEventListener("click", function () {
+    showCRDA("writings");
+});
+objects[".main > .crda .type-selector .pages"].addEventListener("click", function () {
+    showCRDA("pages");
+});
+objects[".main > .crda .type-selector .replies"].addEventListener("click", function () {
+    showCRDA("replies");
+});
+objects[".main > .crda .type-selector .publics"].addEventListener("click", function () {
+    showCRDA("publics");
+});
+
 objects[".main aside .show-crda"].addEventListener("click", showCRDA);
+
+objects[".main > .lobby .writing-num .manage-writing"].addEventListener("click", function () {
+    objects[".main > .crda .type-selector .writings"].click();
+});
+objects[".main > .lobby .page-num .manage-page"].addEventListener("click", function () {
+    objects[".main > .crda .type-selector .pages"].click();
+});
+objects[".main > .lobby .reply-num .manage-reply"].addEventListener("click", function () {
+    objects[".main > .crda .type-selector .replies"].click();
+});
 
 function buildWindow(slug, sub_slug) {
     if (slug == "lobby") {
         showLobby();
     } else if (slug == "working") {
+        if (sub_slug == "edit"){
+            sub_slug = true;
+        } else {
+            sub_slug = false;
+        }
         showWorking(sub_slug, getVars.type, getVars.id);
     } else if (slug == "crda") {
         showCRDA(sub_slug);

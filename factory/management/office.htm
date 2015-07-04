@@ -37,7 +37,6 @@
     <link rel="import" href="${management_url("bower_components/paper-menu/paper-menu.html")}">
     <link rel="import" href="${management_url("bower_components/paper-item/paper-item.html")}">
     <link rel="import" href="${management_url("bower_components/paper-item/paper-icon-item.html")}">
-    <link rel="import" href="${management_url("bower_components/paper-icon-button/paper-icon-button.html")}">
     <link rel="import" href="${management_url("bower_components/paper-spinner/paper-spinner.html")}">
     <link rel="import" href="${management_url("bower_components/paper-button/paper-button.html")}">
     <link rel="import" href="${management_url("bower_components/paper-fab/paper-fab.html")}">
@@ -49,6 +48,12 @@
     <style is="custom-style">
         :root {
             --default-primary-color: rgb(54, 134, 190);
+        }
+        paper-tabs{
+            --paper-tabs-selection-bar-color: rgb(255, 255, 255);
+        }
+        paper-tab{
+            --paper-tab-ink: rgba(255, 255, 255, 0.75);
         }
     </style>
 </head>
@@ -62,6 +67,16 @@
         </div>
     </div>
 
+    <div class="confirm">
+        <paper-material class="container" elevation="4">
+            <div class="dialog">
+                <div class="message"></div>
+                <paper-button class="continue">继续</paper-button>
+                <paper-button class="cancel">取消</paper-button>
+            </div>
+        </paper-material>
+    </div>
+
     <div class="public">
         <div class="container"></div>
     </div>
@@ -70,14 +85,13 @@
         <paper-toolbar class="toolbar">
             <paper-icon-button icon="menu" class="toggle-sidebar"></paper-icon-button>
             <div title>${config["office_name"]}</div>
-            <paper-icon-button icon="refresh" class="reload-page"></paper-icon-button>
         </paper-toolbar>
     </header>
 
     <div class="main">
         <aside>
             <paper-material elevation="2">
-                <paper-menu>
+                <paper-menu selected="0" class="list">
                     <paper-icon-item class="aside-item show-lobby">
                         <iron-icon icon="inbox" item-icon></iron-icon>
                         ${config["lobby_name"]}
@@ -172,7 +186,7 @@
             <div class="info-container">
                 <paper-material elevation="4" class="container">
                     <div class="title-container">
-                        <iron-icon icon="close" class="close-button"></iron-icon>作品信息
+                        <paper-icon-button icon="close" class="close-button"></paper-icon-button>作品信息
                     </div>
 
                     <div class="type-container">
@@ -233,14 +247,17 @@
         </div>
 
         <div class="container crda">
-            <div class="container">
-                <paper-tabs class="type-selector" selected="0">
-                    <paper-tab class="writing">文章</paper-tab>
-                    <paper-tab class="page">页面</paper-tab>
-                    <paper-tab class="reply">评论</paper-tab>
-                    <paper-tab class="file">文件</paper-tab>
-                </paper-tabs>
-                <div class="main-container"></div>
+            <paper-tabs no-bar selected="0" class="type-selector">
+                <paper-tab class="writings">文章</paper-tab>
+                <paper-tab class="pages">页面</paper-tab>
+                <paper-tab class="replies">评论</paper-tab>
+                <paper-tab class="publics">公共区域</paper-tab>
+            </paper-tabs>
+            <div class="main-container">
+                <paper-material elevation="2" class="writings workings-list"></paper-material>
+                <paper-material elevation="2" elevation="2" elevation="2" class="pages workings-list"></paper-material>
+                <paper-material elevation="2" elevation="2" class="replies workings-list"></paper-material>
+                <paper-material elevation="2" class="publics workings-list"></paper-material>
             </div>
         </div>
 

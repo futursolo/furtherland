@@ -1,5 +1,10 @@
 # Changelog
 
+v20150704 dev
+-------------
+ - Bugs Fix
+ - Virtualenv has been removed from Requirements List, please use venv Python Standard Library as instead.
+
 v20150629 dev
 -------------
  - More Graceful FurtherLand Rising Method
