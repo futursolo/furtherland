@@ -31,6 +31,7 @@
     <link rel="import" href="${bower_url("paper-styles/paper-styles.html")}">
     <link rel="import" href="${bower_url("iron-icons/iron-icons.html")}">
     <link rel="import" href="${bower_url("iron-icons/editor-icons.html")}">
+    <link rel="import" href="${bower_url("iron-icons/device-icons.html")}">
     <link rel="import" href="${bower_url("paper-button/paper-button.html")}">
     <link rel="import" href="${bower_url("paper-input/paper-input.html")}">
     <link rel="import" href="${bower_url("paper-toolbar/paper-toolbar.html")}">
@@ -55,6 +56,15 @@
         paper-tab{
             --paper-tab-ink: rgba(255, 255, 255, 0.75);
         }
+        .main > .crda .main-container .workings-list .reply-item .action-block paper-icon-button.toggle-permit{
+            --paper-icon-button-ink-color: rgba(76, 175, 80, 0.75);
+        }
+        .main > .crda .main-container .workings-list .reply-item .action-block paper-icon-button.edit{
+            --paper-icon-button-ink-color: rgba(255, 152, 0, 0.75);
+        }
+        .main > .crda .main-container .workings-list .reply-item .action-block paper-icon-button.remove{
+            --paper-icon-button-ink-color: rgba(244, 67, 54, 0.75);
+        }
     </style>
 </head>
 <body>
@@ -68,7 +78,7 @@
     </div>
 
     <div class="confirm">
-        <paper-material class="container" elevation="4">
+        <paper-material elevation="4" class="container">
             <div class="dialog">
                 <div class="message"></div>
                 <paper-button class="continue">继续</paper-button>
@@ -258,6 +268,11 @@
                 <paper-material elevation="2" elevation="2" elevation="2" class="pages workings-list"></paper-material>
                 <paper-material elevation="2" elevation="2" class="replies workings-list"></paper-material>
                 <paper-material elevation="2" class="publics workings-list"></paper-material>
+            </div>
+            <div class="toast-container">
+                <paper-toast class="save-success" text="操作已经成功执行。"></paper-toast>
+
+                <paper-toast class="save-failed" text="抱歉，发生了未知错误。请稍后再试。"></paper-toast>
             </div>
         </div>
 

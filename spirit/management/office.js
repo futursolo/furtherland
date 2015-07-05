@@ -101,6 +101,9 @@ var objects = {
     ".main > .crda .main-container .pages": _(".main > .container.crda .main-container  .pages"),
     ".main > .crda .main-container .replies": _(".main > .container.crda .main-container  .replies"),
     ".main > .crda .main-container .publics": _(".main > .container.crda .main-container  .publics"),
+
+    ".main > .crda .toast-container .save-success": _(".main > .container.crda  > .toast-container > .save-success"),
+    ".main > .crda .toast-container .save-failed": _(".main > .container.crda  > .toast-container > .save-failed"),
 };
 
 function getCookie(name) {
@@ -582,7 +585,7 @@ function bindCRDAEvent() {
     Array.prototype.forEach.call(
         _All(".main > .crda .main-container .workings-list .item"), function (element) {
             element.addEventListener("click", function () {
-                showWorking(true, element.getAttribute("type"), element.getAttribute("id"));
+                showWorking(true, element.getAttribute("working_type"), element.getAttribute("working_id"));
             });
         }
     );
@@ -605,8 +608,8 @@ function bindCRDAEvent() {
                     queryString.append("_xsrf", getCookie("_xsrf"));
                     queryString.append("action", "save_working");
                     queryString.append("working_method", "erase");
-                    queryString.append("working_type", element.getAttribute("type"));
-                    queryString.append("working_id", element.getAttribute("id"));
+                    queryString.append("working_type", element.getAttribute("working_type"));
+                    queryString.append("working_id", element.getAttribute("working_id"));
 
                     fetch("/management/api", {
                         "method": "post",
@@ -618,27 +621,114 @@ function bindCRDAEvent() {
                         }
                         throw new Error(resp.statusText);
                     }).then(function (json) {
-                        if (json.succeed) {
-                            element.parentNode.style.transition = "opacity 0.30s ease-in-out";
-                            element.parentNode.style.opacity = "0";
-                            setTimeout(function () {
-                                parent = element.parentNode.parentNode;
-                                element.parentNode.parentNode.removeChild(element.parentNode);
-                                if (!_(".main > .crda .main-container .workings-list .item")) {
-                                    _(".main > .crda .main-container .workings-list.current").innerHTML += "<div class=\"no-content\">不要找了，这里什么也没有啦(*'▽')！</div>";
-                                }
-                            }, 300);
-                        } else {
+                        if (!json.succeed) {
                             throw new Error("unknown");
                         }
+                        element.parentNode.style.transition = "opacity 0.30s ease-in-out";
+                        element.parentNode.style.opacity = "0";
+                        setTimeout(function () {
+                            parent = element.parentNode.parentNode;
+                            element.parentNode.parentNode.removeChild(element.parentNode);
+                            if (!_(".main > .crda .main-container .workings-list.current .item")) {
+                                _(".main > .crda .main-container .workings-list.current").innerHTML = "<div class=\"no-content\">不要找了，这里什么也没有啦(*'▽')！</div>";
+                            }
+                        }, 300);
+                        objects[".main > .crda .toast-container .save-success"].show();
                     }).catch(function (error) {
                         console.log(error);
+                        objects[".main > .crda .toast-container .save-failed"].show();
                     });
                 });
             });
             element.addEventListener("mousedown", function (event) {
-                event.preventDefault();
                 event.stopPropagation();
+            });
+        }
+    );
+    Array.prototype.forEach.call(
+        _All(".main > .crda .main-container .workings-list .reply-item .toggle-permit"), function (element) {
+            element.addEventListener("click", function (event) {
+                queryString = new FormData();
+                queryString.append("_xsrf", getCookie("_xsrf"));
+                queryString.append("action", "save_reply");
+                queryString.append("method", "permit");
+                queryString.append("reply", element.getAttribute("reply_id"));
+                queryString.append("permit", element.getAttribute("switch_to"));
+
+                fetch("/management/api", {
+                    "method": "post",
+                    "credentials": "include",
+                    "body": queryString
+                }).then(function (resp) {
+                    if (resp.status >= 200 && resp.status < 400) {
+                        return resp.json();
+                    }
+                    throw new Error(resp.statusText);
+                }).then(function (json) {
+                    if (!json.status) {
+                        throw new Error("unknown");
+                    }
+                    waitingForPermitIcon = findParentBySelector(element, ".reply-item").querySelector(".waiting-for-permit");
+                    if (element.getAttribute("switch_to") == "true") {
+                        element.icon = "remove";
+                        element.setAttribute("switch_to", "false");
+                        element.setAttribute("title", "撤销通过");
+                        waitingForPermitIcon.classList.remove("visible");
+                        waitingForPermitIcon.removeAttribute("title");
+                    } else {
+                        element.icon = "check";
+                        element.setAttribute("switch_to", "true");
+                        element.setAttribute("title", "通过之");
+                        waitingForPermitIcon.classList.add("visible");
+                        waitingForPermitIcon.setAttribute("title", "该评论正在等待审核");
+                    }
+                    objects[".main > .crda .toast-container .save-success"].show();
+                }).catch(function (error) {
+                    console.log(error);
+                    objects[".main > .crda .toast-container .save-failed"].show();
+                });
+            });
+        }
+    );
+    Array.prototype.forEach.call(
+        _All(".main > .crda .main-container .workings-list .reply-item .remove"), function (element) {
+            element.addEventListener("click", function (event) {
+                acquireConfirm("remove", function () {
+                    queryString = new FormData();
+                    queryString.append("_xsrf", getCookie("_xsrf"));
+                    queryString.append("action", "save_reply");
+                    queryString.append("method", "erase");
+                    queryString.append("reply", element.getAttribute("reply_id"));
+
+                    fetch("/management/api", {
+                        "method": "post",
+                        "credentials": "include",
+                        "body": queryString
+                    }).then(function (resp) {
+                        if (resp.status >= 200 && resp.status < 400) {
+                            return resp.json();
+                        }
+                        throw new Error(resp.statusText);
+                    }).then(function (json) {
+                        if (!json.status) {
+                            throw new Error("unknown");
+                        }
+                        item = findParentBySelector(element, ".reply-item");
+                        item.style.transition = "opacity 0.30s ease-in-out";
+                        item.style.opacity = "0";
+                        setTimeout(function () {
+                            parent = _(".main > .crda .main-container .workings-list.current");
+                            parent.removeChild(item);
+                            if (!_(".main > .crda .main-container .workings-list.current .reply-item")) {
+                                parent.innerHTML = "<div class=\"no-content\">不要找了，这里什么也没有啦(*'▽')！</div>";
+                            }
+                        }, 300);
+                        objects[".main > .crda .toast-container .save-success"].show();
+                    }).catch(function (error) {
+                        console.log(error);
+                        objects[".main > .crda .toast-container .save-failed"].show();
+                    });
+                });
             });
         }
     );
@@ -670,7 +760,7 @@ function loadCRDAData(type, callback) {
                 if (contentList !== "") {
                     contentList += "<div style=\"height: 1px; background-color: rgb(233, 233, 233);\"></div>";
                 }
-                item = "<div class=\"item\" id=\"" + content._id + "\" type=\"writing\">";
+                item = "<div class=\"item\" working_id=\"" + content._id + "\" working_type=\"writing\">";
                 if (!content.publish) {
                     item += "<iron-icon icon=\"editor:border-color\" title=\"该作品仍为草稿\"></iron-icon>";
                 } else {
@@ -678,9 +768,11 @@ function loadCRDAData(type, callback) {
                     item += "<iron-icon icon=\"launch\" title=\"打开作品\" class=\"launch-working\"></iron-icon></a>";
                 }
                 item += "<div class=\"title\">" + content.title + "</div>";
-                item += "<paper-icon-button class=\"remove\" id=\"" + content._id + "\" type=\"writing\" icon=\"remove-circle-outline\" title=\"移除作品\"></paper-icon-button><paper-ripple style=\"color: rgba(54, 134, 190, 0.75);\"></paper-ripple></div>";
+                item += "<paper-icon-button class=\"remove\" working_id=\"" + content._id + "\" working_type=\"writing\" icon=\"remove-circle-outline\" title=\"移除作品\"></paper-icon-button>";
+                item += "<paper-ripple style=\"color: rgba(54, 134, 190, 0.75);\"></paper-ripple></div>";
                 contentList += item;
             }
+            objects[".main > .crda .type-selector"].selected = 0;
         } else if (type == "pages") {
             currentObject = objects[".main > .crda .main-container .pages"];
             for (key in json) {
@@ -688,7 +780,7 @@ function loadCRDAData(type, callback) {
                 if (contentList !== "") {
                     contentList += "<div style=\"height: 1px; background-color: rgb(233, 233, 233);\"></div>";
                 }
-                item = "<div class=\"item\" id=\"" + content._id + "\" type=\"page\">";
+                item = "<div class=\"item\" working_id=\"" + content._id + "\" working_type=\"page\">";
                 if (!content.publish) {
                     item += "<iron-icon icon=\"editor:border-color\" title=\"该作品仍为草稿\"></iron-icon>";
                 } else {
@@ -696,13 +788,57 @@ function loadCRDAData(type, callback) {
                     item += "<iron-icon icon=\"launch\" title=\"打开作品\" class=\"launch-working\"></iron-icon></a>";
                 }
                 item += "<div class=\"title\">" + content.title + "</div>";
-                item += "<paper-icon-button class=\"remove\" id=\"" + content._id + "\" type=\"page\" icon=\"remove-circle-outline\" title=\"移除作品\"></paper-icon-button><paper-ripple style=\"color: rgba(54, 134, 190, 0.75);\"></paper-ripple></div>";
+                item += "<paper-icon-button class=\"remove\" working_id=\"" + content._id + "\" working_type=\"page\" icon=\"remove-circle-outline\" title=\"移除作品\"></paper-icon-button>";
+                item += "<paper-ripple style=\"color: rgba(54, 134, 190, 0.75);\"></paper-ripple></div>";
                 contentList += item;
             }
+            objects[".main > .crda .type-selector"].selected = 1;
         } else if (type == "replies") {
             currentObject = objects[".main > .crda .main-container .replies"];
+            console.log(json);
+            for (key in json) {
+                content = json[key];
+                if (contentList !== "") {
+                    contentList += "<div style=\"height: 1px; background-color: rgb(233, 233, 233);\"></div>";
+                }
+                item = "<div class=\"reply-item\" reply_id=\"" + content._id + "\">";
+
+                item += "<div class=\"avatar-block\" style=\"background-image: url(/channel/avatar/" + content.emailmd5 + "?s=200&d=mm)\"></div>";
+
+                item += "<div class=\"info-block\">";
+                item += "<div><a target=\"_blank\" href=\"" + content.homepage + "\"><span class=\"reply-name\">" + content.name + "</span></a>";
+                item += "<paper-button class=\"email\" onclick=\"window.open('mailto:" + content.email + "', '_blank').focus()\" title=\"向 " + content.email + " 发送邮件\"><iron-icon icon=\"mail\"></iron-icon>" + content.email + "</paper-button>";
+
+                item += "<paper-button class=\"ip\" onclick=\"window.open('http://whatismyipaddress.com/ip/" + content.ip + "', '_blank').focus()\"><iron-icon icon=\"device:wifi-tethering\"></iron-icon>" + content.ip + "</paper-button></div>";
+                item += "<div><span class=\"time\">于 " + unixToDatetime(content.time) + "</span>";
+                item += "<span class=\"writing\"> 发表在 <a target=\"_blank\" href=\"/writings/" + content.writing.slug + ".htm\">" + content.writing.title + "</a></span>";
+                if (!content.permit) {
+                    item += "<iron-icon class=\"waiting-for-permit visible\" icon=\"chrome-reader-mode\" title=\"该评论正在等待审核\"></iron-icon>";
+                } else {
+                    item += "<iron-icon class=\"waiting-for-permit\" icon=\"chrome-reader-mode\" title=\"\"></iron-icon>";
+                }
+                item += "</div></div>";
+
+                item += "<div class=\"body-block\">" + content.content + "</div>";
+
+                item += "<div class=\"action-block\">";
+                if (!content.permit) {
+                    item += "<paper-icon-button class=\"toggle-permit\" switch_to=\"true\" reply_id=\"" + content._id + "\" icon=\"check\" title=\"通过之\"></paper-icon-button>";
+                } else {
+                    item += "<paper-icon-button class=\"toggle-permit\" switch_to=\"false\" reply_id=\"" + content._id + "\" icon=\"remove\" title=\"撤销通过\"></paper-icon-button>";
+                }
+                item += "<paper-icon-button class=\"edit\" reply_id=\"" + content._id + "\" icon=\"editor:mode-edit\" title=\"编辑\"></paper-icon-button>";
+                item += "<paper-icon-button class=\"remove\" reply_id=\"" + content._id + "\" icon=\"remove-circle-outline\" title=\"移除\"></paper-icon-button>";
+                item += "</div>";
+
+                item += "</div>";
+                console.log(item);
+                contentList += item;
+            }
+            objects[".main > .crda .type-selector"].selected = 2;
         } else if (type == "publics") {
             currentObject = objects[".main > .crda .main-container .publics"];
+            objects[".main > .crda .type-selector"].selected = 3;
         } else {
             throw new Error("unknown");
         }
@@ -780,3 +916,9 @@ function buildWindow(slug, sub_slug) {
         window.location.href = "//" + window.location.host + "/404";
     }
 }
+window.addEventListener("popstate", function (event) {
+    var state = event.state;
+    if (!state) {
+        window.location.reload();
+    }
+});

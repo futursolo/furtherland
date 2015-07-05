@@ -373,6 +373,13 @@ class ActionOffice(ManagementOffice):
                 return
             book.set({"_id": working_id}, working)
         elif working_method == "erase":
+            @coroutine
+            def erase_reply(working_id):
+                book = self.memories.select("Replies")
+                book.erase({"writing_id": working_id})
+                yield book.do()
+            if working_type == "writing":
+                yield erase_reply(working_id)
             book.erase({"_id": working_id})
         else:
             raise HTTPError(500)
@@ -439,42 +446,44 @@ class ActionOffice(ManagementOffice):
         self.finish(json.dumps(list(content_list.values())))
 
     @coroutine
-    def save_crda(self):
-        content_type = self.get_arg("type", arg_type="hash")
-        content_id = self.get_arg("content", arg_type="number")
-        if type == "writings" or type == "pages":
-            if action == "erase":
-                if not self.current_user:
-                    raise HTTPError(500)
-                reply_id = self.get_arg("reply", arg_type="number")
-                if content_type == "writing":
-                    book = self.memories.select("Writings")
-                elif content_type == "page":
-                    book = self.memories.select("Pages")
-                book.erase({"_id": content_id})
-                yield book.do()
-                self.finish(json.dumps({"status": True}))
-            else:
+    def save_reply(self):
+        reply_id = self.get_arg("reply", arg_type="number")
+        reply_method = self.get_arg("method", arg_type="hash")
+        book = self.memories.select("Replies")
+
+        if reply_method == "permit":
+            permit = self.get_arg("permit", arg_type="boolean")
+            if permit is None:
                 raise HTTPError(500)
-        elif area == "replies":
-            book = self.memories.select("Replies")
-            action = self.get_arg("action", arg_type="hash")
-            if action == "edit":
-                reply_id = self.get_arg("reply", arg_type="number")
-                reply_name = self.get_arg("name", arg_type="origin")
-                reply_homepage = self.get_arg("homepage", arg_type="origin")
-                reply_email = self.get_arg("email", arg_type="mail_address")
-                reply_content = self.get_arg("content", arg_type="origin")
-                if not (reply_id and reply_name and reply_homepage and
-                        reply_email and reply_content):
-                    raise HTTPError(500)
-                reply = {}
-                reply["name"] = reply_name
-                reply["homepage"] = reply_homepage
-                reply["email"] = reply_email
-                reply["content"] = reply_content
-                book.set({"_id": reply_id}, reply)
-                yield book.do()
-                self.redirect("/management/crda/replies")
-        else:
-            raise HTTPError(500)
+
+            book.find({"_id": reply_id})
+            yield book.do()
+            reply = book.result()
+            if not reply:
+                raise HTTPError(500)
+
+            book.set({"_id": reply_id}, {"permit": permit})
+            yield book.do()
+            self.finish(json.dumps({"status": True}))
+
+        elif reply_method == "erase":
+            book.erase({"_id": reply_id})
+            yield book.do()
+            self.finish(json.dumps({"status": True}))
+
+        elif reply_method == "edit":
+            reply_name = self.get_arg("name", arg_type="origin")
+            reply_homepage = self.get_arg("homepage", arg_type="origin")
+            reply_email = self.get_arg("email", arg_type="mail_address")
+            reply_content = self.get_arg("content", arg_type="origin")
+            if not (reply_id and reply_name and reply_homepage and
+                    reply_email and reply_content):
+                raise HTTPError(500)
+            reply = {}
+            reply["name"] = reply_name
+            reply["homepage"] = reply_homepage
+            reply["email"] = reply_email
+            reply["content"] = reply_content
+            book.set({"_id": reply_id}, reply)
+            yield book.do()
+            self.redirect("/management/crda/replies")
