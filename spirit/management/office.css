@@ -204,21 +204,21 @@ aside.visible{
 
 .main > .lobby .manage-writing{
     color: rgb(255, 255, 255);
-    background-color: rgb(66, 133, 244);;
+    background-color: rgb(66, 133, 244);
 }
 .main > .lobby .manage-writing[active]{
     background-color: rgba(66, 133, 244, 0.25);
 }
 .main > .lobby .manage-page{
     color: rgb(255, 255, 255);
-    background-color: rgb(76, 175, 80);;
+    background-color: rgb(76, 175, 80);
 }
 .main > .lobby .manage-page[active]{
     background-color: rgba(76, 175, 80, 0.25);
 }
 .main > .lobby .manage-reply{
     color: rgb(255, 255, 255);
-    background-color: rgb(255, 152, 0);;
+    background-color: rgb(255, 152, 0);
 }
 .main > .lobby .manage-reply[active]{
     background-color: rgba(255, 152, 0, 0.25);
@@ -449,12 +449,96 @@ height: calc(100% - 64px);
     color: rgb(100, 100, 100);
 }
 .main > .crda .main-container .workings-list .item .launch-working{
-    z-index: 3;
+    z-index: 1;
 }
 .main > .crda .main-container .workings-list .item .remove{
     color: rgb(244, 67, 54);
     display: inline-block;
-    z-index: 3;
+    z-index: 1;
+}
+
+.main > .crda .main-container .workings-list .reply-item{
+    box-sizing: border-box;
+    padding: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
+    position: relative;
+}
+.main > .crda .main-container .workings-list .reply-item .avatar-block{
+    width: 70px;
+    height: 70px;
+    border-radius: 500px;
+    background-size: cover;
+    display: inline-block;
+    position: relative;
+    vertical-align: top;
+}
+.main > .crda .main-container .workings-list .reply-item .info-block{
+    position: relative;
+    display: inline-block;
+    height: 60px;
+    padding-left: 20px;
+    padding-right: 20px;
+    line-height: 20px;
+}
+.main > .crda .main-container .workings-list .reply-item .waiting-for-permit{
+    margin-left: 10px;
+    color: rgb(3, 169, 244);
+    opacity: 0;
+    display: inline-block;
+    transition: all 0.30s ease-in-out;
+}
+.main > .crda .main-container .workings-list .reply-item .waiting-for-permit.visible{
+    opacity: 1;
+}
+.main > .crda .main-container .workings-list .reply-item .info-block a:link{
+    color: rgb(100, 100, 100);
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.20s ease-in-out;
+}
+.main > .crda .main-container .workings-list .reply-item .info-block a:visited{
+    color: rgb(100, 100, 100);
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.20s ease-in-out;
+}
+.main > .crda .main-container .workings-list .reply-item .info-block a:hover{
+    text-decoration: underline;
+}
+.main > .crda .main-container .workings-list .reply-item .info-block{
+    display: inline-block;
+}
+.main > .crda .main-container .workings-list .reply-item .info-block iron-icon{
+    width: 20px;
+    height: 20px;
+    position: relative;
+    top: -2px;
+}
+.main > .crda .main-container .workings-list .reply-item .info-block .time{
+    line-height: 40px;
+}
+.main > .crda .main-container .workings-list .reply-item .info-block .email{
+    display: inline-block;
+}
+.main > .crda .main-container .workings-list .reply-item .body-block{
+    width: 100%;
+}
+.main > .crda .main-container .workings-list .reply-item .action-block{
+    display: inline-block;
+}
+
+.main > .crda .main-container .workings-list .reply-item .action-block .toggle-permit{
+    color: rgb(76, 175, 80);
+    display: inline-block;
+}
+.main > .crda .main-container .workings-list .reply-item .action-block .edit{
+    color: rgb(255, 152, 0);
+    display: inline-block;
+}
+.main > .crda .main-container .workings-list .reply-item .action-block .remove{
+    color: rgb(244, 67, 54);
+    display: inline-block;
 }
 .main > .crda .main-container .workings-list .no-content{
     box-sizing: border-box;

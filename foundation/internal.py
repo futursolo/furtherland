@@ -236,34 +236,6 @@ class ReplyArea(PlacesOfInterest):
                 result["success"] = False
                 result["reason"] = "unkonwn"
             self.finish(json.dumps(result))
-        elif action == "permit":
-            if not self.current_user:
-                raise HTTPError(500)
-            reply_id = self.get_arg("reply", arg_type="number")
-            permit = self.get_arg("permit", arg_type="boolean")
-            if permit is None:
-                raise HTTPError(500)
-            book = self.memories.select("Replies")
-            book.find({"_id": reply_id})
-            yield book.do()
-            reply = book.result()
-            if not reply:
-                raise HTTPError(404)
-            if reply["permit"] == permit:
-                self.finish(json.dumps({"status": True}))
-                return
-            book = self.memories.select("Replies")
-            book.set({"_id": reply_id}, {"permit": permit})
-            yield book.do()
-            self.finish(json.dumps({"status": True}))
-        elif action == "erase":
-            if not self.current_user:
-                raise HTTPError(500)
-            reply_id = self.get_arg("reply", arg_type="number")
-            book = self.memories.select("Replies")
-            book.erase({"_id": reply_id})
-            yield book.do()
-            self.finish(json.dumps({"status": True}))
         else:
             raise HTTPError(500)
 

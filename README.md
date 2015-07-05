@@ -14,6 +14,7 @@ Requirements
  - Mako>=1.0.1
  - PyCurl>=7.19.3
  - Feedgen>=0.3.1
+ - Pykismet3>=0.1.1
 
 License
 -------
