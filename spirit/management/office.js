@@ -102,6 +102,10 @@ var objects = {
     ".main > .crda .main-container .replies": _(".main > .container.crda .main-container  .replies"),
     ".main > .crda .main-container .publics": _(".main > .container.crda .main-container  .publics"),
 
+    ".main > .crda .reply-editor": _(".main > .container.crda .reply-editor"),
+    ".main > .crda .reply-editor .cancel": _(".main > .container.crda .reply-editor .cancel"),
+    ".main > .crda .reply-editor .save": _(".main > .container.crda .reply-editor .save"),
+
     ".main > .crda .toast-container .save-success": _(".main > .container.crda  > .toast-container > .save-success"),
     ".main > .crda .toast-container .save-failed": _(".main > .container.crda  > .toast-container > .save-failed"),
 };
@@ -213,16 +217,17 @@ function loadLayout(callback) {
 function acquireConfirm(message, callback) {
     if (message == "remove") {
         message = "你确认要移除它吗？这个操作是不可以逆转的。";
+    } else if (message == "leave") {
+        message = "你确认要离开吗？你所做的所有的修改都会丢失。"
     }
     objects[".confirm .message"].innerHTML = message;
     function finishConfirm() {
         objects[".confirm"].classList.remove("visible");
         setTimeout(function () {
-        objects[".confirm"].style.height = "0";
-        objects[".confirm"].style.width = "0";
-        objects[".confirm"].style.top = "-10000px";
-        objects[".confirm"].style.left = "-10000px";
-
+            objects[".confirm"].style.height = "0";
+            objects[".confirm"].style.width = "0";
+            objects[".confirm"].style.top = "-10000px";
+            objects[".confirm"].style.left = "-10000px";
         }, 300);
     }
     objects[".confirm .cancel"] .onclick = function () {
@@ -581,6 +586,28 @@ objects[".main > .working .draft-button"].addEventListener("click", function () 
     sendWorking();
 });
 
+function showReplyEditor(reply) {
+    objects[".main > .crda .reply-editor"].style.height = "100%";
+    objects[".main > .crda .reply-editor"].style.width = "100%";
+    objects[".main > .crda .reply-editor"].style.top = "0px";
+    objects[".main > .crda .reply-editor"].style.left = "0px";
+    objects[".main > .crda .reply-editor"].classList.add("visible");
+}
+
+function hideReplyEditor() {
+    acquireConfirm("leave", function () {
+        objects[".main > .crda .reply-editor"].classList.remove("visible");
+        setTimeout(function () {
+            objects[".main > .crda .reply-editor"].style.height = "0";
+            objects[".main > .crda .reply-editor"].style.width = "0";
+            objects[".main > .crda .reply-editor"].style.top = "-10000px";
+            objects[".main > .crda .reply-editor"].style.left = "-10000px";
+        }, 300);
+    });
+}
+
+objects[".main > .crda .reply-editor .cancel"].addEventListener("click", hideReplyEditor);
+
 function bindCRDAEvent() {
     Array.prototype.forEach.call(
         _All(".main > .crda .main-container .workings-list .item"), function (element) {
@@ -687,6 +714,13 @@ function bindCRDAEvent() {
                     console.log(error);
                     objects[".main > .crda .toast-container .save-failed"].show();
                 });
+            });
+        }
+    );
+    Array.prototype.forEach.call(
+        _All(".main > .crda .main-container .workings-list .reply-item .edit"), function (element) {
+            element.addEventListener("click", function (event) {
+                showReplyEditor(element.getAttribute("reply_id"));
             });
         }
     );
@@ -916,9 +950,13 @@ function buildWindow(slug, sub_slug) {
         window.location.href = "//" + window.location.host + "/404";
     }
 }
-window.addEventListener("popstate", function (event) {
-    var state = event.state;
-    if (!state) {
-        window.location.reload();
-    }
+window.addEventListener("load", function () {
+    setTimeout(function () {
+        window.addEventListener("popstate", function (event) {
+            var state = event.state;
+            if (!state) {
+                window.location.reload();
+            }
+        });
+    }, 10);
 });

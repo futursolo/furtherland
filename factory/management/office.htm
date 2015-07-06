@@ -269,6 +269,31 @@
                 <paper-material elevation="2" elevation="2" class="replies workings-list"></paper-material>
                 <paper-material elevation="2" class="publics workings-list"></paper-material>
             </div>
+            <div class="reply-editor">
+                <div class="table-cell">
+                    <div class="container">
+                        <div class="title">编辑评论</div>
+                        <div class="input-block">
+                            <div class="input-line">
+                                <paper-input class="name" label="昵称"></paper-input>
+                            </div>
+                            <div class="input-line">
+                                <paper-input class="email" label="电邮"></paper-input>
+                            </div>
+                        </div>
+                        <div class="homepage-line">
+                            <paper-input class="homepage" label="个人主页"></paper-input>
+                        </div>
+                        <div class="content-line">
+                            <textarea class="content" placeholder="内容"></textarea>
+                        </div>
+                        <div class="action-line">
+                            <paper-button class="cancel" reply="0">取消</paper-button>
+                            <paper-button class="save" reply="0">保存</paper-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="toast-container">
                 <paper-toast class="save-success" text="操作已经成功执行。"></paper-toast>
 
@@ -282,6 +307,13 @@
     <script src="${management_url("highlight.min.js")}"></script>
     <script src="${management_url("office.js")}"></script>
     <script>
+        if (!window.fetch) {
+            var headElement = document.getElementsByTagName("head")[0];
+            var fetchElement = document.createElement("script");
+            fetchElement.type = "text/javascript";
+            fetchElement.src = "${management_url("fetch.js")}";
+            headElement.appendChild(fetchElement);
+        }
         window.addEventListener("load", function () {
             buildWindow("${slug}", "${sub_slug}");
         });

@@ -551,3 +551,74 @@ height: calc(100% - 64px);
     font-size: 20px;
     font-weight: bold;
 }
+
+.main > .crda .reply-editor{
+    height: 0;
+    width: 0;
+    z-index: 50;
+    display: table;
+    background-color: rgba(0, 0, 0, 0.4);
+    position: fixed;
+    overflow: hidden;
+    opacity: 0;
+    top: -10000px;
+    left: -10000px;
+    transition: opacity 0.30s ease-in-out;
+}
+.main > .crda .reply-editor.visible{
+    opacity: 1;
+}
+.main > .crda .reply-editor > .table-cell{
+    display: table-cell;
+    vertical-align: middle;
+}
+.main > .crda .reply-editor .container{
+    max-width: 500px;
+    width: calc(100% - 40px);
+    max-height: calc(100% - 40px);
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 2px;
+    background-color: rgb(255, 255, 255);
+    position: relative;
+    padding: 20px;
+    box-sizing: border-box;
+}
+.main > .crda .reply-editor .container .input-block{
+    width: 100%;
+    text-align: center;
+}
+.main > .crda .reply-editor .container .input-line{
+    display: inline-block;
+    width: calc(50% - 2px);
+    padding-left: 10px;
+    padding-right: 10px;
+    box-sizing: border-box;
+    text-align: left;
+}
+.main > .crda .reply-editor .container .homepage-line{
+    width: 100%;
+    text-align: center;
+    padding-left: 7px;
+    padding-right: 7px;
+    box-sizing: border-box;
+}
+.main > .crda .reply-editor .container .homepage-line paper-input{
+    text-align: left;
+}
+.main > .crda .reply-editor .container .content-line{
+    width: 100%;
+    position: relative;
+}
+.main > .crda .reply-editor .container .content-line .content{
+    resize: none;
+    width: 100%;
+    min-height: 200px;
+    box-sizing: border-box;
+}
+.main > .crda .reply-editor .container .action-line{
+    text-align: right;
+}
+.main > .crda .reply-editor .container .action-line .save{
+    color: rgb(54, 134, 190);
+}
