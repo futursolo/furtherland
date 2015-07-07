@@ -29,8 +29,6 @@ from . import office
 from . import internal
 from . import visitor
 from . import memory as historial
-from multiprocessing import Pipe
-from multiprocessing.connection import Connection
 
 
 navigation = [
@@ -68,42 +66,12 @@ navigation = [
     (r"/channel/avatar/(.*)", internal.AvatarArea),
     (r"/channel/public", internal.PublicArea),
     (r"/channel/reply", internal.ReplyArea),
-    (r"/channel/selfkill", internal.SelfKillArea),
 
     (r"/visitor/github", visitor.VisitorGitHubCheckinPlace),
     (r"/visitor/checkout", visitor.VisitorCheckoutOffice),
 
     (r"(.*)", place.LostAndFoundPlace)
 ]
-
-
-class Stage(Application):
-    def __init__(self, *args, **kwargs):
-        self._conn_main_recv, self._conn_main_send = Pipe()
-        self.furtherland = kwargs["further_land"]
-        Application.__init__(self, *args, **kwargs)
-
-    def setup(self, ioloop):
-        self._conn_child_recv, self._conn_child_send = Pipe()
-        if not tornado.process.task_id():
-            ioloop.add_handler(self._conn_main_recv.fileno(),
-                               self._handle_child_event,
-                               ioloop.READ)
-
-    def communicate(self, data):
-        self._conn_main_send.send((self._conn_child_send.fileno(), data))
-        return self._conn_child_recv.recv()
-
-    def _handle_child_event(self, fd, events):
-        conn_fileno, data = self._conn_main_recv.recv()
-        if data == "exit":
-            print("FurtherLand will set in a short period.")
-            import os
-            import signal
-            while True:
-                os.killpg(
-                    os.getpgid(self.furtherland.identity), signal.SIGKILL)
-        Connection(conn_fileno).send("acknowledged")
 
 
 class FurtherLand:
@@ -114,7 +82,7 @@ class FurtherLand:
         # Build A Port
         self.port = tornado.netutil.bind_sockets(
             melody.listen_port, address=melody.listen_ip)
-        self.stage = Stage(
+        self.stage = Application(
             handlers=navigation,
 
             cookie_secret=melody.secret,
@@ -142,7 +110,6 @@ class FurtherLand:
         except:
             pass
         self.factory_preload = {}
-        self.config_preload = {}
         self.master_preload = {}
         self.factory = mako.lookup.TemplateLookup(
             [os.path.join(

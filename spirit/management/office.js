@@ -103,11 +103,24 @@ var objects = {
     ".main > .crda .main-container .publics": _(".main > .container.crda .main-container  .publics"),
 
     ".main > .crda .reply-editor": _(".main > .container.crda .reply-editor"),
+    ".main > .crda .reply-editor .name": _(".main > .container.crda .reply-editor .name"),
+    ".main > .crda .reply-editor .email": _(".main > .container.crda .reply-editor .email"),
+    ".main > .crda .reply-editor .homepage": _(".main > .container.crda .reply-editor .homepage"),
+    ".main > .crda .reply-editor .content": _(".main > .container.crda .reply-editor .content"),
+
     ".main > .crda .reply-editor .cancel": _(".main > .container.crda .reply-editor .cancel"),
     ".main > .crda .reply-editor .save": _(".main > .container.crda .reply-editor .save"),
 
     ".main > .crda .toast-container .save-success": _(".main > .container.crda  > .toast-container > .save-success"),
     ".main > .crda .toast-container .save-failed": _(".main > .container.crda  > .toast-container > .save-failed"),
+
+    ".main > .configuration": _(".main > .container.configuration"),
+
+    ".main > .configuration .reset": _(".main > .container.configuration .reset"),
+    ".main > .configuration .save": _(".main > .container.configuration .save"),
+
+    ".main > .configuration .toast-container .save-success": _(".main > .container.configuration  > .toast-container > .save-success"),
+    ".main > .configuration .toast-container .save-failed": _(".main > .container.configuration  > .toast-container > .save-failed"),
 };
 
 function getCookie(name) {
@@ -218,7 +231,9 @@ function acquireConfirm(message, callback) {
     if (message == "remove") {
         message = "你确认要移除它吗？这个操作是不可以逆转的。";
     } else if (message == "leave") {
-        message = "你确认要离开吗？你所做的所有的修改都会丢失。"
+        message = "你确认要离开吗？你所做的所有修改都会丢失。";
+    } else if (message == "reset") {
+        message = "你确认要复原它吗？你所做的所有修改都会丢失。";
     }
     objects[".confirm .message"].innerHTML = message;
     function finishConfirm() {
@@ -586,16 +601,8 @@ objects[".main > .working .draft-button"].addEventListener("click", function () 
     sendWorking();
 });
 
-function showReplyEditor(reply) {
-    objects[".main > .crda .reply-editor"].style.height = "100%";
-    objects[".main > .crda .reply-editor"].style.width = "100%";
-    objects[".main > .crda .reply-editor"].style.top = "0px";
-    objects[".main > .crda .reply-editor"].style.left = "0px";
-    objects[".main > .crda .reply-editor"].classList.add("visible");
-}
-
-function hideReplyEditor() {
-    acquireConfirm("leave", function () {
+function hideReplyEditor(reply) {
+    function hideAction() {
         objects[".main > .crda .reply-editor"].classList.remove("visible");
         setTimeout(function () {
             objects[".main > .crda .reply-editor"].style.height = "0";
@@ -603,10 +610,89 @@ function hideReplyEditor() {
             objects[".main > .crda .reply-editor"].style.top = "-10000px";
             objects[".main > .crda .reply-editor"].style.left = "-10000px";
         }, 300);
-    });
+    }
+    if (!reply) {
+        hideAction();
+        return;
+    }
+    if (objects[".main > .crda .reply-editor .name"].value == reply.getAttribute("reply_name") &&
+       objects[".main > .crda .reply-editor .email"].value == reply.getAttribute("reply_email") &&
+       objects[".main > .crda .reply-editor .homepage"].value == reply.getAttribute("reply_homepage") &&
+       objects[".main > .crda .reply-editor .content"].value == reply.getAttribute("reply_content")) {
+        hideAction();
+        return;
+    }
+    acquireConfirm("leave", hideAction);
 }
 
-objects[".main > .crda .reply-editor .cancel"].addEventListener("click", hideReplyEditor);
+function saveReplyEditor(reply) {
+    function hideAction() {
+        objects[".main > .crda .reply-editor"].classList.remove("visible");
+        setTimeout(function () {
+            objects[".main > .crda .reply-editor"].style.height = "0";
+            objects[".main > .crda .reply-editor"].style.width = "0";
+            objects[".main > .crda .reply-editor"].style.top = "-10000px";
+            objects[".main > .crda .reply-editor"].style.left = "-10000px";
+        }, 300);
+    }
+    if (objects[".main > .crda .reply-editor .name"].value == reply.getAttribute("reply_name") &&
+       objects[".main > .crda .reply-editor .email"].value == reply.getAttribute("reply_email") &&
+       objects[".main > .crda .reply-editor .homepage"].value == reply.getAttribute("reply_homepage") &&
+       objects[".main > .crda .reply-editor .content"].value == reply.getAttribute("reply_content")) {
+        hideReplyEditor();
+        return;
+    }
+
+    queryString = new FormData();
+    queryString.append("_xsrf", getCookie("_xsrf"));
+    queryString.append("action", "save_reply");
+    queryString.append("method", "edit");
+    queryString.append("reply", reply.getAttribute("reply_id"));
+    queryString.append("name", objects[".main > .crda .reply-editor .name"].value);
+    queryString.append("email", objects[".main > .crda .reply-editor .email"].value);
+    queryString.append("homepage", objects[".main > .crda .reply-editor .homepage"].value);
+    queryString.append("content", objects[".main > .crda .reply-editor .content"].value);
+
+    fetch("/management/api", {
+        "method": "post",
+        "credentials": "include",
+        "body": queryString
+    }).then(function (resp) {
+        if (resp.status >= 200 && resp.status < 400) {
+            return resp.json();
+        }
+        throw new Error(resp.statusText);
+    }).then(function (json) {
+        if (!json.status) {
+            throw new Error("unkonwn");
+        }
+        objects[".main > .crda .toast-container .save-success"].show();
+        hideReplyEditor();
+        showCRDA("replies");
+    }).catch(function (error) {
+        console.log(error);
+        objects[".main > .crda .toast-container .save-failed"].show();
+    });
+}
+function showReplyEditor(reply) {
+
+    objects[".main > .crda .reply-editor .name"].value = reply.getAttribute("reply_name");
+    objects[".main > .crda .reply-editor .email"].value = reply.getAttribute("reply_email");
+    objects[".main > .crda .reply-editor .homepage"].value = reply.getAttribute("reply_homepage");
+    objects[".main > .crda .reply-editor .content"].value = reply.getAttribute("reply_content");
+
+    objects[".main > .crda .reply-editor"].style.height = "100%";
+    objects[".main > .crda .reply-editor"].style.width = "100%";
+    objects[".main > .crda .reply-editor"].style.top = "0px";
+    objects[".main > .crda .reply-editor"].style.left = "0px";
+    objects[".main > .crda .reply-editor"].classList.add("visible");
+    objects[".main > .crda .reply-editor .cancel"].onclick = function () {
+        hideReplyEditor(reply);
+    };
+    objects[".main > .crda .reply-editor .save"].onclick = function () {
+        saveReplyEditor(reply);
+    };
+}
 
 function bindCRDAEvent() {
     Array.prototype.forEach.call(
@@ -720,7 +806,7 @@ function bindCRDAEvent() {
     Array.prototype.forEach.call(
         _All(".main > .crda .main-container .workings-list .reply-item .edit"), function (element) {
             element.addEventListener("click", function (event) {
-                showReplyEditor(element.getAttribute("reply_id"));
+                showReplyEditor(findParentBySelector(element, ".reply-item"));
             });
         }
     );
@@ -835,7 +921,7 @@ function loadCRDAData(type, callback) {
                 if (contentList !== "") {
                     contentList += "<div style=\"height: 1px; background-color: rgb(233, 233, 233);\"></div>";
                 }
-                item = "<div class=\"reply-item\" reply_id=\"" + content._id + "\">";
+                item = "<div class=\"reply-item\" reply_id=\"" + content._id + "\" reply_name=\"" + content.name + "\" reply_email=\"" + content.email + "\" reply_homepage=\"" + content.homepage + "\" reply_content='" + content.content + "'>";
 
                 item += "<div class=\"avatar-block\" style=\"background-image: url(/channel/avatar/" + content.emailmd5 + "?s=200&d=mm)\"></div>";
 
@@ -933,6 +1019,83 @@ objects[".main > .lobby .reply-num .manage-reply"].addEventListener("click", fun
     objects[".main > .crda .type-selector .replies"].click();
 });
 
+function loadConfigurationData(callback) {
+    queryString = new FormData();
+    queryString.append("_xsrf", getCookie("_xsrf"));
+    queryString.append("action", "load_configuration");
+
+    fetch("/management/api", {
+        "method": "post",
+        "credentials": "include",
+        "body": queryString
+    }).then(function (resp) {
+        if (resp.status >= 200 && resp.status < 400) {
+            return resp.json();
+        }
+        throw new Error(resp.statusText);
+    }).then(function (json) {
+        Array.prototype.forEach.call(
+            _All(".main > .configuration .config-value"), function (element) {
+                element.value = json[element.getAttribute("config_name")].value;
+            }
+        );
+        if (callback) {
+            callback();
+        }
+    }).catch(function (error) {
+        console.log(error);
+        objects[".load .save-failed"].show();
+    });
+}
+
+function showConfiguration() {
+    loadLayout(function (callback) {
+        objects[".main aside paper-menu"].selected = 3;
+        pushState("/management/configuration");
+
+        objects[".main > .configuration"].classList.add("current");
+
+        loadConfigurationData(callback);
+    });
+}
+
+objects[".main aside .show-configuration"].addEventListener("click", showConfiguration);
+
+objects[".main > .configuration .reset"].addEventListener("click", function () {
+    acquireConfirm("reset", showConfiguration);
+});
+
+objects[".main > .configuration .save"].addEventListener("click", function () {
+    queryString = new FormData();
+    queryString.append("_xsrf", getCookie("_xsrf"));
+    queryString.append("action", "save_configuration");
+
+    Array.prototype.forEach.call(
+        _All(".main > .configuration .config-value"), function (element) {
+            queryString.append(element.getAttribute("config_name"), element.value);
+        }
+    );
+
+    fetch("/management/api", {
+        "method": "post",
+        "credentials": "include",
+        "body": queryString
+    }).then(function (resp) {
+        if (resp.status >= 200 && resp.status < 400) {
+            return resp.json();
+        }
+        throw new Error(resp.statusText);
+    }).then(function (json) {
+        if (!json.status) {
+            throw new Error("unknown");
+        }
+        objects[".main > .configuration .toast-container .save-success"].show();
+    }).catch(function (error) {
+        console.log(error);
+        objects[".main > .configuration .toast-container .save-failed"].show();
+    });
+});
+
 function buildWindow(slug, sub_slug) {
     if (slug == "lobby") {
         showLobby();
@@ -945,6 +1108,8 @@ function buildWindow(slug, sub_slug) {
         showWorking(sub_slug, getVars.type, getVars.id);
     } else if (slug == "crda") {
         showCRDA(sub_slug);
+    } else if (slug == "configuration") {
+        showConfiguration();
     } else {
         //need a more graceful way to deal with 404 Error.
         window.location.href = "//" + window.location.host + "/404";

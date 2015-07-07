@@ -105,15 +105,15 @@ class PlacesOfInterest(RequestHandler):
 
     @coroutine
     def get_config(self):
-        if len(self.furtherland.config_preload) == 0:
+        if not hasattr(self, "_config"):
             book = self.memories.select("Configs")
             book.find().length(0)
             yield book.do()
             result = book.result()
-            for key in result:
-                self.furtherland.config_preload[
-                    result[key]["_id"]] = result[key]["value"]
-        return (self.furtherland.config_preload)
+            self._config = {}
+            for value in result.values():
+                self._config[value["_id"]] = value["value"]
+        return self._config
 
     @coroutine
     def get_current_user(self):

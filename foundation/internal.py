@@ -238,10 +238,3 @@ class ReplyArea(PlacesOfInterest):
             self.finish(json.dumps(result))
         else:
             raise HTTPError(500)
-
-
-class SelfKillArea(PlacesOfInterest):
-    @authenticated
-    def get(self):
-        self.finish("ok!")
-        self.furtherland.stage.communicate("exit")
