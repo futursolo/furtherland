@@ -1,5 +1,9 @@
 # Changelog
 
+v20150707 dev
+-------------
+- Removed Config Preload and FurtherLand SelfKill function because these are not stable enough.
+
 v20150704 dev
 -------------
  - Bugs Fix

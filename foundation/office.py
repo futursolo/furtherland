@@ -486,4 +486,39 @@ class ActionOffice(ManagementOffice):
             reply["content"] = reply_content
             book.set({"_id": reply_id}, reply)
             yield book.do()
-            self.redirect("/management/crda/replies")
+            self.finish(json.dumps({"status": True}))
+
+    @coroutine
+    def load_configuration(self):
+        book = self.memories.select("Configs")
+        book.find({})
+        book.length(0, True)
+        yield book.do()
+        configs = book.result()
+        self.finish(json.dumps(configs))
+
+    @coroutine
+    def save_configuration(self):
+        post_config = OrderedDict()
+        post_config["site_name"] = self.get_arg("site_name", arg_type="origin")
+        post_config["site_description"] = self.get_arg(
+            "site_description", arg_type="origin")
+        post_config["site_keywords"] = self.get_arg(
+            "site_keywords", arg_type="origin")
+        post_config["site_url"] = self.get_arg("site_url", arg_type="link")
+        post_config["nutrition_type"] = self.get_arg(
+            "nutrition_type", arg_type="hash")
+        post_config["trace_code"] = self.get_arg(
+            "trace_code", arg_type="origin")
+        for key in post_config:
+            if not post_config[key]:
+                raise HTTPError(500)
+        book = self.memories.select("Configs")
+        book.find({}).length(0, force_dict=True)
+        yield book.do()
+        origin_config = book.result()
+        for key in post_config:
+            if origin_config[key] != post_config[key]:
+                book.set({"_id": key}, {"value": post_config[key]})
+                yield book.do()
+        self.finish(json.dumps({"status": True}))
