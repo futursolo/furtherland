@@ -56,6 +56,9 @@
         paper-tab{
             --paper-tab-ink: rgba(255, 255, 255, 0.75);
         }
+        .public paper-tab{
+            --paper-tab-ink: rgba(54, 134, 190, 0.25);
+        }
         .main > .crda .main-container .workings-list .reply-item .action-block paper-icon-button.toggle-permit{
             --paper-icon-button-ink-color: rgba(76, 175, 80, 0.75);
         }
@@ -88,7 +91,36 @@
     </div>
 
     <div class="public">
-        <div class="container"></div>
+        <div class="container">
+            <div class="title">公共区域</div>
+            <paper-tabs no-bar selected="0" class="content-selector">
+                <paper-tab class="upload-now">现在上传</paper-tab>
+                <paper-tab class="uploaded">从已存在的文件中选择</paper-tab>
+            </paper-tabs>
+
+            <div class="content">
+                <div class="content-block upload-now">
+                    <div class="uploading">
+                        <div class="content">
+                            <div>正在上传...</div>
+                            <div class="process-bar">
+                                <div class="done"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-cell file-uploader">
+                        <div class="tips">将文件拖动到这里来上传 或</div>
+                        <div class="select-file-line"><paper-button class="select-file" raised>&nbsp;&nbsp;选择文件&nbsp;&nbsp;</paper-button></div>
+                        <input class="hidden-file-selector" name="files[]" type="file">
+                    </div>
+                </div>
+                <div class="content-block uploaded"></div>
+            </div>
+            <div class="action">
+                <paper-button class="insert">插入</paper-button>
+                <paper-button class="cancel">取消</paper-button>
+            </div>
+        </div>
     </div>
 
     <header>

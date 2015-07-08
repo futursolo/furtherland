@@ -33,6 +33,13 @@ var objects = {
     ".confirm .continue": _(".confirm .continue"),
 
     ".public": _(".public"),
+    ".public .content .upload-now": _(".public .content .upload-now"),
+    ".public .content .upload-now .select-file": _(".public .content .upload-now .select-file"),
+    ".public .content .upload-now .hidden-file-selector": _(".public .content .upload-now .hidden-file-selector"),
+
+    ".public .content .uploaded": _(".public .content .uploaded"),
+
+    ".public .action .cancel": _(".public .action .cancel"),
 
     "header .toggle-sidebar": _("header .toggle-sidebar"),
 
@@ -282,7 +289,19 @@ function showPublic() {
     objects[".public"].style.height = "100%";
     objects[".public"].style.width = "100%";
     objects[".public"].classList.add("visible");
+    if (_(".public .content .current")) {
+        _(".public .content .current").classList.remove("current");
+    }
+    objects[".public .content .upload-now"].classList.add("current");
 }
+
+objects[".public .action .cancel"].addEventListener("click", hidePublic);
+
+objects[".public .content .upload-now .select-file"].addEventListener("click", function () {
+    setTimeout(function () {
+        objects[".public .content .upload-now .hidden-file-selector"].click();
+    }, 300);
+});
 
 function loadLobbyData(callback) {
     queryString = new FormData();
