@@ -313,6 +313,57 @@ class ActionOffice(ManagementOffice):
             raise HTTPError(500)
 
     @coroutine
+    def load_public(self):
+        book = self.memories.select("Publics")
+        book.find({"type": "file"}).sort([["time", False]])
+        book.length(0, force_dict=True)
+        yield book.do()
+        result = book.result()
+        self.finish(json.dumps(list(result.values())))
+
+    @coroutine
+    def save_public(self):
+        public_path = os.path.join(
+            os.path.join(
+                self.settings["static_path"], "public"), "files")
+        url_base = "/spirit/public/files"
+
+        if self.request.files:
+            for f in self.request.files["files[]"]:
+                book = self.memories.select("Publics")
+                current_time = int(time.time())
+                current_path = os.path.join(public_path, str(
+                    current_time))
+                current_url = os.path.join(url_base, str(
+                    current_time))
+                if not os.path.exists(current_path):
+                    os.makedirs(current_path)
+
+                filename = f["filename"]
+                current_file_path = os.path.join(
+                    current_path, filename)
+                current_file_url = os.path.join(
+                    current_url, filename)
+
+                with open(current_file_path, "wb") as file:
+                    file.write(f["body"])
+
+                file_info = OrderedDict()
+                file_info["time"] = current_time
+                file_info["type"] = "file"
+                file_info["content_type"] = None
+                file_info["filename"] = filename
+                file_info["filepath"] = current_file_path
+                file_info["fileurl"] = current_file_url
+                file_info["email_md5"] = None
+                file_info["_id"] = yield self.issue_id("Publics")
+                book.add(file_info)
+                yield book.do()
+        else:
+            raise HTTPError(500)
+        self.finish(json.dumps({"status": True}))
+
+    @coroutine
     def count(self):
         info = yield self.get_count()
         self.finish(json.dumps(info))

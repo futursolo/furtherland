@@ -33,6 +33,12 @@ var objects = {
     ".confirm .continue": _(".confirm .continue"),
 
     ".public": _(".public"),
+    ".public .content-selector .upload-now": _(".public .content-selector .upload-now"),
+    ".public .content-selector .uploaded": _(".public .content-selector .uploaded"),
+
+    ".public .content .uploading": _(".public .content .uploading"),
+    ".public .content .uploading .progress-bar": _(".public .content .uploading .progress-bar"),
+
     ".public .content .upload-now": _(".public .content .upload-now"),
     ".public .content .upload-now .select-file": _(".public .content .upload-now .select-file"),
     ".public .content .upload-now .hidden-file-selector": _(".public .content .upload-now .hidden-file-selector"),
@@ -277,6 +283,26 @@ window.addEventListener("load", function () {
     );
 });
 
+function showPublicUploadNow() {
+    if (!objects[".public .content .upload-now"].classList.contains("current")){
+        objects[".public .content .upload-now"].classList.add("current");
+        objects[".public .content .upload-now"].style.height = "100%";
+        objects[".public .content .upload-now"].style.width = "100%";
+    }
+}
+
+function hidePublicUploadNow() {
+    if (objects[".public .content .upload-now"].classList.contains("current")){
+        objects[".public .content .upload-now"].classList.remove("current");
+        setTimeout(function () {
+            objects[".public .content .upload-now"].style.height = "0";
+            objects[".public .content .upload-now"].style.width = "0";
+        }, 300);
+    }
+}
+
+objects[".public .content-selector .upload-now"].addEventListener("click", showPublicUploadNow);
+
 function hidePublic() {
     objects[".public"].classList.remove("visible");
     setTimeout(function () {
@@ -292,7 +318,7 @@ function showPublic() {
     if (_(".public .content .current")) {
         _(".public .content .current").classList.remove("current");
     }
-    objects[".public .content .upload-now"].classList.add("current");
+    objects[".public .content-selector .upload-now"].click();
 }
 
 objects[".public .action .cancel"].addEventListener("click", hidePublic);
@@ -301,6 +327,70 @@ objects[".public .content .upload-now .select-file"].addEventListener("click", f
     setTimeout(function () {
         objects[".public .content .upload-now .hidden-file-selector"].click();
     }, 300);
+});
+
+function uploadPublic(files) {
+    objects[".public .content .uploading"].classList.add("visible");
+    objects[".public .content .uploading"].style.height = "100%";
+    objects[".public .content .uploading"].style.width = "100%";
+    queryString = new FormData();
+    queryString.append("_xsrf", getCookie("_xsrf"));
+    queryString.append("action", "save_public");
+
+    for (i = 0; i < files.length; i++){
+        queryString.append("files[]", files[i]);
+    }
+
+    request = new XMLHttpRequest();
+
+    request.upload.addEventListener("progress", function (event){
+        if (event.lengthComputable) {
+            var percentage = Math.round(event.loaded / event.total * 100);
+
+            objects[".public .content .uploading .progress-bar"].value = percentage;
+        }
+    });
+
+    request.addEventListener("readystatechange", function () {
+        if (request.readyState == 4 && request.status == 200) {
+            json = JSON.parse(request.responseText);
+            console.log(json);
+            objects[".public .content .uploading"].classList.remove("visible");
+            setTimeout(function () {
+                objects[".public .content .uploading"].style.height = "0";
+                objects[".public .content .uploading"].style.width = "0";
+            }, 300);
+
+        }
+    });
+
+    request.open("POST", "/management/api", true);
+    request.send(queryString);
+
+}
+
+objects[".public .content .upload-now .hidden-file-selector"].addEventListener("change", function () {
+    files = objects[".public .content .upload-now .hidden-file-selector"].files;
+    uploadPublic(files);
+});
+
+objects[".public .content .upload-now"].addEventListener("dragenter", function (event) {
+    event.dataTransfer.dropEffect = "copy";
+    event.preventDefault();
+    event.stopPropagation();
+});
+
+objects[".public .content .upload-now"].addEventListener("dragover", function (event) {
+    event.dataTransfer.dropEffect = "copy";
+    event.preventDefault();
+    event.stopPropagation();
+});
+
+objects[".public .content .upload-now"].addEventListener("drop", function (event) {
+    event.stopPropagation();
+    event.preventDefault();
+    files = event.dataTransfer.files;
+    uploadPublic(files);
 });
 
 function loadLobbyData(callback) {

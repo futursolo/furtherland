@@ -147,7 +147,7 @@ textarea, input{
 .public > .container > .content .content-block{
     height: 0;
     width: 0;
-    overdlow: hidden;
+    overflow: hidden;
 }
 .public > .container > .content .content-block.current{
     height: 100%;
@@ -168,14 +168,29 @@ textarea, input{
     opacity: 0;
     overflow: hidden;
     transition: opacity 0.30s ease-in-out;
+    display: table;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgb(255, 255, 255);
+    z-index: 1;
 }
 
-.public > .container > .content .upload-now .uploading{
+.public > .container > .content .upload-now .uploading.visible{
     height: 100%;
     width: 100%;
     opacity: 1;
 }
-
+.public > .container > .content .upload-now .uploading  > .content{
+    display: table-cell;
+    vertical-align: middle;
+}
+.public > .container > .content .upload-now .uploading  > .content > div{
+    text-align: center;
+}
+.public > .container > .content .upload-now .uploading  > .content > div paper-progress{
+    width: 300px;
+}
 .public > .container > .content .upload-now .tips{
     text-align: center;
 }

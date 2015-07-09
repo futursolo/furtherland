@@ -64,7 +64,6 @@ navigation = [
     (r"/management/(.*)", office.NewOffice),
 
     (r"/channel/avatar/(.*)", internal.AvatarArea),
-    (r"/channel/public", internal.PublicArea),
     (r"/channel/reply", internal.ReplyArea),
 
     (r"/visitor/github", visitor.VisitorGitHubCheckinPlace),
