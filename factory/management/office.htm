@@ -45,6 +45,7 @@
     <link rel="import" href="${bower_url("paper-radio-group/paper-radio-group.html")}">
     <link rel="import" href="${bower_url("paper-toast/paper-toast.html")}">
     <link rel="import" href="${bower_url("paper-tabs/paper-tabs.html")}">
+    <link rel="import" href="${bower_url("paper-progress/paper-progress.html")}">
 
     <style is="custom-style">
         :root {
@@ -103,8 +104,8 @@
                     <div class="uploading">
                         <div class="content">
                             <div>正在上传...</div>
-                            <div class="process-bar">
-                                <div class="done"></div>
+                            <div>
+                                <paper-progress value="0" class="progress-bar"></paper-progress>
                             </div>
                         </div>
                     </div>
