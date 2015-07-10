@@ -145,13 +145,17 @@ textarea, input{
 }
 
 .public > .container > .content .content-block{
-    height: 0;
-    width: 0;
     overflow: hidden;
-}
-.public > .container > .content .content-block.current{
+    top: -10000px;
+    left: -10000px;
     height: 100%;
     width: 100%;
+    opacity: 0;
+    transition: opacity all 0.30s ease-in-out;
+    position: absolute;
+}
+.public > .container > .content .content-block.current{
+    opacity: 1;
 }
 
 .public > .container > .content .upload-now{

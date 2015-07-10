@@ -108,12 +108,10 @@ var objects = {
     ".main > .crda .type-selector .writings": _(".main > .container.crda .type-selector  .writings"),
     ".main > .crda .type-selector .pages": _(".main > .container.crda .type-selector  .pages"),
     ".main > .crda .type-selector .replies": _(".main > .container.crda .type-selector  .replies"),
-    ".main > .crda .type-selector .publics": _(".main > .container.crda .type-selector  .publics"),
 
     ".main > .crda .main-container .writings": _(".main > .container.crda .main-container  .writings"),
     ".main > .crda .main-container .pages": _(".main > .container.crda .main-container  .pages"),
     ".main > .crda .main-container .replies": _(".main > .container.crda .main-container  .replies"),
-    ".main > .crda .main-container .publics": _(".main > .container.crda .main-container  .publics"),
 
     ".main > .crda .reply-editor": _(".main > .container.crda .reply-editor"),
     ".main > .crda .reply-editor .name": _(".main > .container.crda .reply-editor .name"),
@@ -284,10 +282,18 @@ window.addEventListener("load", function () {
 });
 
 function showPublicUploadNow() {
+    if (_(".public .content .current")) {
+        current = _(".public .content .current");
+        current.classList.remove("current");
+        setTimeout(function () {
+            current.style.top = "-10000px";
+            current.style.left = "-10000px";
+        }, 300);
+    }
     if (!objects[".public .content .upload-now"].classList.contains("current")){
         objects[".public .content .upload-now"].classList.add("current");
-        objects[".public .content .upload-now"].style.height = "100%";
-        objects[".public .content .upload-now"].style.width = "100%";
+        objects[".public .content .upload-now"].style.top = "0";
+        objects[".public .content .upload-now"].style.left = "0";
     }
 }
 
@@ -295,13 +301,83 @@ function hidePublicUploadNow() {
     if (objects[".public .content .upload-now"].classList.contains("current")){
         objects[".public .content .upload-now"].classList.remove("current");
         setTimeout(function () {
-            objects[".public .content .upload-now"].style.height = "0";
-            objects[".public .content .upload-now"].style.width = "0";
+            objects[".public .content .upload-now"].style.top = "-10000px";
+            objects[".public .content .upload-now"].style.left = "-10000px";
         }, 300);
     }
 }
 
 objects[".public .content-selector .upload-now"].addEventListener("click", showPublicUploadNow);
+
+function loadPublicUploadedData() {
+    queryString = new FormData();
+    queryString.append("_xsrf", getCookie("_xsrf"));
+    queryString.append("action", "load_public");
+
+    fetch("/management/api", {
+        "method": "post",
+        "credentials": "include",
+        "body": queryString
+    }).then(function (resp) {
+        if (resp.status >= 200 && resp.status < 400) {
+            return resp.json();
+        }
+        throw new Error(resp.statusText);
+    }).then(function (json) {
+        objects[".public .content .uploaded"].innerHTML = "";
+        for (var key in json) {
+            item = json[key];
+            console.log(item);
+            element = document.createElement("div");
+            element.class = "file-item";
+            element.setAttribute("file_url", item.fileurl);
+
+            fileNameElement = document.createElement("span");
+            fileNameElement.class = "name";
+            fileNameElement.innerHTML = item.filename;
+            element.appendChild(fileNameElement);
+
+            timeElement = document.createElement("span");
+            timeElement.class = "time";
+            timeElement.innerHTML = unixToDatetime(item.time);
+            element.appendChild(timeElement);
+
+            objects[".public .content .uploaded"].appendChild(element);
+        }
+    }).catch(function (error) {
+        console.log(error);
+        objects[".load .failed"].show();
+    });
+}
+
+function showPublicUploaded() {
+    if (_(".public .content .current")) {
+        current = _(".public .content .current");
+        current.classList.remove("current");
+        setTimeout(function () {
+            current.style.top = "-10000px";
+            current.style.left = "-10000px";
+        }, 300);
+    }
+    if (!objects[".public .content .uploaded"].classList.contains("current")){
+        objects[".public .content .uploaded"].classList.add("current");
+        objects[".public .content .uploaded"].style.top = "0";
+        objects[".public .content .uploaded"].style.left = "0";
+    }
+    loadPublicUploadedData();
+}
+
+function hidePublicUploaded() {
+    if (objects[".public .content .uploaded"].classList.contains("current")){
+        objects[".public .content .uploaded"].classList.remove("current");
+        setTimeout(function () {
+            objects[".public .content .uploaded"].style.top = "-10000px";
+            objects[".public .content .uploaded"].style.left = "-10000px";
+        }, 300);
+    }
+}
+
+objects[".public .content-selector .uploaded"].addEventListener("click", showPublicUploaded);
 
 function hidePublic() {
     objects[".public"].classList.remove("visible");
@@ -315,9 +391,6 @@ function showPublic() {
     objects[".public"].style.height = "100%";
     objects[".public"].style.width = "100%";
     objects[".public"].classList.add("visible");
-    if (_(".public .content .current")) {
-        _(".public .content .current").classList.remove("current");
-    }
     objects[".public .content-selector .upload-now"].click();
 }
 
@@ -360,7 +433,7 @@ function uploadPublic(files) {
                 objects[".public .content .uploading"].style.height = "0";
                 objects[".public .content .uploading"].style.width = "0";
             }, 300);
-
+            objects[".public .content-selector .uploaded"].click();
         }
     });
 
@@ -1024,7 +1097,6 @@ function loadCRDAData(type, callback) {
             objects[".main > .crda .type-selector"].selected = 1;
         } else if (type == "replies") {
             currentObject = objects[".main > .crda .main-container .replies"];
-            console.log(json);
             for (key in json) {
                 content = json[key];
                 if (contentList !== "") {
@@ -1061,13 +1133,9 @@ function loadCRDAData(type, callback) {
                 item += "</div>";
 
                 item += "</div>";
-                console.log(item);
                 contentList += item;
             }
             objects[".main > .crda .type-selector"].selected = 2;
-        } else if (type == "publics") {
-            currentObject = objects[".main > .crda .main-container .publics"];
-            objects[".main > .crda .type-selector"].selected = 3;
         } else {
             throw new Error("unknown");
         }
@@ -1111,9 +1179,6 @@ objects[".main > .crda .type-selector .pages"].addEventListener("click", functio
 });
 objects[".main > .crda .type-selector .replies"].addEventListener("click", function () {
     showCRDA("replies");
-});
-objects[".main > .crda .type-selector .publics"].addEventListener("click", function () {
-    showCRDA("publics");
 });
 
 objects[".main aside .show-crda"].addEventListener("click", showCRDA);
