@@ -132,7 +132,7 @@ function publicUpload(files, cb){
         xhr: function (){
             myXhr = $.ajaxSettings.xhr();
             if (myXhr.upload){
-                myXhr.upload.addEventListener("progress",progressHandlingFunction, false);
+                myXhr.upload.addEventListener("progress", progressHandlingFunction, false);
             }
             return myXhr;
         },
