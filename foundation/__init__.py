@@ -60,8 +60,8 @@ navigation = [
     (r"/management/checkin", office.CheckinOffice),
     (r"/management/checkout", office.CheckoutOffice),
     (r"/management/api", office.ActionOffice),
-    (r"/management/(.*)/(.*)", office.NewOffice),
-    (r"/management/(.*)", office.NewOffice),
+    (r"/management/(.*)/(.*)", office.MainOffice),
+    (r"/management/(.*)", office.MainOffice),
 
     (r"/channel/avatar/(.*)", internal.AvatarArea),
     (r"/channel/reply", internal.ReplyArea),
@@ -109,7 +109,6 @@ class FurtherLand:
         except:
             pass
         self.factory_preload = {}
-        self.master_preload = {}
         self.factory = mako.lookup.TemplateLookup(
             [os.path.join(
                 os.path.split(os.path.realpath(melody.base))[0], "factory")],
@@ -120,13 +119,11 @@ class FurtherLand:
 
     def rise(self):
         try:
-            print("FurtherLand has been risen on %s:%s." % (
-                self.melody.listen_ip, str(self.melody.listen_port)))
+            print("FurtherLand has been risen on %s:%d." % (
+                self.melody.listen_ip, self.melody.listen_port))
             import tornado.ioloop
             self.land = tornado.httpserver.HTTPServer(self.stage)
             self.land.add_sockets(self.port)
-            if hasattr(self.stage, "setup"):
-                self.stage.setup(tornado.ioloop.IOLoop.current())
             tornado.ioloop.IOLoop.current().start()
         except:
             self.set()

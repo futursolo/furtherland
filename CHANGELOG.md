@@ -1,8 +1,16 @@
 # Changelog
 
+v20150711 dev
+-------------
+ - Bugs Fix
+ - New Main Office with full pjax technology.
+ - Checkin Progress Optimization
+ - Rising Progress Optimization
+ - Database Action Counts Removed
+
 v20150707 dev
 -------------
-- Removed Config Preload and FurtherLand SelfKill function because these are not stable enough.
+ - Removed Config Preload and FurtherLand SelfKill function because these are not stable enough.
 
 v20150704 dev
 -------------

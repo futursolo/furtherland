@@ -146,21 +146,14 @@ textarea, input{
 
 .public > .container > .content .content-block{
     overflow: hidden;
-    top: -10000px;
-    left: -10000px;
     height: 100%;
     width: 100%;
-    opacity: 0;
-    transition: opacity all 0.30s ease-in-out;
-    position: absolute;
+    display: none;
 }
 .public > .container > .content .content-block.current{
-    opacity: 1;
-}
-
-.public > .container > .content .upload-now{
     display: table;
 }
+
 .public > .container > .content .upload-now .table-cell{
     display: table-cell;
     vertical-align: middle;
@@ -213,6 +206,27 @@ textarea, input{
 .public > .container > .content .upload-now .hidden-file-selector{
     display: none;
 }
+.public .content .uploaded{
+    overflow-y: auto;
+}
+.public .content .uploaded .file-item{
+    position: relative;
+    height: 50px;
+    width: 100%;
+    border-bottom: 1px solid rgb(200, 200, 200);
+    line-height: 50px;
+    font-size: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    box-sizing: border-box;
+    transition: background-color 0.30s ease-in-out;
+}
+.public .content .uploaded .file-item.current{
+    background-color: rgba(54, 134, 190, 0.5);
+}
+.public .content .uploaded .file-item .time{
+    float: right;
+}
 
 .public .action{
     padding: 15px;
@@ -221,18 +235,12 @@ textarea, input{
     text-align: right;
 }
 
-.public .action .insert{
-    opacity: 0;
-    position: relative;
-    left: 10000px;
-    top: 10000px;
-    transition: opacity 0.30s ease-in-out;
+.public .action .insert-as-photo{
+    color: rgb(76, 175, 80);
 }
 
-.public .action .insert.visible{
-    opacity: 1;
-    left: 0;
-    top: 0;
+.public .action .insert-as-link{
+    color: rgb(54, 134, 190);
 }
 
 header{

@@ -45,6 +45,8 @@ var objects = {
 
     ".public .content .uploaded": _(".public .content .uploaded"),
 
+    ".public .action .insert-as-photo": _(".public .action .insert-as-photo"),
+    ".public .action .insert-as-link": _(".public .action .insert-as-link"),
     ".public .action .cancel": _(".public .action .cancel"),
 
     "header .toggle-sidebar": _("header .toggle-sidebar"),
@@ -282,32 +284,36 @@ window.addEventListener("load", function () {
 });
 
 function showPublicUploadNow() {
-    if (_(".public .content .current")) {
+    current = _(".public .content .current");
+
+    if (current && current.classList.contains("upload-now")) {
+        return;
+    } else if (current) {
         current = _(".public .content .current");
         current.classList.remove("current");
-        setTimeout(function () {
-            current.style.top = "-10000px";
-            current.style.left = "-10000px";
-        }, 300);
     }
-    if (!objects[".public .content .upload-now"].classList.contains("current")){
-        objects[".public .content .upload-now"].classList.add("current");
-        objects[".public .content .upload-now"].style.top = "0";
-        objects[".public .content .upload-now"].style.left = "0";
-    }
-}
 
-function hidePublicUploadNow() {
-    if (objects[".public .content .upload-now"].classList.contains("current")){
-        objects[".public .content .upload-now"].classList.remove("current");
-        setTimeout(function () {
-            objects[".public .content .upload-now"].style.top = "-10000px";
-            objects[".public .content .upload-now"].style.left = "-10000px";
-        }, 300);
-    }
+    objects[".public .content .upload-now"].classList.add("current");
+    objects[".public .action .insert-as-photo"].style.display = "none";
+    objects[".public .action .insert-as-link"].style.display = "none";
 }
 
 objects[".public .content-selector .upload-now"].addEventListener("click", showPublicUploadNow);
+
+function bindPublicEvent(event) {
+    target = event.target || event.srcElement;
+    if (_(".public .content .uploaded .file-item.current")) {
+        _(".public .content .uploaded .file-item.current").classList.remove("current")
+    }
+    if (!target.getAttribute("fileurl")) {
+        target = findParentBySelector(target, ".public .content .uploaded .file-item");
+    }
+    target.classList.add("current");
+    objects[".public .action .insert-as-photo"].style.display = "inline-block";
+    objects[".public .action .insert-as-photo"].setAttribute("fileurl", target.getAttribute("fileurl"));
+    objects[".public .action .insert-as-link"].style.display = "inline-block";
+    objects[".public .action .insert-as-link"].setAttribute("fileurl", target.getAttribute("fileurl"));
+}
 
 function loadPublicUploadedData() {
     queryString = new FormData();
@@ -329,18 +335,24 @@ function loadPublicUploadedData() {
             item = json[key];
             console.log(item);
             element = document.createElement("div");
-            element.class = "file-item";
-            element.setAttribute("file_url", item.fileurl);
+            element.setAttribute("class", "file-item");
+            element.setAttribute("fileurl", item.fileurl);
 
             fileNameElement = document.createElement("span");
-            fileNameElement.class = "name";
+            fileNameElement.setAttribute("class", "name");
             fileNameElement.innerHTML = item.filename;
             element.appendChild(fileNameElement);
 
             timeElement = document.createElement("span");
-            timeElement.class = "time";
+            timeElement.setAttribute("class", "time");
             timeElement.innerHTML = unixToDatetime(item.time);
             element.appendChild(timeElement);
+
+            rippleElement = document.createElement("paper-ripple");
+            rippleElement.style.color = "rgba(54, 134, 190, 0.75)";
+            element.appendChild(rippleElement);
+
+            element.addEventListener("click", bindPublicEvent);
 
             objects[".public .content .uploaded"].appendChild(element);
         }
@@ -351,30 +363,17 @@ function loadPublicUploadedData() {
 }
 
 function showPublicUploaded() {
-    if (_(".public .content .current")) {
+    current = _(".public .content .current");
+
+    if (current && current.classList.contains("uploaded")) {
+        return;
+    } else if (current) {
         current = _(".public .content .current");
         current.classList.remove("current");
-        setTimeout(function () {
-            current.style.top = "-10000px";
-            current.style.left = "-10000px";
-        }, 300);
     }
-    if (!objects[".public .content .uploaded"].classList.contains("current")){
-        objects[".public .content .uploaded"].classList.add("current");
-        objects[".public .content .uploaded"].style.top = "0";
-        objects[".public .content .uploaded"].style.left = "0";
-    }
-    loadPublicUploadedData();
-}
 
-function hidePublicUploaded() {
-    if (objects[".public .content .uploaded"].classList.contains("current")){
-        objects[".public .content .uploaded"].classList.remove("current");
-        setTimeout(function () {
-            objects[".public .content .uploaded"].style.top = "-10000px";
-            objects[".public .content .uploaded"].style.left = "-10000px";
-        }, 300);
-    }
+    objects[".public .content .uploaded"].classList.add("current");
+    loadPublicUploadedData();
 }
 
 objects[".public .content-selector .uploaded"].addEventListener("click", showPublicUploaded);
@@ -395,6 +394,38 @@ function showPublic() {
 }
 
 objects[".public .action .cancel"].addEventListener("click", hidePublic);
+
+function insertPublicFileLinkText(str) {
+    if (document.selection) {
+        var sel = document.selection.createRange();
+        sel.text = str;
+    } else if (typeof objects[".main > .working .editor-textarea"].selectionStart === 'number' && typeof objects[".main > .working .editor-textarea"].selectionEnd === 'number') {
+        var startPos = objects[".main > .working .editor-textarea"].selectionStart,
+            endPos = objects[".main > .working .editor-textarea"].selectionEnd,
+            cursorPos = startPos,
+            tmpStr = objects[".main > .working .editor-textarea"].value;
+        objects[".main > .working .editor-textarea"].value = tmpStr.substring(0, startPos) + str + tmpStr.substring(endPos, tmpStr.length);
+        cursorPos += str.length;
+        objects[".main > .working .editor-textarea"].selectionStart = objects[".main > .working .editor-textarea"].selectionEnd = cursorPos;
+    } else {
+        objects[".main > .working .editor-textarea"].value += str;
+    }
+    hidePublic();
+}
+
+objects[".public .action .insert-as-photo"].addEventListener("click", function () {
+    text = "![](";
+    text += objects[".public .action .insert-as-photo"].getAttribute("fileurl");
+    text += ")";
+    insertPublicFileLinkText(text);
+});
+
+objects[".public .action .insert-as-link"].addEventListener("click", function () {
+    text = "[](";
+    text += objects[".public .action .insert-as-link"].getAttribute("fileurl");
+    text += ")";
+    insertPublicFileLinkText(text);
+});
 
 objects[".public .content .upload-now .select-file"].addEventListener("click", function () {
     setTimeout(function () {
