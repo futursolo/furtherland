@@ -71,23 +71,13 @@ def visitor_only(func):
 class PlacesOfInterest(RequestHandler):
     current_user = None
 
-    class Memories:
-        def __init__(self, place):
-            self.place = place
-            self.historial_records = self.place.settings["historial_records"]
-            self.historial_records.initialize()
-
-        def select(self, *args, **kwargs):
-            self.place.db_action += 1
-            return self.historial_records.select(*args, **kwargs)
-
     @coroutine
     def prepare(self):
         self.start_time = time.time()
-        self.db_action = 0
         self.furtherland = self.settings["further_land"]
         self.render_list = {}
-        self.memories = self.Memories(self)
+        self.memories = self.settings["historial_records"]
+        self.memories.initialize()
         self.current_user = yield self.get_current_user()
         self.current_visitor = yield self.get_current_visitor()
         self.config = yield self.get_config()
@@ -228,16 +218,19 @@ class PlacesOfInterest(RequestHandler):
         condition = list(kwargs.keys())[0]
         value = kwargs[condition]
         if condition != "user_list":
-            if condition not in self.furtherland.master_preload.keys():
-                self.furtherland.master_preload[condition] = {}
-            if value not in self.furtherland.master_preload[condition].keys(
-             ):
+            if not hasattr(self, "_master_list"):
+                self._master_list = {}
+
+            if condition not in self._master_list.keys():
+                self._master_list[condition] = {}
+
+            if value not in self._master_list[condition].keys():
                 book = self.memories.select("Masters")
                 book.find({condition: value}).length(1)
                 yield book.do()
-                self.furtherland.master_preload[condition][value] = (
-                    book.result())
-        return self.furtherland.master_preload[condition][value]
+                self._master_list[condition][value] = (book.result())
+
+        return self._master_list[condition][value]
 
     def get_random(self, length):
         return "".join(random.sample(string.ascii_letters + string.digits,
@@ -356,8 +349,7 @@ class PlacesOfInterest(RequestHandler):
                 "static_url": self.static_url,
                 "bower_url": self.bower_url,
                 "FurtherLand": self.furtherland,
-                "used_time": int((time.time() - self.start_time) * 1000),
-                "db_action": self.db_action
+                "used_time": int((time.time() - self.start_time) * 1000)
             }
         else:
             env_kwargs = {}
