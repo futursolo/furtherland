@@ -21,11 +21,11 @@
             <div class="filter">
                 <div class="checkin-title">欢迎回来，为什么不快乐地登录呢？</div>
                 <div class="avatar" style="background-image: url(${management_url("avatar.jpg")});"></div>
-                % if checkin_status():
+                % if checkin_status != "ok":
                 <div>
-                    % if checkin_status("password"):
+                    % if checkin_status == "password":
                     <div class="alert">登录失败，请检查域主大人的登录信息后重试。</div>
-                    % elif checkin_status("two"):
+                    % elif checkin_status == "two":
                     <div class="alert">登录失败，两步验证代码无效。</div>
                     % else:
                     <div class="alert">现在遇到了未知错误，请稍候再试。</div>

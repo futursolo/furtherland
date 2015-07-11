@@ -71,23 +71,13 @@ def visitor_only(func):
 class PlacesOfInterest(RequestHandler):
     current_user = None
 
-    class Memories:
-        def __init__(self, place):
-            self.place = place
-            self.historial_records = self.place.settings["historial_records"]
-            self.historial_records.initialize()
-
-        def select(self, *args, **kwargs):
-            self.place.db_action += 1
-            return self.historial_records.select(*args, **kwargs)
-
     @coroutine
     def prepare(self):
         self.start_time = time.time()
-        self.db_action = 0
         self.furtherland = self.settings["further_land"]
         self.render_list = {}
-        self.memories = self.Memories(self)
+        self.memories = self.settings["historial_records"]
+        self.memories.initialize()
         self.current_user = yield self.get_current_user()
         self.current_visitor = yield self.get_current_visitor()
         self.config = yield self.get_config()
@@ -105,15 +95,15 @@ class PlacesOfInterest(RequestHandler):
 
     @coroutine
     def get_config(self):
-        if len(self.furtherland.config_preload) == 0:
+        if not hasattr(self, "_config"):
             book = self.memories.select("Configs")
             book.find().length(0)
             yield book.do()
             result = book.result()
-            for key in result:
-                self.furtherland.config_preload[
-                    result[key]["_id"]] = result[key]["value"]
-        return (self.furtherland.config_preload)
+            self._config = {}
+            for value in result.values():
+                self._config[value["_id"]] = value["value"]
+        return self._config
 
     @coroutine
     def get_current_user(self):
@@ -228,16 +218,19 @@ class PlacesOfInterest(RequestHandler):
         condition = list(kwargs.keys())[0]
         value = kwargs[condition]
         if condition != "user_list":
-            if condition not in self.furtherland.master_preload.keys():
-                self.furtherland.master_preload[condition] = {}
-            if value not in self.furtherland.master_preload[condition].keys(
-             ):
+            if not hasattr(self, "_master_list"):
+                self._master_list = {}
+
+            if condition not in self._master_list.keys():
+                self._master_list[condition] = {}
+
+            if value not in self._master_list[condition].keys():
                 book = self.memories.select("Masters")
                 book.find({condition: value}).length(1)
                 yield book.do()
-                self.furtherland.master_preload[condition][value] = (
-                    book.result())
-        return self.furtherland.master_preload[condition][value]
+                self._master_list[condition][value] = (book.result())
+
+        return self._master_list[condition][value]
 
     def get_random(self, length):
         return "".join(random.sample(string.ascii_letters + string.digits,
@@ -333,6 +326,11 @@ class PlacesOfInterest(RequestHandler):
         return RequestHandler.static_url(
             self, path, include_host=include_host, **kwargs)
 
+    def bower_url(self, path, include_host=None, **kwargs):
+        path = "bower/" + path
+        return RequestHandler.static_url(
+            self, path, include_host=include_host, **kwargs)
+
     def render_string(self, filename, **kwargs):
         if filename not in self.furtherland.factory_preload.keys():
             self.furtherland.factory_preload[
@@ -349,9 +347,9 @@ class PlacesOfInterest(RequestHandler):
                 "reverse_url": self.application.reverse_url,
                 "config": self.config,
                 "static_url": self.static_url,
+                "bower_url": self.bower_url,
                 "FurtherLand": self.furtherland,
-                "used_time": int((time.time() - self.start_time) * 1000),
-                "db_action": self.db_action
+                "used_time": int((time.time() - self.start_time) * 1000)
             }
         else:
             env_kwargs = {}

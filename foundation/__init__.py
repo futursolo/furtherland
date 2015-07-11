@@ -29,13 +29,11 @@ from . import office
 from . import internal
 from . import visitor
 from . import memory as historial
-from multiprocessing import Pipe
-from multiprocessing.connection import Connection
 
 
 navigation = [
     (r"/", place.CentralSquare),
-    # (r"/classes/(.*).htm", ClassesPlace),  This will be avaliable in futhre
+    # (r"/classes/(.*).htm", ClassesPlace),  This will be avaliable in future
     # (r"/timeline", HistoryLibrary),
     (r"/feed.xml", place.NewsAnnouncement),
     (r"/writings/(.*).htm", place.ConferenceHall),
@@ -62,16 +60,11 @@ navigation = [
     (r"/management/checkin", office.CheckinOffice),
     (r"/management/checkout", office.CheckoutOffice),
     (r"/management/api", office.ActionOffice),
-    (r"/management/(.*)/(.*)", office.NewOffice),
-    (r"/management/(.*)", office.NewOffice),
+    (r"/management/(.*)/(.*)", office.MainOffice),
+    (r"/management/(.*)", office.MainOffice),
 
     (r"/channel/avatar/(.*)", internal.AvatarArea),
-    (r"/channel/public", internal.PublicArea),
     (r"/channel/reply", internal.ReplyArea),
-    (r"/channel/preview", internal.PreviewArea),
-    (r"/channel/slug_verify", internal.SlugVerifyArea),
-    (r"/channel/selfkill", internal.SelfKillArea),
-    (r"/channel/content", internal.ContentArea),
 
     (r"/visitor/github", visitor.VisitorGitHubCheckinPlace),
     (r"/visitor/checkout", visitor.VisitorCheckoutOffice),
@@ -80,43 +73,15 @@ navigation = [
 ]
 
 
-class Stage(Application):
-    def __init__(self, *args, **kwargs):
-        self._conn_main_recv, self._conn_main_send = Pipe()
-        self.furtherland = kwargs["further_land"]
-        Application.__init__(self, *args, **kwargs)
-
-    def setup(self, ioloop):
-        self._conn_child_recv, self._conn_child_send = Pipe()
-        if not tornado.process.task_id():
-            ioloop.add_handler(self._conn_main_recv.fileno(),
-                               self._handle_child_event,
-                               ioloop.READ)
-
-    def communicate(self, data):
-        self._conn_main_send.send((self._conn_child_send.fileno(), data))
-        return self._conn_child_recv.recv()
-
-    def _handle_child_event(self, fd, events):
-        conn_fileno, data = self._conn_main_recv.recv()
-        if data == "exit":
-            print("FurtherLand will set in a short period.")
-            import os
-            import signal
-            while True:
-                os.killpg(
-                    os.getpgid(self.furtherland.identity), signal.SIGKILL)
-        Connection(conn_fileno).send("acknowledged")
-
-
 class FurtherLand:
     def __init__(self, melody):
         import os
         self.identity = os.getpid()
+        self.melody = melody
         # Build A Port
         self.port = tornado.netutil.bind_sockets(
             melody.listen_port, address=melody.listen_ip)
-        self.stage = Stage(
+        self.stage = Application(
             handlers=navigation,
 
             cookie_secret=melody.secret,
@@ -144,8 +109,6 @@ class FurtherLand:
         except:
             pass
         self.factory_preload = {}
-        self.config_preload = {}
-        self.master_preload = {}
         self.factory = mako.lookup.TemplateLookup(
             [os.path.join(
                 os.path.split(os.path.realpath(melody.base))[0], "factory")],
@@ -155,15 +118,19 @@ class FurtherLand:
         )
 
     def rise(self):
-        import tornado.ioloop
-        self.land = tornado.httpserver.HTTPServer(self.stage)
-        self.land.add_sockets(self.port)
-        if hasattr(self.stage, "setup"):
-            self.stage.setup(tornado.ioloop.IOLoop.current())
-        tornado.ioloop.IOLoop.current().start()
+        try:
+            print("FurtherLand has been risen on %s:%d." % (
+                self.melody.listen_ip, self.melody.listen_port))
+            import tornado.ioloop
+            self.land = tornado.httpserver.HTTPServer(self.stage)
+            self.land.add_sockets(self.port)
+            tornado.ioloop.IOLoop.current().start()
+        except:
+            self.set()
 
     def set(self):
         tornado.ioloop.IOLoop.current().stop()
+        print("FurtherLand set.")
 
     def version(self):
         return "FurtherLand Sakihokori Edition"

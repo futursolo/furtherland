@@ -1,206 +1,392 @@
+##
+##   Copyright 2015 Futur Solo
+##
+##   Licensed under the Apache License, Version 2.0 (the "License");
+##   you may not use this file except in compliance with the License.
+##   You may obtain a copy of the License at
+##
+##       http://www.apache.org/licenses/LICENSE-2.0
+##
+##   Unless required by applicable law or agreed to in writing, software
+##   distributed under the License is distributed on an "AS IS" BASIS,
+##   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+##   See the License for the specific language governing permissions and
+##   limitations under the License.
 <!DOCTYPE HTML>
 <html>
 <head>
     <meta charset="UTF-8">
+    <title>${page_title}</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>${page_title}</title>
     <meta name="renderer" content="webkit">
     <meta name="format-detection" content="telephone=no">
-    <script src="${management_url("bower_components/webcomponentsjs/webcomponents.min.js")}"></script>
-    <link rel="import" href="${management_url("bower_components/paper-styles/paper-styles.html")}">
-    <link rel="import" href="${management_url("bower_components/iron-icons/iron-icons.html")}">
-    <link rel="import" href="${management_url("bower_components/iron-icons/editor-icons.html")}">
-    <link rel="import" href="${management_url("bower_components/paper-button/paper-button.html")}">
+
     <link href="//fonts.googleapis.com/css?family=Oxygen:400,700" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="${management_url("highlight.min.css")}">
-    <link rel="import" href="${management_url("bower_components/paper-input/paper-input.html")}">
-    <link rel="import" href="${management_url("bower_components/paper-toolbar/paper-toolbar.html")}">
-    <link rel="import" href="${management_url("bower_components/paper-menu/paper-menu.html")}">
-    <link rel="import" href="${management_url("bower_components/paper-item/paper-item.html")}">
-    <link rel="import" href="${management_url("bower_components/paper-item/paper-icon-item.html")}">
-    <link rel="import" href="${management_url("bower_components/paper-icon-button/paper-icon-button.html")}">
-    <link rel="import" href="${management_url("bower_components/paper-spinner/paper-spinner.html")}">
-    <link rel="import" href="${management_url("bower_components/paper-button/paper-button.html")}">
-    <link rel="import" href="${management_url("bower_components/paper-fab/paper-fab.html")}">
-    <link rel="import" href="${management_url("bower_components/paper-checkbox/paper-checkbox.html")}">
-    <link rel="import" href="${management_url("bower_components/paper-radio-group/paper-radio-group.html")}">
-    <link rel="import" href="${management_url("bower_components/paper-toast/paper-toast.html")}">
     <link href="${management_url("office.css")}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="${management_url("highlight.min.css")}">
+
+    <script src="${bower_url("webcomponentsjs/webcomponents.min.js")}"></script>
+
+    <link rel="import" href="${bower_url("paper-styles/paper-styles.html")}">
+    <link rel="import" href="${bower_url("iron-icons/iron-icons.html")}">
+    <link rel="import" href="${bower_url("iron-icons/editor-icons.html")}">
+    <link rel="import" href="${bower_url("iron-icons/device-icons.html")}">
+    <link rel="import" href="${bower_url("paper-button/paper-button.html")}">
+    <link rel="import" href="${bower_url("paper-input/paper-input.html")}">
+    <link rel="import" href="${bower_url("paper-toolbar/paper-toolbar.html")}">
+    <link rel="import" href="${bower_url("paper-menu/paper-menu.html")}">
+    <link rel="import" href="${bower_url("paper-item/paper-item.html")}">
+    <link rel="import" href="${bower_url("paper-item/paper-icon-item.html")}">
+    <link rel="import" href="${bower_url("paper-spinner/paper-spinner.html")}">
+    <link rel="import" href="${bower_url("paper-button/paper-button.html")}">
+    <link rel="import" href="${bower_url("paper-fab/paper-fab.html")}">
+    <link rel="import" href="${bower_url("paper-checkbox/paper-checkbox.html")}">
+    <link rel="import" href="${bower_url("paper-radio-group/paper-radio-group.html")}">
+    <link rel="import" href="${bower_url("paper-toast/paper-toast.html")}">
+    <link rel="import" href="${bower_url("paper-tabs/paper-tabs.html")}">
+    <link rel="import" href="${bower_url("paper-progress/paper-progress.html")}">
+
     <style is="custom-style">
         :root {
             --default-primary-color: rgb(54, 134, 190);
         }
+        paper-tabs{
+            --paper-tabs-selection-bar-color: rgb(255, 255, 255);
+        }
+        paper-tab{
+            --paper-tab-ink: rgba(255, 255, 255, 0.75);
+        }
+        .public paper-tab{
+            --paper-tab-ink: rgba(54, 134, 190, 0.25);
+        }
+        .main > .crda .main-container .workings-list .reply-item .action-block paper-icon-button.toggle-permit{
+            --paper-icon-button-ink-color: rgba(76, 175, 80, 0.75);
+        }
+        .main > .crda .main-container .workings-list .reply-item .action-block paper-icon-button.edit{
+            --paper-icon-button-ink-color: rgba(255, 152, 0, 0.75);
+        }
+        .main > .crda .main-container .workings-list .reply-item .action-block paper-icon-button.remove{
+            --paper-icon-button-ink-color: rgba(244, 67, 54, 0.75);
+        }
     </style>
 </head>
 <body>
-    <div class="load-layout visible" style="height: 100%; width: 100%;">
-        <div class="table">
-            <div class="table-cell">
-                <paper-spinner active></paper-spinner>
-            </div>
+    <div class="load visible" style="width: 100%; height: 100%;">
+        <div class="container">
+            <paper-spinner active></paper-spinner>
+            <paper-toast class="failed" text="抱歉，发生了未知错误。">
+                <span role="button" tabindex="0" style="color: #eeff41; margin: 10px" onclick="window.location.reload();">重新加载</span>
+            </paper-toast>
         </div>
-        <paper-toast class="loading-failed" text="抱歉，发生了未知错误。">
-            <span role="button" tabindex="0" style="color: #eeff41;margin: 10px" onclick="window.location.reload();">重新加载</span>
-        </paper-toast>
     </div>
-    <div class="public" id="public-area">
+
+    <div class="confirm">
         <paper-material elevation="4" class="container">
-            <div class="title">${config["public_name"]}<span class="close-button">×</span></div>
-            <div class="bar">
-                <span class="upload-now selector active">现在上传</span>
-                <span class="select-from-public selector">从已存在的文件中选择</span>
-            </div>
-            <div class="content upload-now active">
-                <div class="cell file-uploader">
-                    <div class="tips">将文件拖动到这里来上传 或</div>
-                    <div id="file-select-button" class="button">选择文件</div>
-                    <input id="public-hidden-file-selector" name="files[]" type="file">
-                </div>
-            </div>
-            <div class="content select-from-public">
-                <div class="file-type">
-                    <span>插入类型：</span>
-                    <input id="public-insert-as-link" type="radio" name="public-insert-file-type" checked>
-                    <label for="public-insert-as-link">链接</label>
-                    <input id="public-insert-as-image" type="radio" name="public-insert-file-type">
-                    <label for="public-insert-as-image">图片</label>
-                </div>
-                <div class="public-file-list"></div>
-            </div>
-            <div class="uploading">
-                <div class="content">
-                    <div>正在上传...</div>
-                    <div class="process-bar">
-                        <div class="done"></div>
-                    </div>
-                </div>
+            <div class="dialog">
+                <div class="message"></div>
+                <paper-button class="continue">继续</paper-button>
+                <paper-button class="cancel">取消</paper-button>
             </div>
         </paper-material>
     </div>
+
+    <div class="public">
+        <div class="container">
+            <div class="title">公共区域</div>
+            <paper-tabs no-bar selected="0" class="content-selector">
+                <paper-tab class="upload-now">现在上传</paper-tab>
+                <paper-tab class="uploaded">从已存在的文件中选择</paper-tab>
+            </paper-tabs>
+
+            <div class="content">
+                <div class="content-block upload-now">
+                    <div class="uploading">
+                        <div class="content">
+                            <div>正在上传...</div>
+                            <div>
+                                <paper-progress value="0" class="progress-bar"></paper-progress>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-cell file-uploader">
+                        <div class="tips">将文件拖动到这里来上传 或</div>
+                        <div class="select-file-line"><paper-button class="select-file" raised>&nbsp;&nbsp;选择文件&nbsp;&nbsp;</paper-button></div>
+                        <input class="hidden-file-selector" name="files[]" type="file">
+                    </div>
+                </div>
+                <div class="content-block uploaded"></div>
+            </div>
+            <div class="action">
+                <paper-button class="insert-as-photo">作为图片插入</paper-button>
+                <paper-button class="insert-as-link">作为链接插入</paper-button>
+                <paper-button class="cancel">取消</paper-button>
+            </div>
+        </div>
     </div>
+
     <header>
-        <paper-toolbar id="header-toolbar">
-            <paper-icon-button icon="menu" id="menu-button"></paper-icon-button>
-                <div title>${config["office_name"]}</div>
-                <paper-icon-button icon="refresh" id="reload"></paper-icon-button>
-            </paper-toolbar>
+        <paper-toolbar class="toolbar">
+            <paper-icon-button icon="menu" class="toggle-sidebar"></paper-icon-button>
+            <div title>${config["office_name"]}</div>
+        </paper-toolbar>
     </header>
+
     <div class="main">
         <aside>
             <paper-material elevation="2">
-                <paper-menu>
-                    <paper-icon-item class="aside-item" id="switch-to-lobby">
-                        <iron-icon icon="inbox" item-icon></iron-icon>${config["lobby_name"]}
+                <paper-menu selected="0" class="list">
+                    <paper-icon-item class="aside-item show-lobby">
+                        <iron-icon icon="inbox" item-icon></iron-icon>
+                        ${config["lobby_name"]}
                     </paper-icon-item>
-                    <paper-icon-item id="switch-to-working" class="aside-item">${config["working_name"]}</paper-icon-item>
-                    <paper-icon-item id="switch-to-crda" class="aside-item">${config["crda_name"]}</paper-icon-item>
-                    <paper-icon-item id="switch-to-cofiguration" class="aside-item">${config["configuration_name"]}</paper-icon-item>
+
+                    <paper-icon-item class="aside-item show-working">
+                        <iron-icon icon="none" item-icon></iron-icon>
+                        ${config["working_name"]}
+                    </paper-icon-item>
+
+                    <paper-icon-item class="aside-item show-crda">
+                        <iron-icon icon="none" item-icon></iron-icon>
+                        ${config["crda_name"]}
+                    </paper-icon-item>
+
+                    <paper-icon-item class="aside-item show-configuration">
+                        <iron-icon icon="none" item-icon></iron-icon>
+                        ${config["configuration_name"]}
+                    </paper-icon-item>
                 </paper-menu>
             </paper-material>
         </aside>
-        <div class="main-part lobby">
-            <div class="table">
-                <div class="table-cell">
-                    <div class="tile" id="writing-num">
-                        <paper-material elevation="2" class="tile-container">
-                            <div class="tile-name">文章</div>
-                            <div class="tile-content">0</div>
-                            <div class="tile-tips-list">
-                                <div class="tile-tips">其中有0篇草稿</div>
-                            </div>
-                            <paper-button raised class="manage-writing">管理文章<iron-icon icon="chevron-right"></iron-icon></paper-button>
-                            <style>
-                            </style>
-                        </paper-material>
-                    </div>
-                    <div class="tile" id="page-num">
-                        <paper-material elevation="2" class="tile-container">
-                            <div class="tile-name">页面</div>
-                            <div class="tile-content">0</div>
-                            <div class="tile-tips-list">
-                                <div class="tile-tips">其中有0篇草稿</div>
-                            </div>
-                            <paper-button raised class="manage-page">管理页面<iron-icon icon="chevron-right"></iron-icon></paper-button>
-                        </paper-material>
-                    </div>
-                    <div class="tile" id="reply-num">
-                        <paper-material elevation="2" class="tile-container">
-                            <div class="tile-name">评论</div>
-                            <div class="tile-content">0</div>
-                            <div class="tile-tips-list">
-                                <div class="tile-tips">其中有0条在等待审核</div>
-                                <div class="tile-tips">其中有0条被Akismet认为是拉圾评论</div>
-                            </div>
-                            <paper-button raised class="manage-reply">管理评论<iron-icon icon="chevron-right"></iron-icon></paper-button>
-                        </paper-material>
-                    </div>
+
+        <div class="container lobby">
+            <div class="container">
+                <div class="tile writing-num">
+                    <paper-material elevation="2" class="container">
+                        <div class="name">文章</div>
+                        <div class="content">0</div>
+
+                        <div class="tips-list">
+                            <div class="item">其中有0篇草稿</div>
+                        </div>
+
+                        <paper-button raised class="manage-writing">
+                            管理文章<iron-icon icon="chevron-right"></iron-icon>
+                        </paper-button>
+                    </paper-material>
+                </div>
+
+                <div class="tile page-num">
+                    <paper-material elevation="2" class="container">
+                        <div class="name">页面</div>
+                        <div class="content">0</div>
+
+                        <div class="tips-list">
+                            <div class="item">其中有0篇草稿</div>
+                        </div>
+
+                        <paper-button raised class="manage-page">
+                            管理页面<iron-icon icon="chevron-right"></iron-icon>
+                        </paper-button>
+                    </paper-material>
+                </div>
+
+                <div class="tile reply-num">
+                    <paper-material elevation="2" class="container">
+                        <div class="name">评论</div>
+                        <div class="content">0</div>
+
+                        <div class="tips-list">
+                            <div class="item">其中有0条在等待审核</div>
+                            <div class="item">其中有0条被Akismet认为是拉圾评论</div>
+                        </div>
+
+                        <paper-button raised class="manage-reply">
+                            管理评论<iron-icon icon="chevron-right"></iron-icon>
+                        </paper-button>
+                    </paper-material>
                 </div>
             </div>
-            <div class="float">
-                <paper-fab icon="create" id="write-new-float-button"></paper-fab>
+            <div class="float-container">
+                <paper-fab icon="create" class="create-new-fab"></paper-fab>
             </div>
         </div>
-        <div class="main-part working">
-            <div class="working-title">
-                <paper-input-container id="working-title-input">
-                    <label>&nbsp;&nbsp;标题</label>
-                    <input is="iron-input">
-                </paper-input-container>
+
+        <div class="container working">
+            <div class="title-container">
+                <paper-input label="&nbsp;&nbsp;标题" class="title-input"></paper-input>
             </div>
-            <div class="editor">
-                <div class="working-description">创作</div>
-                <textarea id="editor-textarea"></textarea>
+
+            <div class="editor-container">
+                <div class="description">创作</div>
+                <textarea class="editor-textarea"></textarea>
             </div>
-            <div class="preview">
-                <div class="working-description">预览</div>
-                <div id="working-preview-area"></div>
+
+            <div class="preview-container">
+                <div class="description">预览</div>
+                <div class="preview-div"></div>
             </div>
-            <div class="working-info">
+
+            <div class="info-container">
                 <paper-material elevation="4" class="container">
-                    <div class="working-info-title">
-                        <iron-icon icon="close" id="working-info-close-button"></iron-icon>作品信息
+                    <div class="title-container">
+                        <paper-icon-button icon="close" class="close-button"></paper-icon-button>作品信息
                     </div>
-                    <div class="working-slug">
-                        <paper-input id="working-info-slug-input" label="短链接" auto-validate pattern="[\-a-zA-Z0-9]*" error-message="链接形式：[\-a-zA-Z0-9]* !"></paper-input>
-                        <div id="working-info-slug-preview"></div>
-                    </div>
-                    <div class="working-time">
-                        <paper-input id="working-time-input" label="发表时间"></paper-input>
-                        <paper-checkbox id="working-time-is-when-published" checked>当单击发表按钮时</paper-checkbox>
-                    </div>
-                    <div class="working-type">
+
+                    <div class="type-container">
                         <div class="title">作品类型：</div>
-                        <paper-radio-group selected="writing" id="working-type-radio-group">
-                            <paper-radio-button name="writing" toggles="false">文章</paper-radio-button>
-                            <paper-radio-button name="page" toggles="false">页面</paper-radio-button>
+                        <paper-radio-group selected="writing" class="type-radio-group">
+                            <paper-radio-button name="writing">文章</paper-radio-button>
+                            <paper-radio-button name="page">页面</paper-radio-button>
                         </paper-radio-group>
                     </div>
-                    <div class="publish-area">
-                        <paper-button id="working-publish-now-button">立即发表</paper-button>
-                        <paper-button id="working-save-as-draft-button">存为草稿</paper-button>
+
+                    <div class="slug-container">
+                        <paper-input class="slug-input" label="短链接" auto-validate pattern="[\-a-zA-Z0-9]*" error-message="链接形式：[\-a-zA-Z0-9]* !"></paper-input>
+                        <div class="slug-preview"></div>
                     </div>
-                    <div class="create-tips">
+
+                    <div class="time-container">
+                        <paper-input class="time-input" label="发表时间"></paper-input>
+                        <paper-checkbox class="time-checkbox" checked>当单击发表按钮时</paper-checkbox>
+                    </div>
+
+                    <div class="save-container">
+                        <paper-button class="publish-button">立即发表</paper-button>
+                        <paper-button class="draft-button">存为草稿</paper-button>
+                    </div>
+
+                    <div class="tips-container">
                         <div class="title">创作提示</div>
                         <div class="content">
                             <div>FurtherLand支持GitHub Flavored Markdown以及绝大部分HTML5代码，请尽情使用。</div>
                         </div>
                     </div>
-                    <input id="working-real-id" type="hidden" autocomplete="off" value="">
-                    <input id="working-real-method" type="hidden" value="" autocomplete="off">
-                    <input id="working-real-publish" type="hidden" autocomplete="off">
+                    <div class="hidden-container">
+                        <input class="id-input" type="hidden" value="">
+                        <input class="method-input" type="hidden" value="">
+                        <input class="publish-or-not" type="hidden" value="">
+                    </div>
                 </paper-material>
             </div>
-            <div class="float">
-                <paper-fab icon="archive" id="open-public-area-button"></paper-fab><br><br>
-                <paper-fab icon="editor:publish" id="publish-working-buttton"></paper-fab>
+
+            <div class="float-container">
+                <paper-fab icon="editor:attach-file" class="open-public-fab"></paper-fab><br><br>
+                <paper-fab icon="editor:publish" class="publish-fab"></paper-fab>
+            </div>
+
+            <div class="toast-container">
+                <paper-toast class="draft-success" text="作品已经存为草稿。"></paper-toast>
+
+                <paper-toast class="publish-success" text="作品已经发布。">
+                    <a role="button" tabindex="0" style="color: #eeff41; margin: 10px; text-decoration: none; font-weight: bold;" onclick="" href="#" target="_blank">立即查看</a>
+                </paper-toast>
+
+                <paper-toast class="info-required" text="请将信息填写完整后再试。"></paper-toast>
+
+                <paper-toast class="save-failed" text="抱歉，发生了未知错误。">
+                    <span role="button" tabindex="0" style="color: #eeff41;margin: 10px" onclick="sendWorking()">再次尝试</span>
+                </paper-toast>
+            </div>
+        </div>
+
+        <div class="container crda">
+            <paper-tabs no-bar selected="0" class="type-selector">
+                <paper-tab class="writings">文章</paper-tab>
+                <paper-tab class="pages">页面</paper-tab>
+                <paper-tab class="replies">评论</paper-tab>
+            </paper-tabs>
+            <div class="main-container">
+                <paper-material elevation="2" class="writings workings-list"></paper-material>
+                <paper-material elevation="2" elevation="2" elevation="2" class="pages workings-list"></paper-material>
+                <paper-material elevation="2" elevation="2" class="replies workings-list"></paper-material>
+                <paper-material elevation="2" class="publics workings-list"></paper-material>
+            </div>
+            <div class="reply-editor">
+                <div class="table-cell">
+                    <div class="container">
+                        <div class="title">编辑评论</div>
+                        <div class="input-block">
+                            <div class="input-line">
+                                <paper-input class="name" label="昵称"></paper-input>
+                            </div>
+                            <div class="input-line">
+                                <paper-input class="email" label="电邮"></paper-input>
+                            </div>
+                        </div>
+                        <div class="homepage-line">
+                            <paper-input class="homepage" label="个人主页"></paper-input>
+                        </div>
+                        <div class="content-line">
+                            <textarea class="content" placeholder="内容"></textarea>
+                        </div>
+                        <div class="action-line">
+                            <paper-button class="cancel">取消</paper-button>
+                            <paper-button class="save">保存</paper-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="toast-container">
+                <paper-toast class="save-success" text="操作已经成功执行。"></paper-toast>
+
+                <paper-toast class="save-failed" text="抱歉，发生了未知错误。请稍后再试。"></paper-toast>
+            </div>
+        </div>
+
+        <div class="container configuration">
+            <div style="height: 40px;"></div>
+            <paper-material elevation="4" class="container">
+                <div class="config-item">
+                    <paper-input class="config-value" config_name="site_name" label="名称"></paper-input>
+                </div>
+                <div class="config-item">
+                    <paper-input class="config-value" config_name="site_description" label="描述"></paper-input>
+                    <div class="description">描述一般会显示在名称的下方，一个好的描述能够帮助人们更好的理解名称。</div>
+                </div>
+                <div class="config-item">
+                    <paper-input class="config-value" config_name="site_keywords" label="标签"></paper-input>
+                    <div class="description">标签将会帮助搜索引擎进行归类，以便带来正确的访客。</div>
+                    <div class="description">如果你需要键入多个标签，请使用英文逗号分割它们。</div>
+                </div>
+                <div class="config-item">
+                    <paper-input class="config-value" config_name="site_url" label="网络地址"></paper-input>
+                    <div class="description">这将成为「FurtherLand」对统一资源定位器进行格式化的时候使用的开头。</div>
+                </div>
+                <div class="config-item">
+                    <paper-input class="config-value" config_name="nutrition_type" label="主题"></paper-input>
+                    <div class="description">请填写一个已经被上传的主题的目录名称。</div>
+                </div>
+                <div class="config-item">
+                    <textarea class="config-value textarea" config_name="trace_code" placeholder="跟踪代码"></textarea>
+                    <div class="description">追踪代码将会用于追踪并了解你的访客群体，以帮助你提高内容的质量。</div>
+                </div>
+                <div class="action-line">
+                    <paper-button class="reset">复原</paper-button>
+                    <paper-button class="save">保存</paper-button>
+                </div>
+            </paper-material>
+            <div style="height: 40px;"></div>
+            <div class="toast-container">
+                <paper-toast class="save-success" text="设置保存成功，但是你可能需要刷新页面才能看到改变。">
+                    <span role="button" tabindex="0" style="color: #eeff41;margin: 10px" onclick="window.location.reload()">立即刷新</span>
+                </paper-toast>
+
+                <paper-toast class="save-failed" text="抱歉，发生了未知错误。请稍后再试。"></paper-toast>
             </div>
         </div>
     </div>
     <script src="${management_url("marked.js")}"></script>
     <script src="${management_url("highlight.min.js")}"></script>
-    <script src="${management_url("office.js")}" charset="utf-8"></script>
+    <script src="${management_url("office.js")}"></script>
     <script>
+        if (!window.fetch) {
+            var headElement = document.getElementsByTagName("head")[0];
+            var fetchElement = document.createElement("script");
+            fetchElement.type = "text/javascript";
+            fetchElement.src = "${management_url("fetch.js")}";
+            headElement.appendChild(fetchElement);
+        }
         window.addEventListener("load", function () {
             buildWindow("${slug}", "${sub_slug}");
         });

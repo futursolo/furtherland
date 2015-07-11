@@ -8,13 +8,13 @@ FurtherLand is in development, DO NOT USE it in production environment unless yo
 Requirements
 ------------
  - Python>=3.3(FurtherLand will not work under Python2)
- - Virtualenv>=12.0.5(Recommended)
  - Tornado>=4.0
  - Motor>=0.4
  - Misaka>=1.0.2
  - Mako>=1.0.1
  - PyCurl>=7.19.3
  - Feedgen>=0.3.1
+ - Pykismet3>=0.1.1
 
 License
 -------
