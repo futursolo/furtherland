@@ -155,8 +155,7 @@ class ReplyArea(PlacesOfInterest):
                 raise HTTPError(403)
             reply["ip"] = self.remote_ip
             reply["time"] = int(time.time())
-            reply["emailmd5"] = self.hash(reply["email"].lower(),
-                                          "md5", b64=False)
+            reply["emailmd5"] = self.hash(reply["email"].lower(), "md5")
             content = self.escape(self.get_arg("content", arg_type="origin"),
                                   item_type="html")
             content = re.sub(

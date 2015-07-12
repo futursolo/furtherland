@@ -16,11 +16,12 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>${page_title}</title>
+    <title>${config["office_name"]}</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="renderer" content="webkit">
     <meta name="format-detection" content="telephone=no">
+    <meta name="referrer" content="origin">
 
     <link href="//fonts.googleapis.com/css?family=Oxygen:400,700" rel="stylesheet" type="text/css">
     <link href="${management_url("office.css")}" rel="stylesheet" type="text/css">
@@ -129,6 +130,8 @@
         <paper-toolbar class="toolbar">
             <paper-icon-button icon="menu" class="toggle-sidebar"></paper-icon-button>
             <div title>${config["office_name"]}</div>
+            <a href="/" target="_blank" style="color: rgb(255, 255, 255) !important;"><paper-icon-button icon="open-in-browser"></paper-icon-button></a>
+            <a href="/management/checkout" style="color: rgb(255, 255, 255) !important;"><paper-icon-button icon="power-settings-new"></paper-icon-button></a>
         </paper-toolbar>
     </header>
 
@@ -137,22 +140,22 @@
             <paper-material elevation="2">
                 <paper-menu selected="0" class="list">
                     <paper-icon-item class="aside-item show-lobby">
-                        <iron-icon icon="inbox" item-icon></iron-icon>
+                        <iron-icon icon="assessment" item-icon></iron-icon>
                         ${config["lobby_name"]}
                     </paper-icon-item>
 
                     <paper-icon-item class="aside-item show-working">
-                        <iron-icon icon="none" item-icon></iron-icon>
+                        <iron-icon icon="editor:mode-edit" item-icon></iron-icon>
                         ${config["working_name"]}
                     </paper-icon-item>
 
                     <paper-icon-item class="aside-item show-crda">
-                        <iron-icon icon="none" item-icon></iron-icon>
+                        <iron-icon icon="assignment" item-icon></iron-icon>
                         ${config["crda_name"]}
                     </paper-icon-item>
 
                     <paper-icon-item class="aside-item show-configuration">
-                        <iron-icon icon="none" item-icon></iron-icon>
+                        <iron-icon icon="settings" item-icon></iron-icon>
                         ${config["configuration_name"]}
                     </paper-icon-item>
                 </paper-menu>
