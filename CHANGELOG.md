@@ -1,5 +1,11 @@
 # Changelog
 
+v20150712 dev
+-------------
+ - Bugs Fix
+ - New Checkin Office User Interface
+ - Changed Password Encryption Algorithm to Blowfish Encrypt Algorithm
+
 v20150711 dev
 -------------
  - Bugs Fix
