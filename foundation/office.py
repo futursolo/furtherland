@@ -22,6 +22,7 @@ from foundation.place import PlacesOfInterest, slug_validation, visitor_only
 from collections import OrderedDict
 import foundation.pyotp as pyotp
 import json
+import bcrypt
 
 
 class ManagementOffice(PlacesOfInterest):
@@ -32,39 +33,17 @@ class ManagementOffice(PlacesOfInterest):
 
     def management_render(self, page):
         self.render_list["management_url"] = self.management_url
-        if "page_title" not in self.render_list.keys():
-            self.render_list["page_title"] = (
-                self.render_list["origin_title"] +
-                " - " + self.config["office_name"])
         page = "management/" + page
         self.finish(self.render_string(page, **self.render_list))
 
 
 class CheckinOffice(ManagementOffice):
     @coroutine
-    def checkin(self, username, password, two):
-        user = yield self.get_user(username=username)
-        if (not user) or (self.hash(password, "sha1") != user["password"]):
-            return [False, "password"]
-
-        if not (pyotp.TOTP(user["otp_key"]).verify(two)):
-            return [False, "two"]
-
-        device_id = self.get_random(32)
-        return [
-            True, {
-                "user_id": user["_id"],
-                "device_id": device_id,
-                "agent_auth": self.hash((device_id + user["password"]),
-                                        "sha256")
-            }]
-
-    @coroutine
     @visitor_only
     def get(self):
         self.render_list["checkin_status"] = self.get_scookie(
             "checkin_status", arg_type="hash", default="ok")
-        self.render_list["origin_title"] = "登录"
+        self.clear_cookie("checkin_status")
         self.management_render("checkin.htm")
 
     @coroutine
@@ -74,29 +53,59 @@ class CheckinOffice(ManagementOffice):
         password = self.get_arg("password", arg_type="hash")
         two = self.get_arg("two", arg_type="number")
         remember = self.get_arg("remember", arg_type="boolean")
+
         if not (username and password and two):
             self.set_scookie("checkin_status", "password", expires_days=None)
             self.redirect("/management/checkin")
             return
-        result = yield self.checkin(
-            username=username, password=password, two=two)
-        if result[0]:
+
+        user = yield self.get_user(username=username)
+
+        """
+        generate new password by listed commands:
+        password = "YOUR NEW PASSWORD"
+        bcrypt.hashpw(
+            hashlib.sha256(password.encode()
+                           ).hexdigest().encode(), bcrypt.gensalt()
+        )
+        """
+
+        if not user:
+            self.set_scookie("checkin_status", "password", expires_days=None)
+            self.redirect("/management/checkin")
+            return
+
+        if bcrypt.hashpw(
+           password.encode("utf-8"),
+           user["password"].encode()) != user["password"].encode():
+            self.set_scookie("checkin_status", "password", expires_days=None)
+            self.redirect("/management/checkin")
+            return
+
+        if not (pyotp.TOTP(user["otp_key"]).verify(two)):
+            self.set_scookie("checkin_status", "two", expires_days=None)
+            self.redirect("/management/checkin")
+            return
+
+        else:
             expires_days = None
             if remember:
                 expires_days = 180
-            self.set_scookie(
-                "user_id", result[1]["user_id"],
-                expires_days=expires_days, httponly=True)
-            self.set_scookie(
-                "device_id", result[1]["device_id"],
-                expires_days=expires_days, httponly=True)
-            self.set_scookie(
-                "agent_auth", result[1]["agent_auth"],
-                expires_days=expires_days, httponly=True)
+
+            device_id = self.get_random(32)
+
+            agent_auth = self.hash((device_id + user["password"]), "sha256")
+
+            self.set_scookie("user_id", user["_id"], expires_days=expires_days,
+                             httponly=True)
+
+            self.set_scookie("device_id", device_id, expires_days=expires_days,
+                             httponly=True)
+
+            self.set_scookie("agent_auth", agent_auth,
+                             expires_days=expires_days, httponly=True)
+
             self.redirect(self.next_url)
-        else:
-            self.set_scookie("checkin_status", result[1], expires_days=None)
-            self.redirect("/management/checkin")
 
 
 class CheckoutOffice(ManagementOffice):
@@ -112,8 +121,6 @@ class MainOffice(ManagementOffice):
     @coroutine
     @authenticated
     def get(self, slug, sub_slug=""):
-        self.render_list["origin_title"] = ""
-        self.render_list["page_title"] = self.config["office_name"]
         self.render_list["slug"] = slug
         self.render_list["sub_slug"] = sub_slug
         self.management_render("office.htm")

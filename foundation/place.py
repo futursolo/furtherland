@@ -203,14 +203,14 @@ class PlacesOfInterest(RequestHandler):
                 return link
 
     def hash(self, target, method, b64=True):
-        target = target.encode(encoding="utf-8")
-        if b64:
-            target = base64.b64encode(target)
+        if not isinstance(target, bytes):
+            target = target.encode(encoding="utf-8")
+
         if method == "sha1":
             return hashlib.sha1(target).hexdigest()
-        if method == "sha256":
+        elif method == "sha256":
             return hashlib.sha256(target).hexdigest()
-        if method == "md5":
+        elif method == "md5":
             return hashlib.md5(target).hexdigest()
 
     @coroutine
