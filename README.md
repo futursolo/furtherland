@@ -15,6 +15,9 @@ Requirements
  - PyCurl>=7.19.3
  - Feedgen>=0.3.1
  - Pykismet3>=0.1.1
+ - bcrypt>=2.0.0
+
+All listed Requirements are able to be installed by pip.
 
 License
 -------

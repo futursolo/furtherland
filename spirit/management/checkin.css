@@ -1,0 +1,110 @@
+/*--
+
+   Copyright 2015 Futur Solo
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+--*/
+html, body{
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Oxygen, Verdana, Tahoma, STHeiti, "Noto Sans CJK SC", "Microsoft YaHei", SimHei;
+    background-repeat: no-repeat;
+    font-size: 15px;
+    color: rgb(100, 100, 100);
+    background-color: rgb(245, 245, 245);
+    word-break: break-all;
+}
+
+textarea, input{
+    font-family: Oxygen, Verdana, Tahoma, STHeiti, "Noto Sans CJK SC", "Microsoft YaHei", SimHei;
+}
+
+.main{
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+.main > .container{
+    display: table-cell;
+    vertical-align: middle;
+}
+.main > .container .panel{
+    max-width: 400px;
+    width: 100%;
+    min-height: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+}
+.main > .container .panel .title{
+    text-align: center;
+    font-size: 18px;
+    width: 100%;
+    display: block;
+}
+.main > .container .panel .alert{
+    color: rgb(244, 67, 54);
+    font-size: 15px;
+    text-align: center;
+    line-height: 30px;
+}
+.main > .container .panel .alert i{
+    color: rgb(244, 67, 54);
+    font-size: 15px;
+    display: inline;
+    box-sizing: border-box;
+    padding: 0;
+}
+.main > .container .panel .avatar-back{
+    background-color: rgb(255, 255, 255);
+    padding-top: 20px;
+}
+.main > .container .panel .avatar{
+    margin-left: auto;
+    margin-right: auto;
+    height: 100px;
+    width: 100px;
+    border-radius: 500px;
+    background-size: cover;
+    display: block;
+}
+
+.main > .container .panel .form-back{
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+    padding-top: 0;
+}
+.main > .container .panel .input-back{
+    width: 100%;
+}
+.main > .container .panel .remember-container{
+    width: 100%;
+    position: relative;
+}
+.main > .container .panel .remember-back{
+    width: 150px;
+    position: absolute;
+    left: 50%;
+    margin-left: -80px;
+}
+.main > .container .panel .login-back{
+    padding: 20px;
+}
+.main > .container .panel .login{
+    width: calc(100% - 20px);
+}
+form{
+    display: none;
+}
