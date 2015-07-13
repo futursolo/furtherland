@@ -226,21 +226,16 @@ header .site-description{
     margin-left: 10px;
     margin-right: 10px;
 }
-.replies .new-reply .id-input .info{
-    height: 100px;
-}
 .replies .new-reply .id-input .input{
     width: 100%;
 }
 .replies .new-reply .avatar-area{
-    width: 100px;
-    padding-left: 10px;
-    padding-right: 10px;
     display: inline-block;
-    text-align: center;
-    position: relative;
+    width: 100px;
+    margin-left: 10px;
+    margin-right: 10px;
 }
-.replies .new-reply .avatar{
+.replies .new-reply .avatar-area .avatar{
     margin-top: 10px;
     margin-bottom: 10px;
     height: 100px;
@@ -249,10 +244,7 @@ header .site-description{
     background-size: cover;
     background-repeat: no-repeat;
 }
-.replies .new-reply #visitor-checkout{
-    width: 100px;
-}
-.replies .new-reply #publish-reply{
+.replies .new-reply .avatar-area .button{
     width: 100px;
 }
 .input{
@@ -297,15 +289,6 @@ header .site-description{
 .button:active{
     background-color: rgb(83, 152, 68);
 }
-.button.red{
-    background-color: rgb(231, 76, 60) !important;
-}
-.button.red:hover{
-    background-color: rgb(236, 112, 99) !important;
-}
-.button.red:active{
-    background-color: rgb(196, 65, 51) !important;
-}
 .replies .container{
     border-top: rgb(230, 230, 230) 5px dashed;
     padding-top: 10px;
@@ -324,30 +307,11 @@ header .site-description{
     color: rgb(231, 76, 60);
     font-weight: bold;
 }
-.replies .social_login_area{
-    text-align: center;
-    box-sizing: border-box;
-}
-.replies .social_login_area .introduction{
-    line-height: 50px;
-    font-size: 20px;
-    color: rgb(150, 150, 150);
-    font-weight: bold;
-}
-.replies .social_login{
-    min-width: 220px;
-    margin: 10px;
-    height: 34px;
-    display: inline-block;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
 div#reply-textarea-wrapper{
-    width: calc(100% - 140px);
+    width: calc(100% - 350px);
     display: inline-block;
     vertical-align: top;
-    min-height: 240px;
+    min-height: 160px;
 }
 .replies .reply-block{
     padding: 10px;
