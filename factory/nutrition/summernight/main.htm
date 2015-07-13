@@ -1,0 +1,85 @@
+##
+##   Copyright 2015 Futur Solo
+##
+##   Licensed under the Apache License, Version 2.0 (the "License");
+##   you may not use this file except in compliance with the License.
+##   You may obtain a copy of the License at
+##
+##       http://www.apache.org/licenses/LICENSE-2.0
+##
+##   Unless required by applicable law or agreed to in writing, software
+##   distributed under the License is distributed on an "AS IS" BASIS,
+##   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+##   See the License for the specific language governing permissions and
+##   limitations under the License.
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>${page_title}</title>
+
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="referrer" content="origin">
+    <meta name="format-detection" content="telephone=no">
+
+    <meta property="og:title" content="${origin_title}">
+    <meta property="og:url" content="${config["site_url"]}">
+    <meta property="og:site_name" content="${config["site_name"]}">
+    <meta name="description" content="${config["site_description"]}">
+    <meta name="keywords" content="${config["site_keywords"]}">
+    <meta name="generator" content="${FurtherLand.version()}">
+
+    <link rel="canonical" href="${config["site_url"]}">
+
+    <link rel="alternate" type="application/atom+xml" href="/feed.xml">
+
+    <link href="//fonts.googleapis.com/css?family=Oxygen:400,700" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="${static_url("highlight.min.css")}">
+    <link href="${static_url("main.css")}" rel="stylesheet" type="text/css">
+    <link href="${static_url("material.min.css")}" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <header></header>
+    <div class="main">
+        <aside></aside>
+    % if current_page == "index":
+        <div class="index content current"></div>
+    % else:
+        <div class="index content"></div>
+    % endif
+    % if current_page == "writing":
+        <div class="writing content current"></div>
+    % else:
+        <div class="writing content"></div>
+    % endif
+    % if current_page == "page":
+        <div class="page content current"></div>
+    % else:
+        <div class="page content"></div>
+    % endif
+    % if current_page == "not-found":
+        <div class="not-found content current"></div>
+    % else:
+        <div class="not-found content"></div>
+    % endif
+    </div>
+    <footer></footer>
+    <script>
+        if (!window.fetch) {
+            var headElement = document.getElementsByTagName("head")[0];
+            var fetchElement = document.createElement("script");
+            fetchElement.type = "text/javascript";
+            fetchElement.src = "${static_url("fetch.js")}";
+            headElement.appendChild(fetchElement);
+        }
+    </script>
+    <script src="${static_url("material.min.js")}"></script>
+    <script src="${static_url("marked.js")}"></script>
+    <script src="${static_url("highlight.min.js")}"></script>
+    <script src="${static_url("main.js")}" charset="utf-8"></script>
+    ${config["trace_code"]}
+</body>
+</html>

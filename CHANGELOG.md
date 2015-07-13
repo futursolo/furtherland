@@ -1,5 +1,10 @@
 # Changelog
 
+v20150713 dev
+-------------
+ - Bugs Fix
+ - Reply Area GitHub OAuth System removed, because it is not a graceful enough way to stop spammers.
+
 v20150712 dev
 -------------
  - Bugs Fix

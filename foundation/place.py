@@ -469,7 +469,8 @@ class CentralSquare(PlacesOfInterest):
             self.render_list["contents"][key]["content"] = self.make_md(
                 self.render_list["contents"][key]["content"], more=False)
         self.render_list["origin_title"] = "首页"
-        self.render("index.htm")
+        self.render_list["current_page"] = "index"
+        self.render("main.htm")
 
 
 class ConferenceHall(PlacesOfInterest):
@@ -545,6 +546,11 @@ class NewsAnnouncement(PlacesOfInterest):
 
 class HistoryLibrary(PlacesOfInterest):
     pass
+
+
+class TerminalService(PlacesOfInterest):
+    def get(self):
+        pass
 
 
 class LostAndFoundPlace(PlacesOfInterest):
