@@ -27,7 +27,6 @@ import mako
 from . import place
 from . import office
 from . import internal
-from . import visitor
 from . import memory as historial
 
 
@@ -36,6 +35,7 @@ navigation = [
     # (r"/classes/(.*).htm", ClassesPlace),  This will be avaliable in future
     # (r"/timeline", HistoryLibrary),
     (r"/feed.xml", place.NewsAnnouncement),
+    (r"/api", place.TerminalService),
     (r"/writings/(.*).htm", place.ConferenceHall),
     (r"/pages/(.*).htm", place.MemorialWall),
 
@@ -65,9 +65,6 @@ navigation = [
 
     (r"/channel/avatar/(.*)", internal.AvatarArea),
     (r"/channel/reply", internal.ReplyArea),
-
-    (r"/visitor/github", visitor.VisitorGitHubCheckinPlace),
-    (r"/visitor/checkout", visitor.VisitorCheckoutOffice),
 
     (r"(.*)", place.LostAndFoundPlace)
 ]
