@@ -141,7 +141,7 @@ function getCookie(name) {
     return r ? r[1] : undefined;
 }
 
-function datetimeToUnix(datetime){
+function datetimeToUnix(datetime) {
     var tmp_datetime = datetime.replace(/:/g,"-");
     tmp_datetime = tmp_datetime.replace(/ /g,"-");
     var arr = tmp_datetime.split("-");
@@ -151,7 +151,7 @@ function datetimeToUnix(datetime){
     return parseInt(now.getTime() / 1000);
 }
 
-function unixToDatetime(unix){
+function unixToDatetime(unix) {
     var now = new Date(parseInt(unix) * 1000);
     var targetFormat = "yyyy-MM-dd hh:mm:ss";
     var date = {
@@ -303,7 +303,7 @@ objects[".public .content-selector .upload-now"].addEventListener("click", showP
 function bindPublicEvent(event) {
     target = event.target || event.srcElement;
     if (_(".public .content .uploaded .file-item.current")) {
-        _(".public .content .uploaded .file-item.current").classList.remove("current")
+        _(".public .content .uploaded .file-item.current").classList.remove("current");
     }
     if (!target.getAttribute("fileurl")) {
         target = findParentBySelector(target, ".public .content .uploaded .file-item");

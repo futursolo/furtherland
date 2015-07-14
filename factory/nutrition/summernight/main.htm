@@ -41,15 +41,33 @@
     <link href="${static_url("main.css")}" rel="stylesheet" type="text/css">
     <link href="${static_url("material.min.css")}" rel="stylesheet" type="text/css">
 </head>
-<body>
-    <header></header>
+<body style="background-image: url(${static_url("natsu-background.jpg")});">
+    <header>
+        <nav>
+            <div class="title">${config["site_name"]}</div>
+            <div class="links">
+                <a href="/feed.xml" target="_blank"><div class="mdl-button mdl-js-button mdl-js-ripple-effect item">订阅</div></a>
+            % if not current_user:
+                <a href="/management/checkin"><div class="mdl-button mdl-js-button mdl-js-ripple-effect item">登录</div></a>
+            % else:
+                <a href="/management" target="_blank"><div class="mdl-button mdl-js-button mdl-js-ripple-effect item">${config["office_name"]}</div></a>
+                <a href="/management/checkout"><div class="mdl-button mdl-js-button mdl-js-ripple-effect item">登出</div></a>
+            % endif
+            </div>
+        </nav>
+        <div class="tabs">
+            <div class="item">主页</div>
+            <div class="item">文章</div>
+            <div class="item">关于</div>
+        </div>
+    </header>
     <div class="main">
         <aside></aside>
-    % if current_page == "index":
-        <div class="index content current"></div>
-    % else:
-        <div class="index content"></div>
-    % endif
+        <div class="index content% if current_page == "index": current% endif">
+        % for value in contents.values():
+            <div class="">
+        % endfor
+        </div>
     % if current_page == "writing":
         <div class="writing content current"></div>
     % else:

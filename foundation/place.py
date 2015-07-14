@@ -79,7 +79,6 @@ class PlacesOfInterest(RequestHandler):
         self.memories = self.settings["historial_records"]
         self.memories.initialize()
         self.current_user = yield self.get_current_user()
-        self.current_visitor = yield self.get_current_visitor()
         self.config = yield self.get_config()
 
         self.next_url = self.get_arg("next", arg_type="link", default="/")
@@ -214,7 +213,7 @@ class PlacesOfInterest(RequestHandler):
             return hashlib.md5(target).hexdigest()
 
     @coroutine
-    def get_user(self, **kwargs):
+    def get_user(self, with_privacy=True, **kwargs):
         condition = list(kwargs.keys())[0]
         value = kwargs[condition]
         if condition != "user_list":
@@ -228,9 +227,15 @@ class PlacesOfInterest(RequestHandler):
                 book = self.memories.select("Masters")
                 book.find({condition: value}).length(1)
                 yield book.do()
-                self._master_list[condition][value] = (book.result())
+                self._master_list[condition][value] = book.result()
 
-        return self._master_list[condition][value]
+        user = self._master_list[condition][value]
+
+        if not with_privacy:
+            del user["password"]
+            del user["otp_key"]
+
+        return user
 
     def get_random(self, length):
         return "".join(random.sample(string.ascii_letters + string.digits,
@@ -340,7 +345,6 @@ class PlacesOfInterest(RequestHandler):
                 "handler": self,
                 "request": self.request,
                 "current_user": self.current_user,
-                "current_visitor": self.current_visitor,
                 "locale": self.locale,
                 "_": self.locale.translate,
                 "xsrf_form_html": self.xsrf_form_html,
@@ -408,66 +412,17 @@ class PlacesOfInterest(RequestHandler):
                         __without_database=True,
                         **self.render_list))
 
-    @coroutine
-    def get_current_visitor(self):
-        book = self.memories.select("Visitors")
-        book.find({
-            "_id": self.get_scookie("visitor_id", arg_type="number"),
-            "visitor_auth": self.get_scookie("visitor_auth",
-                                             arg_type="hash")
-        })
-        yield book.do()
-        result = book.result()
-        if result:
-            return result
-        self.clear_cookie("visitor_id")
-        self.clear_cookie("visitor_auth")
-        return None
-
-    @coroutine
-    def checkin_visitor(self, oauth_type, visitor):
-        book = self.memories.select("Visitors")
-        if oauth_type is "github":
-            book.find({
-                "oauth_type": "github",
-                "oauth_id": visitor["id"]
-            })
-            yield book.do()
-            result = book.result()
-            if result:
-                return {
-                    "visitor_id": result["_id"],
-                    "visitor_auth": result["visitor_auth"]
-                }
-            visitor_info = {
-                "_id": (yield self.issue_id("Visitors")),
-                "oauth_type": "github",
-                "oauth_id": visitor["id"],
-                "login_name": visitor.get("login"),
-                "access_token": visitor.get("access_token"),
-                "avatar_url": visitor.get("avatar_url"),
-                "name": visitor.get("name"),
-                "email": visitor.get("email"),
-                "homepage": visitor.get("blog"),
-                "visitor_auth": self.get_random(32)
-            }
-        book.add(visitor_info)
-        yield book.do()
-        return {
-            "visitor_id": visitor_info["_id"],
-            "visitor_auth": visitor_info["visitor_auth"]
-        }
-
 
 class CentralSquare(PlacesOfInterest):
     @coroutine
     def get(self):
-        self.render_list["contents"] = yield self.get_writing(class_id=0)
-        for key in self.render_list["contents"]:
-            self.render_list["contents"][key]["author"] = yield self.get_user(
-                _id=self.render_list["contents"][key]["author"])
-            self.render_list["contents"][key]["content"] = self.make_md(
-                self.render_list["contents"][key]["content"], more=False)
+        contents = yield self.get_writing(class_id=0)
+        for key in contents:
+            contents[key]["author"] = yield self.get_user(
+                _id=contents[key]["author"], with_privacy=False)
+            contents[key]["content"] = contents[key]["content"].split(
+                "<!--more-->")[0]
+        self.render_list["contents"] = contents
         self.render_list["origin_title"] = "首页"
         self.render_list["current_page"] = "index"
         self.render("main.htm")
