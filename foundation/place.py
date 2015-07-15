@@ -26,8 +26,6 @@ import base64
 import random
 import string
 import functools
-import mako.lookup
-import mako.template
 import time
 import datetime
 import feedgen.feed
@@ -201,7 +199,7 @@ class PlacesOfInterest(RequestHandler):
             else:
                 return link
 
-    def hash(self, target, method, b64=True):
+    def hash(self, target, method):
         if not isinstance(target, bytes):
             target = target.encode(encoding="utf-8")
 
@@ -229,11 +227,14 @@ class PlacesOfInterest(RequestHandler):
                 yield book.do()
                 self._master_list[condition][value] = book.result()
 
-        user = self._master_list[condition][value]
+        user = {}
+        user.update(self._master_list[condition][value])
 
         if not with_privacy:
             del user["password"]
             del user["otp_key"]
+            user["emailmd5"] = self.hash(user["email"], "md5")
+            del user["email"]
 
         return user
 
@@ -336,40 +337,25 @@ class PlacesOfInterest(RequestHandler):
         return RequestHandler.static_url(
             self, path, include_host=include_host, **kwargs)
 
-    def render_string(self, filename, **kwargs):
-        if filename not in self.furtherland.factory_preload.keys():
-            self.furtherland.factory_preload[
-                filename] = self.furtherland.factory.get_template(filename)
-        if not kwargs.pop("__without_database", False):
-            env_kwargs = {
-                "handler": self,
-                "request": self.request,
-                "current_user": self.current_user,
-                "locale": self.locale,
-                "_": self.locale.translate,
-                "xsrf_form_html": self.xsrf_form_html,
-                "reverse_url": self.application.reverse_url,
-                "config": self.config,
-                "static_url": self.static_url,
-                "bower_url": self.bower_url,
-                "FurtherLand": self.furtherland,
-                "used_time": int((time.time() - self.start_time) * 1000)
-            }
-        else:
-            env_kwargs = {}
-        env_kwargs.update(kwargs)
-        self.xsrf_form_html()
-        return self.furtherland.factory_preload[filename].render(**env_kwargs)
-
     def render(self, page, nutrition=True):
         if ("page_title" not in self.render_list.keys() and
            "origin_title" in self.render_list.keys()):
             self.render_list["page_title"] = (
                 self.render_list["origin_title"] +
                 " - " + self.config["site_name"])
+
+        if not self.render_list.pop("__without_database", False):
+            self.render_list["config"] = self.config
+            self.render_list["bower_url"] = self.bower_url
+            self.render_list["FurtherLand"] = self.furtherland
+            self.render_list["used_time"] = int(
+                (time.time() - self.start_time) * 1000)
+
+        self.xsrf_form_html()
+
         if nutrition:
             page = "nutrition/" + self.config["nutrition_type"] + "/" + page
-        self.finish(self.render_string(page, **self.render_list))
+        RequestHandler.render(self, page, **self.render_list)
 
     @coroutine
     def get_count(self):
@@ -506,6 +492,94 @@ class HistoryLibrary(PlacesOfInterest):
 class TerminalService(PlacesOfInterest):
     def get(self):
         pass
+
+
+class IllustratePlace(PlacesOfInterest):
+    @coroutine
+    @slug_validation(["hash"])
+    def get(self, slug):
+        size = self.get_arg("s", default=80, arg_type="number")
+        default = self.get_arg("d", default=404, arg_type="hash")
+        current_time = int(time.time())
+
+        path = self.settings["static_path"] + "/public/avatar/" + slug
+        if not os.path.exists(path):
+            os.makedirs(path)
+
+        file_path = path + "/" + str(size)
+        if os.path.exists(file_path):
+            book = self.memories.select("Publics")
+            book.find(
+                {"filename": str(size), "email_md5": slug, "type": "avatar"})
+            yield book.do()
+            avatar_info = book.result()
+            if not avatar_info:
+                os.remove(file_path)
+                book.erase(
+                    {
+                        "filename": str(size),
+                        "email_md5": slug,
+                        "type": "avatar"
+                    }
+                )
+                yield book.do()
+            elif (current_time - avatar_info["time"]) <= (15 * 24 * 60 * 60):
+                self.set_header(
+                    "content-type", avatar_info["content_type"])
+                with open(file_path, "rb") as f:
+                    self.finish(f.read())
+                return
+            else:
+                os.remove(file_path)
+                book.erase(
+                    {
+                        "filename": str(size),
+                        "email_md5": slug,
+                        "type": "avatar"
+                    }
+                )
+                yield book.do()
+
+        client = AsyncHTTPClient()
+        link = (
+            "https://secure.gravatar.com/avatar/" + slug + "?s=" +
+            str(size) + "&d=" + str(default))
+        response = yield client.fetch(link)
+        if response.error:
+            raise HTTPError(response.code)
+        avatar = response.body
+        content_type = response.headers.get("content-type")
+        avatar_info = OrderedDict()
+        avatar_info["time"] = current_time
+        avatar_info["type"] = "avatar"
+        avatar_info["content_type"] = content_type
+        avatar_info["filename"] = str(size)
+        avatar_info["filepath"] = file_path
+        avatar_info["fileurl"] = None
+        avatar_info["email_md5"] = slug
+        avatar_info["_id"] = yield self.issue_id("Publics")
+
+        with open(file_path, "wb") as f:
+            f.write(avatar)
+
+        book = self.memories.select("Publics")
+        book.find(
+            {"filename": str(size), "email_md5": slug, "type": "avatar"})
+        yield book.do()
+        if book.result():
+            book.erase(
+                {
+                    "filename": str(size),
+                    "email_md5": slug,
+                    "type": "avatar"
+                }
+            )
+            yield book.do()
+        book.add(avatar_info)
+        yield book.do()
+
+        self.set_header("content-type", content_type)
+        self.finish(avatar)
 
 
 class LostAndFoundPlace(PlacesOfInterest):

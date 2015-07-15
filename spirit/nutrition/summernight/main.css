@@ -30,12 +30,62 @@ body{
     background-position: top right;
     background-attachment: fixed;
 }
+
+.load-back{
+    height: 0;
+    width: 0;
+    z-index: 999;
+    position: fixed;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.30s ease-in-out;
+    background-size: cover;
+    background-position: top right;
+    background-attachment: fixed;
+}
+.load-back.visible{
+    opacity: 1;
+}
+.load-back .content{
+    width: 100%;
+    height: 100%;
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -o-filter: blur(5px);
+    -ms-filter: blur(5px);
+    filter: blur(5px);
+    background-size: cover;
+    background-position: top right;
+    background-attachment: fixed;
+}
+.load{
+    height: 0;
+    width: 0;
+    z-index: 1000;
+    display: table;
+    position: fixed;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.30s ease-in-out;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+.load > .container{
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+.load.visible{
+    opacity: 1;
+}
+.load .failed{
+    z-index: 1001;
+}
+
 header{
     height: 120px;
     color: rgb(255, 255, 255);
     margin-left: auto;
     margin-right: auto;
-    max-width: 1200px;
 }
 header > nav{
     height: 60px;
@@ -75,4 +125,54 @@ header > .tabs > .item{
     display: inline-block;
     padding-left: 15px;
     padding-right: 15px;
+}
+.main > .index .index-card{
+    border-radius: 3px;
+    width: calc(100% - 10px);
+    max-width: 1000px;
+    background-color: rgba(255, 255, 255, 0.8);
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 4px 8px 0 rgb(100, 100, 100);
+    box-sizing: border-box;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+.main > .index .index-card .title{
+    line-height: 25px;
+    font-size: 25px;
+    padding-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.main > .index .index-card .card-info{
+    line-height: 30px;
+    font-size: 12px;
+    color: rgb(150, 150, 150);
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgb(200, 200, 200);
+}
+.main > .index .index-card .card-info .content{
+    display: inline-block;
+    vertical-align: top;
+}
+.main > .index .index-card .card-info .author-avatar{
+    width: 26px;
+    height: 26px;
+    margin: 2px;
+    border-radius: 500px;
+    background-size: cover;
+}
+.main > .index .index-card > .content{
+    padding: 20px;
+}
+.main > .index .index-card > .more{
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+}
+.main > .index .index-card > .more > .button{
+
 }

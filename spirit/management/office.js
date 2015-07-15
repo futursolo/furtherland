@@ -1135,7 +1135,7 @@ function loadCRDAData(type, callback) {
                 }
                 item = "<div class=\"reply-item\" reply_id=\"" + content._id + "\" reply_name=\"" + content.name + "\" reply_email=\"" + content.email + "\" reply_homepage=\"" + content.homepage + "\" reply_content='" + content.content + "'>";
 
-                item += "<div class=\"avatar-block\" style=\"background-image: url(/channel/avatar/" + content.emailmd5 + "?s=200&d=mm)\"></div>";
+                item += "<div class=\"avatar-block\" style=\"background-image: url(/avatar/" + content.emailmd5 + "?s=200&d=mm)\"></div>";
 
                 item += "<div class=\"info-block\">";
                 item += "<div><a target=\"_blank\" href=\"" + content.homepage + "\"><span class=\"reply-name\">" + content.name + "</span></a>";

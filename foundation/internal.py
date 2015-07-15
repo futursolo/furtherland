@@ -27,94 +27,6 @@ import time
 import re
 
 
-class AvatarArea(PlacesOfInterest):
-    @coroutine
-    @slug_validation(["hash"])
-    def get(self, slug):
-        size = self.get_arg("s", default=80, arg_type="number")
-        default = self.get_arg("d", default=404, arg_type="hash")
-        current_time = int(time.time())
-
-        path = self.settings["static_path"] + "/public/avatar/" + slug
-        if not os.path.exists(path):
-            os.makedirs(path)
-
-        file_path = path + "/" + str(size)
-        if os.path.exists(file_path):
-            book = self.memories.select("Publics")
-            book.find(
-                {"filename": str(size), "email_md5": slug, "type": "avatar"})
-            yield book.do()
-            avatar_info = book.result()
-            if not avatar_info:
-                os.remove(file_path)
-                book.erase(
-                    {
-                        "filename": str(size),
-                        "email_md5": slug,
-                        "type": "avatar"
-                    }
-                )
-                yield book.do()
-            elif (current_time - avatar_info["time"]) <= (15 * 24 * 60 * 60):
-                self.set_header(
-                    "content-type", avatar_info["content_type"])
-                with open(file_path, "rb") as f:
-                    self.finish(f.read())
-                return
-            else:
-                os.remove(file_path)
-                book.erase(
-                    {
-                        "filename": str(size),
-                        "email_md5": slug,
-                        "type": "avatar"
-                    }
-                )
-                yield book.do()
-
-        client = AsyncHTTPClient()
-        link = (
-            "https://secure.gravatar.com/avatar/" + slug + "?s=" +
-            str(size) + "&d=" + str(default))
-        response = yield client.fetch(link)
-        if response.error:
-            raise HTTPError(response.code)
-        avatar = response.body
-        content_type = response.headers.get("content-type")
-        avatar_info = OrderedDict()
-        avatar_info["time"] = current_time
-        avatar_info["type"] = "avatar"
-        avatar_info["content_type"] = content_type
-        avatar_info["filename"] = str(size)
-        avatar_info["filepath"] = file_path
-        avatar_info["fileurl"] = None
-        avatar_info["email_md5"] = slug
-        avatar_info["_id"] = yield self.issue_id("Publics")
-
-        with open(file_path, "wb") as f:
-            f.write(avatar)
-
-        book = self.memories.select("Publics")
-        book.find(
-            {"filename": str(size), "email_md5": slug, "type": "avatar"})
-        yield book.do()
-        if book.result():
-            book.erase(
-                {
-                    "filename": str(size),
-                    "email_md5": slug,
-                    "type": "avatar"
-                }
-            )
-            yield book.do()
-        book.add(avatar_info)
-        yield book.do()
-
-        self.set_header("content-type", content_type)
-        self.finish(avatar)
-
-
 class ReplyArea(PlacesOfInterest):
     @coroutine
     def post(self):
@@ -163,7 +75,7 @@ class ReplyArea(PlacesOfInterest):
             reply["ip"] = self.remote_ip
             reply["time"] = int(time.time())
             reply["emailmd5"] = self.hash(reply["email"].lower(),
-                                          "md5", b64=False)
+                                          "md5")
             content = self.escape(self.get_arg("content", arg_type="origin"),
                                   item_type="html")
             content = re.sub(

@@ -1,22 +1,22 @@
-##
-##   Copyright 2015 Futur Solo
-##
-##   Licensed under the Apache License, Version 2.0 (the "License");
-##   you may not use this file except in compliance with the License.
-##   You may obtain a copy of the License at
-##
-##       http://www.apache.org/licenses/LICENSE-2.0
-##
-##   Unless required by applicable law or agreed to in writing, software
-##   distributed under the License is distributed on an "AS IS" BASIS,
-##   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-##   See the License for the specific language governing permissions and
-##   limitations under the License.
+{% comment  Copyright 2015 Futur Solo
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ %}
 <!DOCTYPE HTML>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>登录 - ${config["office_name"]}</title>
+    <title>登录 - {{ config["office_name"] }}</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="renderer" content="webkit">
@@ -26,8 +26,8 @@
     <link href="//fonts.googleapis.com/css?family=Oxygen:400,700" rel="stylesheet" type="text/css">
     <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
 
-    <link href="${management_url("checkin.css")}" rel="stylesheet" type="text/css">
-    <link href="${management_url("material.min.css")}" rel="stylesheet" type="text/css">
+    <link href="{{ management_url("checkin.css") }}" rel="stylesheet" type="text/css">
+    <link href="{{ management_url("material.min.css") }}" rel="stylesheet" type="text/css">
 </head>
 <body>
     <div class="main">
@@ -37,20 +37,13 @@
                     <div class="title">欢迎回来，为什么不快乐地登录呢？</div>
                 </div>
                 <div class="mdl-card__media avatar-back">
-                    <div class="avatar" style="background-image: url(${management_url("avatar.jpg")});"></div>
+                    <div class="avatar" style="background-image: url({{ management_url("avatar.jpg") }});"></div>
                 </div>
-                <div class="mdl-card__media form-back">
-                % if checkin_status != "ok":
-                    <div>
-                    % if checkin_status == "password":
-                        <div class="alert"><i class="material-icons">error</i>登录失败，请检查登录信息后重试。</div>
-                    % elif checkin_status == "two":
-                        <div class="alert"><i class="material-icons">error</i>登录失败，两步验证代码无效。</div>
-                    % else:
-                        <div class="alert"><i class="material-icons">error</i>现在遇到了未知错误，请稍候再试。</div>
-                    % endif
-                    </div>
-                % endif
+                <div class="mdl-card__media form-back">{% if checkin_status != "ok" %}
+                    <div class="alert">
+                        <i class="material-icons">error</i>
+                        {% if checkin_status == "password" %}登录失败，请检查登录信息后重试。{% elif checkin_status == "two" %}登录失败，两步验证代码无效。{% else %}现在遇到了未知错误，请稍候再试。{% end %}
+                    </div>{% end %}
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label textfield-demo input-back">
                         <input class="mdl-textfield__input" type="text" id="username">
                         <label class="mdl-textfield__label" for="username">用户名</label>
@@ -81,10 +74,10 @@
         <input type="hidden" id="real-password" name="password">
         <input type="hidden" id="real-two" name="two">
         <input type="hidden" id="real-remember" name="remember">
-        ${xsrf_form_html()}
+        {% module xsrf_form_html() %}
     </form>
-    <script src="${management_url("material.min.js")}"></script>
-    <script src="${management_url("sha.js")}"></script>
-    <script src="${management_url("checkin.js")}"></script>
+    <script src="{{ management_url("material.min.js") }}"></script>
+    <script src="{{ management_url("sha.js") }}"></script>
+    <script src="{{ management_url("checkin.js") }}"></script>
 </body>
 </html>
