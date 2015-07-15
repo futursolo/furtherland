@@ -34,7 +34,7 @@ class ManagementOffice(PlacesOfInterest):
     def management_render(self, page):
         self.render_list["management_url"] = self.management_url
         page = "management/" + page
-        self.finish(self.render_string(page, **self.render_list))
+        self.render(page, nutrition=False)
 
 
 class CheckinOffice(ManagementOffice):
@@ -121,6 +121,10 @@ class MainOffice(ManagementOffice):
     @coroutine
     @authenticated
     def get(self, slug, sub_slug=""):
+        if not self.value_validation("hash", slug):
+            raise HTTPError(404)
+        if sub_slug and not self.value_validation("hash", sub_slug):
+            raise HTTPError(404)
         self.render_list["slug"] = slug
         self.render_list["sub_slug"] = sub_slug
         self.management_render("office.htm")

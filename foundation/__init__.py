@@ -22,7 +22,6 @@ import tornado.process
 import tornado.netutil
 import tornado.httpserver
 import os
-import mako
 
 from . import place
 from . import office
@@ -36,6 +35,7 @@ navigation = [
     # (r"/timeline", HistoryLibrary),
     (r"/feed.xml", place.NewsAnnouncement),
     (r"/api", place.TerminalService),
+    (r"/avatar/(.*)", place.IllustratePlace),
     (r"/writings/(.*).htm", place.ConferenceHall),
     (r"/pages/(.*).htm", place.MemorialWall),
 
@@ -63,7 +63,6 @@ navigation = [
     (r"/management/(.*)/(.*)", office.MainOffice),
     (r"/management/(.*)", office.MainOffice),
 
-    (r"/channel/avatar/(.*)", internal.AvatarArea),
     (r"/channel/reply", internal.ReplyArea),
 
     (r"(.*)", place.LostAndFoundPlace)
@@ -105,14 +104,6 @@ class FurtherLand:
                 tornado.process.cpu_count() * 2, max_restarts=100)
         except:
             pass
-        self.factory_preload = {}
-        self.factory = mako.lookup.TemplateLookup(
-            [os.path.join(
-                os.path.split(os.path.realpath(melody.base))[0], "factory")],
-            input_encoding="utf-8",
-            output_encoding="utf-8",
-            default_filters=["decode.utf_8"]
-        )
 
     def rise(self):
         try:
