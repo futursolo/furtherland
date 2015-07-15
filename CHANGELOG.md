@@ -1,5 +1,11 @@
 # Changelog
 
+v20150715 dev
+-------------
+ - Bugs Fix
+ - Management Office Security Enhancement
+ - Mako Template has been removed since it is not bore flexible than default tornado template but causes more problems.
+
 v20150713 dev
 -------------
  - Bugs Fix
