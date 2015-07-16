@@ -38,8 +38,21 @@
     <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
 
     <link rel="stylesheet" href="{{ static_url("highlight.min.css") }}">
-    <link href="{{ static_url("main.css") }}" rel="stylesheet" type="text/css">
     <link href="{{ static_url("material.min.css") }}" rel="stylesheet" type="text/css">
+    <link href="{{ static_url("main.css") }}" rel="stylesheet" type="text/css">
+    <script>
+        if (!window.fetch) {
+            var headElement = document.getElementsByTagName("head")[0];
+            var fetchElement = document.createElement("script");
+            fetchElement.type = "text/javascript";
+            fetchElement.src = "{{ static_url("fetch.js") }}";
+            headElement.appendChild(fetchElement);
+         }
+    </script>
+    <script src="{{ static_url("material.min.js") }}"></script>
+    <script src="{{ static_url("marked.js") }}"></script>
+    <script src="{{ static_url("highlight.min.js") }}"></script>
+    <script src="{{ static_url("main.js") }}" charset="utf-8"></script>
 </head>
 <body style="background-image: url({{ static_url("natsu-background.jpg") }});">
     <div class="load-back" style="background-image: url({{ static_url("natsu-background.jpg") }});">
@@ -67,9 +80,8 @@
         </div>
     </header>
     <div class="main">
-        <aside></aside>
-        <div class="index content{% if current_page == "index" %} current{% end %}">{% if current_page == "index" %}{% for value in contents.values() %}
-            <div class="index-card">
+        <div class="index content{% if slug == "index" %} current{% end %}">{% if slug == "index" %}{% for value in contents.values() %}
+            <div class="card">
                 <div class="title">{{ value["title"] }}</div>
                 <div class="card-info">
                     <div class="author-avatar content" style="background-image: url(/avatar/{{ value["author"]["emailmd5"] }}?s=200&d=mm)"></div>
@@ -81,27 +93,36 @@
             </div>
         {% end %}{% end %}
         </div>
-        <div class="writing content{% if current_page == "writing" %} current{% end %}"></div>
-        <div class="page content{% if current_page == "page" %} current{% end %}"></div>
-        <div class="not-found content{% if current_page == "not-found" %} current{% end %}"></div>
+        <div class="writing content{% if slug == "writing" %} current{% end %}">{% if slug == "writing" %}
+            <div class="card writing">
+                <div class="title">{{ content["title"] }}</div>
+                <div class="card-info">
+                    <div class="author-avatar content" style="background-image: url(/avatar/{{ content["author"]["emailmd5"] }}?s=200&d=mm)"></div>
+                    <div class="author-name content">{{ content["author"]["username"] }}</div>
+                    <div class="time content">{{ content["time"] }}</div>
+                </div>
+                <div class="content">{{ content["content"] }}</div>
+            </div>
+            <div class="replies"></div>
+        {% end %}
+        </div>
+        <div class="page content{% if slug == "page" %} current{% end %}"></div>
+        <div class="not-found content{% if slug == "not-found" %} current{% end %}"></div>
     </div>
-    <footer></footer>
+    <footer>
+        <div class="first">
+            <div class="copyright item">&copy; 2015 未来领域</div>
+            <div class="about item">关于</div>
+            <div class="copyright-page item">著作权声明</div>
+        </div>
+        <div class="second">
+            <div class="poweredby item">Proudly powered by「FurtherLand」</div>
+        </div>
+    </footer>
     <script>
-        if (!window.fetch) {
-            var headElement = document.getElementsByTagName("head")[0];
-            var fetchElement = document.createElement("script");
-            fetchElement.type = "text/javascript";
-            fetchElement.src = "{{ static_url("fetch.js") }}";
-            headElement.appendChild(fetchElement);
-         }
-    </script>
-    <script src="{{ static_url("material.min.js") }}"></script>
-    <script src="{{ static_url("marked.js") }}"></script>
-    <script src="{{ static_url("highlight.min.js") }}"></script>
-    <script src="{{ static_url("main.js") }}" charset="utf-8"></script>
-    <script>
-        window.addEventListener("load", function () {
-            buildWindow("{{ current_page }}");
+        document.addEventListener("DOMContentLoaded", function () {
+            window.history.replaceState({"slug": "{{ slug }}", "_id": {{ current_content_id }}, "sub_slug": "{{ sub_slug }}", "title": document.title}, document.title, window.location.href);
+            buildWindow("{{ slug }}", "{{ sub_slug }}");
         });
     </script>
     {{ config["trace_code"] }}
