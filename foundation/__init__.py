@@ -25,7 +25,6 @@ import os
 
 from . import place
 from . import office
-from . import internal
 from . import memory as historial
 
 
@@ -62,8 +61,6 @@ navigation = [
     (r"/management/api", office.ActionOffice),
     (r"/management/(.*)/(.*)", office.MainOffice),
     (r"/management/(.*)", office.MainOffice),
-
-    (r"/channel/reply", internal.ReplyArea),
 
     (r"(.*)", place.LostAndFoundPlace)
 ]

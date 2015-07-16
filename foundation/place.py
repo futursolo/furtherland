@@ -19,10 +19,13 @@
 from tornado.web import *
 from tornado.gen import *
 from tornado.escape import *
+from tornado.httpclient import *
+from collections import OrderedDict
+import json
+import os
 import re
 import misaka
 import hashlib
-import base64
 import random
 import string
 import functools
@@ -410,7 +413,9 @@ class CentralSquare(PlacesOfInterest):
                 "<!--more-->")[0]
         self.render_list["contents"] = contents
         self.render_list["origin_title"] = "首页"
-        self.render_list["current_page"] = "index"
+        self.render_list["slug"] = "index"
+        self.render_list["sub_slug"] = ""
+        self.render_list["current_content_id"] = 0
         self.render("main.htm")
 
 
@@ -421,11 +426,15 @@ class ConferenceHall(PlacesOfInterest):
         writing = yield self.get_writing(slug=writing_slug)
         if not writing:
             raise HTTPError(404)
-        writing["author"] = yield self.get_user(_id=writing["author"])
-        writing["content"] = self.make_md(writing["content"])
-        self.render_list["writing"] = writing
+        writing["author"] = yield self.get_user(_id=writing["author"],
+                                                with_privacy=False)
+        writing["content"] = writing["content"]
+        self.render_list["content"] = writing
         self.render_list["origin_title"] = writing["title"]
-        self.render("writings.htm")
+        self.render_list["slug"] = "writing"
+        self.render_list["sub_slug"] = ""
+        self.render_list["current_content_id"] = writing["_id"]
+        self.render("main.htm")
 
 
 class MemorialWall(PlacesOfInterest):
@@ -490,8 +499,79 @@ class HistoryLibrary(PlacesOfInterest):
 
 
 class TerminalService(PlacesOfInterest):
-    def get(self):
-        pass
+    @coroutine
+    def post(self):
+        action = self.get_arg("action", default=None, arg_type="link")
+        if hasattr(self, action):
+            yield getattr(self, action)()
+        else:
+            raise HTTPError(500)
+
+    @coroutine
+    def load_reply(self):
+        writing_id = self.get_arg("writing", arg_type="number")
+        reply_id = self.get_arg("reply", arg_type="number")
+        method = self.get_arg("method", arg_type="hash")
+        if method == "list" and writing_id:
+            result = yield self.get_reply(writing_id=writing_id)
+        elif method == "single" and reply_id:
+            result = yield self.get_reply(id=reply_id)
+        else:
+            raise HTTPError(500)
+        self.finish(json.dumps(result))
+
+    @coroutine
+    def new_reply(self):
+        writing_id = self.get_arg("writing", arg_type="number")
+        reply_id = self.get_arg("reply", arg_type="number")
+        reply = OrderedDict()
+        reply["writing_id"] = writing_id
+        if not self.current_user:
+            reply["master"] = False
+            reply["name"] = self.get_arg("name", arg_type="origin")
+            reply["email"] = self.get_arg("email", arg_type="mail_address")
+            reply["homepage"] = self.get_arg("homepage", arg_type="link")
+            if not (reply["name"] and reply["email"]):
+                result = {
+                    "success": False,
+                    "reason": "incomplation"
+                }
+                self.finish(json.dumps(result))
+                return
+            reply["name"] = self.escape(reply["name"], item_type="html")
+            reply["permit"] = False
+        else:
+            reply["master"] = True
+            reply["name"] = self.current_user["username"]
+            reply["email"] = self.current_user["email"]
+            reply["homepage"] = self.current_user["homepage"]
+            reply["permit"] = True
+        reply["ip"] = self.remote_ip
+        reply["time"] = int(time.time())
+        reply["emailmd5"] = self.hash(reply["email"].lower(),
+                                      "md5")
+        content = self.escape(self.get_arg("content", arg_type="origin"),
+                              item_type="html")
+        content = re.sub(
+            re.compile(r"(data:)", re.IGNORECASE), "data：", content)
+        content = re.sub(
+            re.compile(
+                r"(javascript:)", re.IGNORECASE), "javascript：", content)
+        reply["content"] = content
+        reply["_id"] = yield self.issue_id("Replies")
+        book = self.memories.select("Replies")
+        book.add(reply)
+        result = {}
+        try:
+            yield book.do()
+            result["success"] = reply["master"]
+            result["id"] = reply["_id"]
+            if not reply["master"]:
+                result["reason"] = "waitforcheck"
+        except:
+            result["success"] = False
+            result["reason"] = "unkonwn"
+        self.finish(json.dumps(result))
 
 
 class IllustratePlace(PlacesOfInterest):

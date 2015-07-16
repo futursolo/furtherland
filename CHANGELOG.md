@@ -1,10 +1,14 @@
 # Changelog
 
+v20150716 dev
+-------------
+ - All Internal Areas has moved to New Terminal Service(A new, united API handler).
+
 v20150715 dev
 -------------
  - Bugs Fix
  - Management Office Security Enhancement
- - Mako Template has been removed since it is not bore flexible than default tornado template but causes more problems.
+ - Mako Template has been removed since it is not more flexible than default tornado template but causes more problems.
 
 v20150713 dev
 -------------

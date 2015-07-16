@@ -333,7 +333,6 @@ function loadPublicUploadedData() {
         objects[".public .content .uploaded"].innerHTML = "";
         for (var key in json) {
             item = json[key];
-            console.log(item);
             element = document.createElement("div");
             element.setAttribute("class", "file-item");
             element.setAttribute("fileurl", item.fileurl);

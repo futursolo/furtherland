@@ -44,15 +44,15 @@
                         <i class="material-icons">error</i>
                         {% if checkin_status == "password" %}登录失败，请检查登录信息后重试。{% elif checkin_status == "two" %}登录失败，两步验证代码无效。{% else %}现在遇到了未知错误，请稍候再试。{% end %}
                     </div>{% end %}
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label textfield-demo input-back">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label input-back">
                         <input class="mdl-textfield__input" type="text" id="username">
                         <label class="mdl-textfield__label" for="username">用户名</label>
                     </div>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label textfield-demo input-back">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label input-back">
                         <input class="mdl-textfield__input" type="password" id="password">
                         <label class="mdl-textfield__label" for="password">密码</label>
                     </div>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label textfield-demo input-back">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label input-back">
                         <input class="mdl-textfield__input" type="text" id="two">
                         <label class="mdl-textfield__label" for="two">两步验证代码</label>
                     </div>
