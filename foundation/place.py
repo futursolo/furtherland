@@ -236,7 +236,6 @@ class PlacesOfInterest(RequestHandler):
         if not with_privacy:
             del user["password"]
             del user["otp_key"]
-            user["emailmd5"] = self.hash(user["email"], "md5")
             del user["email"]
 
         return user
@@ -432,7 +431,7 @@ class ConferenceHall(PlacesOfInterest):
         self.render_list["content"] = writing
         self.render_list["origin_title"] = writing["title"]
         self.render_list["slug"] = "writing"
-        self.render_list["sub_slug"] = ""
+        self.render_list["sub_slug"] = writing["slug"]
         self.render_list["current_content_id"] = writing["_id"]
         self.render("main.htm")
 
@@ -444,11 +443,14 @@ class MemorialWall(PlacesOfInterest):
         page = yield self.get_page(slug=page_slug)
         if not page:
             raise HTTPError(404)
-        page["author"] = yield self.get_user(_id=page["author"])
-        page["content"] = self.make_md(page["content"])
-        self.render_list["page"] = page
+        page["author"] = yield self.get_user(_id=page["author"],
+                                             with_privacy=False)
+        self.render_list["content"] = page
         self.render_list["origin_title"] = page["title"]
-        self.render("pages.htm")
+        self.render_list["slug"] = "page"
+        self.render_list["sub_slug"] = page["slug"]
+        self.render_list["current_content_id"] = page["_id"]
+        self.render("main.htm")
 
 
 class NewsAnnouncement(PlacesOfInterest):

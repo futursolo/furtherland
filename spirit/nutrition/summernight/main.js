@@ -84,11 +84,17 @@ function formatDate(unix) {
 function formatDatetime(unix) {
     time = new Date(parseInt(unix) * 1000);
     monthList = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    if ((time.getHours() + "").length == 1) {
+        result += "0";
+    }
     result = time.getHours() + ":";
     if ((time.getMinutes() + "").length == 1) {
         result += "0";
     }
     result += time.getMinutes() + ":";
+    if ((time.getSeconds() + "").length == 1) {
+        result += "0";
+    }
     result += time.getSeconds() + " ";
     result += time.getDate() + " ";
     result += monthList[time.getMonth()] + " ";
@@ -142,6 +148,25 @@ function renderIndex() {
         element.innerHTML = marked(element.innerHTML);
     });
     Array.prototype.forEach.call(_All(".main > .index .card > .content code"), hljs.highlightBlock);
+}
+
+function sortReply() {
+    var left = 0;
+    var right = 0;
+    Array.prototype.forEach.call(_All(".main > .writing > .replies > .reply-card"), function (element) {
+        element.classList.remove("left");
+        element.classList.remove("right");
+        if (window.innerWidth >= 700) {
+            if (left <= right) {
+                element.classList.add("left");
+                left += element.offsetHeight + 30;
+                console.log(element.offsetHeight);
+            } else {
+                element.classList.add("right");
+                right += element.offsetHeight + 30;
+            }
+        }
+    });
 }
 
 function submitReply() {
@@ -212,10 +237,12 @@ function submitReply() {
             contentElement = document.createElement("div");
             contentElement.setAttribute("class", "content");
             contentElement.innerHTML = marked(item.content);
+            Array.prototype.forEach.call(contentElement.querySelectorAll("code"), hljs.highlightBlock);
             element.appendChild(contentElement);
 
-            repliesContainer.appendChild(element);
-            Array.prototype.forEach.call(_All(".main > .writing > .replies > .reply-card > .content code"), hljs.highlightBlock);
+            repliesContainer.insertBefore(element, _(".main > .writing > .replies > .reply-card.new-reply"));
+            sortReply();
+            document.getElementById("reply-form-content").value = "";
     }).catch(function (error) {
         if (error == "incomplation") {
             _(".main > .writing > .replies > .reply-card.new-reply .error").innerHTML = "将信息填写完整后再试。";
@@ -229,13 +256,19 @@ function submitReply() {
     });
 }
 
+function freshTime(element) {
+    if (element) {
+        element.innerHTML = "發表時間：" + formatDatetime(parseInt((new Date()).getTime() / 1000));
+        setTimeout(function () {
+            freshTime(element);
+        }, 1000);
+    }
+}
+
 function appendReplyForm() {
     repliesContainer = _(".main > .writing > .replies");
     element = document.createElement("div");
     element.setAttribute("class", "reply-card new-reply");
-
-    nameElement = document.createElement("div");
-    nameElement.setAttribute("class", "mdl-textfield mdl-js-textfield mdl-textfield--floating-label input-back");
 
     titleElement = document.createElement("div");
     titleElement.setAttribute("class", "title");
@@ -247,53 +280,103 @@ function appendReplyForm() {
     errorElement.innerHTML = "";
     element.appendChild(errorElement);
 
-    nameInputElement = document.createElement("input");
-    nameInputElement.setAttribute("class", "mdl-textfield__input");
-    nameInputElement.setAttribute("type", "text");
-    nameInputElement.setAttribute("id", "reply-form-name-input");
-    nameElement.appendChild(nameInputElement);
-
-    nameLabelElement = document.createElement("label");
-    nameLabelElement.setAttribute("class", "mdl-textfield__label");
-    nameLabelElement.setAttribute("for", "reply-form-name-input");
-    nameLabelElement.innerHTML = "暱稱";
-    nameElement.appendChild(nameLabelElement);
-    componentHandler.upgradeElement(nameElement, "MaterialTextfield");
-    element.appendChild(nameElement);
-
+    nameElement = document.createElement("div");
     emailElement = document.createElement("div");
-    emailElement.setAttribute("class", "mdl-textfield mdl-js-textfield mdl-textfield--floating-label input-back");
-
-    emailInputElement = document.createElement("input");
-    emailInputElement.setAttribute("class", "mdl-textfield__input");
-    emailInputElement.setAttribute("type", "text");
-    emailInputElement.setAttribute("id", "reply-form-email-input");
-    emailElement.appendChild(emailInputElement);
-
-    emailLabelElement = document.createElement("label");
-    emailLabelElement.setAttribute("class", "mdl-textfield__label");
-    emailLabelElement.setAttribute("for", "reply-form-email-input");
-    emailLabelElement.innerHTML = "電郵";
-    emailElement.appendChild(emailLabelElement);
-
-    componentHandler.upgradeElement(emailElement, "MaterialTextfield");
-    element.appendChild(emailElement);
-
     homepageElement = document.createElement("div");
-    homepageElement.setAttribute("class", "mdl-textfield mdl-js-textfield mdl-textfield--floating-label input-back");
 
-    homepageInputElement = document.createElement("input");
-    homepageInputElement.setAttribute("class", "mdl-textfield__input");
-    homepageInputElement.setAttribute("type", "text");
-    homepageInputElement.setAttribute("id", "reply-form-homepage-input");
-    homepageElement.appendChild(homepageInputElement);
+    if (!window.master) {
+        nameElement.setAttribute("class", "mdl-textfield mdl-js-textfield mdl-textfield--floating-label input-back");
+        nameInputElement = document.createElement("input");
+        nameInputElement.setAttribute("class", "mdl-textfield__input");
+        nameInputElement.setAttribute("type", "text");
+        nameInputElement.setAttribute("id", "reply-form-name-input");
+        nameElement.appendChild(nameInputElement);
 
-    homepageLabelElement = document.createElement("label");
-    homepageLabelElement.setAttribute("class", "mdl-textfield__label");
-    homepageLabelElement.setAttribute("for", "reply-form-homepage-input");
-    homepageLabelElement.innerHTML = "個人主頁(可選)";
-    homepageElement.appendChild(homepageLabelElement);
-    componentHandler.upgradeElement(homepageElement, "MaterialTextfield");
+        nameLabelElement = document.createElement("label");
+        nameLabelElement.setAttribute("class", "mdl-textfield__label");
+        nameLabelElement.setAttribute("for", "reply-form-name-input");
+        nameLabelElement.innerHTML = "暱稱";
+        nameElement.appendChild(nameLabelElement);
+        componentHandler.upgradeElement(nameElement, "MaterialTextfield");
+
+        emailElement.setAttribute("class", "mdl-textfield mdl-js-textfield mdl-textfield--floating-label input-back");
+
+        emailInputElement = document.createElement("input");
+        emailInputElement.setAttribute("class", "mdl-textfield__input");
+        emailInputElement.setAttribute("type", "text");
+        emailInputElement.setAttribute("id", "reply-form-email-input");
+        emailElement.appendChild(emailInputElement);
+
+        emailLabelElement = document.createElement("label");
+        emailLabelElement.setAttribute("class", "mdl-textfield__label");
+        emailLabelElement.setAttribute("for", "reply-form-email-input");
+        emailLabelElement.innerHTML = "電郵";
+        emailElement.appendChild(emailLabelElement);
+
+        componentHandler.upgradeElement(emailElement, "MaterialTextfield");
+
+        homepageElement.setAttribute("class", "mdl-textfield mdl-js-textfield mdl-textfield--floating-label input-back");
+
+        homepageInputElement = document.createElement("input");
+        homepageInputElement.setAttribute("class", "mdl-textfield__input");
+        homepageInputElement.setAttribute("type", "text");
+        homepageInputElement.setAttribute("id", "reply-form-homepage-input");
+        homepageElement.appendChild(homepageInputElement);
+
+        homepageLabelElement = document.createElement("label");
+        homepageLabelElement.setAttribute("class", "mdl-textfield__label");
+        homepageLabelElement.setAttribute("for", "reply-form-homepage-input");
+        homepageLabelElement.innerHTML = "個人主頁(可選)";
+        homepageElement.appendChild(homepageLabelElement);
+        componentHandler.upgradeElement(homepageElement, "MaterialTextfield");
+    } else {
+        nameElement.style.display = "none";
+        nameInputElement = document.createElement("input");
+        nameInputElement.setAttribute("type", "text");
+        nameInputElement.setAttribute("id", "reply-form-name-input");
+        nameElement.appendChild(nameInputElement);
+
+        emailElement.style.display = "none";
+        emailInputElement = document.createElement("input");
+        emailInputElement.setAttribute("type", "text");
+        emailInputElement.setAttribute("id", "reply-form-email-input");
+        emailElement.appendChild(emailInputElement);
+
+        homepageElement.style.display = "none";
+        homepageInputElement = document.createElement("input");
+        homepageInputElement.setAttribute("type", "text");
+        homepageInputElement.setAttribute("id", "reply-form-homepage-input");
+        homepageElement.appendChild(homepageInputElement);
+
+        avatarElement = document.createElement("div");
+        avatarElement.setAttribute("class", "avatar");
+        avatarElement.style.backgroundImage = "url(/avatar/" + window.master.emailmd5 + "?s=200&d=mm)";
+        element.appendChild(avatarElement);
+
+        replyInfoElement = document.createElement("div");
+        replyInfoElement.setAttribute("class", "reply-info");
+
+        nameInfoElement = document.createElement("div");
+        nameInfoElement.setAttribute("class", "name");
+        nameInfoElement.innerHTML = window.master.username;
+        masterElement = document.createElement("i");
+        masterElement.setAttribute("class", "master material-icons");
+        masterElement.setAttribute("title", "域主大人");
+        masterElement.innerHTML = "&#xE853;";
+        nameInfoElement.appendChild(masterElement);
+
+        replyInfoElement.appendChild(nameInfoElement);
+
+        timeElement = document.createElement("div");
+        timeElement.setAttribute("class", "time");
+        freshTime(timeElement);
+        replyInfoElement.appendChild(timeElement);
+
+        element.appendChild(replyInfoElement);
+    }
+
+    element.appendChild(nameElement);
+    element.appendChild(emailElement);
     element.appendChild(homepageElement);
 
     contentElement = document.createElement("textarea");
@@ -308,9 +391,9 @@ function appendReplyForm() {
     submitElement.innerHTML = "提交";
     componentHandler.upgradeElement(submitElement, "MaterialButton");
     componentHandler.upgradeElement(submitElement, "MaterialRipple");
+    submitElement.addEventListener("click", submitReply);
     element.appendChild(submitElement);
     repliesContainer.appendChild(element);
-    _(".main > .writing > .replies > .reply-card.new-reply .submit").addEventListener("click", submitReply);
 }
 
 function buildWritingReply() {
@@ -351,10 +434,10 @@ function buildWritingReply() {
                 nameLinkElement.setAttribute("href", item.homepage);
                 nameLinkElement.setAttribute("target", "_blank");
                 nameLinkElement.innerHTML = item.name;
+                nameElement.appendChild(nameLinkElement);
             } else {
                 nameElement.innerHTML = item.name;
             }
-            nameElement.appendChild(nameLinkElement);
             if (item.master) {
                 masterElement = document.createElement("i");
                 masterElement.setAttribute("class", "master material-icons");
@@ -374,12 +457,13 @@ function buildWritingReply() {
             contentElement = document.createElement("div");
             contentElement.setAttribute("class", "content");
             contentElement.innerHTML = marked(item.content);
+            Array.prototype.forEach.call(contentElement.querySelectorAll("code"), hljs.highlightBlock);
             element.appendChild(contentElement);
 
             repliesContainer.appendChild(element);
-            Array.prototype.forEach.call(_All(".main > .writing > .replies > .reply-card > .content code"), hljs.highlightBlock);
         }
         appendReplyForm();
+        sortReply();
     }).catch(function (error) {
         console.error(error);
     });
@@ -396,11 +480,23 @@ function renderWriting() {
     buildWritingReply();
 }
 
+function renderPage() {
+    Array.prototype.forEach.call(_All(".main > .page .card .card-info .time"), function (element) {
+        element.innerHTML = formatDate(Math.round(element.innerHTML));
+    });
+    Array.prototype.forEach.call(_All(".main > .page .card  > .content"), function (element) {
+        element.innerHTML = marked(element.innerHTML);
+    });
+    Array.prototype.forEach.call(_All(".main > .page .card  > .content code"), hljs.highlightBlock);
+}
+
 function buildWindow(slug, sub_slug) {
     if (slug == "index") {
         renderIndex();
     } else if (slug == "writing") {
         renderWriting();
+    } else if (slug == "page") {
+        renderPage();
     }
 }
 
@@ -410,6 +506,7 @@ function resizeWindow() {
     } else {
         _("body").classList.remove("small");
     }
+    sortReply();
 }
 document.addEventListener("DOMContentLoaded", function () {
     resizeWindow();
