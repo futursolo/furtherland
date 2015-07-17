@@ -93,20 +93,29 @@
             </div>
         {% end %}{% end %}
         </div>
-        <div class="writing content{% if slug == "writing" %} current{% end %}">{% if slug == "writing" %}
+        <div class="writing content{% if slug == "writing" %} current{% end %}">
             <div class="card writing">
-                <div class="title">{{ content["title"] }}</div>
+                <div class="title">{% if slug == "writing" %}{{ content["title"] }}{% end %}</div>
                 <div class="card-info">
-                    <div class="author-avatar content" style="background-image: url(/avatar/{{ content["author"]["emailmd5"] }}?s=200&d=mm)"></div>
-                    <div class="author-name content">{{ content["author"]["username"] }}</div>
-                    <div class="time content">{{ content["time"] }}</div>
+                    <div class="author-avatar content"{% if slug == "writing" %} style="background-image: url(/avatar/{{ content["author"]["emailmd5"] }}?s=200&d=mm)"{% end %}></div>
+                    <div class="author-name content">{% if slug == "writing" %}{{ content["author"]["username"] }}{% end %}</div>
+                    <div class="time content">{% if slug == "writing" %}{{ content["time"] }}{% end %}</div>
                 </div>
-                <div class="content">{{ content["content"] }}</div>
+                <div class="content">{% if slug == "writing" %}{{ content["content"] }}{% end %}</div>
             </div>
             <div class="replies"></div>
-        {% end %}
         </div>
-        <div class="page content{% if slug == "page" %} current{% end %}"></div>
+        <div class="page content{% if slug == "page" %} current{% end %}">
+            <div class="card page">
+                <div class="title">{% if slug == "page" %}{{ content["title"] }}{% end %}</div>
+                <div class="card-info">
+                    <div class="author-avatar content"{% if slug == "page" %} style="background-image: url(/avatar/{{ content["author"]["emailmd5"] }}?s=200&d=mm)"{% end %}></div>
+                    <div class="author-name content">{% if slug == "page" %}{{ content["author"]["username"] }}{% end %}</div>
+                    <div class="time content">{% if slug == "page" %}{{ content["time"] }}{% end %}</div>
+                </div>
+                <div class="content">{% if slug == "page" %}{{ content["content"] }}{% end %}</div>
+            </div>
+        </div>
         <div class="not-found content{% if slug == "not-found" %} current{% end %}"></div>
     </div>
     <footer>
@@ -119,7 +128,11 @@
             <div class="poweredby item">Proudly powered by「FurtherLand」</div>
         </div>
     </footer>
-    <script>
+    <script>{% if current_user %}
+        window.master = {
+            "username": "{{ current_user["username"] }}",
+            "emailmd5": "{{ current_user["emailmd5"] }}"
+        };{% end %}
         document.addEventListener("DOMContentLoaded", function () {
             window.history.replaceState({"slug": "{{ slug }}", "_id": {{ current_content_id }}, "sub_slug": "{{ sub_slug }}", "title": document.title}, document.title, window.location.href);
             buildWindow("{{ slug }}", "{{ sub_slug }}");

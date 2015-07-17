@@ -129,6 +129,12 @@ header > .tabs > .item{
 .main{
     min-height: calc(100% - 210px);
 }
+.main > .content{
+    display: none;
+}
+.main > .content.current{
+    display: block;
+}
 .main > .content .card{
     border-radius: 3px;
     width: calc(100% - 20px);
@@ -184,6 +190,13 @@ header > .tabs > .item{
     position: relative;
     margin-bottom: 15px;
 }
+.main > .writing > .replies:after{
+    content:".";
+    display:block;
+    height:0;
+    visibility:hidden;
+    clear:both;
+}
 .main > .writing > .replies > .reply-card{
     border-radius: 3px;
     width: calc(50% - 20px);
@@ -192,13 +205,18 @@ header > .tabs > .item{
     box-shadow: 0 4px 8px 0 rgb(100, 100, 100);
     box-sizing: border-box;
     margin: 10px;
-    display: inline-block;
-    vertical-align: top;
 }
 body.small .main > .writing > .replies > .reply-card{
     border-radius: 3px;
     width: calc(100% - 20px);
     max-width: 1000px;
+    position: static;
+}
+.main > .writing > .replies > .reply-card.left{
+    float: left;
+}
+.main > .writing > .replies > .reply-card.right{
+    float: right;
 }
 .main > .writing > .replies > .reply-card .avatar{
     width: 50px;
