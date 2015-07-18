@@ -198,7 +198,7 @@ function findParentBySelector(elm, selector) {
 
 function pushState(uri) {
     if (uri) {
-        window.history.pushState(null,null,"//" + window.location.host + uri);
+        window.history.pushState(null, null, "//" + window.location.host + uri);
     }
 }
 

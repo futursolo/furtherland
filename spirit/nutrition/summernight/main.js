@@ -13,7 +13,7 @@
 //   See the License for the specific language governing permissions and
 //   limitations under the License.
 
-window.loading = true;
+window.loading = false;
 
 var _ = function (selector) {
     return document.querySelector(selector);
@@ -25,9 +25,28 @@ var _All = function (selector) {
 
 var objects = {
     ".load": _(".load"),
-    ".load-back": _(".load-back")
-};
+    ".load-back": _(".load-back"),
+    "header .title .title-link": _("header .title .title-link"),
+    "header > .tabs .index-link": _("header > .tabs .index-link"),
+    "header > .tabs .about-link": _("header > .tabs .about-link"),
 
+    ".main > .index": _(".main > .index"),
+
+    ".main > .writing": _(".main > .writing"),
+    ".main > .writing .card .title": _(".main > .writing .card .title"),
+    ".main > .writing .card .card-info .author-avatar": _(".main > .writing .card .card-info .author-avatar"),
+    ".main > .writing .card .card-info .author-name": _(".main > .writing .card .card-info .author-name"),
+    ".main > .writing .card .card-info .time": _(".main > .writing .card .card-info .time"),
+    ".main > .writing .card > .content": _(".main > .writing .card > .content"),
+    ".main > .writing > .replies": _(".main > .writing > .replies"),
+
+    ".main > .page": _(".main > .page"),
+    ".main > .page .card .title": _(".main > .page .card .title"),
+    ".main > .page .card .card-info .author-avatar": _(".main > .page .card .card-info .author-avatar"),
+    ".main > .page .card .card-info .author-name": _(".main > .page .card .card-info .author-name"),
+    ".main > .page .card .card-info .time": _(".main > .page .card .card-info .time"),
+    ".main > .page .card > .content": _(".main > .page .card > .content")
+};
 function getCookie(name) {
     var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
     return r ? r[1] : undefined;
@@ -102,16 +121,25 @@ function formatDatetime(unix) {
     return result;
 }
 
+function collectionHas(a, b) {
+    for(var i = 0, len = a.length; i < len; i ++) {
+        if(a[i] == b) return true;
+    }
+    return false;
+}
+
+function findParentBySelector(elm, selector) {
+    var all = _All(selector);
+    var cur = elm.parentNode;
+    while(cur && !collectionHas(all, cur)) {
+        cur = cur.parentNode;
+    }
+    return cur;
+}
 
 function loadLayout(callback) {
     window.loading = true;
     setTimeout(function () {
-        Array.prototype.forEach.call(_All(".visible"), function (element) {
-            element.classList.remove("visible");
-        });
-        Array.prototype.forEach.call(_All(".current"), function (element) {
-            element.classList.remove("current");
-        });
         objects[".load-back"].style.height = "100%";
         objects[".load-back"].style.width = "100%";
         objects[".load-back"].classList.add("visible");
@@ -136,11 +164,7 @@ function loadLayout(callback) {
     }, 100);
 }
 
-function fetchIndexData() {
-
-}
-
-function renderIndex() {
+function renderIndex(callback) {
     Array.prototype.forEach.call(_All(".main > .index .card .card-info .time"), function (element) {
         element.innerHTML = formatDate(Math.round(element.innerHTML));
     });
@@ -148,9 +172,112 @@ function renderIndex() {
         element.innerHTML = marked(element.innerHTML);
     });
     Array.prototype.forEach.call(_All(".main > .index .card > .content code"), hljs.highlightBlock);
+    Array.prototype.forEach.call(_All(".main > .index .card .switch-content"), function (element) {
+        element.addEventListener("click", switchContent);
+    });
+    if (callback) {
+        callback();
+    }
 }
 
-function sortReply() {
+function fetchIndexData(slug, callback) {
+    queryString = new FormData();
+    queryString.append("_xsrf", getCookie("_xsrf"));
+    queryString.append("action", "load_index");
+    fetch("/api", {
+        "method": "post",
+        "credentials": "include",
+        "body": queryString
+    }).then(function (resp) {
+        if (resp.status >= 200 && resp.status < 400) {
+            return resp.json();
+        }
+        throw new Error(resp.statusText);
+    }).then(function (json) {
+        console.log(json);
+        objects[".main > .index"].classList.add("current");
+        objects[".main > .index"].innerHTML = "";
+        for (var key in json) {
+            item = json[key];
+            console.log(item);
+            cardElement = document.createElement("div");
+            cardElement.classList.add("card");
+
+            titleElement = document.createElement("div");
+            titleElement.classList.add("title");
+
+            titleLinkElement = document.createElement("a");
+            titleLinkElement.classList.add("switch-content");
+            titleLinkElement.setAttribute("href", "/writings/" + item.slug + ".htm");
+            titleLinkElement.setAttribute("slug", "writing");
+            titleLinkElement.setAttribute("sub_slug", item.slug);
+            titleLinkElement.innerHTML = item.title;
+            titleElement.appendChild(titleLinkElement);
+            cardElement.appendChild(titleElement);
+
+            cardInfoElement = document.createElement("div");
+            cardInfoElement.classList.add("card-info");
+
+            authorAvatarElement = document.createElement("div");
+            authorAvatarElement.classList.add("author-avatar");
+            authorAvatarElement.classList.add("content");
+            authorAvatarElement.style.backgroundImage = "url(/avatar/" + item.author.emailmd5 + "?s=200&d=mm)";
+            cardInfoElement.appendChild(authorAvatarElement);
+
+            authorNameElement = document.createElement("div");
+            authorNameElement.classList.add("author-name");
+            authorNameElement.classList.add("content");
+            authorNameElement.innerHTML = item.author.username;
+            cardInfoElement.appendChild(authorNameElement);
+
+            timeElement = document.createElement("div");
+            timeElement.classList.add("time");
+            timeElement.classList.add("content");
+            timeElement.innerHTML = item.time;
+            cardInfoElement.appendChild(timeElement);
+            cardElement.appendChild(cardInfoElement);
+
+            contentElement = document.createElement("div");
+            contentElement.classList.add("content");
+            contentElement.innerHTML = item.content;
+            cardElement.appendChild(contentElement);
+
+            moreElement = document.createElement("div");
+            moreElement.classList.add("more");
+
+            switchContentElement = document.createElement("a");
+            switchContentElement.classList.add("switch-content");
+            switchContentElement.setAttribute("href", "/writings/" + item.slug + ".htm");
+            switchContentElement.setAttribute("slug", "writing");
+            switchContentElement.setAttribute("sub_slug", item.slug);
+
+            moreButtonElement = document.createElement("div");
+            moreButtonElement.classList.add("mdl-button");
+            moreButtonElement.classList.add("mdl-js-button");
+            moreButtonElement.classList.add("mdl-js-ripple-effect");
+            moreButtonElement.classList.add("button");
+            moreButtonElement.innerHTML = "阅读全文";
+            componentHandler.upgradeElement(moreButtonElement, "MaterialButton");
+            componentHandler.upgradeElement(moreButtonElement, "MaterialRipple");
+            switchContentElement.appendChild(moreButtonElement);
+            moreElement.appendChild(switchContentElement);
+            cardElement.appendChild(moreElement);
+
+            objects[".main > .index"].appendChild(cardElement);
+
+        }
+        currentState = window.history.state;
+        pageTitle = "首页 - " + currentState.site_name;
+        pageURL = "/";
+        document.title = pageTitle;
+        window.history.replaceState({"slug": "index", "_id": 0, "sub_slug": 0, "title": pageTitle, "site_name": currentState.site_name}, pageTitle, pageURL);
+        renderIndex(callback);
+    }).catch(function (error) {
+        console.error(error);
+    });
+}
+
+function sortReply(callback) {
     var left = 0;
     var right = 0;
     Array.prototype.forEach.call(_All(".main > .writing > .replies > .reply-card"), function (element) {
@@ -167,10 +294,13 @@ function sortReply() {
             }
         }
     });
+    if (callback) {
+        callback();
+    }
 }
 
 function submitReply() {
-    currentState = history.state;
+    currentState = window.history.state;
     queryString = new FormData();
     queryString.append("_xsrf", getCookie("_xsrf"));
     queryString.append("action", "new_reply");
@@ -265,7 +395,7 @@ function freshTime(element) {
     }
 }
 
-function appendReplyForm() {
+function appendReplyForm(callback) {
     repliesContainer = _(".main > .writing > .replies");
     element = document.createElement("div");
     element.setAttribute("class", "reply-card new-reply");
@@ -394,10 +524,11 @@ function appendReplyForm() {
     submitElement.addEventListener("click", submitReply);
     element.appendChild(submitElement);
     repliesContainer.appendChild(element);
+    sortReply(callback);
 }
 
-function buildWritingReply() {
-    currentState = history.state;
+function buildWritingReply(callback) {
+    currentState = window.history.state;
     queryString = new FormData();
     queryString.append("_xsrf", getCookie("_xsrf"));
     queryString.append("action", "load_reply");
@@ -462,14 +593,13 @@ function buildWritingReply() {
 
             repliesContainer.appendChild(element);
         }
-        appendReplyForm();
-        sortReply();
+        appendReplyForm(callback);
     }).catch(function (error) {
         console.error(error);
     });
 }
 
-function renderWriting() {
+function renderWriting(callback) {
     Array.prototype.forEach.call(_All(".main > .writing .card .card-info .time"), function (element) {
         element.innerHTML = formatDate(Math.round(element.innerHTML));
     });
@@ -477,10 +607,44 @@ function renderWriting() {
         element.innerHTML = marked(element.innerHTML);
     });
     Array.prototype.forEach.call(_All(".main > .writing .card  > .content code"), hljs.highlightBlock);
-    buildWritingReply();
+    buildWritingReply(callback);
 }
 
-function renderPage() {
+function fetchWritingData(slug, callback) {
+    queryString = new FormData();
+    queryString.append("_xsrf", getCookie("_xsrf"));
+    queryString.append("action", "load_writing");
+    queryString.append("slug", slug);
+    fetch("/api", {
+        "method": "post",
+        "credentials": "include",
+        "body": queryString
+    }).then(function (resp) {
+        if (resp.status >= 200 && resp.status < 400) {
+            return resp.json();
+        }
+        throw new Error(resp.statusText);
+    }).then(function (json) {
+        console.log(json);
+        objects[".main > .writing"].classList.add("current");
+        objects[".main > .writing .card .title"].innerHTML = json.title;
+        objects[".main > .writing .card .card-info .author-avatar"].style.backgroundImage = "url(/avatar/" + json.author.emailmd5 + "?s=200&d=mm)";
+        objects[".main > .writing .card .card-info .author-name"].innerHTML = json.author.username;
+        objects[".main > .writing .card .card-info .time"].innerHTML = json.time;
+        objects[".main > .writing .card > .content"].innerHTML = json.content;
+        objects[".main > .writing > .replies"].innerHTML = "";
+        currentState = window.history.state;
+        pageTitle = json.title + " - " + currentState.site_name;
+        pageURL = "/writings/" + json.slug + ".htm";
+        document.title = pageTitle;
+        window.history.replaceState({"slug": "writing", "_id": json._id, "sub_slug": json.slug, "title": pageTitle, "site_name": currentState.site_name}, pageTitle, pageURL);
+        renderWriting(callback);
+    }).catch(function (error) {
+        console.error(error);
+    });
+}
+
+function renderPage(callback) {
     Array.prototype.forEach.call(_All(".main > .page .card .card-info .time"), function (element) {
         element.innerHTML = formatDate(Math.round(element.innerHTML));
     });
@@ -488,9 +652,73 @@ function renderPage() {
         element.innerHTML = marked(element.innerHTML);
     });
     Array.prototype.forEach.call(_All(".main > .page .card  > .content code"), hljs.highlightBlock);
+    if (callback) {
+        callback();
+    }
+}
+
+function fetchPageData(slug, callback) {
+    queryString = new FormData();
+    queryString.append("_xsrf", getCookie("_xsrf"));
+    queryString.append("action", "load_page");
+    queryString.append("slug", slug);
+    fetch("/api", {
+        "method": "post",
+        "credentials": "include",
+        "body": queryString
+    }).then(function (resp) {
+        if (resp.status >= 200 && resp.status < 400) {
+            return resp.json();
+        }
+        throw new Error(resp.statusText);
+    }).then(function (json) {
+        console.log(window.history.state);
+        console.log(json);
+        objects[".main > .page"].classList.add("current");
+        objects[".main > .page .card .title"].innerHTML = json.title;
+        objects[".main > .page .card .card-info .author-avatar"].style.backgroundImage = "url(/avatar/" + json.author.emailmd5 + "?s=200&d=mm)";
+        objects[".main > .page .card .card-info .author-name"].innerHTML = json.author.username;
+        objects[".main > .page .card .card-info .time"].innerHTML = json.time;
+        objects[".main > .page .card > .content"].innerHTML = json.content;
+        currentState = window.history.state;
+        pageTitle = json.title + " - " + currentState.site_name;
+        pageURL = "/pages/" + json.slug + ".htm";
+        document.title = pageTitle;
+        window.history.replaceState({"slug": "page", "_id": json._id, "sub_slug": json.slug, "title": pageTitle, "site_name": currentState.site_name}, pageTitle, pageURL);
+        renderPage(callback);
+    }).catch(function (error) {
+        console.error(error);
+    });
+}
+
+function switchContent(event) {
+    target = event.target || event.srcElement;
+    if (!target.classList.contains("switch-content")) {
+        target = findParentBySelector(target, "a.switch-content");
+    }
+    event.preventDefault();
+    loadLayout(function (callback) {
+        _(".main > .current").classList.remove("current");
+        if (target.getAttribute("slug") == "index") {
+            window.history.pushState(window.history.state, null,  "//" + window.location.host + "/");
+            fetchIndexData(null, callback);
+        } else if(target.getAttribute("slug") == "writing") {
+            window.history.pushState(window.history.state, null,  "//" + window.location.host + "/writings/" + target.getAttribute("sub_slug") + ".htm");
+            fetchWritingData(target.getAttribute("sub_slug"), callback);
+        } else if (target.getAttribute("slug") == "page") {
+            window.history.pushState(window.history.state, null,  "//" + window.location.host + "/pages/" + target.getAttribute("sub_slug") + ".htm");
+            fetchPageData(target.getAttribute("sub_slug"), callback);
+        }
+    });
 }
 
 function buildWindow(slug, sub_slug) {
+    Array.prototype.forEach.call(_All("header .switch-content"), function (element) {
+        element.addEventListener("click", switchContent);
+    });
+    Array.prototype.forEach.call(_All("footer .switch-content"), function (element) {
+        element.addEventListener("click", switchContent);
+    });
     if (slug == "index") {
         renderIndex();
     } else if (slug == "writing") {
@@ -499,7 +727,19 @@ function buildWindow(slug, sub_slug) {
         renderPage();
     }
 }
-
+window.addEventListener("popstate", function (event) {
+    state = event.state;
+    loadLayout(function (callback) {
+        _(".main > .current").classList.remove("current");
+        if (state.slug == "index") {
+            fetchIndexData(null, callback);
+        } else if(state.slug == "writing") {
+            fetchWritingData(state.sub_slug, callback);
+        } else if (state.slug == "page") {
+            fetchPageData(state.sub_slug, callback);
+        }
+    });
+});
 function resizeWindow() {
     if (window.innerWidth < 700) {
         _("body").classList.add("small");
