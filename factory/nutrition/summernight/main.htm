@@ -52,12 +52,9 @@
     <script src="{{ static_url("material.min.js") }}"></script>
     <script src="{{ static_url("marked.js") }}"></script>
     <script src="{{ static_url("highlight.min.js") }}"></script>
-    <script src="{{ static_url("main.js") }}" charset="utf-8"></script>
 </head>
 <body style="background-image: url({{ static_url("natsu-background.jpg") }});">
-    <div class="load-back" style="background-image: url({{ static_url("natsu-background.jpg") }});">
-        <div class="content" style="background-image: url({{ static_url("natsu-background.jpg") }});"></div>
-    </div>
+    <div class="load-back" style="background-image: url({{ static_url("natsu-background.jpg") }});"></div>
     <div class="load">
         <div class="container">
             <div class="mdl-spinner mdl-js-spinner is-active"></div>
@@ -65,7 +62,7 @@
     </div>
     <header>
         <nav>
-            <div class="title">{{ config["site_name"] }}</div>
+            <div class="title"><a href="/" class="switch-content title-link" slug="index" sub_slug="">{{ config["site_name"] }}</a></div>
             <div class="links">
                 <a href="/feed.xml" target="_blank"><div class="mdl-button mdl-js-button mdl-js-ripple-effect item">订阅</div></a>{% if not current_user %}
                 <a href="/management/checkin"><div class="mdl-button mdl-js-button mdl-js-ripple-effect item">登录</div></a>{% else %}
@@ -74,22 +71,21 @@
             </div>
         </nav>
         <div class="tabs">
-            <div class="item">主页</div>
-            <div class="item">文章</div>
-            <div class="item">关于</div>
+            <a href="/" class="switch-content index-link" slug="index" sub_slug=""><div class="mdl-button mdl-js-button mdl-js-ripple-effect item">主页</div></a>
+            <a href="/pages/about.htm" class="switch-content about-link" slug="page" sub_slug="about"><div class="mdl-button mdl-js-button mdl-js-ripple-effect item">关于</div></a>
         </div>
     </header>
     <div class="main">
         <div class="index content{% if slug == "index" %} current{% end %}">{% if slug == "index" %}{% for value in contents.values() %}
             <div class="card">
-                <div class="title">{{ value["title"] }}</div>
+                <div class="title"><a href="/writings/{{ value["slug"] }}.htm" class="switch-content" slug="writing" sub_slug="{{ value["slug"] }}">{{ value["title"] }}</a></div>
                 <div class="card-info">
                     <div class="author-avatar content" style="background-image: url(/avatar/{{ value["author"]["emailmd5"] }}?s=200&d=mm)"></div>
                     <div class="author-name content">{{ value["author"]["username"] }}</div>
                     <div class="time content">{{ value["time"] }}</div>
                 </div>
                 <div class="content">{{ value["content"] }}</div>
-                <div class="more"><div class="mdl-button mdl-js-button mdl-js-ripple-effect button">阅读全文</div></div>
+                <div class="more"><a href="/writings/{{ value["slug"] }}.htm" class="switch-content" slug="writing" sub_slug="{{ value["slug"] }}"><div class="mdl-button mdl-js-button mdl-js-ripple-effect button">阅读全文</div></a></div>
             </div>
         {% end %}{% end %}
         </div>
@@ -120,23 +116,31 @@
     </div>
     <footer>
         <div class="first">
-            <div class="copyright item">&copy; 2015 未来领域</div>
-            <div class="about item">关于</div>
-            <div class="copyright-page item">著作权声明</div>
+            <a href="/" class="switch-content" slug="index" sub_slug=""><div class="copyright item">&copy; 2015 未来领域</div></a>
+            <a href="/pages/about.htm" class="switch-content" slug="page" sub_slug="about"><div class="about item">关于</div></a>
+            <a href="/pages/copyright.htm" class="switch-content" slug="page" sub_slug="copyright"><div class="copyright-page item">著作权声明</div></a>
         </div>
         <div class="second">
-            <div class="poweredby item">Proudly powered by「FurtherLand」</div>
+            <div class="poweredby item">Proudly powered by「<a href="https://github.com/futursolo/FurtherLand" target="_blank">FurtherLand</a>」</div>
         </div>
     </footer>
+    <script src="{{ static_url("main.js") }}" charset="utf-8"></script>
     <script>{% if current_user %}
         window.master = {
             "username": "{{ current_user["username"] }}",
             "emailmd5": "{{ current_user["emailmd5"] }}"
         };{% end %}
-        document.addEventListener("DOMContentLoaded", function () {
-            window.history.replaceState({"slug": "{{ slug }}", "_id": {{ current_content_id }}, "sub_slug": "{{ sub_slug }}", "title": document.title}, document.title, window.location.href);
-            buildWindow("{{ slug }}", "{{ sub_slug }}");
-        });
+        if (window.fetch) {
+            document.addEventListener("DOMContentLoaded", function () {
+                window.history.replaceState({"slug": "{{ slug }}", "_id": {{ current_content_id }}, "sub_slug": "{{ sub_slug }}", "title": document.title, "site_name": "{{ config["site_name"] }}"}, document.title, window.location.href);
+                buildWindow("{{ slug }}", "{{ sub_slug }}");
+            });
+        } else {
+            window.addEventListener("load", function () {
+                window.history.replaceState({"slug": "{{ slug }}", "_id": {{ current_content_id }}, "sub_slug": "{{ sub_slug }}", "title": document.title, "site_name": "{{ config["site_name"] }}"}, document.title, window.location.href);
+                buildWindow("{{ slug }}", "{{ sub_slug }}");
+            });
+        }
     </script>
     {{ config["trace_code"] }}
 </body>

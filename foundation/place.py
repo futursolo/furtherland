@@ -19,7 +19,7 @@
 from tornado.web import *
 from tornado.gen import *
 from tornado.escape import *
-from tornado.httpclient import *
+import tornado.httpclient
 from collections import OrderedDict
 import json
 import os
@@ -390,7 +390,10 @@ class PlacesOfInterest(RequestHandler):
         else:
             if status_code == 404:
                 self.render_list["origin_title"] = "出错了！"
-                self.render("404.htm")
+                self.render_list["slug"] = "not-found"
+                self.render_list["sub_slug"] = ""
+                self.render_list["current_content_id"] = 0
+                self.render("main.htm")
             else:
                 self.render_list["status_code"] = status_code
                 self.render_list["error_message"] = self._reason
@@ -427,7 +430,6 @@ class ConferenceHall(PlacesOfInterest):
             raise HTTPError(404)
         writing["author"] = yield self.get_user(_id=writing["author"],
                                                 with_privacy=False)
-        writing["content"] = writing["content"]
         self.render_list["content"] = writing
         self.render_list["origin_title"] = writing["title"]
         self.render_list["slug"] = "writing"
@@ -508,6 +510,46 @@ class TerminalService(PlacesOfInterest):
             yield getattr(self, action)()
         else:
             raise HTTPError(500)
+
+    @coroutine
+    def load_index(self):
+        contents = yield self.get_writing(class_id=0)
+        for key in contents:
+            contents[key]["author"] = yield self.get_user(
+                _id=contents[key]["author"], with_privacy=False)
+            contents[key]["content"] = contents[key]["content"].split(
+                "<!--more-->")[0]
+        self.finish(json.dumps(list(contents.values())))
+
+    @coroutine
+    def load_writing(self):
+        writing_slug = self.get_arg("slug", arg_type="slug")
+        writing = yield self.get_writing(slug=writing_slug)
+        if not writing:
+            self.finish(json.dumps({
+                "success": False,
+                "reason": "notfound"
+            }))
+            return
+        writing["author"] = yield self.get_user(_id=writing["author"],
+                                                with_privacy=False)
+        writing["success"] = True
+        self.finish(json.dumps(writing))
+
+    @coroutine
+    def load_page(self):
+        page_slug = self.get_arg("slug", arg_type="slug")
+        page = yield self.get_page(slug=page_slug)
+        if not page:
+            self.finish(json.dumps({
+                "success": False,
+                "reason": "notfound"
+            }))
+            return
+        page["author"] = yield self.get_user(_id=page["author"],
+                                             with_privacy=False)
+        page["success"] = True
+        self.finish(json.dumps(page))
 
     @coroutine
     def load_reply(self):
@@ -622,7 +664,7 @@ class IllustratePlace(PlacesOfInterest):
                 )
                 yield book.do()
 
-        client = AsyncHTTPClient()
+        client = tornado.httpclient.AsyncHTTPClient()
         link = (
             "https://secure.gravatar.com/avatar/" + slug + "?s=" +
             str(size) + "&d=" + str(default))
