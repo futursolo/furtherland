@@ -19,7 +19,7 @@ html, body{
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: Oxygen, Verdana, Tahoma, STHeiti, "Noto Sans CJK SC", "Microsoft YaHei", SimHei;
+    font-family: Oxygen, Verdana, Tahoma, "Noto Sans CJK SC", "Noto Sans CJK JP", "Microsoft YaHei", STHeiti, SimHei;
     background-repeat: no-repeat;
     font-size: 15px;
     color: rgb(100, 100, 100);
@@ -72,7 +72,11 @@ a{
 .load .failed{
     z-index: 1001;
 }
-
+.layout{
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+}
 header{
     height: 120px;
     color: rgb(255, 255, 255);
@@ -105,7 +109,7 @@ header > nav .links{
 header > nav .links > a > .item{
     min-width: 40px;
     color: rgb(255, 255, 255);
-    font-family: Oxygen, Verdana, Tahoma, STHeiti, "Noto Sans CJK SC", "Microsoft YaHei", SimHei;
+    font-family: Oxygen, Verdana, Tahoma, "Noto Sans CJK SC", "Noto Sans CJK JP", "Microsoft YaHei", STHeiti, SimHei;
 }
 header > nav .links > a > .item .mdl-ripple{
     background-color: rgb(255, 255, 255);
@@ -122,7 +126,7 @@ header > .tabs{
 header > .tabs .item{
     display: inline-block;
     color: rgb(255, 255, 255);
-    font-family: Oxygen, Verdana, Tahoma, STHeiti, "Noto Sans CJK SC", "Microsoft YaHei", SimHei;
+    font-family: Oxygen, Verdana, Tahoma, "Noto Sans CJK SC", "Noto Sans CJK JP", "Microsoft YaHei", STHeiti, SimHei;
 }
 
 header > .tabs .item .mdl-ripple{
@@ -318,6 +322,17 @@ body.small .main > .writing > .replies > .reply-card{
     margin-bottom: 15px;
     margin-left: 20px;
     margin-right: 20px;
+}
+.main > .not-found .card{
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+.main > .not-found .card .line{
+    font-family: Oxygen, Verdana, Tahoma, "Noto Sans CJK SC", "Noto Sans CJK JP", "Microsoft YaHei", STHeiti, SimHei;
+    text-align: center;
+    font-size: 25px;
+    line-height: 50px;
+    font-weight: bold;
 }
 footer{
     background-color: rgba(255, 255, 255, 0.8);

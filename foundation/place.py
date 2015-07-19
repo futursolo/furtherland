@@ -382,26 +382,26 @@ class PlacesOfInterest(RequestHandler):
             raise HTTPError(500)
 
     def write_error(self, status_code, **kwargs):
+        if status_code == 404:
+            self.render_list["origin_title"] = "出错了！"
+            self.render_list["slug"] = "not-found"
+            self.render_list["sub_slug"] = ""
+            self.render_list["current_content_id"] = 0
+            self.render("model.htm")
+            return
         if self.settings.get("serve_traceback") and "exc_info" in kwargs:
             self.set_header("Content-Type", "text/plain")
             for line in traceback.format_exception(*kwargs["exc_info"]):
                 self.write(line)
             self.finish()
         else:
-            if status_code == 404:
-                self.render_list["origin_title"] = "出错了！"
-                self.render_list["slug"] = "not-found"
-                self.render_list["sub_slug"] = ""
-                self.render_list["current_content_id"] = 0
-                self.render("main.htm")
-            else:
-                self.render_list["status_code"] = status_code
-                self.render_list["error_message"] = self._reason
-                self.finish(
-                    self.render_string(
-                        "management/error.htm",
-                        __without_database=True,
-                        **self.render_list))
+            self.render_list["status_code"] = status_code
+            self.render_list["error_message"] = self._reason
+            self.finish(
+                self.render_string(
+                    "management/error.htm",
+                    __without_database=True,
+                    **self.render_list))
 
 
 class CentralSquare(PlacesOfInterest):
@@ -418,7 +418,7 @@ class CentralSquare(PlacesOfInterest):
         self.render_list["slug"] = "index"
         self.render_list["sub_slug"] = ""
         self.render_list["current_content_id"] = 0
-        self.render("main.htm")
+        self.render("model.htm")
 
 
 class ConferenceHall(PlacesOfInterest):
@@ -435,7 +435,7 @@ class ConferenceHall(PlacesOfInterest):
         self.render_list["slug"] = "writing"
         self.render_list["sub_slug"] = writing["slug"]
         self.render_list["current_content_id"] = writing["_id"]
-        self.render("main.htm")
+        self.render("model.htm")
 
 
 class MemorialWall(PlacesOfInterest):
@@ -452,7 +452,7 @@ class MemorialWall(PlacesOfInterest):
         self.render_list["slug"] = "page"
         self.render_list["sub_slug"] = page["slug"]
         self.render_list["current_content_id"] = page["_id"]
-        self.render("main.htm")
+        self.render("model.htm")
 
 
 class NewsAnnouncement(PlacesOfInterest):
