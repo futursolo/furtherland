@@ -45,7 +45,9 @@ var objects = {
     ".main > .page .card .card-info .author-avatar": _(".main > .page .card .card-info .author-avatar"),
     ".main > .page .card .card-info .author-name": _(".main > .page .card .card-info .author-name"),
     ".main > .page .card .card-info .time": _(".main > .page .card .card-info .time"),
-    ".main > .page .card > .content": _(".main > .page .card > .content")
+    ".main > .page .card > .content": _(".main > .page .card > .content"),
+
+    ".main > .not-found": _(".main > .not-found")
 };
 function getCookie(name) {
     var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
@@ -273,7 +275,7 @@ function fetchIndexData(slug, callback) {
         window.history.replaceState({"slug": "index", "_id": 0, "sub_slug": 0, "title": pageTitle, "site_name": currentState.site_name}, pageTitle, pageURL);
         renderIndex(callback);
     }).catch(function (error) {
-        console.error(error);
+        window.location.reload();
     });
 }
 
@@ -625,7 +627,9 @@ function fetchWritingData(slug, callback) {
         }
         throw new Error(resp.statusText);
     }).then(function (json) {
-        console.log(json);
+        if (!json.success) {
+            throw json.reason;
+        }
         objects[".main > .writing"].classList.add("current");
         objects[".main > .writing .card .title"].innerHTML = json.title;
         objects[".main > .writing .card .card-info .author-avatar"].style.backgroundImage = "url(/avatar/" + json.author.emailmd5 + "?s=200&d=mm)";
@@ -640,7 +644,12 @@ function fetchWritingData(slug, callback) {
         window.history.replaceState({"slug": "writing", "_id": json._id, "sub_slug": json.slug, "title": pageTitle, "site_name": currentState.site_name}, pageTitle, pageURL);
         renderWriting(callback);
     }).catch(function (error) {
-        console.error(error);
+        if (error == "notfound") {
+            window.history.replaceState({"slug": "writing", "sub_slug": slug, "site_name": currentState.site_name}, document.title, window.location.href);
+            renderNotFound(callback);
+        } else {
+            window.location.reload();
+        }
     });
 }
 
@@ -672,8 +681,9 @@ function fetchPageData(slug, callback) {
         }
         throw new Error(resp.statusText);
     }).then(function (json) {
-        console.log(window.history.state);
-        console.log(json);
+        if (!json.success) {
+            throw json.reason;
+        }
         objects[".main > .page"].classList.add("current");
         objects[".main > .page .card .title"].innerHTML = json.title;
         objects[".main > .page .card .card-info .author-avatar"].style.backgroundImage = "url(/avatar/" + json.author.emailmd5 + "?s=200&d=mm)";
@@ -687,8 +697,27 @@ function fetchPageData(slug, callback) {
         window.history.replaceState({"slug": "page", "_id": json._id, "sub_slug": json.slug, "title": pageTitle, "site_name": currentState.site_name}, pageTitle, pageURL);
         renderPage(callback);
     }).catch(function (error) {
-        console.error(error);
+        if (error == "notfound") {
+            window.history.replaceState({"slug": "page", "sub_slug": slug, "site_name": currentState.site_name}, document.title, window.location.href);
+            renderNotFound(callback);
+        } else {
+            window.location.reload();
+        }
     });
+}
+
+function renderNotFound(callback) {
+    if (!objects[".main > .not-found"].classList.contains("current")) {
+        if (_(".main > .current")) {
+            _(".main > .current").classList.remove("current");
+        }
+    }
+    currentState = window.history.state;
+    document.title = "出错了 - " + currentState.site_name;
+    objects[".main > .not-found"].classList.add("current");
+    if (callback) {
+        callback();
+    }
 }
 
 function switchContent(event) {
@@ -698,7 +727,9 @@ function switchContent(event) {
     }
     event.preventDefault();
     loadLayout(function (callback) {
-        _(".main > .current").classList.remove("current");
+        if (_(".main > .current")){
+            _(".main > .current").classList.remove("current");
+        }
         if (target.getAttribute("slug") == "index") {
             window.history.pushState(window.history.state, null,  "//" + window.location.host + "/");
             fetchIndexData(null, callback);
@@ -730,7 +761,9 @@ function buildWindow(slug, sub_slug) {
 window.addEventListener("popstate", function (event) {
     state = event.state;
     loadLayout(function (callback) {
-        _(".main > .current").classList.remove("current");
+        if (_(".main > .current")){
+            _(".main > .current").classList.remove("current");
+        }
         if (state.slug == "index") {
             fetchIndexData(null, callback);
         } else if(state.slug == "writing") {

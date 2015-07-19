@@ -307,8 +307,6 @@ class ActionOffice(ManagementOffice):
 
         if type == "replies":
             for key in content_list:
-                content_list[key]["content"] = self.make_md(
-                    content_list[key]["content"])
                 content_list[key]["_id"] = int(
                     content_list[key]["_id"])
                 if content_list[key]["writing_id"] not in writing_list:
