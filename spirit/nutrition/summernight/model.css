@@ -19,7 +19,7 @@ html, body{
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: Oxygen, Verdana, Tahoma, STHeiti, "Noto Sans CJK SC", "Microsoft YaHei", SimHei;
+    font-family: Oxygen, Verdana, Tahoma, "Noto Sans CJK SC", "Noto Sans CJK JP", "Microsoft YaHei", STHeiti, SimHei;
     background-repeat: no-repeat;
     font-size: 15px;
     color: rgb(100, 100, 100);
@@ -30,7 +30,11 @@ body{
     background-position: top right;
     background-attachment: fixed;
 }
-
+a{
+    color: rgb(54, 134, 190);
+    text-decoration: none;
+    font-weight: normal;
+}
 .load-back{
     height: 0;
     width: 0;
@@ -46,18 +50,6 @@ body{
 .load-back.visible{
     opacity: 1;
 }
-.load-back .content{
-    width: 100%;
-    height: 100%;
-    -webkit-filter: blur(5px);
-    -moz-filter: blur(5px);
-    -o-filter: blur(5px);
-    -ms-filter: blur(5px);
-    filter: blur(5px);
-    background-size: cover;
-    background-position: top right;
-    background-attachment: fixed;
-}
 .load{
     height: 0;
     width: 0;
@@ -67,7 +59,7 @@ body{
     overflow: hidden;
     opacity: 0;
     transition: opacity 0.30s ease-in-out;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.4);
 }
 .load > .container{
     display: table-cell;
@@ -80,7 +72,11 @@ body{
 .load .failed{
     z-index: 1001;
 }
-
+.layout{
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+}
 header{
     height: 120px;
     color: rgb(255, 255, 255);
@@ -100,6 +96,11 @@ header > nav .title{
     width: 120px;
     box-sizing: border-box;
 }
+header .title .title-link{
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    font-weight: normal;
+}
 header > nav .links{
     float: right;
     padding-left: 10px;
@@ -108,6 +109,7 @@ header > nav .links{
 header > nav .links > a > .item{
     min-width: 40px;
     color: rgb(255, 255, 255);
+    font-family: Oxygen, Verdana, Tahoma, "Noto Sans CJK SC", "Noto Sans CJK JP", "Microsoft YaHei", STHeiti, SimHei;
 }
 header > nav .links > a > .item .mdl-ripple{
     background-color: rgb(255, 255, 255);
@@ -121,13 +123,26 @@ header > .tabs{
     padding-left: 5px;
     padding-right: 5px;
 }
-header > .tabs > .item{
+header > .tabs .item{
     display: inline-block;
-    padding-left: 15px;
-    padding-right: 15px;
+    color: rgb(255, 255, 255);
+    font-family: Oxygen, Verdana, Tahoma, "Noto Sans CJK SC", "Noto Sans CJK JP", "Microsoft YaHei", STHeiti, SimHei;
+}
+
+header > .tabs .item .mdl-ripple{
+    background-color: rgb(255, 255, 255);
+}
+header > .tabs .item:hover{
+    background-color: rgba(255, 255, 255, 0.1);
 }
 .main{
     min-height: calc(100% - 210px);
+}
+.main > .content{
+    display: none;
+}
+.main > .content.current{
+    display: block;
 }
 .main > .content .card{
     border-radius: 3px;
@@ -147,6 +162,11 @@ header > .tabs > .item{
     padding-top: 20px;
     padding-left: 20px;
     padding-right: 20px;
+}
+.main > .content .card .title a{
+    color: rgb(100, 100, 100);
+    text-decoration: none;
+    font-weight: normal;
 }
 .main > .content .card .card-info{
     line-height: 30px;
@@ -170,6 +190,10 @@ header > .tabs > .item{
 }
 .main > .content .card > .content{
     padding: 20px;
+    position: relative;
+}
+.main > .content .card > .content *{
+    max-width: 100%;
 }
 .main > .content .card > .more{
     padding-left: 20px;
@@ -184,6 +208,13 @@ header > .tabs > .item{
     position: relative;
     margin-bottom: 15px;
 }
+.main > .writing > .replies:after{
+    content:".";
+    display:block;
+    height:0;
+    visibility:hidden;
+    clear:both;
+}
 .main > .writing > .replies > .reply-card{
     border-radius: 3px;
     width: calc(50% - 20px);
@@ -192,13 +223,18 @@ header > .tabs > .item{
     box-shadow: 0 4px 8px 0 rgb(100, 100, 100);
     box-sizing: border-box;
     margin: 10px;
-    display: inline-block;
-    vertical-align: top;
 }
 body.small .main > .writing > .replies > .reply-card{
     border-radius: 3px;
     width: calc(100% - 20px);
     max-width: 1000px;
+    position: static;
+}
+.main > .writing > .replies > .reply-card.left{
+    float: left;
+}
+.main > .writing > .replies > .reply-card.right{
+    float: right;
 }
 .main > .writing > .replies > .reply-card .avatar{
     width: 50px;
@@ -235,10 +271,14 @@ body.small .main > .writing > .replies > .reply-card{
     vertical-align: top;
     cursor: default;
 }
-.main > .writing > .replies > .reply-card .content{
+.main > .writing > .replies > .reply-card > .content{
     padding-top: 10px;
     padding-left: 20px;
     padding-right: 20px;
+    position: relative;
+}
+.main > .writing > .replies > .reply-card > .content *{
+    max-width: 100%;
 }
 .main > .writing > .replies > .reply-card.new-reply .title{
     padding-top: 15px;
@@ -282,6 +322,17 @@ body.small .main > .writing > .replies > .reply-card{
     margin-bottom: 15px;
     margin-left: 20px;
     margin-right: 20px;
+}
+.main > .not-found .card{
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+.main > .not-found .card .line{
+    font-family: Oxygen, Verdana, Tahoma, "Noto Sans CJK SC", "Noto Sans CJK JP", "Microsoft YaHei", STHeiti, SimHei;
+    text-align: center;
+    font-size: 25px;
+    line-height: 50px;
+    font-weight: bold;
 }
 footer{
     background-color: rgba(255, 255, 255, 0.8);

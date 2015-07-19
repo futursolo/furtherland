@@ -4,7 +4,7 @@
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+      http://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,148 +24,61 @@
     <meta name="referrer" content="origin">
 
     <link href="//fonts.googleapis.com/css?family=Oxygen:400,700" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+
+    <link href="{{ management_url("material.min.css") }}" rel="stylesheet" type="text/css">
     <link href="{{ management_url("office.css") }}" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{{ management_url("highlight.min.css") }}">
 
-    <script src="{{ bower_url("webcomponentsjs/webcomponents.min.js") }}"></script>
-
-    <link rel="import" href="{{ bower_url("paper-styles/paper-styles.html") }}">
-    <link rel="import" href="{{ bower_url("iron-icons/iron-icons.html") }}">
-    <link rel="import" href="{{ bower_url("iron-icons/editor-icons.html") }}">
-    <link rel="import" href="{{ bower_url("iron-icons/device-icons.html") }}">
-    <link rel="import" href="{{ bower_url("paper-button/paper-button.html") }}">
-    <link rel="import" href="{{ bower_url("paper-input/paper-input.html") }}">
-    <link rel="import" href="{{ bower_url("paper-toolbar/paper-toolbar.html") }}">
-    <link rel="import" href="{{ bower_url("paper-menu/paper-menu.html") }}">
-    <link rel="import" href="{{ bower_url("paper-item/paper-item.html") }}">
-    <link rel="import" href="{{ bower_url("paper-item/paper-icon-item.html") }}">
-    <link rel="import" href="{{ bower_url("paper-spinner/paper-spinner.html") }}">
-    <link rel="import" href="{{ bower_url("paper-button/paper-button.html") }}">
-    <link rel="import" href="{{ bower_url("paper-fab/paper-fab.html") }}">
-    <link rel="import" href="{{ bower_url("paper-checkbox/paper-checkbox.html") }}">
-    <link rel="import" href="{{ bower_url("paper-radio-group/paper-radio-group.html") }}">
-    <link rel="import" href="{{ bower_url("paper-toast/paper-toast.html") }}">
-    <link rel="import" href="{{ bower_url("paper-tabs/paper-tabs.html") }}">
-    <link rel="import" href="{{ bower_url("paper-progress/paper-progress.html") }}">
-
-    <style is="custom-style">
-        :root {
-            --default-primary-color: rgb(54, 134, 190);
-         }
-        paper-tabs{
-            --paper-tabs-selection-bar-color: rgb(255, 255, 255);
-         }
-        paper-tab{
-            --paper-tab-ink: rgba(255, 255, 255, 0.75);
-         }
-        .public paper-tab{
-            --paper-tab-ink: rgba(54, 134, 190, 0.25);
-         }
-        .main > .crda .main-container .workings-list .reply-item .action-block paper-icon-button.toggle-permit{
-            --paper-icon-button-ink-color: rgba(76, 175, 80, 0.75);
-         }
-        .main > .crda .main-container .workings-list .reply-item .action-block paper-icon-button.edit{
-            --paper-icon-button-ink-color: rgba(255, 152, 0, 0.75);
-         }
-        .main > .crda .main-container .workings-list .reply-item .action-block paper-icon-button.remove{
-            --paper-icon-button-ink-color: rgba(244, 67, 54, 0.75);
-         }
-    </style>
+    <script src="{{ management_url("marked.js") }}"></script>
+    <script src="{{ management_url("sha.js") }}"></script>
+    <script src="{{ management_url("highlight.min.js") }}"></script>
+    <script>
+        if (!window.fetch) {
+            var headElement = document.getElementsByTagName("head")[0];
+            var fetchElement = document.createElement("script");
+            fetchElement.type = "text/javascript";
+            fetchElement.src = "{{ management_url("fetch.js") }}";
+            headElement.appendChild(fetchElement);
+        }
+    </script>
 </head>
 <body>
-    <div class="load visible" style="width: 100%; height: 100%;">
+    <div class="load visible" style="height: 100%; width: 100%;">
         <div class="container">
-            <paper-spinner active></paper-spinner>
-            <paper-toast class="failed" text="抱歉，发生了未知错误。">
-                <span role="button" tabindex="0" style="color: #eeff41; margin: 10px" onclick="window.location.reload();">重新加载</span>
-            </paper-toast>
-        </div>
-    </div>
-
-    <div class="confirm">
-        <paper-material elevation="4" class="container">
-            <div class="dialog">
-                <div class="message"></div>
-                <paper-button class="continue">继续</paper-button>
-                <paper-button class="cancel">取消</paper-button>
-            </div>
-        </paper-material>
-    </div>
-
-    <div class="public">
-        <div class="container">
-            <div class="title">公共区域</div>
-            <paper-tabs no-bar selected="0" class="content-selector">
-                <paper-tab class="upload-now">现在上传</paper-tab>
-                <paper-tab class="uploaded">从已存在的文件中选择</paper-tab>
-            </paper-tabs>
-
-            <div class="content">
-                <div class="content-block upload-now">
-                    <div class="uploading">
-                        <div class="content">
-                            <div>正在上传...</div>
-                            <div>
-                                <paper-progress value="0" class="progress-bar"></paper-progress>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="table-cell file-uploader">
-                        <div class="tips">将文件拖动到这里来上传 或</div>
-                        <div class="select-file-line"><paper-button class="select-file" raised>&nbsp;&nbsp;选择文件&nbsp;&nbsp;</paper-button></div>
-                        <input class="hidden-file-selector" name="files[]" type="file">
-                    </div>
-                </div>
-                <div class="content-block uploaded"></div>
-            </div>
-            <div class="action">
-                <paper-button class="insert-as-photo">作为图片插入</paper-button>
-                <paper-button class="insert-as-link">作为链接插入</paper-button>
-                <paper-button class="cancel">取消</paper-button>
+            <div class="mdl-spinner mdl-js-spinner is-active"></div>
+            <div class="toast auto-hide failed">
+                <span>抱歉，发生了未知错误。<span class="action" onclick="window.location.reload();">重新加载</span></span>
             </div>
         </div>
     </div>
 
-    <header>
-        <paper-toolbar class="toolbar">
-            <paper-icon-button icon="menu" class="toggle-sidebar"></paper-icon-button>
-            <div title>{{ config["office_name"] }}</div>
-            <a href="/" target="_blank" style="color: rgb(255, 255, 255) !important;"><paper-icon-button icon="open-in-browser"></paper-icon-button></a>
-            <a href="/management/checkout" style="color: rgb(255, 255, 255) !important;"><paper-icon-button icon="power-settings-new"></paper-icon-button></a>
-        </paper-toolbar>
-    </header>
-
-    <div class="main">
-        <aside>
-            <paper-material elevation="2">
-                <paper-menu selected="0" class="list">
-                    <paper-icon-item class="aside-item show-lobby">
-                        <iron-icon icon="assessment" item-icon></iron-icon>
-                        {{ config["lobby_name"] }}
-                    </paper-icon-item>
-
-                    <paper-icon-item class="aside-item show-working">
-                        <iron-icon icon="editor:mode-edit" item-icon></iron-icon>
-                        {{ config["working_name"] }}
-                    </paper-icon-item>
-
-                    <paper-icon-item class="aside-item show-crda">
-                        <iron-icon icon="assignment" item-icon></iron-icon>
-                        {{ config["crda_name"] }}
-                    </paper-icon-item>
-
-                    <paper-icon-item class="aside-item show-configuration">
-                        <iron-icon icon="settings" item-icon></iron-icon>
-                        {{ config["configuration_name"] }}
-                    </paper-icon-item>
-                </paper-menu>
-            </paper-material>
-        </aside>
-
-        <div class="container lobby">
-            <div class="container">
-                <div class="tile writing-num">
-                    <paper-material elevation="2" class="container">
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <header class="mdl-layout__header">
+            <div class="mdl-layout__header-row">
+                <span class="mdl-layout-title">{{ config["office_name"] }}</span>
+                <div class="mdl-layout-spacer"></div>
+                <nav class="mdl-navigation mdl-layout--large-screen-only">
+                    <a class="mdl-navigation__link" href="/" target="_blank"><i class="material-icons">dashboard</i></a>
+                    <a class="mdl-navigation__link" href="/management/checkout" target="_blank"><i class="material-icons">power_settings_new</i></a>
+                </nav>
+            </div>
+        </header>
+        <div class="mdl-layout__drawer aside">
+            <span class="mdl-layout-title">{{ config["office_name"] }}</span>
+            <nav class="mdl-navigation">
+                <div class="mdl-navigation__link no-default show-lobby" href="">{{ config["lobby_name"] }}</div>
+                <div class="mdl-navigation__link no-default show-working" href="">{{ config["working_name"] }}</div>
+                <div class="mdl-navigation__link no-default show-crda" href="">{{ config["crda_name"] }}</div>
+                <div class="mdl-navigation__link no-default show-configuration" href="">{{ config["configuration_name"] }}</div>
+                <a class="mdl-navigation__link" href="/" target="_blank">{{ config["site_name"] }}</a>
+                <a class="mdl-navigation__link" href="/management/checkout" target="_blank">登出</a>
+            </nav>
+        </div>
+        <main class="mdl-layout__content">
+            <div class="container lobby">
+                <div class="container">
+                    <div class="tile writing-num">
                         <div class="name">文章</div>
                         <div class="content">0</div>
 
@@ -173,14 +86,12 @@
                             <div class="item">其中有0篇草稿</div>
                         </div>
 
-                        <paper-button raised class="manage-writing">
-                            管理文章<iron-icon icon="chevron-right"></iron-icon>
-                        </paper-button>
-                    </paper-material>
-                </div>
+                        <div class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color--light-blue-500 manage-button manage-writing">
+                          管理文章<i class="material-icons">keyboard_arrow_right</i>
+                        </div>
+                    </div>
 
-                <div class="tile page-num">
-                    <paper-material elevation="2" class="container">
+                    <div class="tile page-num">
                         <div class="name">页面</div>
                         <div class="content">0</div>
 
@@ -188,75 +99,96 @@
                             <div class="item">其中有0篇草稿</div>
                         </div>
 
-                        <paper-button raised class="manage-page">
-                            管理页面<iron-icon icon="chevron-right"></iron-icon>
-                        </paper-button>
-                    </paper-material>
-                </div>
+                        <div class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color--green-500 manage-button manage-page">
+                          管理页面<i class="material-icons">keyboard_arrow_right</i>
+                        </div>
+                    </div>
 
-                <div class="tile reply-num">
-                    <paper-material elevation="2" class="container">
+                    <div class="tile reply-num">
                         <div class="name">评论</div>
                         <div class="content">0</div>
 
                         <div class="tips-list">
                             <div class="item">其中有0条在等待审核</div>
-                            <div class="item">其中有0条被Akismet认为是拉圾评论</div>
                         </div>
 
-                        <paper-button raised class="manage-reply">
-                            管理评论<iron-icon icon="chevron-right"></iron-icon>
-                        </paper-button>
-                    </paper-material>
+                        <div class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color--amber-500 manage-button manage-reply">
+                          管理评论<i class="material-icons">keyboard_arrow_right</i>
+                        </div>
+                    </div>
+                </div>
+                <div class="float-container">
+                    <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-color--red-500 create-new-fab">
+                        <i class="material-icons">create</i>
+                    </button>
                 </div>
             </div>
-            <div class="float-container">
-                <paper-fab icon="create" class="create-new-fab"></paper-fab>
-            </div>
-        </div>
 
-        <div class="container working">
-            <div class="title-container">
-                <paper-input label="&nbsp;&nbsp;标题" class="title-input"></paper-input>
-            </div>
+            <div class="container working">
+                <div class="title-container">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label title-input-back">
+                        <input class="mdl-textfield__input title-input" type="text" id="working-title-input">
+                        <label class="mdl-textfield__label" for="working-title-input">&nbsp;&nbsp;标题</label>
+                    </div>
+                </div>
 
-            <div class="editor-container">
-                <div class="description">创作</div>
-                <textarea class="editor-textarea"></textarea>
-            </div>
+                <div class="editor-container">
+                    <div class="description">创作</div>
+                    <textarea class="editor-textarea"></textarea>
+                </div>
 
-            <div class="preview-container">
-                <div class="description">预览</div>
-                <div class="preview-div"></div>
-            </div>
+                <div class="preview-container">
+                    <div class="description">预览</div>
+                    <div class="preview-div"></div>
+                </div>
 
-            <div class="info-container">
-                <paper-material elevation="4" class="container">
+                <div class="info-container">
                     <div class="title-container">
-                        <paper-icon-button icon="close" class="close-button"></paper-icon-button>作品信息
+                        <div class="mdl-button mdl-js-button mdl-button--icon close-button">
+                            <i class="material-icons">clear</i>
+                        </div>
+                        作品信息
                     </div>
 
                     <div class="type-container">
                         <div class="title">作品类型：</div>
-                        <paper-radio-group selected="writing" class="type-radio-group">
-                            <paper-radio-button name="writing">文章</paper-radio-button>
-                            <paper-radio-button name="page">页面</paper-radio-button>
-                        </paper-radio-group>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="working-type-is-writing">
+                            <input type="radio" id="working-type-is-writing" class="mdl-radio__button" name="type-radio-group" value="writing" checked>
+                            <span class="mdl-radio__label">文章</span>
+                        </label>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="working-type-is-page">
+                            <input type="radio" id="working-type-is-page" class="mdl-radio__button" name="type-radio-group" value="page">
+                            <span class="mdl-radio__label">页面</span>
+                        </label>
                     </div>
 
                     <div class="slug-container">
-                        <paper-input class="slug-input" label="短链接" auto-validate pattern="[\-a-zA-Z0-9]*" error-message="链接形式：[\-a-zA-Z0-9]* !"></paper-input>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label slug-input">
+                            <input class="mdl-textfield__input slug-input" type="text" pattern="[\-a-zA-Z0-9]*" id="working-slug-input">
+                            <label class="mdl-textfield__label" for="working-slug-input">短链接</label>
+                            <span class="mdl-textfield__error">链接形式：[\-a-zA-Z0-9]* !</span>
+                        </div>
                         <div class="slug-preview"></div>
                     </div>
 
                     <div class="time-container">
-                        <paper-input class="time-input" label="发表时间"></paper-input>
-                        <paper-checkbox class="time-checkbox" checked>当单击发表按钮时</paper-checkbox>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label time-input-back">
+                            <input class="mdl-textfield__input time-input" type="text" id="working-time-input">
+                            <label class="mdl-textfield__label" for="working-time-input">发表时间</label>
+                        </div>
+                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="working-time-checkbox">
+                            <input type="checkbox" id="working-time-checkbox" class="mdl-checkbox__input time-checkbox" checked>
+                            <span class="mdl-checkbox__label">当单击发表按钮时</span>
+                        </label>
                     </div>
 
                     <div class="save-container">
-                        <paper-button class="publish-button">立即发表</paper-button>
-                        <paper-button class="draft-button">存为草稿</paper-button>
+                        <div class="mdl-button mdl-js-button mdl-js-ripple-effect publish-button">
+                            立即发表
+                        </div>
+                        <div class="mdl-button mdl-js-button mdl-js-ripple-effect draft-button">
+                            存为草稿
+                        </div>
                     </div>
 
                     <div class="tips-container">
@@ -270,126 +202,37 @@
                         <input class="method-input" type="hidden" value="">
                         <input class="publish-or-not" type="hidden" value="">
                     </div>
-                </paper-material>
-            </div>
+                </div>
 
-            <div class="float-container">
-                <paper-fab icon="editor:attach-file" class="open-public-fab"></paper-fab><br><br>
-                <paper-fab icon="editor:publish" class="publish-fab"></paper-fab>
-            </div>
+                <div class="float-container">
+                    <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored open-public-fab">
+                        <i class="material-icons">attachment</i>
+                    </button>
+                    <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored publish-fab">
+                        <i class="material-icons">publish</i>
+                    </button>
+                </div>
 
-            <div class="toast-container">
-                <paper-toast class="draft-success" text="作品已经存为草稿。"></paper-toast>
-
-                <paper-toast class="publish-success" text="作品已经发布。">
-                    <a role="button" tabindex="0" style="color: #eeff41; margin: 10px; text-decoration: none; font-weight: bold;" onclick="" href="#" target="_blank">立即查看</a>
-                </paper-toast>
-
-                <paper-toast class="info-required" text="请将信息填写完整后再试。"></paper-toast>
-
-                <paper-toast class="save-failed" text="抱歉，发生了未知错误。">
-                    <span role="button" tabindex="0" style="color: #eeff41;margin: 10px" onclick="sendWorking()">再次尝试</span>
-                </paper-toast>
-            </div>
-        </div>
-
-        <div class="container crda">
-            <paper-tabs no-bar selected="0" class="type-selector">
-                <paper-tab class="writings">文章</paper-tab>
-                <paper-tab class="pages">页面</paper-tab>
-                <paper-tab class="replies">评论</paper-tab>
-            </paper-tabs>
-            <div class="main-container">
-                <paper-material elevation="2" class="writings workings-list"></paper-material>
-                <paper-material elevation="2" elevation="2" elevation="2" class="pages workings-list"></paper-material>
-                <paper-material elevation="2" elevation="2" class="replies workings-list"></paper-material>
-                <paper-material elevation="2" class="publics workings-list"></paper-material>
-            </div>
-            <div class="reply-editor">
-                <div class="table-cell">
-                    <div class="container">
-                        <div class="title">编辑评论</div>
-                        <div class="input-block">
-                            <div class="input-line">
-                                <paper-input class="name" label="昵称"></paper-input>
-                            </div>
-                            <div class="input-line">
-                                <paper-input class="email" label="电邮"></paper-input>
-                            </div>
-                        </div>
-                        <div class="homepage-line">
-                            <paper-input class="homepage" label="个人主页"></paper-input>
-                        </div>
-                        <div class="content-line">
-                            <textarea class="content" placeholder="内容"></textarea>
-                        </div>
-                        <div class="action-line">
-                            <paper-button class="cancel">取消</paper-button>
-                            <paper-button class="save">保存</paper-button>
-                        </div>
+                <div class="toast-container">
+                    <div class="toast auto-hide draft-success">
+                        <span>作品已经存为草稿。</span>
+                    </div>
+                    <div class="toast auto-hide publish-success">
+                        <span>作品已经发布。<a class="action" href="#" target="_blank">立即查看</a></span>
+                    </div>
+                    <div class="toast auto-hide info-required">
+                        <span>请将信息填写完整后再试。</span>
+                    </div>
+                    <div class="toast auto-hide save-failed">
+                        <span>抱歉，发生了未知错误。<span class="action" onclick="sendWorking();">再次尝试</span></span>
                     </div>
                 </div>
             </div>
-            <div class="toast-container">
-                <paper-toast class="save-success" text="操作已经成功执行。"></paper-toast>
-
-                <paper-toast class="save-failed" text="抱歉，发生了未知错误。请稍后再试。"></paper-toast>
-            </div>
-        </div>
-
-        <div class="container configuration">
-            <div style="height: 40px;"></div>
-            <paper-material elevation="4" class="container">
-                <div class="config-item">
-                    <paper-input class="config-value" config_name="site_name" label="名称"></paper-input>
-                </div>
-                <div class="config-item">
-                    <paper-input class="config-value" config_name="site_description" label="描述"></paper-input>
-                    <div class="description">描述一般会显示在名称的下方，一个好的描述能够帮助人们更好的理解名称。</div>
-                </div>
-                <div class="config-item">
-                    <paper-input class="config-value" config_name="site_keywords" label="标签"></paper-input>
-                    <div class="description">标签将会帮助搜索引擎进行归类，以便带来正确的访客。</div>
-                    <div class="description">如果你需要键入多个标签，请使用英文逗号分割它们。</div>
-                </div>
-                <div class="config-item">
-                    <paper-input class="config-value" config_name="site_url" label="网络地址"></paper-input>
-                    <div class="description">这将成为「FurtherLand」对统一资源定位器进行格式化的时候使用的开头。</div>
-                </div>
-                <div class="config-item">
-                    <paper-input class="config-value" config_name="nutrition_type" label="主题"></paper-input>
-                    <div class="description">请填写一个已经被上传的主题的目录名称。</div>
-                </div>
-                <div class="config-item">
-                    <textarea class="config-value textarea" config_name="trace_code" placeholder="跟踪代码"></textarea>
-                    <div class="description">追踪代码将会用于追踪并了解你的访客群体，以帮助你提高内容的质量。</div>
-                </div>
-                <div class="action-line">
-                    <paper-button class="reset">复原</paper-button>
-                    <paper-button class="save">保存</paper-button>
-                </div>
-            </paper-material>
-            <div style="height: 40px;"></div>
-            <div class="toast-container">
-                <paper-toast class="save-success" text="设置保存成功，但是你可能需要刷新页面才能看到改变。">
-                    <span role="button" tabindex="0" style="color: #eeff41;margin: 10px" onclick="window.location.reload()">立即刷新</span>
-                </paper-toast>
-
-                <paper-toast class="save-failed" text="抱歉，发生了未知错误。请稍后再试。"></paper-toast>
-            </div>
-        </div>
+        </main>
     </div>
-    <script src="{{ management_url("marked.js") }}"></script>
-    <script src="{{ management_url("highlight.min.js") }}"></script>
+    <script src="{{ management_url("material.min.js") }}"></script>
     <script src="{{ management_url("office.js") }}"></script>
     <script>
-        if (!window.fetch) {
-            var headElement = document.getElementsByTagName("head")[0];
-            var fetchElement = document.createElement("script");
-            fetchElement.type = "text/javascript";
-            fetchElement.src = "{{ management_url("fetch.js") }}";
-            headElement.appendChild(fetchElement);
-         }
         window.addEventListener("load", function () {
             buildWindow("{{ slug }}", "{{ sub_slug }}");
         });

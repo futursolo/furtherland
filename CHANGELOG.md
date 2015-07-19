@@ -1,5 +1,9 @@
 # Changelog
 
+v20150719 dev
+-------------
+ - New Theme Summer Night Released.
+
 v20150716 dev
 -------------
  - All Internal Areas has moved to New Terminal Service(A new, united API handler).
