@@ -24,11 +24,32 @@ html, body{
     font-size: 15px;
     color: rgb(100, 100, 100);
     background-color: rgb(245, 245, 245);
-    word-break: break-all;
 }
 
 textarea, input{
     font-family: Oxygen, Verdana, Tahoma, STHeiti, "Noto Sans CJK SC", "Microsoft YaHei", SimHei;
+}
+
+.toast{
+    position: fixed;
+    left: 10px;
+    padding: 15px;
+    bottom: -100px;
+    background-color: rgb(50, 50, 50);
+    border-radius: 2px;
+    min-width: 200px;
+    max-width: 100%;
+    transition: bottom 0.20s ease-in-out;
+    color: rgb(255, 255, 255);
+    box-shadow: 0 4px 10px 0px rgb(100, 100, 100);
+}
+.toast.visible{
+    bottom: 10px;
+}
+
+.toast .action{
+    color: #eeff41;
+    margin: 10px;
 }
 
 .load{
@@ -53,246 +74,40 @@ textarea, input{
 .load .failed{
     z-index: 1001;
 }
-
-.confirm{
-    height: 0;
-    width: 0;
-    z-index: 105;
-    display: table;
-    background-color: rgba(0, 0, 0, 0.4);
-    position: fixed;
-    overflow: hidden;
-    opacity: 0;
-    transition: opacity 0.30s ease-in-out;
-    top: -10000px;
-    left: -10000px;
-}
-.confirm.visible{
-    opacity: 1;
-}
-.confirm > .container{
-    display: table-cell;
-    vertical-align: middle;
-}
-.confirm .dialog{
-    max-width: 500px;
-    box-sizing: border-box;
-    padding: 20px;
-    padding-bottom: 55px;
-    width: calc(100% - 40px);
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 20px;
-    border-radius: 2px;
-    background-color: rgb(255, 255, 255);
-    position: relative;
-}
-.confirm .message{
-    padding-bottom: 50px;
-    font-size: 18px;
-}
-.confirm paper-button{
-    float: right;
-}
-.confirm .continue{
-    color: rgb(54, 134, 190);
-}
-.confirm .continue[active]{
-    background-color: rgba(54, 134, 190, 0.25);
-}
-
-.public{
-    height: 0;
-    width: 0;
-    z-index: 100;
-    background-color: rgba(0, 0, 0, 0.4);
-    position: fixed;
-    overflow: hidden;
-    opacity: 0;
-    transition: opacity 0.30s ease-in-out;
-}
-.public.visible{
-    opacity: 1;
-}
-.public > .container{
-    max-width: 700px;
-    width: calc(100% - 40px);
-    height: calc(100% - 40px);
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 20px;
-    border-radius: 2px;
-    background-color: rgb(255, 255, 255);
-}
-.public .content-selector paper-tab{
-    background-color: rgb(255, 255, 255);
-    transition: background 0.30s ease-in-out;
-}
-.public .content-selector paper-tab.iron-selected{
-    background-color: rgba(54, 134, 190, 0.5);
-}
-
-.public .title{
-    padding: 15px;
-    box-sizing: border-box;
-    border-bottom: 1px solid rgb(200, 200, 200);
-}
-
-.public > .container > .content{
-    height: calc(100% - 170px);
-    border-top: 1px solid rgb(200, 200, 200);
-    position: relative;
-}
-
-.public > .container > .content .content-block{
-    overflow: hidden;
-    height: 100%;
-    width: 100%;
-    display: none;
-}
-.public > .container > .content .content-block.current{
-    display: table;
-}
-
-.public > .container > .content .upload-now .table-cell{
-    display: table-cell;
-    vertical-align: middle;
-}
-
-.public > .container > .content .upload-now .uploading{
-    height: 0;
-    width: 0;
-    opacity: 0;
-    overflow: hidden;
-    transition: opacity 0.30s ease-in-out;
-    display: table;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: rgb(255, 255, 255);
-    z-index: 1;
-}
-
-.public > .container > .content .upload-now .uploading.visible{
-    height: 100%;
-    width: 100%;
-    opacity: 1;
-}
-.public > .container > .content .upload-now .uploading  > .content{
-    display: table-cell;
-    vertical-align: middle;
-}
-.public > .container > .content .upload-now .uploading  > .content > div{
-    text-align: center;
-}
-.public > .container > .content .upload-now .uploading  > .content > div paper-progress{
-    width: 300px;
-}
-.public > .container > .content .upload-now .tips{
-    text-align: center;
-}
-
-.public > .container > .content .upload-now .select-file-line{
-    text-align: center;
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-
-.public > .container > .content .upload-now .select-file{
-    background-color: rgb(76, 175, 80);
-    color: rgb(255, 255, 255);
-}
-
-.public > .container > .content .upload-now .hidden-file-selector{
-    display: none;
-}
-.public .content .uploaded{
-    overflow-y: auto;
-}
-.public .content .uploaded .file-item{
-    position: relative;
-    height: 50px;
-    width: 100%;
-    border-bottom: 1px solid rgb(200, 200, 200);
-    line-height: 50px;
-    font-size: 20px;
-    padding-left: 20px;
-    padding-right: 20px;
-    box-sizing: border-box;
-    transition: background-color 0.30s ease-in-out;
-}
-.public .content .uploaded .file-item.current{
-    background-color: rgba(54, 134, 190, 0.5);
-}
-.public .content .uploaded .file-item .time{
-    float: right;
-}
-
-.public .action{
-    padding: 15px;
-    box-sizing: border-box;
-    border-top: 1px solid rgb(200, 200, 200);
-    text-align: right;
-}
-
-.public .action .insert-as-photo{
-    color: rgb(76, 175, 80);
-}
-
-.public .action .insert-as-link{
-    color: rgb(54, 134, 190);
-}
-
-header{
-    z-index: 1;
-    height: 64px;
-}
-header > .toolbar{
+.mdl-layout__header{
     background-color: rgb(54, 134, 190);
-    height: 64px !important;
 }
-
-.main{
-    width: 100%;
-    height: calc(100% - 64px);
+.mdl-layout__header .mdl-layout__header-row .mdl-navigation__link{
+    line-height: 0;
+}
+main{
     position: relative;
 }
 
-aside{
-    width: 300px;
-    min-height: 100%;
-    position:absolute;
-    left: 0;
-    transform: translate(-400px, 0);
-    top: 0;
-    transition: all 0.50s ease-in-out;
-    z-index: 10;
-}
-aside.visible{
-    transform: translate(0, 0);
-}
-
-.main > .container{
+main > .container{
     height: 100%;
     width: 100%;
     box-sizing: border-box;
     display: none;
+    overflow-y: auto;
+    position: absolute;
 }
-.main > .current{
+
+main > .current{
     display: block;
 }
 
-.main > .lobby.current{
+main > .lobby.current{
     padding: 20px;
     display: table;
 }
 
-.main > .lobby > .container{
+main > .lobby > .container{
     display: table-cell;
     text-align: center;
 }
 
-.main > .lobby .tile{
+main > .lobby .tile{
     display: inline-block;
     position: relative;
     vertical-align: middle;
@@ -300,76 +115,46 @@ aside.visible{
     width: 300px;
     height: 400px;
     margin: 20px;
-}
-.main > .lobby .tile > .container{
-    height: 100%;
-    width: 100%;
-    padding: 10px;
     border-radius: 2px;
     background-color: rgb(255, 255, 255);
+    padding: 10px;
+    box-shadow: 0 4px 10px 0px rgb(100, 100, 100);
 }
-.main > .lobby .tile > .container > .tips-list{
+main > .lobby .tile > .tips-list{
     height: 150px;
 }
-.main > .lobby .tile > .container > .name{
+main > .lobby .tile > .name{
     font-size: 40px;
     line-height: 100px;
 }
-.main > .lobby .tile > .container > .content{
+main > .lobby .tile > .content{
     font-size: 40px;
     line-height: 100px;
 }
 
-.main > .lobby .manage-writing{
-    color: rgb(255, 255, 255);
-    background-color: rgb(66, 133, 244);
-}
-.main > .lobby .manage-writing[active]{
-    background-color: rgba(66, 133, 244, 0.25);
-}
-.main > .lobby .manage-page{
-    color: rgb(255, 255, 255);
-    background-color: rgb(76, 175, 80);
-}
-.main > .lobby .manage-page[active]{
-    background-color: rgba(76, 175, 80, 0.25);
-}
-.main > .lobby .manage-reply{
-    color: rgb(255, 255, 255);
-    background-color: rgb(255, 152, 0);
-}
-.main > .lobby .manage-reply[active]{
-    background-color: rgba(255, 152, 0, 0.25);
+main > .lobby .manage-button i{
+    vertical-align: middle;
 }
 
-.main > .lobby > .float-container{
+main > .lobby > .float-container{
     position: fixed;
     bottom: 20px;
     right: 20px;
 }
-.main > .lobby > .float-container paper-fab{
-    background-color: rgb(244, 67, 54);
-}
-.main > .lobby > .float-container paper-fab[active]{
-    background-color: rgba(244, 67, 54, 0.25);
-}
 
-.main > .working{
+main > .working{
     background-color: rgb(255, 255, 255);
 }
 
-.main > .working > .title-container{
-    position: relative;
-    top: 0;
-    right: 0;
+main > .working > .title-container{
+    width: 100%;
 }
 
-.main > .working > .title-container > .title-input{
-    z-index: 1;
-    position: relative;
+main > .working > .title-container .title-input-back{
+    width: 100%;
 }
 
-.main > .working .description{
+main > .working .description{
     height: 40px;
     box-sizing: border-box;
     padding-left: 10px;
@@ -378,7 +163,7 @@ aside.visible{
     color: rgb(150, 150, 150);
 }
 
-.main > .working > .editor-container{
+main > .working > .editor-container{
     height: calc(100% - 55px);
     width: 50%;
     display: inline-block;
@@ -390,7 +175,7 @@ aside.visible{
     border-right: 1px solid rgb(230, 230, 230);
 }
 
-.main > .working > .editor-container .editor-textarea{
+main > .working > .editor-container .editor-textarea{
     resize: none;
     border: none;
     height: calc(100% - 45px);
@@ -404,7 +189,7 @@ aside.visible{
     outline: 0;
 }
 
-.main > .working > .preview-container{
+main > .working > .preview-container{
     height: calc(100% - 55px);
     width: 50%;
     display: inline-block;
@@ -416,7 +201,7 @@ aside.visible{
     border-left: 1px solid rgb(230, 230, 230);
 }
 
-.main > .working > .preview-container .preview-div{
+main > .working > .preview-container .preview-div{
     height: calc(100% - 45px);
     width: 100%;
     box-sizing: border-box;
@@ -428,12 +213,12 @@ aside.visible{
     color: rgb(100, 100, 100);
     position: relative;
 }
-.main > .working > .preview-container .preview-div *{
+main > .working > .preview-container .preview-div *{
     max-width: 100%;
 }
 
-.main > .working > .info-container{
-height: calc(100% - 64px);
+main > .working > .info-container{
+    height: calc(100% - 64px);
     width: 400px;
     max-width: 100%;
     position: fixed;
@@ -442,25 +227,21 @@ height: calc(100% - 64px);
     transform: translate(400px, 0);
     transition: all 0.30s ease-in-out;
     z-index: 3;
-}
-.main > .working .info-container > .container{
-    height: 100%;
-    width: 100%;
     background-color: rgb(255, 255, 255);
+    box-shadow: 0 0 10px 0 rgb(100, 100, 100);
     box-sizing: border-box;
-    position: relative;
     padding: 10px;
 }
-.main > .working .info-container.visible{
+main > .working .info-container.visible{
     transform: translate(0, 0);
 }
 
-.main > .working .info-container > .container > .title-container{
+main > .working .info-container > .title-container{
     text-align: center;
     font-size: 20px;
     font-weight: bold;
 }
-.main > .working .info-container > .container > .title-container .close-button{
+main > .working .info-container > .title-container .close-button{
     position: absolute;
     height: 24px;
     width: 24px;
@@ -470,20 +251,20 @@ height: calc(100% - 64px);
 
 }
 
-.main > .working .info-container > .container > .type-container > .type-radio-group{
+main > .working .info-container > .type-container > .type-radio-group{
     outline: 0;
 }
 
-.main > .working .info-container > .container > .slug-container .slug-preview{
+main > .working .info-container > .slug-container .slug-preview{
     min-height: 40px;
 }
-.main > .working .info-container > .container > .type-container .title{
+main > .working .info-container > .type-container .title{
     padding-top: 20px;
 }
-.main > .working .info-container > .container > .save-container{
+main > .working .info-container > .save-container{
     height: 40px;
 }
-.main > .working .info-container > .container > .tips-container .title{
+main > .working .info-container > .tips-container .title{
     font-size: 20px;
     line-height: 30px;
     margin-top:20px;
@@ -492,303 +273,18 @@ height: calc(100% - 64px);
     text-align: center;
 }
 
-.main > .working .info-container > .container > .save-container .publish-button{
+main > .working .info-container > .save-container .publish-button{
     color: rgb(76, 175, 80);
     float: right;
 }
-.main > .working .info-container > .container > .save-container .publish-button[active]{
-    background-color: rgba(76, 175, 80, 0.25);
-}
 
-.main > .working .info-container > .container > .save-container .draft-button{
+main > .working .info-container > .save-container .draft-button{
     float: right;
     color: rgb(54, 134, 190);
 }
-.main > .working .info-container > .container > .save-container .draft-button[active]{
-    background-color: rgba(54, 134, 190, 0.25);
-}
 
-.main > .working .float-container{
+main > .working .float-container{
     position: fixed;
     bottom: 20px;
     right: 20px;
-}
-.main > .working .float-container paper-fab{
-    background-color: rgb(244, 67, 54);
-}
-.main > .working .float-container paper-fab[active]{
-    background-color: rgba(244, 67, 54, 0.25);
-}
-
-.main > .crda .type-selector{
-    background-color: rgb(54, 134, 190);
-    color: rgb(255, 255, 255);
-}
-.main > .crda .main-container{
-    background-color: rgb(245, 245, 245);
-    height: calc(100% - 48px);
-    overflow-y: auto;
-}
-
-.main > .crda .main-container .workings-list{
-    background-color: rgb(255, 255, 255);
-    border-radius: 2px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    display: none;
-    max-width: 1200px;
-    width: 100%;
-}
-.main > .crda .main-container .workings-list.current{
-    display: block;
-}
-.main > .crda .main-container .workings-list .item{
-    box-sizing: border-box;
-    padding: 15px;
-    padding-left: 20px;
-    padding-right: 20px;
-    position: relative;
-}
-.main > .crda .main-container .workings-list .item .title{
-    line-height: 24px;
-    display: inline-block;
-    font-size: 20px;
-    width: calc(100% - 64px);
-    box-sizing: border-box;
-    padding-left: 20px;
-}
-.main > .crda .main-container .workings-list .item a:link{
-    color: rgb(100, 100, 100);
-}
-.main > .crda .main-container .workings-list .item a:visited{
-    color: rgb(100, 100, 100);
-}
-.main > .crda .main-container .workings-list .item .launch-working{
-    z-index: 1;
-}
-.main > .crda .main-container .workings-list .item .remove{
-    color: rgb(244, 67, 54);
-    display: inline-block;
-    z-index: 1;
-}
-
-.main > .crda .main-container .workings-list .reply-item{
-    box-sizing: border-box;
-    padding: 15px;
-    padding-left: 20px;
-    padding-right: 20px;
-    position: relative;
-}
-.main > .crda .main-container .workings-list .reply-item .avatar-block{
-    width: 70px;
-    height: 70px;
-    border-radius: 500px;
-    background-size: cover;
-    display: inline-block;
-    position: relative;
-    vertical-align: top;
-}
-.main > .crda .main-container .workings-list .reply-item .info-block{
-    position: relative;
-    display: inline-block;
-    height: 60px;
-    padding-left: 20px;
-    padding-right: 20px;
-    line-height: 20px;
-}
-.main > .crda .main-container .workings-list .reply-item .waiting-for-permit{
-    margin-left: 10px;
-    color: rgb(3, 169, 244);
-    opacity: 0;
-    display: inline-block;
-    transition: all 0.30s ease-in-out;
-}
-.main > .crda .main-container .workings-list .reply-item .waiting-for-permit.visible{
-    opacity: 1;
-}
-.main > .crda .main-container .workings-list .reply-item .info-block a:link{
-    color: rgb(100, 100, 100);
-    font-weight: bold;
-    text-decoration: none;
-    transition: all 0.20s ease-in-out;
-}
-.main > .crda .main-container .workings-list .reply-item .info-block a:visited{
-    color: rgb(100, 100, 100);
-    font-weight: bold;
-    text-decoration: none;
-    transition: all 0.20s ease-in-out;
-}
-.main > .crda .main-container .workings-list .reply-item .info-block a:hover{
-    text-decoration: underline;
-}
-.main > .crda .main-container .workings-list .reply-item .info-block{
-    display: inline-block;
-}
-.main > .crda .main-container .workings-list .reply-item .info-block iron-icon{
-    width: 20px;
-    height: 20px;
-    position: relative;
-    top: -2px;
-}
-.main > .crda .main-container .workings-list .reply-item .info-block .time{
-    line-height: 40px;
-}
-.main > .crda .main-container .workings-list .reply-item .info-block .email{
-    display: inline-block;
-}
-.main > .crda .main-container .workings-list .reply-item .body-block{
-    width: 100%;
-}
-.main > .crda .main-container .workings-list .reply-item .action-block{
-    display: inline-block;
-}
-
-.main > .crda .main-container .workings-list .reply-item .action-block .toggle-permit{
-    color: rgb(76, 175, 80);
-    display: inline-block;
-}
-.main > .crda .main-container .workings-list .reply-item .action-block .edit{
-    color: rgb(255, 152, 0);
-    display: inline-block;
-}
-.main > .crda .main-container .workings-list .reply-item .action-block .remove{
-    color: rgb(244, 67, 54);
-    display: inline-block;
-}
-.main > .crda .main-container .workings-list .no-content{
-    box-sizing: border-box;
-    padding: 15px;
-    padding-left: 20px;
-    padding-right: 20px;
-    line-height: 40px;
-    position: relative;
-    text-align: center;
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.main > .crda .reply-editor{
-    height: 0;
-    width: 0;
-    z-index: 50;
-    display: table;
-    background-color: rgba(0, 0, 0, 0.4);
-    position: fixed;
-    overflow: hidden;
-    opacity: 0;
-    top: -10000px;
-    left: -10000px;
-    transition: opacity 0.30s ease-in-out;
-}
-.main > .crda .reply-editor.visible{
-    opacity: 1;
-}
-.main > .crda .reply-editor > .table-cell{
-    display: table-cell;
-    vertical-align: middle;
-}
-.main > .crda .reply-editor .container{
-    max-width: 500px;
-    width: calc(100% - 40px);
-    max-height: calc(100% - 40px);
-    margin-left: auto;
-    margin-right: auto;
-    border-radius: 2px;
-    background-color: rgb(255, 255, 255);
-    position: relative;
-    padding: 15px;
-    box-sizing: border-box;
-}
-.main > .crda .reply-editor .container .input-block{
-    width: 100%;
-    text-align: center;
-}
-.main > .crda .reply-editor .container .input-line{
-    display: inline-block;
-    width: calc(50% - 2px);
-    padding-left: 10px;
-    padding-right: 10px;
-    box-sizing: border-box;
-    text-align: left;
-}
-.main > .crda .reply-editor .container .homepage-line{
-    width: 100%;
-    text-align: center;
-    padding-left: 7px;
-    padding-right: 7px;
-    box-sizing: border-box;
-}
-.main > .crda .reply-editor .container .homepage-line paper-input{
-    text-align: left;
-}
-.main > .crda .reply-editor .container .content-line{
-    width: 100%;
-    position: relative;
-    text-align: center;
-}
-.main > .crda .reply-editor .container .content-line .content{
-    resize: none;
-    width: calc(100% - 14px);
-    min-height: 200px;
-    box-sizing: border-box;
-    padding: 5px;
-    text-align: left;
-    font-size: 15px;
-}
-.main > .crda .reply-editor .container .content-line .content:focus{
-    border: 2px solid rgb(54, 134, 190);
-    outline: 0;
-    padding: 4px;
-}
-.main > .crda .reply-editor .container .action-line{
-    text-align: right;
-    padding-top: 10px;
-}
-.main > .crda .reply-editor .container .action-line .save{
-    color: rgb(54, 134, 190);
-}
-.main > .configuration{
-    position: relative;
-    background-color: rgb(245, 245, 245);
-}
-.main > .configuration > .container{
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: rgb(255, 255, 255);
-    box-sizing: border-box;
-}
-.main > .configuration > .container .config-item{
-    padding: 15px;
-    padding-left: 40px;
-    padding-right: 40px;
-    border-bottom: 1px solid rgb(233, 233, 233);
-}
-.main > .configuration > .container .textarea{
-    width: 100%;
-    box-sizing: border-box;
-    height: 200px;
-    padding: 5px;
-    resize: none;
-    font-size: 15px;
-}
-.main > .configuration > .container .textarea:focus{
-    padding: 4px;
-    border: 2px solid rgb(54, 134, 190);
-    outline: 0;
-}
-.main > .configuration > .container .config-item .description{
-    text-align: left;
-}
-.main > .configuration > .container .action-line{
-    padding: 10px;
-    text-align: right;
-}
-.main > .configuration > .container .action-line .reset{
-    color: rgb(244, 67, 54);
-}
-.main > .configuration > .container .action-line .save{
-    color: rgb(54, 134, 190);
 }
