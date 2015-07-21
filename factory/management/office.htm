@@ -53,14 +53,62 @@
         </div>
     </div>
 
+    <div class="confirm">
+        <div class="container">
+            <div class="dialog">
+                <div class="message"></div>
+                <div class="mdl-button mdl-js-button mdl-js-ripple-effect continue">继续</div>
+                <div class="mdl-button mdl-js-button mdl-js-ripple-effect cancel">取消</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="public">
+        <div class="container">
+            <div class="title">公共区域</div>
+            <div class="content-selector">
+                <div class="item upload-now">现在上传</div>
+                <div class="item uploaded">从已存在的文件中选择</div>
+            </div>
+
+            <div class="content">
+                <div class="content-block upload-now">
+                    <div class="uploading">
+                        <div class="content">
+                            <div>正在上传...</div>
+                            <div>
+                                <div class="mdl-progress mdl-js-progress progress-bar"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-cell file-uploader">
+                        <div class="tips">将文件拖动到这里来上传 或</div>
+                        <div class="select-file-line">
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color--green-500 select-file">&nbsp;&nbsp;选择文件&nbsp;&nbsp;</button>
+                        </div>
+                        <input class="hidden-file-selector" name="files[]" type="file">
+                    </div>
+                </div>
+                <div class="content-block uploaded"></div>
+            </div>
+            <div class="action">
+                <button class="mdl-button mdl-js-button mdl-js-ripple-effect insert-as-photo">作为图片插入</button>
+                <button class="mdl-button mdl-js-button mdl-js-ripple-effect insert-as-link">作为链接插入</button>
+                <button class="mdl-button mdl-js-button mdl-js-ripple-effect cancel">取消</button>
+            </div>
+        </div>
+    </div>
+
+
+
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
         <header class="mdl-layout__header">
             <div class="mdl-layout__header-row">
                 <span class="mdl-layout-title">{{ config["office_name"] }}</span>
                 <div class="mdl-layout-spacer"></div>
                 <nav class="mdl-navigation mdl-layout--large-screen-only">
-                    <a class="mdl-navigation__link" href="/" target="_blank"><i class="material-icons">dashboard</i></a>
-                    <a class="mdl-navigation__link" href="/management/checkout" target="_blank"><i class="material-icons">power_settings_new</i></a>
+                    <a class="mdl-navigation__link" href="/" target="_blank" title="前往「{{ config["site_name"] }}」"><i class="material-icons">dashboard</i></a>
+                    <a class="mdl-navigation__link" href="/management/checkout" target="_blank" title="登出"><i class="material-icons">power_settings_new</i></a>
                 </nav>
             </div>
         </header>
@@ -152,18 +200,18 @@
 
                     <div class="type-container">
                         <div class="title">作品类型：</div>
-                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="working-type-is-writing">
-                            <input type="radio" id="working-type-is-writing" class="mdl-radio__button" name="type-radio-group" value="writing" checked>
+                        <label class="mdl-radio mdl-js-radio" for="working-type-is-writing">
+                            <input type="radio" id="working-type-is-writing" class="mdl-radio__button working-type-is-writing" name="type-radio-group" value="writing" checked>
                             <span class="mdl-radio__label">文章</span>
                         </label>
-                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="working-type-is-page">
-                            <input type="radio" id="working-type-is-page" class="mdl-radio__button" name="type-radio-group" value="page">
+                        <label class="mdl-radio mdl-js-radio" for="working-type-is-page">
+                            <input type="radio" id="working-type-is-page" class="mdl-radio__button working-type-is-page" name="type-radio-group" value="page">
                             <span class="mdl-radio__label">页面</span>
                         </label>
                     </div>
 
                     <div class="slug-container">
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label slug-input">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label slug-input-back">
                             <input class="mdl-textfield__input slug-input" type="text" pattern="[\-a-zA-Z0-9]*" id="working-slug-input">
                             <label class="mdl-textfield__label" for="working-slug-input">短链接</label>
                             <span class="mdl-textfield__error">链接形式：[\-a-zA-Z0-9]* !</span>
@@ -183,10 +231,10 @@
                     </div>
 
                     <div class="save-container">
-                        <div class="mdl-button mdl-js-button mdl-js-ripple-effect publish-button">
+                        <div class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--light-blue-500 publish-button">
                             立即发表
                         </div>
-                        <div class="mdl-button mdl-js-button mdl-js-ripple-effect draft-button">
+                        <div class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--green-500 draft-button">
                             存为草稿
                         </div>
                     </div>
@@ -205,12 +253,12 @@
                 </div>
 
                 <div class="float-container">
-                    <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored open-public-fab">
+                    <div class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored open-public-fab">
                         <i class="material-icons">attachment</i>
-                    </button>
-                    <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored publish-fab">
+                    </div>
+                    <div class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored publish-fab">
                         <i class="material-icons">publish</i>
-                    </button>
+                    </div>
                 </div>
 
                 <div class="toast-container">
@@ -225,6 +273,120 @@
                     </div>
                     <div class="toast auto-hide save-failed">
                         <span>抱歉，发生了未知错误。<span class="action" onclick="sendWorking();">再次尝试</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container crda">
+                <div class="main-container">
+                    <div class="type-selector">
+                        <div class="item writings">文章</div>
+                        <div class="item pages">页面</div>
+                        <div class="item replies">评论</div>
+                    </div>
+                    <div class="workings-list writings"></div>
+                    <div class="workings-list pages"></div>
+                    <div class="workings-list replies"></div>
+                    <div class="workings-list publics"></div>
+                </div>
+                <div class="reply-editor">
+                    <div class="table-cell">
+                        <div class="container">
+                            <div class="title">编辑评论</div>
+                            <div class="input-block">
+                                <div class="input-line">
+                                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label name-back">
+                                        <input class="mdl-textfield__input name" type="text" id="crda-reply-editor-name">
+                                        <label class="mdl-textfield__label" for="crda-reply-editor-name">昵称</label>
+                                    </div>
+                                </div>
+                                <div class="input-line">
+                                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label email-back">
+                                        <input class="mdl-textfield__input email" type="text" id="crda-reply-editor-email">
+                                        <label class="mdl-textfield__label" for="crda-reply-editor-email">电邮</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="homepage-line">
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label homepage-back">
+                                    <input class="mdl-textfield__input homepage" type="text" id="crda-reply-editor-homepage">
+                                    <label class="mdl-textfield__label" for="crda-reply-editor-homepage">个人主页</label>
+                                </div>
+                            </div>
+                            <div class="content-line">
+                                <textarea class="content" placeholder="内容"></textarea>
+                            </div>
+                            <div class="action-line">
+                                <div class="mdl-button mdl-js-button mdl-js-ripple-effect cancel">取消</div>
+                                <div class="mdl-button mdl-js-button mdl-js-ripple-effect save">保存</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="toast-container">
+                    <div class="toast auto-hide save-success">
+                        <span>操作已经成功执行。</span>
+                    </div>
+                    <div class="toast auto-hide save-failed">
+                        <span>抱歉，发生了未知错误。请稍后再试。</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container configuration">
+                <div style="height: 40px;"></div>
+                <div class="container">
+                    <div class="config-item">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label config-value-back">
+                            <input class="mdl-textfield__input config-value" config_name="site_name" type="text" id="configuration-config-value-site_name">
+                            <label class="mdl-textfield__label" for="configuration-config-value-site_name">名称</label>
+                        </div>
+                    </div>
+                    <div class="config-item">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label config-value-back">
+                            <input class="mdl-textfield__input config-value" config_name="site_description" type="text" id="configuration-config-value-site_description">
+                            <label class="mdl-textfield__label" for="configuration-config-value-site_description">描述</label>
+                        </div>
+                        <div class="description">描述一般会显示在名称的下方，一个好的描述能够帮助人们更好的理解名称。</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label config-value-back">
+                            <input class="mdl-textfield__input config-value" config_name="site_keywords" type="text" id="configuration-config-value-site_keywords">
+                            <label class="mdl-textfield__label" for="configuration-config-value-site_keywords">标签</label>
+                        </div>
+                        <div class="description">标签将会帮助搜索引擎进行归类，以便带来正确的访客。</div>
+                        <div class="description">如果你需要键入多个标签，请使用英文逗号分割它们。</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label config-value-back">
+                            <input class="mdl-textfield__input config-value" config_name="site_url" type="text" id="configuration-config-value-site_url">
+                            <label class="mdl-textfield__label" for="configuration-config-value-site_url">网络地址</label>
+                        </div>
+                        <div class="description">这将成为「FurtherLand」对统一资源定位器进行格式化的时候使用的开头。</div>
+                    </div>
+                    <div class="config-item">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label config-value-back">
+                            <input class="mdl-textfield__input config-value" config_name="nutrition_type" type="text" id="configuration-config-value-nutrition_type">
+                            <label class="mdl-textfield__label" for="configuration-config-value-nutrition_type">主题</label>
+                        </div>
+                        <div class="description">请填写一个已经被上传的主题的目录名称。</div>
+                    </div>
+                    <div class="config-item">
+                        <textarea class="config-value textarea" config_name="trace_code" placeholder="追踪代码"></textarea>
+                        <div class="description">追踪代码将会用于追踪并了解你的访客群体，以帮助你提高内容的质量。</div>
+                    </div>
+                    <div class="action-line">
+                        <div class="mdl-button mdl-js-button mdl-js-ripple-effect reset">复原</div>
+                        <div class="mdl-button mdl-js-button mdl-js-ripple-effect save">保存</div>
+                    </div>
+                </div>
+                <div style="height: 40px;"></div>
+                <div class="toast-container">
+                    <div class="toast auto-hide save-success">
+                        <span>设置保存成功，但是你可能需要刷新页面才能看到改变。<span class="action" onclick="window.location.reload();">立即刷新</span></span>
+                    </div>
+                    <div class="toast auto-hide save-failed">
+                        <span>抱歉，发生了未知错误。请稍后再试。</span>
                     </div>
                 </div>
             </div>
