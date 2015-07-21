@@ -330,6 +330,7 @@ body.small .main > .writing > .replies > .reply-card{
     height: 200px;
     font-size: 15px;
     transition: background 0.20s ease-in-out;
+    border: 1px solid rgb(150, 150, 150);
 }
 .main > .writing > .replies > .reply-card.new-reply .content:focus{
     outline: 0;
