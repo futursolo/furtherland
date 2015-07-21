@@ -6,6 +6,7 @@ v20150721 dev
  - Polymer Framework Removed
  - New Management Office without Polymer
  - Remove GitHub OAuth Configuration from Library Sample
+ - Summer Night Firefox and Safari browser Compatibility
 
 v20150719 dev
 -------------

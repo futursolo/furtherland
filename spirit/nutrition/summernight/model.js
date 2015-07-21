@@ -762,18 +762,20 @@ function buildWindow(slug, sub_slug) {
 }
 window.addEventListener("popstate", function (event) {
     state = event.state;
-    loadLayout(function (callback) {
-        if (_(".main > .current")){
-            _(".main > .current").classList.remove("current");
-        }
-        if (state.slug == "index") {
-            fetchIndexData(null, callback);
-        } else if(state.slug == "writing") {
-            fetchWritingData(state.sub_slug, callback);
-        } else if (state.slug == "page") {
-            fetchPageData(state.sub_slug, callback);
-        }
-    });
+    if (state) {
+        loadLayout(function (callback) {
+            if (_(".main > .current")){
+                _(".main > .current").classList.remove("current");
+            }
+            if (state.slug == "index") {
+                fetchIndexData(null, callback);
+            } else if(state.slug == "writing") {
+                fetchWritingData(state.sub_slug, callback);
+            } else if (state.slug == "page") {
+                fetchPageData(state.sub_slug, callback);
+            }
+        });
+    }
 });
 function resizeWindow() {
     if (window.innerWidth < 700) {
