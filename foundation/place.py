@@ -334,11 +334,6 @@ class PlacesOfInterest(RequestHandler):
         return RequestHandler.static_url(
             self, path, include_host=include_host, **kwargs)
 
-    def bower_url(self, path, include_host=None, **kwargs):
-        path = "bower/" + path
-        return RequestHandler.static_url(
-            self, path, include_host=include_host, **kwargs)
-
     def render(self, page, nutrition=True):
         if ("page_title" not in self.render_list.keys() and
            "origin_title" in self.render_list.keys()):
@@ -348,7 +343,6 @@ class PlacesOfInterest(RequestHandler):
 
         if not self.render_list.pop("__without_database", False):
             self.render_list["config"] = self.config
-            self.render_list["bower_url"] = self.bower_url
             self.render_list["FurtherLand"] = self.furtherland
             self.render_list["used_time"] = int(
                 (time.time() - self.start_time) * 1000)
