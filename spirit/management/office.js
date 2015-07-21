@@ -111,13 +111,16 @@ var objects = {
     "main > .crda .type-selector .pages": _("main > .container.crda .type-selector  .pages"),
     "main > .crda .type-selector .replies": _("main > .container.crda .type-selector  .replies"),
 
-    "main > .crda .main-container .writings": _("main > .container.crda .main-container  .writings"),
-    "main > .crda .main-container .pages": _("main > .container.crda .main-container  .pages"),
-    "main > .crda .main-container .replies": _("main > .container.crda .main-container  .replies"),
+    "main > .crda .main-container .writings": _("main > .container.crda .main-container .workings-list.writings"),
+    "main > .crda .main-container .pages": _("main > .container.crda .main-container .workings-list.pages"),
+    "main > .crda .main-container .replies": _("main > .container.crda .main-container .workings-list.replies"),
 
     "main > .crda .reply-editor": _("main > .container.crda .reply-editor"),
+    "main > .crda .reply-editor .name-back": _("main > .container.crda .reply-editor .name-back"),
     "main > .crda .reply-editor .name": _("main > .container.crda .reply-editor .name"),
+    "main > .crda .reply-editor .email-back": _("main > .container.crda .reply-editor .email-back"),
     "main > .crda .reply-editor .email": _("main > .container.crda .reply-editor .email"),
+    "main > .crda .reply-editor .homepage-back": _("main > .container.crda .reply-editor .homepage-back"),
     "main > .crda .reply-editor .homepage": _("main > .container.crda .reply-editor .homepage"),
     "main > .crda .reply-editor .content": _("main > .container.crda .reply-editor .content"),
 
@@ -247,6 +250,38 @@ function loadLayout(callback) {
     }, 100);
 }
 
+function acquireConfirm(message, callback) {
+    if (message == "remove") {
+        message = "你确认要移除它吗？这个操作是不可以逆转的。";
+    } else if (message == "leave") {
+        message = "你确认要离开吗？你所做的所有修改都会丢失。";
+    } else if (message == "reset") {
+        message = "你确认要复原它吗？你所做的所有修改都会丢失。";
+    }
+    objects[".confirm .message"].innerHTML = message;
+    function finishConfirm() {
+        objects[".confirm"].classList.remove("visible");
+        setTimeout(function () {
+            objects[".confirm"].style.height = "0";
+            objects[".confirm"].style.width = "0";
+            objects[".confirm"].style.top = "-10000px";
+            objects[".confirm"].style.left = "-10000px";
+        }, 300);
+    }
+    objects[".confirm .cancel"] .onclick = function () {
+        finishConfirm();
+    };
+    objects[".confirm .continue"] .onclick = function () {
+        finishConfirm();
+        callback();
+    };
+    objects[".confirm"].style.height = "100%";
+    objects[".confirm"].style.width = "100%";
+    objects[".confirm"].style.top = "0px";
+    objects[".confirm"].style.left = "0px";
+    objects[".confirm"].classList.add("visible");
+}
+
 function showPublicUploadNow() {
     if (_(".public .content-selector .item.current")) {
         _(".public .content-selector .item.current").classList.remove("current");
@@ -315,17 +350,13 @@ function loadPublicUploadedData() {
             timeElement.innerHTML = unixToDatetime(item.time);
             element.appendChild(timeElement);
 
-            rippleElement = document.createElement("paper-ripple");
-            rippleElement.style.color = "rgba(54, 134, 190, 0.75)";
-            element.appendChild(rippleElement);
-
             element.addEventListener("click", bindPublicEvent);
 
             objects[".public .content .uploaded"].appendChild(element);
         }
     }).catch(function (error) {
         console.log(error);
-        objects[".load .failed"].show();
+        showToast(objects[".load .failed"]);
     });
 }
 
@@ -862,19 +893,22 @@ function saveReplyEditor(reply) {
         if (!json.status) {
             throw new Error("unkonwn");
         }
-        objects["main > .crda .toast-container .save-success"].show();
+        showToast(objects["main > .crda .toast-container .save-success"]);
         hideReplyEditor();
         showCRDA("replies");
     }).catch(function (error) {
         console.log(error);
-        objects["main > .crda .toast-container .save-failed"].show();
+        showToast(objects["main > .crda .toast-container .save-failed"]);
     });
 }
 function showReplyEditor(reply) {
 
     objects["main > .crda .reply-editor .name"].value = reply.getAttribute("reply_name");
+    objects["main > .crda .reply-editor .name-back"].classList.add("is-dirty");
     objects["main > .crda .reply-editor .email"].value = reply.getAttribute("reply_email");
+    objects["main > .crda .reply-editor .email-back"].classList.add("is-dirty");
     objects["main > .crda .reply-editor .homepage"].value = reply.getAttribute("reply_homepage");
+    objects["main > .crda .reply-editor .homepage-back"].classList.add("is-dirty");
     objects["main > .crda .reply-editor .content"].value = reply.getAttribute("reply_content");
 
     objects["main > .crda .reply-editor"].style.height = "100%";
@@ -942,10 +976,10 @@ function bindCRDAEvent() {
                                 _("main > .crda .main-container .workings-list.current").innerHTML = "<div class=\"no-content\">不要找了，这里什么也没有啦(*'▽')！</div>";
                             }
                         }, 300);
-                        objects["main > .crda .toast-container .save-success"].show();
+                        showToast(objects["main > .crda .toast-container .save-success"]);
                     }).catch(function (error) {
                         console.log(error);
-                        objects["main > .crda .toast-container .save-failed"].show();
+                        showToast(objects["main > .crda .toast-container .save-failed"]);
                     });
                 });
             });
@@ -979,22 +1013,22 @@ function bindCRDAEvent() {
                     }
                     waitingForPermitIcon = findParentBySelector(element, ".reply-item").querySelector(".waiting-for-permit");
                     if (element.getAttribute("switch_to") == "true") {
-                        element.icon = "remove";
+                        element.querySelector("i").innerHTML = "remove";
                         element.setAttribute("switch_to", "false");
                         element.setAttribute("title", "撤销通过");
                         waitingForPermitIcon.classList.remove("visible");
                         waitingForPermitIcon.removeAttribute("title");
                     } else {
-                        element.icon = "check";
+                        element.querySelector("i").innerHTML = "check";
                         element.setAttribute("switch_to", "true");
                         element.setAttribute("title", "通过之");
                         waitingForPermitIcon.classList.add("visible");
                         waitingForPermitIcon.setAttribute("title", "该评论正在等待审核");
                     }
-                    objects["main > .crda .toast-container .save-success"].show();
+                    showToast(objects["main > .crda .toast-container .save-success"]);
                 }).catch(function (error) {
                     console.log(error);
-                    objects["main > .crda .toast-container .save-failed"].show();
+                    showToast(objects["main > .crda .toast-container .save-failed"]);
                 });
             });
         }
@@ -1039,10 +1073,10 @@ function bindCRDAEvent() {
                                 parent.innerHTML = "<div class=\"no-content\">不要找了，这里什么也没有啦(*'▽')！</div>";
                             }
                         }, 300);
-                        objects["main > .crda .toast-container .save-success"].show();
+                        showToast(objects["main > .crda .toast-container .save-success"]);
                     }).catch(function (error) {
                         console.log(error);
-                        objects["main > .crda .toast-container .save-failed"].show();
+                        showToast(objects["main > .crda .toast-container .save-failed"]);
                     });
                 });
             });
@@ -1055,6 +1089,9 @@ function loadCRDAData(type, callback) {
     queryString.append("_xsrf", getCookie("_xsrf"));
     queryString.append("action", "load_crda");
     queryString.append("type", type);
+    if (_("main > .crda .main-container .workings-list.current")) {
+        _("main > .crda .main-container .workings-list.current").classList.remove("current");
+    }
 
     fetch("/management/api", {
         "method": "post",
@@ -1066,94 +1103,286 @@ function loadCRDAData(type, callback) {
         }
         throw new Error(resp.statusText);
     }).then(function (json) {
-        var contentList = "";
         var currentObject;
         var key;
         if (type == "writings") {
             currentObject = objects["main > .crda .main-container .writings"];
             for (key in json) {
                 content = json[key];
-                if (contentList !== "") {
-                    contentList += "<div style=\"height: 1px; background-color: rgb(233, 233, 233);\"></div>";
-                }
-                item = "<div class=\"item\" working_id=\"" + content._id + "\" working_type=\"writing\">";
+
+                element = document.createElement("div");
+                element.classList.add("item");
+                element.setAttribute("working_id", content._id);
+                element.setAttribute("working_type", "writing");
+
                 if (!content.publish) {
-                    item += "<iron-icon icon=\"editor:border-color\" title=\"该作品仍为草稿\"></iron-icon>";
+                    draftElement = document.createElement("i");
+                    draftElement.classList.add("material-icons");
+                    draftElement.innerHTML = "border_color";
+                    draftElement.setAttribute("title", "该作品仍为草稿");
+                    element.appendChild(draftElement);
                 } else {
-                    item += "<a target=\"_blank\" href=\"/writings/" + content.slug + ".htm\">";
-                    item += "<iron-icon icon=\"launch\" title=\"打开作品\" class=\"launch-working\"></iron-icon></a>";
+                    linkElement = document.createElement("a");
+                    linkElement.href = "/writings/" + content.slug + ".htm";
+                    linkElement.setAttribute("target", "_blank");
+                    publishElement = document.createElement("i");
+                    publishElement.classList.add("material-icons");
+                    publishElement.classList.add("launch-working");
+                    publishElement.innerHTML = "open_in_new";
+                    publishElement.setAttribute("title", "打开作品");
+                    linkElement.appendChild(publishElement);
+                    element.appendChild(linkElement);
                 }
-                item += "<div class=\"title\">" + content.title + "</div>";
-                item += "<paper-icon-button class=\"remove\" working_id=\"" + content._id + "\" working_type=\"writing\" icon=\"remove-circle-outline\" title=\"移除作品\"></paper-icon-button>";
-                item += "<paper-ripple style=\"color: rgba(54, 134, 190, 0.75);\"></paper-ripple></div>";
-                contentList += item;
+                titleElement = document.createElement("div");
+                titleElement.classList.add("title");
+                titleElement.innerHTML = content.title;
+                element.appendChild(titleElement);
+
+                removeElement = document.createElement("div");
+                removeElement.classList.add("mdl-button");
+                removeElement.classList.add("mdl-js-button");
+                removeElement.classList.add("mdl-button--icon");
+                removeElement.classList.add("mdl-button--colored");
+                removeElement.classList.add("mdl-js-ripple-effect");
+                removeElement.classList.add("remove");
+                removeElement.setAttribute("working_id", content._id);
+                removeElement.setAttribute("working_type", "writing");
+                removeElement.setAttribute("title", "移除作品");
+                removeIconElement = document.createElement("i");
+                removeIconElement.classList.add("material-icons");
+                removeIconElement.innerHTML = "remove_circle_outline";
+                removeElement.appendChild(removeIconElement);
+                componentHandler.upgradeElement(removeElement, "MaterialButton");
+                componentHandler.upgradeElement(removeElement, "MaterialRipple");
+                element.appendChild(removeElement);
+                currentObject.appendChild(element);
             }
         } else if (type == "pages") {
             currentObject = objects["main > .crda .main-container .pages"];
             for (key in json) {
                 content = json[key];
-                if (contentList !== "") {
-                    contentList += "<div style=\"height: 1px; background-color: rgb(233, 233, 233);\"></div>";
-                }
-                item = "<div class=\"item\" working_id=\"" + content._id + "\" working_type=\"page\">";
+
+                element = document.createElement("div");
+                element.classList.add("item");
+                element.setAttribute("working_id", content._id);
+                element.setAttribute("working_type", "page");
+
                 if (!content.publish) {
-                    item += "<iron-icon icon=\"editor:border-color\" title=\"该作品仍为草稿\"></iron-icon>";
+                    draftElement = document.createElement("i");
+                    draftElement.classList.add("material-icons");
+                    draftElement.innerHTML = "border_color";
+                    draftElement.setAttribute("title", "该作品仍为草稿");
+                    element.appendChild(draftElement);
                 } else {
-                    item += "<a target=\"_blank\" href=\"/pages/" + content.slug + ".htm\">";
-                    item += "<iron-icon icon=\"launch\" title=\"打开作品\" class=\"launch-working\"></iron-icon></a>";
+                    linkElement = document.createElement("a");
+                    linkElement.href = "/pages/" + content.slug + ".htm";
+                    linkElement.setAttribute("target", "_blank");
+                    publishElement = document.createElement("i");
+                    publishElement.classList.add("material-icons");
+                    publishElement.classList.add("launch-working");
+                    publishElement.innerHTML = "open_in_new";
+                    publishElement.setAttribute("title", "打开作品");
+                    linkElement.appendChild(publishElement);
+                    element.appendChild(linkElement);
                 }
-                item += "<div class=\"title\">" + content.title + "</div>";
-                item += "<paper-icon-button class=\"remove\" working_id=\"" + content._id + "\" working_type=\"page\" icon=\"remove-circle-outline\" title=\"移除作品\"></paper-icon-button>";
-                item += "<paper-ripple style=\"color: rgba(54, 134, 190, 0.75);\"></paper-ripple></div>";
-                contentList += item;
+                titleElement = document.createElement("div");
+                titleElement.classList.add("title");
+                titleElement.innerHTML = content.title;
+                element.appendChild(titleElement);
+
+                removeElement = document.createElement("div");
+                removeElement.classList.add("mdl-button");
+                removeElement.classList.add("mdl-js-button");
+                removeElement.classList.add("mdl-button--icon");
+                removeElement.classList.add("mdl-button--colored");
+                removeElement.classList.add("mdl-js-ripple-effect");
+                removeElement.classList.add("remove");
+                removeElement.setAttribute("working_id", content._id);
+                removeElement.setAttribute("working_type", "page");
+                removeElement.setAttribute("title", "移除作品");
+                removeIconElement = document.createElement("i");
+                removeIconElement.classList.add("material-icons");
+                removeIconElement.innerHTML = "remove_circle_outline";
+                removeElement.appendChild(removeIconElement);
+                componentHandler.upgradeElement(removeElement, "MaterialButton");
+                componentHandler.upgradeElement(removeElement, "MaterialRipple");
+                element.appendChild(removeElement);
+                currentObject.appendChild(element);
             }
         } else if (type == "replies") {
             currentObject = objects["main > .crda .main-container .replies"];
             for (key in json) {
                 content = json[key];
-                if (contentList !== "") {
-                    contentList += "<div style=\"height: 1px; background-color: rgb(233, 233, 233);\"></div>";
-                }
-                item = "<div class=\"reply-item\" reply_id=\"" + content._id + "\" reply_name=\"" + content.name + "\" reply_email=\"" + content.email + "\" reply_homepage=\"" + content.homepage + "\" reply_content='" + content.content + "'>";
 
-                item += "<div class=\"avatar-block\" style=\"background-image: url(/avatar/" + content.emailmd5 + "?s=200&d=mm)\"></div>";
+                element = document.createElement("div");
+                element.classList.add("reply-item");
+                element.setAttribute("reply_id", content._id);
+                element.setAttribute("reply_name", content.name);
+                element.setAttribute("reply_email", content.email);
+                element.setAttribute("reply_homepage", content.homepage);
+                element.setAttribute("reply_content", content.content);
 
-                item += "<div class=\"info-block\">";
-                item += "<div><a target=\"_blank\" href=\"" + content.homepage + "\"><span class=\"reply-name\">" + content.name + "</span></a>";
-                item += "<paper-button class=\"email\" onclick=\"window.open('mailto:" + content.email + "', '_blank').focus()\" title=\"向 " + content.email + " 发送邮件\"><iron-icon icon=\"mail\"></iron-icon>" + content.email + "</paper-button>";
+                avatarElement = document.createElement("div");
+                avatarElement.classList.add("avatar-block");
+                avatarElement.style.backgroundImage = "url(/avatar/" + content.emailmd5 + "?s=200&d=mm)";
+                element.appendChild(avatarElement);
 
-                item += "<paper-button class=\"ip\" onclick=\"window.open('http://whatismyipaddress.com/ip/" + content.ip + "', '_blank').focus()\"><iron-icon icon=\"device:wifi-tethering\"></iron-icon>" + content.ip + "</paper-button></div>";
-                item += "<div><span class=\"time\">于 " + unixToDatetime(content.time) + "</span>";
-                item += "<span class=\"writing\"> 发表在 <a target=\"_blank\" href=\"/writings/" + content.writing.slug + ".htm\">" + content.writing.title + "</a></span>";
+                infoBlockElement = document.createElement("div");
+                infoBlockElement.classList.add("info-block");
+
+                lineUpElement = document.createElement("div");
+                lineUpElement.classList.add("line");
+
+                nameLinkElement = document.createElement("a");
+                nameLinkElement.href = content.homepage;
+                nameLinkElement.setAttribute("target", "_blank");
+                nameElement = document.createElement("span");
+                nameElement.classList.add("reply-name");
+                nameElement.innerHTML = content.name;
+                lineUpElement.appendChild(nameLinkElement);
+
+                emailElement = document.createElement("div");
+                emailElement.classList.add("mdl-button");
+                emailElement.classList.add("mdl-js-button");
+                emailElement.classList.add("mdl-js-ripple-effect");
+                emailElement.classList.add("email");
+                emailElement.addEventListener("click", function () {
+                    window.open("mailto:" + content.email, "_blank").focus();
+                });
+                emailIconElement = document.createElement("i");
+                emailIconElement.setAttribute("title", "向 " + content.email + " 发送邮件");
+                emailIconElement = document.createElement("i");
+                emailIconElement.classList.add("material-icons");
+                emailIconElement.innerHTML = "mail";
+                emailElement.appendChild(emailIconElement);
+                emailElement.innerHTML += content.email;
+                componentHandler.upgradeElement(emailElement, "MaterialButton");
+                componentHandler.upgradeElement(emailElement, "MaterialRipple");
+                lineUpElement.appendChild(emailElement);
+
+                ipElement = document.createElement("div");
+                ipElement.classList.add("mdl-button");
+                ipElement.classList.add("mdl-js-button");
+                ipElement.classList.add("mdl-js-ripple-effect");
+                ipElement.classList.add("ip");
+                ipElement.addEventListener("click", function () {
+                    window.open("http://whatismyipaddress.com/ip/" + content.ip, "_blank").focus();
+                });
+                ipIconElement = document.createElement("i");
+                ipIconElement.classList.add("material-icons");
+                ipIconElement.innerHTML = "wifi_tethering";
+                ipElement.appendChild(ipIconElement);
+                ipElement.innerHTML += content.ip;
+                componentHandler.upgradeElement(ipElement, "MaterialButton");
+                componentHandler.upgradeElement(ipElement, "MaterialRipple");
+                lineUpElement.appendChild(ipElement);
+                infoBlockElement.appendChild(lineUpElement);
+
+                lineDownElement = document.createElement("div");
+                lineDownElement.classList.add("line");
+
+                timeElement = document.createElement("span");
+                timeElement.classList.add("time");
+                timeElement.innerHTML = "于 " + unixToDatetime(content.time);
+                lineDownElement.appendChild(timeElement);
+
+                writingElement = document.createElement("span");
+                writingElement.classList.add("writing");
+                writingElement.innerHTML = " 发表在 ";
+                writingLinkElement = document.createElement("a");
+                writingLinkElement.href = "/writings/" + content.writing.slug + ".htm";
+                writingLinkElement.setAttribute("target", "_blank");
+                writingLinkElement.innerHTML = content.writing.title;
+                writingElement.appendChild(writingLinkElement);
+                lineDownElement.appendChild(writingElement);
+
+                permitIconElement = document.createElement("i");
+                permitIconElement.classList.add("material-icons");
+                permitIconElement.classList.add("waiting-for-permit");
                 if (!content.permit) {
-                    item += "<iron-icon class=\"waiting-for-permit visible\" icon=\"chrome-reader-mode\" title=\"该评论正在等待审核\"></iron-icon>";
-                } else {
-                    item += "<iron-icon class=\"waiting-for-permit\" icon=\"chrome-reader-mode\" title=\"\"></iron-icon>";
+                    permitIconElement.classList.add("visible");
                 }
-                item += "</div></div>";
+                permitIconElement.setAttribute("title", "该评论正在等待审核");
+                permitIconElement.innerHTML = "chrome_reader_mode";
+                lineDownElement.appendChild(permitIconElement);
+                infoBlockElement.appendChild(lineDownElement);
+                element.appendChild(infoBlockElement);
 
-                item += "<div class=\"body-block\">" + content.content + "</div>";
+                bodyBlockElement = document.createElement("div");
+                bodyBlockElement.classList.add("body-block");
+                bodyBlockElement.innerHTML = marked(content.content);
+                element.appendChild(bodyBlockElement);
 
-                item += "<div class=\"action-block\">";
+                actionBlockElement = document.createElement("div");
+                actionBlockElement.classList.add("action-block");
+
+                togglePermitElement = document.createElement("div");
+                togglePermitElement.classList.add("mdl-button");
+                togglePermitElement.classList.add("mdl-js-button");
+                togglePermitElement.classList.add("mdl-button--icon");
+                togglePermitElement.classList.add("mdl-button--colored");
+                togglePermitElement.classList.add("mdl-js-ripple-effect");
+                togglePermitElement.classList.add("toggle-permit");
+                togglePermitElement.setAttribute("reply_id", content._id);
+                togglePermitIconElement = document.createElement("i");
+                togglePermitIconElement.classList.add("material-icons");
                 if (!content.permit) {
-                    item += "<paper-icon-button class=\"toggle-permit\" switch_to=\"true\" reply_id=\"" + content._id + "\" icon=\"check\" title=\"通过之\"></paper-icon-button>";
+                    togglePermitElement.setAttribute("switch_to", "true");
+                    togglePermitElement.setAttribute("title", "通过之");
+                    togglePermitIconElement.innerHTML = "check";
                 } else {
-                    item += "<paper-icon-button class=\"toggle-permit\" switch_to=\"false\" reply_id=\"" + content._id + "\" icon=\"remove\" title=\"撤销通过\"></paper-icon-button>";
+                    togglePermitElement.setAttribute("switch_to", "false");
+                    togglePermitElement.setAttribute("title", "撤销通过");
+                    togglePermitIconElement.innerHTML = "remove";
                 }
-                item += "<paper-icon-button class=\"edit\" reply_id=\"" + content._id + "\" icon=\"editor:mode-edit\" title=\"编辑\"></paper-icon-button>";
-                item += "<paper-icon-button class=\"remove\" reply_id=\"" + content._id + "\" icon=\"remove-circle-outline\" title=\"移除\"></paper-icon-button>";
-                item += "</div>";
+                togglePermitElement.appendChild(togglePermitIconElement);
+                componentHandler.upgradeElement(togglePermitElement, "MaterialButton");
+                componentHandler.upgradeElement(togglePermitElement, "MaterialRipple");
+                actionBlockElement.appendChild(togglePermitElement);
 
-                item += "</div>";
-                contentList += item;
+                editElement = document.createElement("div");
+                editElement.classList.add("mdl-button");
+                editElement.classList.add("mdl-js-button");
+                editElement.classList.add("mdl-button--icon");
+                editElement.classList.add("mdl-button--colored");
+                editElement.classList.add("mdl-js-ripple-effect");
+                editElement.classList.add("edit");
+                editElement.setAttribute("reply_id", content._id);
+                editElement.setAttribute("title", "编辑");
+                editIconElement = document.createElement("i");
+                editIconElement.classList.add("material-icons");
+                editIconElement.innerHTML = "mode_edit";
+                editElement.appendChild(editIconElement);
+                componentHandler.upgradeElement(editElement, "MaterialButton");
+                componentHandler.upgradeElement(editElement, "MaterialRipple");
+                actionBlockElement.appendChild(editElement);
+
+                removeElement = document.createElement("div");
+                removeElement.classList.add("mdl-button");
+                removeElement.classList.add("mdl-js-button");
+                removeElement.classList.add("mdl-button--icon");
+                removeElement.classList.add("mdl-button--colored");
+                removeElement.classList.add("mdl-js-ripple-effect");
+                removeElement.classList.add("remove");
+                removeElement.setAttribute("reply_id", content._id);
+                removeElement.setAttribute("title", "移除");
+                removeIconElement = document.createElement("i");
+                removeIconElement.classList.add("material-icons");
+                removeIconElement.innerHTML = "remove_circle_outline";
+                removeElement.appendChild(removeIconElement);
+                componentHandler.upgradeElement(removeElement, "MaterialButton");
+                componentHandler.upgradeElement(removeElement, "MaterialRipple");
+                actionBlockElement.appendChild(removeElement);
+                element.appendChild(actionBlockElement);
+
+                currentObject.appendChild(element);
             }
         } else {
             throw new Error("unknown");
         }
-        if (contentList === "") {
-            contentList += "<div class=\"no-content\">不要找了，这里什么也没有啦(*'▽')！</div>";
+        if (currentObject.innerHTML === "") {
+            currentObject.innerHTML = "<div class=\"no-content\">不要找了，这里什么也没有啦(*'▽')！</div>";
         }
-        currentObject.innerHTML = contentList;
         currentObject.classList.add("current");
         bindCRDAEvent();
         if (callback) {
@@ -1161,21 +1390,28 @@ function loadCRDAData(type, callback) {
         }
     }).catch(function (error) {
         console.log(error);
-        objects[".load .failed"].show();
+        showToast(objects[".load .failed"]);
     });
 }
 
 function showCRDA(type) {
     type = (typeof type !== "string") ? "writings" : type;
 
-    current = _("main > .crda .main-container .workings-list.current");
-    if (current) {
-        current.innerHTML = "";
-    }
     loadLayout(function (callback) {
         window.history.pushState(null, null, "/management/crda/" + type);
 
+        if (_("main > .crda .main-container .workings-list.current")) {
+            _("main > .crda .main-container .workings-list.current").innerHTML = "";
+        }
+        if (_("main > .container.current")) {
+            _("main > .container.current").classList.remove("current");
+        }
         objects["main > .crda"].classList.add("current");
+
+        if (_("main > .crda .type-selector .current")) {
+            _("main > .crda .type-selector .current").classList.remove("current");
+        }
+        objects["main > .crda .type-selector ." + type].classList.add("current");
 
         loadCRDAData(type, callback);
     });
@@ -1201,6 +1437,90 @@ objects["main > .lobby .page-num .manage-page"].addEventListener("click", functi
 });
 objects["main > .lobby .reply-num .manage-reply"].addEventListener("click", function () {
     objects["main > .crda .type-selector .replies"].click();
+});
+
+function loadConfigurationData(callback) {
+    queryString = new FormData();
+    queryString.append("_xsrf", getCookie("_xsrf"));
+    queryString.append("action", "load_configuration");
+
+    fetch("/management/api", {
+        "method": "post",
+        "credentials": "include",
+        "body": queryString
+    }).then(function (resp) {
+        if (resp.status >= 200 && resp.status < 400) {
+            return resp.json();
+        }
+        throw new Error(resp.statusText);
+    }).then(function (json) {
+        Array.prototype.forEach.call(
+            _All("main > .configuration .config-value"), function (element) {
+                element.value = json[element.getAttribute("config_name")].value;
+            }
+        );
+        Array.prototype.forEach.call(
+            _All("main > .configuration .config-value-back"), function (element) {
+                element.classList.add("is-dirty");
+            }
+        );
+        if (callback) {
+            callback();
+        }
+    }).catch(function (error) {
+        console.log(error);
+        showToast(objects[".load .save-failed"]);
+    });
+}
+
+function showConfiguration() {
+    loadLayout(function (callback) {
+        window.history.pushState(null, null, "/management/configuration");
+
+        if (_("main > .container.current")) {
+            _("main > .container.current").classList.remove("current");
+        }
+        objects["main > .configuration"].classList.add("current");
+
+        loadConfigurationData(callback);
+    });
+}
+
+objects[".aside .show-configuration"].addEventListener("click", showConfiguration);
+
+objects["main > .configuration .reset"].addEventListener("click", function () {
+    acquireConfirm("reset", showConfiguration);
+});
+
+objects["main > .configuration .save"].addEventListener("click", function () {
+    queryString = new FormData();
+    queryString.append("_xsrf", getCookie("_xsrf"));
+    queryString.append("action", "save_configuration");
+
+    Array.prototype.forEach.call(
+        _All("main > .configuration .config-value"), function (element) {
+            queryString.append(element.getAttribute("config_name"), element.value);
+        }
+    );
+
+    fetch("/management/api", {
+        "method": "post",
+        "credentials": "include",
+        "body": queryString
+    }).then(function (resp) {
+        if (resp.status >= 200 && resp.status < 400) {
+            return resp.json();
+        }
+        throw new Error(resp.statusText);
+    }).then(function (json) {
+        if (!json.status) {
+            throw new Error("unknown");
+        }
+        showToast(objects["main > .configuration .toast-container .save-success"]);
+    }).catch(function (error) {
+        console.log(error);
+        showToast(objects["main > .configuration .toast-container .save-failed"]);
+    });
 });
 
 function buildWindow(slug, sub_slug) {

@@ -333,7 +333,7 @@ function submitReply() {
 
             avatarElement = document.createElement("div");
             avatarElement.setAttribute("class", "avatar");
-            avatarElement.style.backgroundImage = "url(/avatar/" + item.emailmd5 + "?s=200&d=mm)";
+            avatarElement.style.backgroundImage = "url(/avatar/" + json.emailmd5 + "?s=200&d=mm)";
             element.appendChild(avatarElement);
 
             replyInfoElement = document.createElement("div");
@@ -341,16 +341,16 @@ function submitReply() {
 
             nameElement = document.createElement("div");
             nameElement.setAttribute("class", "name");
-            if (item.homepage) {
+            if (json.homepage) {
                 nameLinkElement = document.createElement("a");
-                nameLinkElement.setAttribute("href", item.homepage);
+                nameLinkElement.setAttribute("href", json.homepage);
                 nameLinkElement.setAttribute("target", "_blank");
-                nameLinkElement.innerHTML = item.name;
+                nameLinkElement.innerHTML = json.name;
             } else {
-                nameElement.innerHTML = item.name;
+                nameElement.innerHTML = json.name;
             }
             nameElement.appendChild(nameLinkElement);
-            if (item.master) {
+            if (json.master) {
                 masterElement = document.createElement("i");
                 masterElement.setAttribute("class", "master material-icons");
                 masterElement.setAttribute("title", "域主大人");
@@ -361,14 +361,14 @@ function submitReply() {
 
             timeElement = document.createElement("div");
             timeElement.setAttribute("class", "time");
-            timeElement.innerHTML = "发表于：" + formatDatetime(item.time);
+            timeElement.innerHTML = "发表于：" + formatDatetime(json.time);
             replyInfoElement.appendChild(timeElement);
 
             element.appendChild(replyInfoElement);
 
             contentElement = document.createElement("div");
             contentElement.setAttribute("class", "content");
-            contentElement.innerHTML = marked(item.content);
+            contentElement.innerHTML = marked(json.content);
             Array.prototype.forEach.call(contentElement.querySelectorAll("code"), hljs.highlightBlock);
             element.appendChild(contentElement);
 
@@ -645,6 +645,7 @@ function fetchWritingData(slug, callback) {
         renderWriting(callback);
     }).catch(function (error) {
         if (error == "notfound") {
+            currentState = window.history.state;
             window.history.replaceState({"slug": "writing", "sub_slug": slug, "site_name": currentState.site_name}, document.title, window.location.href);
             renderNotFound(callback);
         } else {
@@ -698,6 +699,7 @@ function fetchPageData(slug, callback) {
         renderPage(callback);
     }).catch(function (error) {
         if (error == "notfound") {
+            currentState = window.history.state;
             window.history.replaceState({"slug": "page", "sub_slug": slug, "site_name": currentState.site_name}, document.title, window.location.href);
             renderNotFound(callback);
         } else {
