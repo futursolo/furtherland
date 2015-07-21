@@ -65,26 +65,6 @@
             {
                 "_id": {
                     "type": "prepared",
-                    "content": "github_client_id"
-                },
-                "value": {
-                    "type": "preferred",
-                    "content": ""
-                }
-            },
-            {
-                "_id": {
-                    "type": "prepared",
-                    "content": "github_client_secret"
-                },
-                "value": {
-                    "type": "preferred",
-                    "content": ""
-                }
-            },
-            {
-                "_id": {
-                    "type": "prepared",
                     "content": "configuration_name"
                 },
                 "value": {
