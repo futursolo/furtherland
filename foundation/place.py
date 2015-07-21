@@ -612,6 +612,8 @@ class TerminalService(PlacesOfInterest):
             result["id"] = reply["_id"]
             if not reply["master"]:
                 result["reason"] = "waitforcheck"
+            if result["success"]:
+                result.update(reply)
         except:
             result["success"] = False
             result["reason"] = "unkonwn"

@@ -19,7 +19,7 @@ html, body{
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: Oxygen, Verdana, Tahoma, "Noto Sans CJK SC", "Noto Sans CJK JP", "Microsoft YaHei", STHeiti, SimHei;
+    font-family: Oxygen, Verdana, Tahoma, "Noto Sans CJK SC", "Noto Sans CJK JP", "Microsoft YaHei", STHeiti, SimHei !important;
     background-repeat: no-repeat;
     font-size: 15px;
     color: rgb(100, 100, 100);
@@ -78,13 +78,11 @@ a{
     overflow-y: auto;
 }
 header{
-    height: 120px;
     color: rgb(255, 255, 255);
     margin-left: auto;
     margin-right: auto;
 }
 header > nav{
-    height: 60px;
     line-height: 60px;
 }
 header > nav .title{
@@ -92,24 +90,42 @@ header > nav .title{
     font-size: 20px;
     padding-left: 20px;
     padding-right: 20px;
-    flex-grow: 0;
-    width: 120px;
     box-sizing: border-box;
 }
-header .title .title-link{
+header > nav .title .title-link{
     color: rgb(255, 255, 255);
     text-decoration: none;
     font-weight: normal;
 }
+header > nav .description{
+    display: inline-block;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+body.small header > nav .description{
+    display: block;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
 header > nav .links{
-    float: right;
+    position: absolute;
+    top: 0;
+    right: 0;
     padding-left: 10px;
     padding-right: 10px;
+}
+body.small header > nav .links{
+    position: static;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
 }
 header > nav .links > a > .item{
     min-width: 40px;
     color: rgb(255, 255, 255);
-    font-family: Oxygen, Verdana, Tahoma, "Noto Sans CJK SC", "Noto Sans CJK JP", "Microsoft YaHei", STHeiti, SimHei;
+    font-family: Oxygen, Verdana, Tahoma, "Noto Sans CJK SC", "Noto Sans CJK JP", "Microsoft YaHei", STHeiti, SimHei !important;
 }
 header > nav .links > a > .item .mdl-ripple{
     background-color: rgb(255, 255, 255);
@@ -123,10 +139,13 @@ header > .tabs{
     padding-left: 5px;
     padding-right: 5px;
 }
+body.small header > .tabs{
+    text-align: center;
+}
 header > .tabs .item{
     display: inline-block;
     color: rgb(255, 255, 255);
-    font-family: Oxygen, Verdana, Tahoma, "Noto Sans CJK SC", "Noto Sans CJK JP", "Microsoft YaHei", STHeiti, SimHei;
+    font-family: Oxygen, Verdana, Tahoma, "Noto Sans CJK SC", "Noto Sans CJK JP", "Microsoft YaHei", STHeiti, SimHei !important;
 }
 
 header > .tabs .item .mdl-ripple{
@@ -275,6 +294,7 @@ body.small .main > .writing > .replies > .reply-card{
     padding-top: 10px;
     padding-left: 20px;
     padding-right: 20px;
+    padding-bottom: 15px;
     position: relative;
 }
 .main > .writing > .replies > .reply-card > .content *{
@@ -328,7 +348,7 @@ body.small .main > .writing > .replies > .reply-card{
     padding-bottom: 20px;
 }
 .main > .not-found .card .line{
-    font-family: Oxygen, Verdana, Tahoma, "Noto Sans CJK SC", "Noto Sans CJK JP", "Microsoft YaHei", STHeiti, SimHei;
+    font-family: Oxygen, Verdana, Tahoma, "Noto Sans CJK SC", "Noto Sans CJK JP", "Microsoft YaHei", STHeiti, SimHei !important;
     text-align: center;
     font-size: 25px;
     line-height: 50px;

@@ -64,6 +64,7 @@
         <header>
             <nav>
                 <div class="title"><a href="/" class="switch-content title-link" slug="index" sub_slug="">{{ config["site_name"] }}</a></div>
+                <div class="description">{{ config["site_description"] }}</div>
                 <div class="links">
                     <a href="/feed.xml" target="_blank"><div class="mdl-button mdl-js-button mdl-js-ripple-effect item">订阅</div></a>{% if not current_user %}
                     <a href="/management/checkin"><div class="mdl-button mdl-js-button mdl-js-ripple-effect item">登录</div></a>{% else %}

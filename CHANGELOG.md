@@ -1,5 +1,11 @@
 # Changelog
 
+v20150721 dev
+-------------
+ - Bugs Fix
+ - Polymer Framework Removed
+ - New Management Office without Polymer
+
 v20150719 dev
 -------------
  - New Theme Summer Night Released.
