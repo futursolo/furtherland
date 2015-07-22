@@ -1,5 +1,9 @@
 # Changelog
 
+v20150722 dev
+-------------
+ - Removed useless console logs.
+
 v20150721 dev
 -------------
  - Bugs Fix
