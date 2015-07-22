@@ -196,12 +196,10 @@ function fetchIndexData(slug, callback) {
         }
         throw new Error(resp.statusText);
     }).then(function (json) {
-        console.log(json);
         objects[".main > .index"].classList.add("current");
         objects[".main > .index"].innerHTML = "";
         for (var key in json) {
             item = json[key];
-            console.log(item);
             cardElement = document.createElement("div");
             cardElement.classList.add("card");
 
@@ -289,7 +287,6 @@ function sortReply(callback) {
             if (left <= right) {
                 element.classList.add("left");
                 left += element.offsetHeight + 30;
-                console.log(element.offsetHeight);
             } else {
                 element.classList.add("right");
                 right += element.offsetHeight + 30;
