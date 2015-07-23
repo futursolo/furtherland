@@ -405,8 +405,8 @@ class CentralSquare(PlacesOfInterest):
         for key in contents:
             contents[key]["author"] = yield self.get_user(
                 _id=contents[key]["author"], with_privacy=False)
-            contents[key]["content"] = contents[key]["content"].split(
-                "<!--more-->")[0]
+            contents[key]["content"] = self.make_md(contents[key]["content"],
+                                                    more=False)
         self.render_list["contents"] = contents
         self.render_list["origin_title"] = "首页"
         self.render_list["slug"] = "index"
@@ -424,6 +424,7 @@ class ConferenceHall(PlacesOfInterest):
             raise HTTPError(404)
         writing["author"] = yield self.get_user(_id=writing["author"],
                                                 with_privacy=False)
+        writing["content"] = self.make_md(writing["content"])
         self.render_list["content"] = writing
         self.render_list["origin_title"] = writing["title"]
         self.render_list["slug"] = "writing"
@@ -441,6 +442,7 @@ class MemorialWall(PlacesOfInterest):
             raise HTTPError(404)
         page["author"] = yield self.get_user(_id=page["author"],
                                              with_privacy=False)
+        page["content"] = self.make_md(page["content"])
         self.render_list["content"] = page
         self.render_list["origin_title"] = page["title"]
         self.render_list["slug"] = "page"
