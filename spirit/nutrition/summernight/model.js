@@ -170,9 +170,6 @@ function renderIndex(callback) {
     Array.prototype.forEach.call(_All(".main > .index .card .card-info .time"), function (element) {
         element.innerHTML = formatDate(Math.round(element.innerHTML));
     });
-    Array.prototype.forEach.call(_All(".main > .index .card > .content"), function (element) {
-        element.innerHTML = marked(element.innerHTML);
-    });
     Array.prototype.forEach.call(_All(".main > .index .card > .content code"), hljs.highlightBlock);
     Array.prototype.forEach.call(_All(".main > .index .card .switch-content"), function (element) {
         element.addEventListener("click", switchContent);
@@ -239,7 +236,7 @@ function fetchIndexData(slug, callback) {
 
             contentElement = document.createElement("div");
             contentElement.classList.add("content");
-            contentElement.innerHTML = item.content;
+            contentElement.innerHTML = marked(item.content);
             cardElement.appendChild(contentElement);
 
             moreElement = document.createElement("div");
@@ -602,9 +599,6 @@ function renderWriting(callback) {
     Array.prototype.forEach.call(_All(".main > .writing .card .card-info .time"), function (element) {
         element.innerHTML = formatDate(Math.round(element.innerHTML));
     });
-    Array.prototype.forEach.call(_All(".main > .writing .card  > .content"), function (element) {
-        element.innerHTML = marked(element.innerHTML);
-    });
     Array.prototype.forEach.call(_All(".main > .writing .card  > .content code"), hljs.highlightBlock);
     buildWritingReply(callback);
 }
@@ -632,7 +626,7 @@ function fetchWritingData(slug, callback) {
         objects[".main > .writing .card .card-info .author-avatar"].style.backgroundImage = "url(/avatar/" + json.author.emailmd5 + "?s=200&d=mm)";
         objects[".main > .writing .card .card-info .author-name"].innerHTML = json.author.username;
         objects[".main > .writing .card .card-info .time"].innerHTML = json.time;
-        objects[".main > .writing .card > .content"].innerHTML = json.content;
+        objects[".main > .writing .card > .content"].innerHTML = marked(json.content);
         objects[".main > .writing > .replies"].innerHTML = "";
         currentState = window.history.state;
         pageTitle = json.title + " - " + currentState.site_name;
@@ -654,9 +648,6 @@ function fetchWritingData(slug, callback) {
 function renderPage(callback) {
     Array.prototype.forEach.call(_All(".main > .page .card .card-info .time"), function (element) {
         element.innerHTML = formatDate(Math.round(element.innerHTML));
-    });
-    Array.prototype.forEach.call(_All(".main > .page .card  > .content"), function (element) {
-        element.innerHTML = marked(element.innerHTML);
     });
     Array.prototype.forEach.call(_All(".main > .page .card  > .content code"), hljs.highlightBlock);
     if (callback) {
@@ -687,7 +678,7 @@ function fetchPageData(slug, callback) {
         objects[".main > .page .card .card-info .author-avatar"].style.backgroundImage = "url(/avatar/" + json.author.emailmd5 + "?s=200&d=mm)";
         objects[".main > .page .card .card-info .author-name"].innerHTML = json.author.username;
         objects[".main > .page .card .card-info .time"].innerHTML = json.time;
-        objects[".main > .page .card > .content"].innerHTML = json.content;
+        objects[".main > .page .card > .content"].innerHTML = marked(json.content);
         currentState = window.history.state;
         pageTitle = json.title + " - " + currentState.site_name;
         pageURL = "/pages/" + json.slug + ".htm";
