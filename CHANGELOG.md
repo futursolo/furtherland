@@ -1,5 +1,9 @@
 # Changelog
 
+v20150724 dev
+-------------
+ - Bugs Fix
+
 v20150723 dev
 -------------
  - Bugs Fix

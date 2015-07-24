@@ -1239,6 +1239,7 @@ function loadCRDAData(type, callback) {
                 nameElement = document.createElement("span");
                 nameElement.classList.add("reply-name");
                 nameElement.innerHTML = content.name;
+                nameLinkElement.appendChild(nameElement);
                 lineUpElement.appendChild(nameLinkElement);
 
                 emailElement = document.createElement("div");
