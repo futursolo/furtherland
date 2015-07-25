@@ -1,5 +1,10 @@
 # Changelog
 
+v20150725 dev
+-------------
+ - Bugs Fix
+ - New FurtherLand Used Time Header
+
 v20150724 dev
 -------------
  - Bugs Fix
