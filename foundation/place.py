@@ -344,8 +344,8 @@ class PlacesOfInterest(RequestHandler):
         if not self.render_list.pop("__without_database", False):
             self.render_list["config"] = self.config
             self.render_list["FurtherLand"] = self.furtherland
-            self.render_list["used_time"] = int(
-                (time.time() - self.start_time) * 1000)
+            self.set_header("Furtherland-Used-Time",
+                            int((time.time() - self.start_time) * 1000))
 
         self.xsrf_form_html()
 
