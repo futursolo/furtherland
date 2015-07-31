@@ -1,5 +1,9 @@
 # Changelog
 
+v20150731 dev
+-------------
+ - Switch Markdown Rendering Library from Misaka to markdown with py-gfm extension
+
 v20150725 dev
 -------------
  - Bugs Fix

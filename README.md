@@ -10,10 +10,11 @@ Requirements
  - Python>=3.3(FurtherLand will not work under Python2)
  - Tornado>=4.0
  - Motor>=0.4
- - Misaka>=1.0.2
  - Feedgen>=0.3.1
  - Pykismet3>=0.1.1
  - bcrypt>=2.0.0
+ - markdown>=2.6.2
+ - py-gfm>=0.1.1
 
 All listed Requirements are able to be installed by pip.
 
