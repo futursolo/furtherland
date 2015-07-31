@@ -24,7 +24,7 @@ from collections import OrderedDict
 import json
 import os
 import re
-import misaka
+import markdown
 import hashlib
 import random
 import string
@@ -326,7 +326,7 @@ class PlacesOfInterest(RequestHandler):
     def make_md(self, content, more=True):
         if not more:
             content = content.split("<!--more-->")[0]
-        return misaka.html(content)
+        return markdown.markdown(content, extensions=["gfm"])
 
     def static_url(self, path, include_host=None, nutrition=True, **kwargs):
         if nutrition:
