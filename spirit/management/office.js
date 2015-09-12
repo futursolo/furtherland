@@ -520,7 +520,6 @@ function loadLobbyData(callback) {
         }
         throw new Error(resp.statusText);
     }).then(function (json) {
-        console.log(json);
         objects["main > .lobby .writing-num .content"].innerHTML = json.writings;
         objects["main > .lobby .page-num .content"].innerHTML = json.pages;
         objects["main > .lobby .reply-num .content"].innerHTML = json.replies;
