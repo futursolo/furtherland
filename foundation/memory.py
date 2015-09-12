@@ -83,9 +83,14 @@ class Element:
         self._action_ready = True
         return self
 
-    def count(self):
+    def count(self, do_find=False, condition={}, ignore=None):
         self.reset()
-        self._action = self._current_collection.count()
+        if do_find:
+            self.find(condition=condition, ignore=ignore)
+            self._action = self._action.count()
+            self._use_cursor = False
+        else:
+            self._action = self._current_collection.count()
         self._action_ready = True
         return self
 

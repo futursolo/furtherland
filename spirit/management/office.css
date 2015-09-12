@@ -329,6 +329,16 @@ main > .lobby .tile{
 main > .lobby .tile > .tips-list{
     height: 150px;
 }
+
+main > .lobby .writing-num.tile > .tips-list{
+    color: rgb(33, 150, 243);
+}
+main > .lobby .page-num.tile > .tips-list{
+    color: rgb(76, 175, 80);
+}
+main > .lobby .reply-num.tile > .tips-list{
+    color: rgb(255, 193, 7);
+}
 main > .lobby .tile > .name{
     font-size: 40px;
     line-height: 100px;

@@ -65,6 +65,7 @@ textarea, input{
     font-size: 15px;
     display: inline;
     box-sizing: border-box;
+    word-break: normal;
     padding: 0;
 }
 .main > .container .panel .avatar-back{

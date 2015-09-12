@@ -61,6 +61,14 @@ var objects = {
     "main > .lobby .page-num .content": _("main > .container.lobby .tile.page-num .content"),
     "main > .lobby .reply-num .content": _("main > .container.lobby .tile.reply-num .content"),
 
+    "main > .lobby .writing-num .tips-list .item": _("main > .container.lobby .tile.writing-num .tips-list .item"),
+    "main > .lobby .page-num .tips-list .item": _("main > .container.lobby .tile.page-num .tips-list .item"),
+    "main > .lobby .reply-num .tips-list .item": _("main > .container.lobby .tile.reply-num .tips-list .item"),
+
+    "main > .lobby .writing-num .tips-list .number": _("main > .container.lobby .tile.writing-num .tips-list .number"),
+    "main > .lobby .page-num .tips-list .number": _("main > .container.lobby .tile.page-num .tips-list .number"),
+    "main > .lobby .reply-num .tips-list .number": _("main > .container.lobby .tile.reply-num .tips-list .number"),
+
     "main > .lobby .writing-num .manage-writing": _("main > .container.lobby .tile.writing-num .manage-writing"),
     "main > .lobby .page-num .manage-page": _("main > .container.lobby .tile.page-num .manage-page"),
     "main > .lobby .reply-num .manage-reply": _("main > .container.lobby .tile.reply-num .manage-reply"),
@@ -515,6 +523,27 @@ function loadLobbyData(callback) {
         objects["main > .lobby .writing-num .content"].innerHTML = json.writings;
         objects["main > .lobby .page-num .content"].innerHTML = json.pages;
         objects["main > .lobby .reply-num .content"].innerHTML = json.replies;
+
+        if (json.writings_draft === 0) {
+            objects["main > .lobby .writing-num .tips-list .item"].style.display = "none";
+        } else {
+            objects["main > .lobby .writing-num .tips-list .item"].style.display = "block";
+            objects["main > .lobby .writing-num .tips-list .number"].innerHTML = json.writings_draft;
+        }
+
+        if (json.pages_draft === 0) {
+            objects["main > .lobby .page-num .tips-list .item"].style.display = "none";
+        } else {
+            objects["main > .lobby .page-num .tips-list .item"].style.display = "block";
+            objects["main > .lobby .page-num .tips-list .number"].innerHTML = json.pages_draft;
+        }
+
+        if (json.replies_waiting_permit === 0) {
+            objects["main > .lobby .reply-num .tips-list .item"].style.display = "none";
+        } else {
+            objects["main > .lobby .reply-num .tips-list .item"].style.display = "block";
+            objects["main > .lobby .reply-num .tips-list .number"].innerHTML = json.replies_waiting_permit;
+        }
         if (callback) {
             callback();
         }
