@@ -15,8 +15,9 @@ Requirements
  - bcrypt>=2.0.0
  - markdown>=2.6.2
  - py-gfm>=0.1.1
+ - pyotp>=2.0.0
 
-All listed Requirements are able to be installed by pip.
+All listed Requirements(Except Python3.3) are able to be installed by pip.
 
 License
 -------

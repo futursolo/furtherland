@@ -359,12 +359,24 @@ class PlacesOfInterest(RequestHandler):
         book = self.memories.select("Writings").count()
         yield book.do()
         result["writings"] = book.result()
-        book = self.memories.select("Replies").count()
+        book.count(do_find=True, condition={"publish": False})
         yield book.do()
-        result["replies"] = book.result()
+        result["writings_draft"] = book.result()
+
         book = self.memories.select("Pages").count()
         yield book.do()
         result["pages"] = book.result()
+        book.count(do_find=True, condition={"publish": False})
+        yield book.do()
+        result["pages_draft"] = book.result()
+
+        book = self.memories.select("Replies").count()
+        yield book.do()
+        result["replies"] = book.result()
+        book.count(do_find=True, condition={"permit": False})
+        yield book.do()
+        result["replies_waiting_permit"] = book.result()
+
         return result
 
     def escape(self, item, item_type="html"):
