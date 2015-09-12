@@ -1,5 +1,12 @@
 # Changelog
 
+v20150912 dev
+-------------
+ - Bugs Fix
+ - Remove bundled pyotp library, use pyotp from PyPi(version>=2.0.0).
+ - Two Factor Authentication Login Experience Optimization
+ - Management Office Draft and Not Permitted Reply Statistics
+
 v20150731 dev
 -------------
  - Switch Markdown Rendering Library from Misaka to markdown with py-gfm extension

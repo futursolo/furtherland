@@ -20,9 +20,11 @@ from tornado.web import *
 from tornado.gen import *
 from foundation.place import PlacesOfInterest, slug_validation, visitor_only
 from collections import OrderedDict
-import foundation.pyotp as pyotp
+import pyotp
 import json
 import bcrypt
+import datetime
+import time
 
 
 class ManagementOffice(PlacesOfInterest):
@@ -82,7 +84,20 @@ class CheckinOffice(ManagementOffice):
             self.redirect("/management/checkin")
             return
 
-        if not (pyotp.TOTP(user["otp_key"]).verify(two)):
+        def verify_otp(key, two):
+            totp = pyotp.TOTP(key)
+            current_datetime = datetime.datetime.now()
+            if totp.verify(two, for_time=current_datetime):
+                return True
+            early_datetime = current_datetime - datetime.timedelta(seconds=30)
+            if totp.verify(two, for_time=early_datetime):
+                return True
+            later_datetime = current_datetime + datetime.timedelta(seconds=30)
+            if totp.verify(two, for_time=later_datetime):
+                return True
+            return False
+
+        if not verify_otp(user["otp_key"], two):
             self.set_scookie("checkin_status", "two", expires_days=None)
             self.redirect("/management/checkin")
             return
