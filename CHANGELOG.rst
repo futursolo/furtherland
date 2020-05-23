@@ -1,4 +1,10 @@
-# Changelog
+Changelog
+=========
+
+v3.0.0
+------
+- Switch to SemVer.
+- Rewritten from scratch.
 
 v20150912 dev
 -------------

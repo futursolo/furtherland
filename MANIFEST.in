@@ -1,0 +1,13 @@
+include README.rst
+include requirements.txt
+include LICENSE
+recursive-include . *.py
+setup.cfg
+prune factory
+prune ./foundation
+prune foundation
+prune spirit
+exclude .gitignore
+exclude test_config.py
+exclude blessing.py
+exclude library_sample.json
