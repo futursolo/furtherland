@@ -20,7 +20,7 @@ from typing import Union
 from furtherland.config import BaseConfig, BackendConfig, BackendType, \
     HttpConfig
 
-from furtherland import furtherland
+from furtherland import Furtherland
 
 
 class Config(BaseConfig):

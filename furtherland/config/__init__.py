@@ -22,7 +22,7 @@ from ._http import HttpConfig
 
 import abc
 
-__all__ = ["BackendType", "BackendConfig", "BaseConfig"]
+__all__ = ["BackendType", "BackendConfig", "BaseConfig", "HttpConfig"]
 
 
 class BaseConfig(abc.ABC):
@@ -38,7 +38,7 @@ class BaseConfig(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def http(self) -> Union[str, bytes]:
+    def http(self) -> HttpConfig:
         raise NotImplementedError
 
     debug: bool = False

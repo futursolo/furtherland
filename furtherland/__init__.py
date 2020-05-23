@@ -18,6 +18,7 @@
 from ._version import __version__
 
 from . import config
+from . import backend  # noqa: F401
 
 __all__ = ["__version__", "config", "Furtherland"]
 

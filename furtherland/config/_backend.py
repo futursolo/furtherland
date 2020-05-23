@@ -51,8 +51,9 @@ class BackendConfig:
         self.use_tls = False
         self.ca_path = certifi.where()
 
-        self.client_cert_path: Optional[str] = None
-        self.client_key_path: Optional[str] = None
+        # Client Certificate will be added in a future release.
+        # self.client_cert_path: Optional[str] = None
+        # self.client_key_path: Optional[str] = None
 
     @property
     def password(self) -> str:
@@ -73,3 +74,16 @@ class BackendConfig:
     @classmethod
     def from_env(cls) -> "BackendConfig":
         raise NotImplementedError
+
+    def _to_db_url(self) -> str:
+        if self._type == BackendType.SqLite:
+            return f"{self._type.value[0]}{self.host}"
+
+        if self.user:
+            cred = f"{self.user}:{self.__password}@"
+
+        else:
+            cred = ""
+
+        return (f"{self._type.value[0]}{cred}{self.host}:{self.port}/"
+                f"{self._db_name}")

@@ -15,8 +15,6 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from ._base import BackendConfig, BackendType, BackendMeta  # noqa: F401
+from ._base import BackendMeta
 
-from . import _base
-
-__all__ = _base.__all__
+__all__ = ["BackendMeta"]
