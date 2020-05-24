@@ -1,0 +1,17 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+mypy = "*"
+flake8 = "*"
+
+[packages]
+peewee = ">=3.13.3,<4"
+peewee-async = ">=0.7.0,<0.8"
+certifi = ">=2020.4.5.1"
+python-dotenv = ">=0.13.0,<1"
+
+[requires]
+python_version = "3.7"

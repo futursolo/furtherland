@@ -1,4 +1,0 @@
-peewee>=3.13.3,<4
-peewee-async>=0.7.0,<0.8
-certifi>=2020.4.5.1
-
