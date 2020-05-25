@@ -15,30 +15,9 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from typing import Union
+from .store import EnvStore
 
-from ._backend import BackendType, BackendConfig
-from ._http import HttpConfig
+from .backend import BackendEnvStore
+# from ._http import HttpConfig
 
-import abc
-
-__all__ = ["BackendType", "BackendConfig", "BaseConfig", "HttpConfig"]
-
-
-class BaseConfig(abc.ABC):
-    @property
-    @abc.abstractmethod
-    def backend(self) -> BackendConfig:
-        raise NotImplementedError
-
-    @property
-    @abc.abstractmethod
-    def secret(self) -> Union[str, bytes]:
-        raise NotImplementedError
-
-    @property
-    @abc.abstractmethod
-    def http(self) -> HttpConfig:
-        raise NotImplementedError
-
-    debug: bool = False
+__all__ = ["EnvStore", "BackendEnvStore"]

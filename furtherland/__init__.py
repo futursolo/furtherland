@@ -17,12 +17,4 @@
 
 from ._version import __version__
 
-from . import config
-from . import backend  # noqa: F401
-
-__all__ = ["__version__", "config", "Furtherland"]
-
-
-class Furtherland:
-    def __init__(self, _config: config.BaseConfig) -> None:
-        self.config = config
+__all__ = ["__version__"]

@@ -104,9 +104,9 @@ celerybeat.pid
 # Environments
 .env
 .venv
-env/
+/env/
 venv/
-ENV/
+/ENV/
 env.bak/
 venv.bak/
 
@@ -130,3 +130,10 @@ dmypy.json
 
 # Ignore Test Config
 test_config.py
+furtherland.env
+test_furtherland.env
+.env
+
+# Ignore Files managed by Pipenv
+requirements.txt
+dev-requirements.txt
