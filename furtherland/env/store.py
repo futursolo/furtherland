@@ -21,6 +21,19 @@ from .backend import BackendEnvStore
 from .http import HttpEnvStore
 
 import os
+import dotenv
+
+
+# Try to load ENV_FILE before everything else.
+_ENV_FILE = StrEnv("FURTHERLAND_ENV_FILE")
+
+try:
+    env_file_path = _ENV_FILE.get()
+
+    dotenv.load_dotenv(dotenv_path=env_file_path)
+
+except KeyError:
+    pass
 
 
 class SecretEnv(StrEnv):
@@ -35,12 +48,15 @@ class EnvStore(BaseEnvStore):
     Http = HttpEnvStore
 
     secret = SecretEnv("SECRET",
-                       ["The Security Secret",
-                        "Changing this secret invalidates all cookies.",
+                       ["Changing this secret will invalidate all cookies.",
+                        "This can be any valid utf-8 string",
                         "If you don't have one you can get one by "
                         "running :code:`os.urandom(32).hex()`."],
+                       display_name="Security Secret",
                        required=True)
 
-    debug = BoolEnv("DEBUG", ["Enable Debug Mode.",
-                              "Please set to False during production."],
-                    required=True, default=True)
+    debug = BoolEnv("DEBUG",
+                    ["Set this to 1 enables the debug mode.",
+                     "Please set to False during production."],
+                    display_name="Debug Mode Switch",
+                    default=False)

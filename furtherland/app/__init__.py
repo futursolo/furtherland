@@ -15,13 +15,20 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from .. import env
-# from . import backend  # noqa: F401
+# Workaround to make sure autopep8 would leave it alone.
+try:
+    from .. import env
+
+    # Check all envs.
+    env.EnvStore.get()
+
+except ImportError:
+    raise
+
+else:
+    from .. import backend  # noqa: F401
 
 __all__ = ["Furtherland"]
-
-# Check all envs.
-env.EnvStore.get()
 
 
 class Furtherland:

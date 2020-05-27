@@ -16,15 +16,17 @@
 #   limitations under the License.
 
 from __future__ import annotations
-from typing import TypeVar, Generic, Union, List, Optional, Dict, Type
+from typing import TypeVar, Generic, Union, List, Optional, Dict, Type, Any
 
 import os
 import typing
 import warnings
 import abc
-import dotenv
 import inspect
 import json
+
+__all__ = ["MissingRequiredEnv", "MalformedEnvError", "BaseEnv", "StrEnv",
+           "BoolEnv", "IntEnv", "ListEnv", "FloatEnv", "BaseEnvStore"]
 
 _T = TypeVar("_T", bound=Union[int, str, bool, float, List[str]])
 
@@ -33,6 +35,14 @@ class MissingRequiredEnv(KeyError):
     """
     Raised when required Env is not found.
     """
+    pass
+
+
+class MalformedEnvError(ValueError):
+    """
+    Raised when the value of the env is not valid.
+    """
+    pass
 
 
 class BaseEnv(Generic[_T]):
@@ -40,7 +50,8 @@ class BaseEnv(Generic[_T]):
 
     def __init__(
         self, name: str, description: Union[str, List[str]] = [], *,
-            default: Optional[_T] = None, required: bool = False) -> None:
+        display_name: Optional[str] = None, default: Optional[_T] = None,
+            required: bool = False) -> None:
         assert len(name) > 0, "Name cannot be empty"
 
         upper_name = name.upper()
@@ -54,6 +65,8 @@ class BaseEnv(Generic[_T]):
         self.description: List[str] = [description] if isinstance(
             description, str) else description
         self.required = required
+
+        self.display_name = display_name
 
         self._prefix = ""
 
@@ -85,13 +98,29 @@ class BaseEnv(Generic[_T]):
         return "" if self._default in (None, "") else json.dumps(
             self._default)
 
+    def _get_env_file_default_hint(self) -> Optional[str]:
+        return str(self._default) if self._default is not None else None
+
     def _to_env_file_str(self) -> List[str]:
         lines: List[str] = []
-        lines.append(f"# Env: {self.name}")
-        lines.append(f"# Type: {self.__env_type_str__}" +
-                     (", Required" if self.required else ""))
+        lines.append(f"# Env: {self.name}" + (
+            f" - {self.display_name}" if self.display_name else ""))
+        lines.append(f"# Type: {self.__env_type_str__}")
+
+        if self.required:
+            lines.append("# Required: True")
+        else:
+            lines.append("# Required: False")
+
+        if self._get_env_file_default_hint():
+            lines.append(f"# Default: {self._get_env_file_default_hint()}")
+
+        lines.append("#")
+
         lines.extend(["# " + i for i in self.description])
-        lines.append(self.name + "=" + self._get_env_file_default())
+
+        lines.append(("#" if not self.required else "") +
+                     self.name + "=" + self._get_env_file_default())
 
         return lines
 
@@ -151,6 +180,12 @@ class BoolEnv(BaseEnv[bool]):
     def _get_env_file_default(self) -> str:
         return "1" if self._default is True else "0"
 
+    def _get_env_file_default_hint(self) -> Optional[str]:
+        if self._default is None:
+            return None
+
+        return "1" if self._default is True else "0"
+
 
 class ListEnv(BaseEnv[List[str]]):
     """
@@ -180,6 +215,40 @@ class BaseEnvStore:
     __parent_prefix_set__: bool = False
 
     def __init__(self, *, _skip_required: bool) -> None:
+        for k, v in self._get_envs().items():
+            if v._name.lower() != k:
+                raise AttributeError(
+                    f"Name for Env `{v._name.lower()}` is different "
+                    f"than its attribute name `{k}`.")
+            v.set_prefix(self.prefix)
+
+            try:
+                if not _skip_required:
+                    v.get()
+
+            except KeyError as e:
+                if v.required:
+                    raise MissingRequiredEnv(
+                        f"Env `{v.name}` is required, but not found."
+                    ) from e
+
+        for k2, v2 in self._get_env_stores().items():
+            if v2._prefix.lower()[:-1] != k2.lower():
+                raise AttributeError(
+                    f"Name for `{v2.__name__}` `{v2._prefix}` is different "
+                    f"than its attribute name `{k2}`.")
+
+            assert v2.__parent_prefix_set__ is False or \
+                v2._parent_prefix == self._prefix, \
+                "You cannot reuse Envs."
+            v2.__parent_prefix_set__ = True
+            v2._parent_prefix = self.prefix
+
+            v2.get(_skip_required=_skip_required)
+
+    def _get_envs(self) -> Dict[str, BaseEnv[Any]]:
+        envs: Dict[str, BaseEnv[Any]] = {}
+
         for k in dir(self):
             if k.startswith("__") and k.endswith("__"):
                 continue
@@ -187,33 +256,23 @@ class BaseEnvStore:
             v = getattr(self, k)
 
             if isinstance(v, BaseEnv):
-                if v._name.lower() != k:
-                    raise AttributeError(
-                        f"Name for Env `{v._name.lower()}` is different "
-                        f"than its attribute name `{k}`.")
-                v.set_prefix(self.prefix)
-                try:
-                    if not _skip_required:
-                        v.get()
+                envs[k] = v
 
-                except KeyError as e:
-                    if v.required:
-                        raise MissingRequiredEnv(
-                            f"Env `{v.name}` is required, but not found."
-                        ) from e
+        return envs
 
-            elif inspect.isclass(v) and issubclass(v, BaseEnvStore):
-                if v._prefix.lower()[:-1] != k.lower():
-                    raise AttributeError(
-                        f"Name for `{v.__name__}` `{v._prefix}` is different "
-                        f"than its attribute name `{k}`.")
+    def _get_env_stores(self) -> Dict[str, Type[BaseEnvStore]]:
+        stores: Dict[str, Type[BaseEnvStore]] = {}
 
-                assert v.__parent_prefix_set__ is False, \
-                    "You cannot reuse Envs."
-                v.__parent_prefix_set__ = True
-                v._parent_prefix = self.prefix
+        for k in dir(self):
+            if k.startswith("__") and k.endswith("__"):
+                continue
 
-                v.get(_skip_required=_skip_required)
+            v = getattr(self, k)
+
+            if inspect.isclass(v) and issubclass(v, BaseEnvStore):
+                stores[k] = v
+
+        return stores
 
     @property
     def prefix(self) -> str:
@@ -234,39 +293,12 @@ class BaseEnvStore:
             lines.append(f"### {nice_prefix} Envs ###")
             lines.append("")
 
-        envs: List[BaseEnv] = []  # type: ignore
-        env_classes: List[Type[BaseEnvStore]] = []
-
-        for k in dir(self):
-            if k.startswith("__") and k.endswith("__"):
-                continue
-
-            v = getattr(self, k)
-
-            if isinstance(v, BaseEnv):
-                envs.append(v)
-
-            elif inspect.isclass(v) and issubclass(v, BaseEnvStore):
-                env_classes.append(v)
-
-        for i in envs:
+        for i in self._get_envs().values():
             lines.extend(i._to_env_file_str())
             lines.append("")
 
-        for j in env_classes:
+        for j in self._get_env_stores().values():
             lines.extend(j.get(_skip_required=True)._to_env_file_str())
             # lines.append("")
 
         return lines
-
-
-# Try to load ENV_FILE before everything else.
-_ENV_FILE = StrEnv("FURTHERLAND_ENV_FILE")
-
-try:
-    env_file_path = _ENV_FILE.get()
-
-    dotenv.load_dotenv(dotenv_path=env_file_path)
-
-except KeyError:
-    pass

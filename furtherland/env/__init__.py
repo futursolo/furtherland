@@ -15,9 +15,13 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+from .common import BaseEnv, StrEnv, IntEnv, ListEnv, FloatEnv, BoolEnv, \
+    BaseEnvStore
+
 from .store import EnvStore
 
 from .backend import BackendEnvStore
-# from ._http import HttpConfig
+from .http import HttpEnvStore
 
-__all__ = ["EnvStore", "BackendEnvStore"]
+__all__ = ["BaseEnvStore", "EnvStore", "BackendEnvStore", "HttpEnvStore",
+           "BaseEnv", "StrEnv", "IntEnv", "ListEnv", "BoolEnv", "FloatEnv"]

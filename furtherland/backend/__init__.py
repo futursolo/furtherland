@@ -15,6 +15,32 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from ._base import BackendMeta
+from .common import BackendMeta, meta, BaseModel
 
-__all__ = ["BackendMeta"]
+# Table: Options
+from .options import Option
+
+# Table: Residents
+# Table: Resident_Options
+#        resident_id: -> Resident.id(one-to-many)
+
+# Table: Writings
+#        resident_id: -> Resident.id(one-to-many)
+# Table: Writing_Options
+#        writing_id: -> Writing.id(one-to-many)
+
+# Table: Replies
+#        writing_id: -> Writing.id(one-to-many)
+#        resident_id: -> Optional[Resident.id](one-to-many)
+# Table: Reply_Options
+#        reply_id: -> Reply.id(one-to-many)
+
+# Table: furtherland_classes
+# Table: furtherland_class_options
+
+# Table: furtherland_tags
+# Table: furtherland_tag_options
+
+# Table: furtherland_writing_tag_relationships
+
+__all__ = ["BackendMeta", "meta", "Option", "BaseModel"]

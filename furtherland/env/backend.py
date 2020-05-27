@@ -15,31 +15,74 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from .common import BaseEnvStore, StrEnv, BoolEnv
+from .common import BaseEnvStore, StrEnv, BoolEnv, MalformedEnvError
 
 import certifi
+import urllib.parse
 
 __all__ = ["BackendEnvStore"]
 
 
 class BackendUrlEnv(StrEnv):
     def adjust_value(self, v: str) -> str:
-        return v
+        try:
+            parsed_url = urllib.parse.urlparse(v)
+            # scheme://netloc/path;parameters?query#fragment
+
+            if parsed_url.fragment or parsed_url.params or parsed_url.query:
+                raise ValueError(
+                    "You cannot have fragments, parameters and/or queries "
+                    "in the URL.")
+
+            if parsed_url.scheme == "mysql":
+                url_scheme = "mysql+async"
+
+            elif parsed_url.scheme in ("pgsql", "postgres"):
+                url_scheme = "postgres+async"
+
+            else:
+                raise ValueError(
+                    f"Unsupported URL Scheme: {parsed_url.scheme}")
+
+            if parsed_url.path.rfind("/") != 0:
+                raise ValueError("You cannot have / in database name.")
+
+        except ValueError as e:
+            raise MalformedEnvError(
+                "The valid URL format is `(mysql|pgsql|postgres)://"
+                "username:password@db.server[:port]/database`.") from e
+
+        url_scheme + parsed_url.netloc + parsed_url.path
+        adjusted_url = f"{url_scheme}://{parsed_url.netloc}{parsed_url.path}"
+
+        return adjusted_url
 
 
 class BackendCaPathEnv(StrEnv):
     def adjust_value(self, v: str) -> str:
         return v if v else certifi.where()
 
+    def _get_env_file_default_hint(self) -> str:
+        return "certifi.where()"
+
 
 class BackendEnvStore(BaseEnvStore):
     _prefix = "BACKEND_"
-    url = BackendUrlEnv("URL", "Backend URL for the database", required=True)
+
+    url = BackendUrlEnv(
+        "URL", ["Valid format: (mysql|pgsql|postgres)://"
+                "username:password@db.server[:port]/database",
+                "Currently only supports MySQL and PostgreSQL."],
+        display_name="Backend Database URL", required=True)
 
     table_prefix = StrEnv(
-        "TABLE_PREFIX", "Database Table Prefix", default="furtherland_")
+        "TABLE_PREFIX", display_name="Database Table Prefix",
+        default="furtherland_")
 
     use_tls = BoolEnv(
-        "USE_TLS", "Whether to connect to Database via TLS", default=False)
+        "USE_TLS", display_name="Whether to use TLS for Backend Database",
+        default=False)
 
-    ca_path = BackendCaPathEnv("CA_PATH", "Path to CA Certificate", default="")
+    ca_path = BackendCaPathEnv(
+        "CA_PATH",
+        display_name="Path to CA Certificate")
