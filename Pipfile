@@ -12,6 +12,7 @@ peewee = ">=3.13.3,<4"
 peewee-async = ">=0.7.0,<0.8"
 certifi = ">=2020.4.5.1"
 python-dotenv = ">=0.13.0,<1"
+cryptography = ">=2.9.2,<3"
 
 [requires]
 python_version = "3.7"

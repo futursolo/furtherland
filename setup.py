@@ -29,7 +29,8 @@ if not sys.version_info[:3] >= (3, 7, 0):
 setup_requires = ["setuptools>=43",
                   "setuptools-scm>=3.5.0", "importlib_metadata>=1.6.0"]
 
-install_requires = open("requirements.txt").readlines()
+install_requires = [
+    i for i in open("requirements.txt").readlines() if i.find("==") != -1]
 install_requires.extend(setup_requires)
 
 if __name__ == "__main__":

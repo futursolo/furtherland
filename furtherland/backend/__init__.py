@@ -18,22 +18,28 @@
 from .common import BackendMeta, meta, BaseModel
 
 # Table: Options
-from .options import Option
+from .options import BaseOption, Option, OptionType
 
 # Table: Residents
 # Table: Resident_Options
-#        resident_id: -> Resident.id(one-to-many)
+#        for_resident: -> Resident.id(one-to-many)
+from .residents import Resident, ResidencyStatus, ResidentOption
+
+# Table: Visits
+#        for_resident: -> Resident.id(one-to-many)
+# Table: Visit_Options
+#        for_visit: -> Visit.id(one-to-many)
 
 # Table: Writings
-#        resident_id: -> Resident.id(one-to-many)
+#        for_resident: -> Resident.id(one-to-many)
 # Table: Writing_Options
-#        writing_id: -> Writing.id(one-to-many)
+#        for_writing: -> Writing.id(one-to-many)
 
 # Table: Replies
-#        writing_id: -> Writing.id(one-to-many)
-#        resident_id: -> Optional[Resident.id](one-to-many)
+#        for_writing: -> Writing.id(one-to-many)
+#        for_resident: -> Optional[Resident.id](one-to-many)
 # Table: Reply_Options
-#        reply_id: -> Reply.id(one-to-many)
+#        for_reply: -> Reply.id(one-to-many)
 
 # Table: furtherland_classes
 # Table: furtherland_class_options
@@ -43,4 +49,6 @@ from .options import Option
 
 # Table: furtherland_writing_tag_relationships
 
-__all__ = ["BackendMeta", "meta", "Option", "BaseModel"]
+__all__ = ["BackendMeta", "meta", "BaseModel",
+           "BaseOption", "OptionType", "Option",
+           "Resident", "ResidencyStatus", "ResidentOption"]

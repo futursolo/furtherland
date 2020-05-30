@@ -1,12 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2018 Kaede Hoshikawa
+#   Copyright 2020 Kaede Hoshikawa
 #
-#   All rights reserved.
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
 
 from __futures__ import annotations  # noqa: F401
-from typing import Union, Tuple, TypeVar, Type, Any, Optional, Dict
+from typing import Union, Tuple, TypeVar, Type, Any, Optional, Dict, List
 
 from peewee import CharField, TextField, BigIntegerField, FloatField, \
     IntegerField
@@ -15,6 +25,10 @@ from .common import BaseModel, meta
 
 import enum
 import typing
+
+
+__all__ = ["NoSuchOption", "OptionTypeError",
+           "OptionCorruptedError", "OptionType", "Option"]
 
 
 class NoSuchOption(KeyError, FurtherlandError):
@@ -37,7 +51,8 @@ class OptionCorruptedError(ValueError, FurtherlandError):
     """
 
 
-class OptionType(enum.Enum):
+@enum.unique
+class OptionType(enum.IntEnum):
     String = 0
     Integer = 1
     FloatPoint = 2
@@ -57,35 +72,18 @@ class OptionType(enum.Enum):
             raise OptionTypeError(f"{type(val)} is not a valid type.")
 
 
-_TOption = TypeVar("_TOption", bound="Option")
+_TOption = TypeVar("_TOption", bound="BaseOption")
 
 
-class Option(BaseModel):
-    """
-    Furtherland Global Options.
-
-    If you wish to associate options with a certain Resident, Writing, Page,
-    and/or Comment, please use their corresponding options.
-
-    Available Types:
-        - :code:`str` or :code:`OptionType.String`
-        - :code:`int` or :code:`OptionType.Integer`
-        - :code:`float` or :code:`OptionType.FloatPoint`
-
-    Typing works by setting corresponding
-    :code:`OptionType` as :code:`int` to :code:`_type` field
-
-    Deleting an option is highly unrecommended. And thus the method is prefixed
-    with underscore.
-    """
-    name = CharField(null=False, index=True, unique=True, max_length=254)
-
+class BaseOption(BaseModel):
     # type is a built-in function.
     _type = IntegerField(null=False)
 
     str_value = TextField()
     int_value = BigIntegerField()
     float_value = FloatField()
+
+    _ident_fields: List[str] = []
 
     def _as_raw_value(self) -> \
             Tuple[OptionType, Union[str, int, float]]:
@@ -157,187 +155,110 @@ class Option(BaseModel):
         return val
 
     @classmethod
-    async def get_obj(
+    async def get_option(
         cls: Type[_TOption], name: str, *,
-        upsert_default_value: Optional[Union[int, str, float]] = None
+        default: Optional[Union[int, str, float]] = None,
+        **kwargs: Any
     ) -> _TOption:
         try:
-            if upsert_default_value is None:
-                opt: _TOption = await meta.mgr.get(cls, name=name)
+            if default is None:
+                return typing.cast(
+                    _TOption, await meta.mgr.get(cls, name=name))
 
-            else:
-                opt_type = OptionType.infer_type(upsert_default_value)
+            opt_type = OptionType.infer_type(default)
 
-                defaults: Dict[str, Any] = {
-                    "_type": opt_type.value,
-                }
+            defaults: Dict[str, Union[str, int, float]] = {
+                "_type": opt_type,
+            }
 
-                if opt_type == OptionType.String:
-                    defaults["str_value"] = upsert_default_value
+            if opt_type == OptionType.String:
+                defaults["str_value"] = default
 
-                elif opt_type == OptionType.Integer:
-                    defaults["int_value"] = upsert_default_value
+            elif opt_type == OptionType.Integer:
+                defaults["int_value"] = default
 
-                else:  # OptionType.FloatPoint
-                    defaults["float_value"] = upsert_default_value
+            else:  # OptionType.FloatPoint
+                defaults["float_value"] = default
 
-                opt, _ = await meta.mgr.get_or_create(
-                    cls, defaults=defaults, name=name)
+            if list(kwargs.keys()) != cls._ident_fields:
+                raise OptionTypeError(
+                    "The following identity fields are required: "
+                    f"{cls._ident_fields}")
+
+            opt, _ = await meta.mgr.get_or_create(
+                cls, defaults=defaults, name=name, **kwargs)
+            return typing.cast(_TOption, opt)
 
         except cls.DoesNotExist as e:
             raise NoSuchOption(name) from e
 
-        return opt
+    async def _del_option(self, **kwargs: Any) -> None:
+        if list(kwargs.keys()) != self._ident_fields:
+            raise OptionTypeError(
+                "The following identity fields are required: "
+                f"{self._ident_fields}")
 
-    @classmethod
-    async def _del_obj(cls, name: str) -> None:
-        del_count = await meta.mgr.execute(cls.delete().where(name=name))
+        del_count = await meta.mgr.execute(
+            self.delete().where(name=self.name, **kwargs))
 
         if del_count < 1:
-            raise NoSuchOption(name)
+            raise NoSuchOption(self.name)
 
-    @classmethod
-    async def get_str(cls, name: str, *, default: Optional[str] = None,
-                      upsert_default: bool = False) -> str:
-        if upsert_default:
-            assert default is not None, "You cannot upsert None as default."
+    async def update_str(self, value: str) -> None:
+        self.as_str()
+        self.str_value = value
 
-            upsert_default_value: Optional[Union[str, int, float]] = default
+        await meta.mgr.update(self, only=("str_value",))
 
-        else:
-            upsert_default_value = None
+    async def update_int(self, value: int) -> None:
+        self.as_int()
+        self.int_value = value
 
-        opt: Option = await cls.get_obj(
-            name, upsert_default_value=upsert_default_value)
+        await meta.mgr.update(self, only=("int_value",))
 
-        return opt.as_str()
+    async def update_float(self, value: float) -> None:
+        self.as_float()
+        self.float_value = value
 
-    @classmethod
-    async def get_int(cls, name: str, *, default: Optional[int] = None,
-                      upsert_default: bool = False) -> int:
-        if upsert_default:
-            assert default is not None, "You cannot upsert None as default."
+        await meta.mgr.update(self, only=("float_value",))
 
-            upsert_default_value: Optional[Union[str, int, float]] = default
+    async def inc_int(self: _TOption, step: int) -> _TOption:
+        self.as_int()
+        idents = {(k, getattr(self, k)) for k in self._ident_fields}
+        await meta.mgr.execute(
+            self.update(int_value=self.int_value + step)
+            .where(name=self.name, **idents))
 
-        else:
-            upsert_default_value = None
+        return typing.cast(
+            _TOption, await meta.mgr.get(self, name=self.name, **idents))
 
-        opt: Option = await cls.get_obj(
-            name, upsert_default_value=upsert_default_value)
-        return opt.as_int()
+    async def inc_float(self: _TOption, step: float) -> _TOption:
+        self.as_float()
+        idents = {(k, getattr(self, k)) for k in self._ident_fields}
+        await meta.mgr.execute(
+            self.update(float_value=self.float_value + step)
+            .where(name=self.name, **idents))
 
-    @classmethod
-    async def get_float(cls, name: str, *, default: Optional[int] = None,
-                        upsert_default: bool = False) -> float:
-        if upsert_default:
-            assert default is not None, "You cannot upsert None as default."
+        return typing.cast(
+            _TOption, await meta.mgr.get(self, name=self.name, **idents))
 
-            upsert_default_value: Optional[Union[str, int, float]] = default
 
-        else:
-            upsert_default_value = None
+class Option(BaseOption):
+    """
+    Furtherland Global Options.
 
-        opt: Option = await cls.get_obj(
-            name, upsert_default_value=upsert_default_value)
-        return opt.as_float()
+    If you wish to associate options with a certain Resident, Writing, Page,
+    and/or Comment, please use their corresponding options.
 
-    @classmethod
-    async def set_str(
-        cls, name: str, value: str, *, upsert: bool = True,
-            skip_locking: bool = False) -> None:
-        async with meta.lock(skip_locking):
-            opt = await cls.get_obj(
-                name, upsert_default_value=value if upsert else None)
+    Available Types:
+        - :code:`str` or :code:`OptionType.String`
+        - :code:`int` or :code:`OptionType.Integer`
+        - :code:`float` or :code:`OptionType.FloatPoint`
 
-            opt.as_str()  # check type
-            opt.str_value = value
-            await meta.mgr.update(opt, only=["str_value"])
+    Typing works by setting corresponding
+    :code:`OptionType` as :code:`int` to :code:`_type` field
 
-    @classmethod
-    async def set_int(
-            cls, name: str, value: int, *, upsert: bool = True,
-            skip_locking: bool = False) -> None:
-        async with meta.lock(skip_locking):
-            opt = await cls.get_obj(
-                name, upsert_default_value=value if upsert else None)
-
-            opt.as_int()  # check type
-            opt.int_value = value
-            await meta.mgr.update(opt, only=["int_value"])
-
-    @classmethod
-    async def inc_int(
-        cls, name: str, step: int, *,
-        default_value: int = 0, upsert: bool = True,
-            skip_locking: bool = False) -> int:
-        async with meta.lock(skip_locking):
-            opt: Option
-            created: bool
-            if upsert:
-                opt, created = await meta.mgr.create_or_get(
-                    cls, name=name, _type=OptionType.Integer.value,
-                    int_value=default_value + step)
-
-                if created:
-                    return opt.as_int()
-
-            else:
-                try:
-                    opt = await meta.mgr.get(cls, name=name)
-                    opt.as_int()  # check type
-
-                except cls.DoesNotExist as e:
-                    if not upsert:
-                        raise NoSuchOption(name) from e
-
-            await meta.mgr.execute(
-                cls.update(int_value=cls.int_value + step)
-                .where(name=name))
-
-            opt = await meta.mgr.get(cls, name=name)
-            return opt.as_int()
-
-    @classmethod
-    async def set_float(
-        cls, name: str, value: float, *, upsert: bool = True,
-            skip_locking: bool = False) -> None:
-        async with meta.lock(skip_locking):
-            opt = await cls.get_obj(
-                name, upsert_default_value=value if upsert else None)
-
-            opt.as_float()  # check type
-            opt.float_value = value
-            await meta.mgr.update(opt, only=["float_value"])
-
-    @classmethod
-    async def inc_float(
-        cls, name: str, step: float, *,
-        default_value: float = 0, upsert: bool = True,
-            skip_locking: bool = False) -> float:
-        async with meta.lock(skip_locking):
-            opt: Option
-            created: bool
-            if upsert:
-                opt, created = await meta.mgr.create_or_get(
-                    cls, name=name, _type=OptionType.FloatPoint.value,
-                    float_value=default_value + step)
-
-                if created:
-                    return opt.as_float()
-
-            else:
-                try:
-                    opt = await meta.mgr.get(cls, name=name)
-                    opt.as_float()  # check type
-
-                except cls.DoesNotExist as e:
-                    if not upsert:
-                        raise NoSuchOption(name) from e
-
-            await meta.mgr.execute(
-                cls.update(float_value=cls.float_value + step)
-                .where(name=name))
-
-            opt = await meta.mgr.get(cls, name=name)
-            return opt.as_float()
+    Deleting an option is highly unrecommended. And thus the method is prefixed
+    with underscore.
+    """
+    name = CharField(null=False, index=True, unique=True, max_length=254)
