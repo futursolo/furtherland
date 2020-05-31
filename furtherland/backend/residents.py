@@ -15,6 +15,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+from __future__ import annotations  # noqa: F401
 from typing import Optional
 
 from .common import BaseModel, meta
@@ -65,6 +66,8 @@ class Resident(BaseModel):
 
     created = DateTimeField(null=False, default=datetime.datetime.utcnow)
 
+    language = CharField(max_length=10)
+
     @classmethod
     async def create_resident(
             cls, name: str, *,
@@ -85,6 +88,11 @@ class Resident(BaseModel):
 
 class ResidentOption(BaseOption):
     name = CharField(null=False, index=True, max_length=254)
-    for_resident = ForeignKeyField(Resident, backref="options")
+    for_resident = ForeignKeyField(Resident, index=True, backref="options")
 
     _ident_fields = ["for_resident"]
+
+    class Meta:
+        indexes = (
+            (("name", "for_resident"), True),
+        )

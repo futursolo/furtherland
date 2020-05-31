@@ -15,14 +15,26 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from __future__ import annotations
+from .common import BaseModel
 
-__all__ = ["Visit"]
+from peewee import ForeignKeyField, CharField
+from .residents import Resident
+from .options import BaseOption
+
+__all__ = ["Visit", "VisitOption"]
 
 
-class Visit:
-    def __init__(self) -> None:
-        raise NotImplementedError
+class Visit(BaseModel):
+    for_resident = ForeignKeyField(Resident, backref="visits")
 
-    async def create(cls) -> Visit:
-        raise NotImplementedError
+
+class VisitOption(BaseOption):
+    name = CharField(null=False, index=True, max_length=254)
+    for_visit = ForeignKeyField(Visit, index=True, backref="options")
+
+    _ident_fields = ["for_visit"]
+
+    class Meta:
+        indexes = (
+            (("name", "for_visit"), True),
+        )

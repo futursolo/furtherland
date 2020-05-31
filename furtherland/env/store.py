@@ -25,7 +25,7 @@ import dotenv
 
 
 # Try to load ENV_FILE before everything else.
-_ENV_FILE = StrEnv("FURTHERLAND_ENV_FILE")
+_ENV_FILE = StrEnv("LAND_ENV_FILE")
 
 try:
     env_file_path = _ENV_FILE.get()

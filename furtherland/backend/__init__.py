@@ -18,7 +18,7 @@
 from .common import BackendMeta, meta, BaseModel
 
 # Table: Options
-from .options import BaseOption, Option, OptionType
+from .options import BaseOption, Option
 
 # Table: Residents
 # Table: Resident_Options
@@ -50,5 +50,5 @@ from .residents import Resident, ResidencyStatus, ResidentOption
 # Table: furtherland_writing_tag_relationships
 
 __all__ = ["BackendMeta", "meta", "BaseModel",
-           "BaseOption", "OptionType", "Option",
+           "BaseOption", "Option",
            "Resident", "ResidencyStatus", "ResidentOption"]

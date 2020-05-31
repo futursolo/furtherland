@@ -15,20 +15,17 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from __futures__ import annotations  # noqa: F401
-from typing import Union, Tuple, TypeVar, Type, Any, Optional, Dict, List
+from typing import Union, TypeVar, Type, Any, Optional, Dict, List
 
 from peewee import CharField, TextField, BigIntegerField, FloatField, \
-    IntegerField
+    Check
 from ..utils import FurtherlandError
 from .common import BaseModel, meta
 
-import enum
 import typing
 
 
-__all__ = ["NoSuchOption", "OptionTypeError",
-           "OptionCorruptedError", "OptionType", "Option"]
+__all__ = ["NoSuchOption", "OptionTypeError", "Option"]
 
 
 class NoSuchOption(KeyError, FurtherlandError):
@@ -45,113 +42,64 @@ class OptionTypeError(TypeError, FurtherlandError):
     pass
 
 
-class OptionCorruptedError(ValueError, FurtherlandError):
-    """
-    Option is found with correct type. But the value is null.
-    """
-
-
-@enum.unique
-class OptionType(enum.IntEnum):
-    String = 0
-    Integer = 1
-    FloatPoint = 2
-
-    @classmethod
-    def infer_type(cls, val: Any) -> OptionType:  # noqa: F821
-        if isinstance(val, str):
-            return cls.String
-
-        elif isinstance(val, int):
-            return cls.Integer
-
-        elif isinstance(val, float):
-            return cls.FloatPoint
-
-        else:
-            raise OptionTypeError(f"{type(val)} is not a valid type.")
-
-
 _TOption = TypeVar("_TOption", bound="BaseOption")
 
 
 class BaseOption(BaseModel):
-    # type is a built-in function.
-    _type = IntegerField(null=False)
-
     str_value = TextField()
     int_value = BigIntegerField()
     float_value = FloatField()
 
     _ident_fields: List[str] = []
 
-    def _as_raw_value(self) -> \
-            Tuple[OptionType, Union[str, int, float]]:
-        try:
-            opt_type = OptionType(self._type)
+    class Meta:
+        constraints = [Check(
+            "( CASE WHEN str_value IS NULL THEN 0 ELSE 1 END "
+            "+ CASE WHEN int_value IS NULL THEN 0 ELSE 1 END "
+            "+ CASE WHEN float_value IS NULL THEN 0 ELSE 1 END"
+            ") = 1")]
 
-        except ValueError as e:
-            raise OptionCorruptedError(
-                f"Value {self._type} is not a valid type.") from e
+    def _as_raw_value(self) -> Union[str, int, float]:
+        if self.str_value is not None:
+            return typing.cast(str, self.str_value)
 
-        if opt_type == OptionType.String:
-            if self.str_value is None:
-                raise OptionCorruptedError(
-                    f"Option `{self.name}` is string type, "
-                    "but the value is `None`.")
+        elif self.int_value is not None:
+            return typing.cast(int, self.int_value)
 
-            return opt_type, typing.cast(str, self.str_value)
-
-        elif opt_type == OptionType.Integer:
-            if self.int_value is None:
-                raise OptionCorruptedError(
-                    f"Option `{self.name}` is int type, "
-                    "but the value is `None`.")
-
-            return opt_type, typing.cast(int, self.int_value)
-
-        elif opt_type == OptionType.FloatPoint:
-            if self.float_value is None:
-                raise OptionCorruptedError(
-                    f"Option `{self.name}` is float type, "
-                    "but the value is `None`.")
-
-            return opt_type, typing.cast(float, self.float_value)
+        elif self.float_value is not None:
+            return typing.cast(float, self.float_value)
 
         else:
             raise ValueError("Unknown Option Type.")
 
     def as_str(self) -> str:
-        opt_type, val = self._as_raw_value()
+        val = self._as_raw_value()
 
-        if opt_type != OptionType.String:
+        if not isinstance(val, str):
             raise OptionTypeError(
-                f"expected Option {self.name} to be `{OptionType.String}`, "
-                f"found `{opt_type}`.")
+                f"expected Option {self.name} to be a string, "
+                f"found `{type(val)}`.")
 
-        assert isinstance(val, str)
         return val
 
     def as_int(self) -> int:
-        opt_type, val = self._as_raw_value()
+        val = self._as_raw_value()
 
-        if opt_type != OptionType.Integer:
+        if not isinstance(val, int):
             raise OptionTypeError(
-                f"expected Option {self.name} to be `{OptionType.Integer}`, "
-                f"found `{opt_type}`.")
+                f"expected Option {self.name} to be an integer, "
+                f"found `{type(val)}`.")
 
-        assert isinstance(val, int)
         return val
 
     def as_float(self) -> float:
-        opt_type, val = self._as_raw_value()
+        val = self._as_raw_value()
 
-        if opt_type != OptionType.FloatPoint:
+        if not isinstance(val, float):
             raise OptionTypeError(
-                f"expected Option {self.name} to be "
-                f"`{OptionType.FloatPoint}`, found `{opt_type}`.")
+                f"expected Option {self.name} to be a floating-point number, "
+                f"found `{type(val)}`.")
 
-        assert isinstance(val, float)
         return val
 
     @classmethod
@@ -165,32 +113,31 @@ class BaseOption(BaseModel):
                 return typing.cast(
                     _TOption, await meta.mgr.get(cls, name=name))
 
-            opt_type = OptionType.infer_type(default)
-
-            defaults: Dict[str, Union[str, int, float]] = {
-                "_type": opt_type,
-            }
-
-            if opt_type == OptionType.String:
-                defaults["str_value"] = default
-
-            elif opt_type == OptionType.Integer:
-                defaults["int_value"] = default
-
-            else:  # OptionType.FloatPoint
-                defaults["float_value"] = default
-
-            if list(kwargs.keys()) != cls._ident_fields:
-                raise OptionTypeError(
-                    "The following identity fields are required: "
-                    f"{cls._ident_fields}")
-
-            opt, _ = await meta.mgr.get_or_create(
-                cls, defaults=defaults, name=name, **kwargs)
-            return typing.cast(_TOption, opt)
-
         except cls.DoesNotExist as e:
             raise NoSuchOption(name) from e
+
+        defaults: Dict[str, Union[str, int, float]] = {}
+
+        if isinstance(default, str):
+            defaults["str_value"] = default
+
+        elif isinstance(default, int):
+            defaults["int_value"] = default
+
+        elif isinstance(default, float):
+            defaults["float_value"] = default
+
+        else:
+            raise OptionTypeError(f"{type(default)} is not a valid type.")
+
+        if list(kwargs.keys()) != cls._ident_fields:
+            raise OptionTypeError(
+                "The following identity fields are required: "
+                f"{cls._ident_fields}")
+
+        opt, _ = await meta.mgr.get_or_create(
+            cls, defaults=defaults, name=name, **kwargs)
+        return typing.cast(_TOption, opt)
 
     async def _del_option(self, **kwargs: Any) -> None:
         if list(kwargs.keys()) != self._ident_fields:
@@ -251,14 +198,17 @@ class Option(BaseOption):
     and/or Comment, please use their corresponding options.
 
     Available Types:
-        - :code:`str` or :code:`OptionType.String`
-        - :code:`int` or :code:`OptionType.Integer`
-        - :code:`float` or :code:`OptionType.FloatPoint`
+        - :code:`str`
+        - :code:`int`
+        - :code:`float`
 
     Typing works by setting corresponding
     :code:`OptionType` as :code:`int` to :code:`_type` field
 
     Deleting an option is highly unrecommended. And thus the method is prefixed
     with underscore.
+
+    This is the low-level api. You may want to use
+    :module:`furtherland.options`.
     """
     name = CharField(null=False, index=True, unique=True, max_length=254)

@@ -15,7 +15,6 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from __future__ import annotations  # noqa: F401
 from typing import Dict, Union, AsyncIterator
 
 from peewee import Model
