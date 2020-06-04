@@ -16,13 +16,44 @@
 #   limitations under the License.
 
 from __future__ import annotations
+from typing import Type, Dict, Optional
+
+from .utils import lazy_property
+
+from .backend import BaseModel as _BaseModel, Visit as _Visit, \
+    VisitOption as _VisitOption
+
+from . import options
+from . import residents
 
 __all__ = ["Visit"]
 
 
-class Visit:
+class Visit(options.WithOption):
     def __init__(self) -> None:
         raise NotImplementedError
 
+    @property
+    def _model(self) -> _Visit:
+        raise NotImplementedError
+
+    @lazy_property
+    def _OptionMixIn(self) -> Type[options.OptionMixIn]:
+        class _OptionMixIn(options.OptionMixIn):
+            model_cls = _VisitOption
+
+            @classmethod
+            def ident_fields(cls) -> Dict[str, _BaseModel]:
+                return {"for_visit": self._model}
+
+        return _OptionMixIn
+
+    @classmethod
     async def create(cls) -> Visit:
+        raise NotImplementedError
+
+    async def get_resident(self) -> Optional[residents.Resident]:
+        if self._model.for_resident is not None:
+            pass
+
         raise NotImplementedError

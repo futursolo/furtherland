@@ -37,7 +37,7 @@ class ResidencyStatus(enum.IntEnum):
     Pending = 0  # pending approval,
     # only available if manual approval is enabled.
 
-    Visitor = 10  # Can comment, Edit their Profile
+    Resident = 10  # Can comment, Edit their Profile
 
     # Can create writings/pages, can edit their own writings/pages.
     Writer = 20
@@ -88,7 +88,8 @@ class Resident(BaseModel):
 
 class ResidentOption(BaseOption):
     name = CharField(null=False, index=True, max_length=254)
-    for_resident = ForeignKeyField(Resident, index=True, backref="options")
+    for_resident = ForeignKeyField(
+        Resident, index=True, backref="options", on_delete="CASCADE")
 
     _ident_fields = ["for_resident"]
 

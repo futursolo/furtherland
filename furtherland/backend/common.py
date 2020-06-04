@@ -25,7 +25,6 @@ from ..env import BackendEnvStore
 import peewee
 import peewee_async
 import playhouse.db_url
-import threading
 import string
 import contextlib
 
@@ -87,7 +86,6 @@ class BackendMeta:
 meta = BackendMeta()
 
 _CACHED_NAMES: Dict[str, str] = {}
-_CACHE_LOCK = threading.Lock()
 
 
 class BaseModel(Model):  # type: ignore
@@ -104,24 +102,34 @@ class BaseModel(Model):  # type: ignore
             """
             cls_name: str = cls.__name__  # type: ignore
 
-            with _CACHE_LOCK:
-                if cls_name not in _CACHED_NAMES:
-                    changable_part = cls_name[1:]
+            if cls_name not in _CACHED_NAMES:
+                changable_part = cls_name[1:]
 
-                    fragments = [cls_name[0].lower()]
+                fragments = [
+                    BackendEnvStore.get().table_prefix.get(),
+                    cls_name[0].lower()
+                ]
 
-                    for s in changable_part:
-                        if s in string.ascii_uppercase:
-                            fragments.append("_" + s.lower())
+                for s in changable_part:
+                    if s in string.ascii_uppercase:
+                        fragments.append("_" + s.lower())
 
-                        else:
-                            fragments.append(s)
+                    else:
+                        fragments.append(s)
 
+                if cls_name.endswith("ss"):  # for names like: classes
+                    fragments.append("es")
+
+                elif cls_name.endswith("y"):  # for names like: replies
+                    fragments.pop(-1)
+                    fragments.append("ies")
+
+                else:
                     fragments.append("s")
-                    _CACHED_NAMES[cls_name] = BackendEnvStore.get(
-                    ).table_prefix.get() + "".join(fragments)
 
-                return _CACHED_NAMES[cls_name]
+                _CACHED_NAMES[cls_name] = "".join(fragments)
+
+            return _CACHED_NAMES[cls_name]
 
     @staticmethod
     def mgr() -> peewee_async.Manager:

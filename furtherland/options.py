@@ -17,7 +17,9 @@
 
 from typing import Type, TypeVar, Dict, Any, Generic, Union, Optional
 
-from .backend import BaseOption as _BaseOption, Option as _Option
+from .utils import lazy_property
+from .backend import BaseModel as _BaseModel, BaseOption as _BaseOption, \
+    Option as _Option
 
 import abc
 
@@ -99,3 +101,50 @@ class FloatOption(BaseOption[float]):
         after_opt = await opt.inc_float(step)
 
         return after_opt.as_float()
+
+
+class OptionMixIn(abc.ABC):
+    @property
+    @abc.abstractmethod
+    def model_cls(self) -> Type[_BaseModel]:
+        raise NotImplementedError
+
+    @classmethod
+    def ident_fields(cls) -> Dict[str, _BaseModel]:
+        raise NotImplementedError
+
+
+class WithOption(abc.ABC):
+    @property
+    @abc.abstractmethod
+    def _model(self) -> _BaseModel:
+        raise NotImplementedError
+
+    @lazy_property
+    def _OptionMixIn(self) -> Type[OptionMixIn]:
+        raise NotImplementedError
+
+    @lazy_property
+    def StrOption(self) -> Type[StrOption]:
+        class _StrOption(
+                StrOption, self._OptionMixIn):  # type: ignore
+            pass
+
+        return _StrOption
+
+    @lazy_property
+    def IntOption(self) -> Type[IntOption]:
+        class _IntOption(
+                IntOption, self._OptionMixIn):  # type: ignore
+            pass
+
+        return _IntOption
+
+    @lazy_property
+    def FloatOption(self) -> Type[FloatOption]:
+        class _FloatOption(
+                FloatOption,
+                self._OptionMixIn):  # type: ignore
+            pass
+
+        return _FloatOption

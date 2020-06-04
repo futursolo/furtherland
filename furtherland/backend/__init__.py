@@ -29,26 +29,37 @@ from .residents import Resident, ResidencyStatus, ResidentOption
 #        for_resident: -> Resident.id(one-to-many)
 # Table: Visit_Options
 #        for_visit: -> Visit.id(one-to-many)
+from .visits import Visit, VisitOption
 
-# Table: Writings
-#        for_resident: -> Resident.id(one-to-many)
-# Table: Writing_Options
-#        for_writing: -> Writing.id(one-to-many)
-
-# Table: Replies
-#        for_writing: -> Writing.id(one-to-many)
-#        for_resident: -> Optional[Resident.id](one-to-many)
-# Table: Reply_Options
-#        for_reply: -> Reply.id(one-to-many)
-
-# Table: furtherland_classes
-# Table: furtherland_class_options
+# Table: Classes
+# Table: Class_Options
+from .classes import Class, ClassOption
 
 # Table: furtherland_tags
 # Table: furtherland_tag_options
+from .tags import Tag, TagOption
 
-# Table: furtherland_writing_tag_relationships
+# Table: Works
+#        for_resident: -> Optional[Resident.id](one-to-many)
+#        for_class: Optional[Resident.id](one-to-many)
+# Table: Work_Options
+#        for_work: -> Work.id(one-to-many)
+# Table: Work_Tag_Relationships
+#        for_work: -> Work.id(one-to-many)
+#        for_tag: -> Tag.id(one-to-many)
+from .works import Work, WorkOption, WorkTagRelationship
+
+
+# Table: Replies
+#        for_work: -> Work.id(one-to-many)
+#        for_resident: -> Optional[Resident.id](one-to-many)
+# Table: Reply_Options
+#        for_reply: -> Reply.id(one-to-many)
+from .replies import Reply, ReplyOption
 
 __all__ = ["BackendMeta", "meta", "BaseModel",
            "BaseOption", "Option",
-           "Resident", "ResidencyStatus", "ResidentOption"]
+           "Resident", "ResidencyStatus", "ResidentOption",
+           "Visit", "VisitOption", "Class", "ClassOption",
+           "Tag", "TagOption", "Work", "WorkOption", "WorkTagRelationship",
+           "Reply", "ReplyOption"]
