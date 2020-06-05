@@ -111,8 +111,10 @@ let flInputTpl = createTemplate(`
       padding-left: 20px;
       padding-right: 20px;
       outline: 0;
-      transition: border-color 0.20s, background-color 0.20s;
+      transition: outline-color 0.20s, border-color 0.20s, background-color 0.20s;
       font-size: 1rem;
+      outline: 1px solid;
+      outline-color: rgba(125, 198, 235, 0);
     }
 
     input:hover {
@@ -121,14 +123,17 @@ let flInputTpl = createTemplate(`
 
     input:focus {
       border-color: rgb(125, 198, 235);
+      outline-color: rgba(125, 198, 235, 1);
     }
 
     input:invalid {
       border: 1px solid rgb(238, 82, 26);
+      outline-color: rgba(238, 82, 26, 1);
     }
 
     input:invalid:focus {
       border: 1px solid rgb(240, 99, 48);
+      outline-color: rgba(238, 82, 26, 1);
       background-color: rgb(254, 237, 234);
     }
   </style>
