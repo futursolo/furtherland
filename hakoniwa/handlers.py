@@ -35,6 +35,8 @@ import os
 import mimetypes
 import datetime
 import base64
+import email.utils
+import time
 
 if typing.TYPE_CHECKING:
     from . import web
@@ -908,6 +910,11 @@ class StaticFileHandler(RequestHandler):
     max_file_size = 1024 * 1024 * 10 - 1
     # Max file size allowed to be served by StaticFileHandler, Default: 10M.
 
+    allow_cache = True
+    # Will return `Last-Modified` or `ETag` to help caching.
+    cache_with_etag = False
+    # Default method is `Last-Modified`. Set this to `True` to use etag.
+
     async def handle_static_file(self, file_uri_path: str) -> None:
         """
         Get the file from the given file path. Override this function if you
@@ -927,6 +934,32 @@ class StaticFileHandler(RequestHandler):
 
         if os.path.isdir(file_path):
             raise exceptions.HttpError(403)
+
+        if self.allow_cache:
+            if self.cache_with_etag:
+                raise NotImplementedError("Not supported at the moment")
+
+            modified = os.path.getmtime(file_path)
+
+            modified_since_tuple = email.utils.parsedate(
+                self.get_header("if-modified-since", ""))
+
+            if modified_since_tuple:
+                modified_since: Optional[float] = time.mktime(
+                    modified_since_tuple)
+
+            else:
+                modified_since = None
+
+            if modified_since and int(modified) == int(modified_since):
+                self.set_status_code(constants.HttpStatusCode.NOT_MODIFIED)
+                self.clear_header("content-type")
+                await self.flush()
+
+                return
+
+            else:
+                self.set_header("last-modified", format_timestamp(modified))
 
         file_size = os.path.getsize(file_path)
         if file_size >= self.max_file_size:
