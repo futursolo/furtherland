@@ -161,6 +161,8 @@ class BaseRequestHandler:
 
         self._response: Optional[responses.Response] = None
 
+        self.set_header("content-type", "text/html; charset=utf-8;")
+
     def set_status_code(
             self, status_code: Union[constants.HttpStatusCode, int]) -> None:
         if self._response:
@@ -581,9 +583,6 @@ class BaseRequestHandler:
             raise exceptions.HttpError(
                 500, "You cannot write response twice.")
 
-        if "content-type" not in self._headers.keys():
-            self.set_header("content-type", "text/html; charset=utf-8;")
-
         if self.request.version == constants.HttpVersion.V1_1 and \
             "transfer-encoding" not in self._headers.keys() and \
                 "content-length" not in self._headers.keys():
@@ -954,12 +953,12 @@ class StaticFileHandler(RequestHandler):
             if modified_since and int(modified) == int(modified_since):
                 self.set_status_code(constants.HttpStatusCode.NOT_MODIFIED)
                 self.clear_header("content-type")
-                await self.flush()
 
                 return
 
             else:
                 self.set_header("last-modified", format_timestamp(modified))
+                # self.set_header("cache-control", "max-age=86400")
 
         file_size = os.path.getsize(file_path)
         if file_size >= self.max_file_size:
