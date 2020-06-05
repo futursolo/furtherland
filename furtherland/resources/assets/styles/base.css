@@ -43,11 +43,7 @@ body {
   max-width: 400px;
   width: calc(100vw - 40px);
   margin-top: 20px;
-}
-
-.login-logo-container {
-  width: 100%;
-  height: 50px;
+  height: 500px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -55,7 +51,7 @@ body {
 }
 
 .login-logo {
-  height: 100%;
+  height: 80px;
   width: 100%;
   background-repeat: no-repeat;
   background-size: contain;
