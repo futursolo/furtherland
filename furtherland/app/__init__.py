@@ -22,9 +22,17 @@ from ..utils import flatten_async
 
 from .common import FurtherLand
 
+from . import signin
+
+import hakoniwa
+
 __all__ = ["FurtherLand"]
 
 _land = FurtherLand.get()
+
+
+_land.app.handlers.add(
+    hakoniwa.ReRule(r"^signin$", signin.SignInHandler), name="signin")
 
 
 @flatten_async

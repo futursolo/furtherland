@@ -17,15 +17,9 @@
 
 from .common import BaseRequestHandler, FurtherLand
 
-import hakoniwa
-
 _land = FurtherLand.get()
 
 
 class SignInHandler(BaseRequestHandler):
     async def get(self, **kwargs: str) -> str:
         return "<h1>Hello!</h1>"
-
-
-_land.app.handlers.add(
-    hakoniwa.ReRule(r"^signin$", SignInHandler), name="signin")
