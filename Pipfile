@@ -18,6 +18,7 @@ sketchbook = ">=0.2.1,<1"
 magichttp = ">=1.0.0,<2"
 destination = ">=1.1.0,<2"
 aiofiles = ">=0.5.0,<1"
+aiomysql = ">=0.0.20,<0.1"
 
 [requires]
 python_version = "3.7"
