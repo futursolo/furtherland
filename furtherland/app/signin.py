@@ -15,19 +15,17 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from __future__ import annotations
-from typing import Dict, Any
+from .common import BaseRequestHandler, FurtherLand
 
-from ..utils import flatten_async
-
-from .common import FurtherLand
-
-__all__ = ["FurtherLand"]
+import hakoniwa
 
 _land = FurtherLand.get()
 
 
-@flatten_async
-async def process_lambda_request(
-        event: Dict[str, Any], context: Any) -> Dict[str, Any]:
-    return await _land.process_lambda_request(event)
+class SignInHandler(BaseRequestHandler):
+    async def get(self, **kwargs: str) -> str:
+        return "<h1>Hello!</h1>"
+
+
+_land.app.handlers.add(
+    hakoniwa.ReRule(r"^signin$", SignInHandler), name="signin")

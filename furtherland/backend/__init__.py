@@ -15,7 +15,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from .common import BackendMeta, meta, BaseModel
+from .common import BackendMeta, BaseModel
 
 # Table: Options
 from .options import BaseOption, Option
@@ -57,7 +57,7 @@ from .works import Work, WorkOption, WorkTagRelationship
 #        for_reply: -> Reply.id(one-to-many)
 from .replies import Reply, ReplyOption
 
-__all__ = ["BackendMeta", "meta", "BaseModel",
+__all__ = ["BackendMeta", "BaseModel",
            "BaseOption", "Option",
            "Resident", "ResidencyStatus", "ResidentOption",
            "Visit", "VisitOption", "Class", "ClassOption",

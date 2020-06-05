@@ -15,6 +15,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+from __future__ import annotations
 from typing import Dict, Union, AsyncIterator
 
 from peewee import Model
@@ -84,8 +85,12 @@ class BackendMeta:
 
         await self.mgr.close()
 
+    @staticmethod
+    def get() -> BackendMeta:
+        return _meta
 
-meta = BackendMeta()
+
+_meta = BackendMeta()
 
 _CACHED_NAMES: Dict[str, str] = {}
 
@@ -95,7 +100,7 @@ class BaseModel(Model):  # type: ignore
     Base Database Model.
     """
     class Meta:
-        database = meta.db
+        database = _meta.db
 
         def table_function(cls) -> str:
             """
@@ -135,11 +140,11 @@ class BaseModel(Model):  # type: ignore
 
     @staticmethod
     def mgr() -> peewee_async.Manager:
-        return meta.mgr
+        return _meta.mgr
 
     @staticmethod
     async def seed_table() -> None:
         pass
 
 
-__all__ = ["BaseModel", "meta", "BackendMeta"]
+__all__ = ["BaseModel", "BackendMeta"]

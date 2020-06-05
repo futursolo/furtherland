@@ -97,7 +97,7 @@ def draw_sketch(sketch_name: str) -> Callable[[_SktFn], _MethodFn]:
 
     .. code-block:: python3
 
-      @render_template("index.htm")
+      @draw_sketch("index.htm")
       async def get(self, *args, **kwargs):
           return {'content': 'Hello, World!!'}
 

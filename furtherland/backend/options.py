@@ -20,12 +20,14 @@ from typing import Union, TypeVar, Type, Any, Optional, Dict, List
 from peewee import CharField, TextField, BigIntegerField, FloatField, \
     Check
 from ..utils import FurtherlandError
-from .common import BaseModel, meta
+from .common import BaseModel, BackendMeta
 
 import typing
 
 
 __all__ = ["NoSuchOption", "OptionTypeError", "Option"]
+
+_meta = BackendMeta.get()
 
 
 class NoSuchOption(KeyError, FurtherlandError):
@@ -108,10 +110,11 @@ class BaseOption(BaseModel):
         default: Optional[Union[int, str, float]] = None,
         **kwargs: Any
     ) -> _TOption:
+
         try:
             if default is None:
                 return typing.cast(
-                    _TOption, await meta.mgr.get(cls, name=name))
+                    _TOption, await _meta.mgr.get(cls, name=name))
 
         except cls.DoesNotExist as e:
             raise NoSuchOption(name) from e
@@ -135,7 +138,7 @@ class BaseOption(BaseModel):
                 "The following identity fields are required: "
                 f"{cls._ident_fields}")
 
-        opt, _ = await meta.mgr.get_or_create(
+        opt, _ = await _meta.mgr.get_or_create(
             cls, defaults=defaults, name=name, **kwargs)
         return typing.cast(_TOption, opt)
 
@@ -145,7 +148,7 @@ class BaseOption(BaseModel):
                 "The following identity fields are required: "
                 f"{self._ident_fields}")
 
-        del_count = await meta.mgr.execute(
+        del_count = await self.meta.mgr.execute(
             self.delete().where(name=self.name, **kwargs))
 
         if del_count < 1:
@@ -155,39 +158,39 @@ class BaseOption(BaseModel):
         self.as_str()
         self.str_value = value
 
-        await meta.mgr.update(self, only=("str_value",))
+        await self.meta.mgr.update(self, only=("str_value",))
 
     async def update_int(self, value: int) -> None:
         self.as_int()
         self.int_value = value
 
-        await meta.mgr.update(self, only=("int_value",))
+        await self.meta.mgr.update(self, only=("int_value",))
 
     async def update_float(self, value: float) -> None:
         self.as_float()
         self.float_value = value
 
-        await meta.mgr.update(self, only=("float_value",))
+        await self.meta.mgr.update(self, only=("float_value",))
 
     async def inc_int(self: _TOption, step: int) -> _TOption:
         self.as_int()
         idents = {(k, getattr(self, k)) for k in self._ident_fields}
-        await meta.mgr.execute(
+        await self.meta.mgr.execute(
             self.update(int_value=self.int_value + step)
             .where(name=self.name, **idents))
 
         return typing.cast(
-            _TOption, await meta.mgr.get(self, name=self.name, **idents))
+            _TOption, await self.meta.mgr.get(self, name=self.name, **idents))
 
     async def inc_float(self: _TOption, step: float) -> _TOption:
         self.as_float()
         idents = {(k, getattr(self, k)) for k in self._ident_fields}
-        await meta.mgr.execute(
+        await self.meta.mgr.execute(
             self.update(float_value=self.float_value + step)
             .where(name=self.name, **idents))
 
         return typing.cast(
-            _TOption, await meta.mgr.get(self, name=self.name, **idents))
+            _TOption, await self.meta.mgr.get(self, name=self.name, **idents))
 
 
 class Option(BaseOption):

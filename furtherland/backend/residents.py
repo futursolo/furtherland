@@ -18,7 +18,7 @@
 from __future__ import annotations  # noqa: F401
 from typing import Optional
 
-from .common import BaseModel, meta
+from .common import BaseModel, BackendMeta
 from .options import BaseOption
 
 from peewee import CharField, BigIntegerField, DateTimeField, \
@@ -78,6 +78,8 @@ class Resident(BaseModel):
             email_md5: Optional[str] = None,
             email: Optional[str] = None,
             homepage: Optional[str] = None) -> Resident:
+        meta = BackendMeta.get()
+
         resident: Resident = await meta.mgr.create(
             cls, name=name, status=status, display_name=display_name,
             password_hash=password_hash, totp_hash=totp_hash,
