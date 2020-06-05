@@ -24,9 +24,11 @@ import warnings
 import abc
 import inspect
 import json
+import base64
 
 __all__ = ["MissingRequiredEnv", "MalformedEnvError", "BaseEnv", "StrEnv",
            "BoolEnv", "IntEnv", "ListEnv", "FloatEnv", "BaseEnvStore"]
+
 
 _T = TypeVar("_T", bound=Union[int, str, bool, float, List[str]])
 
@@ -43,6 +45,43 @@ class MalformedEnvError(ValueError):
     Raised when the value of the env is not valid.
     """
     pass
+
+
+try:
+    import boto3
+    kms_client = boto3.client("kms")
+
+    def _get_env_str(env_name: str) -> str:
+        if env_name == "LAND_USE_KMS":  # There's no SEC_LAND_USE_KMS
+            return os.getenv(env_name, "0")
+
+        try:
+            value = os.environ[env_name]
+
+        except KeyError as e:
+            if _USE_KMS.get() and not env_name.startswith("SEC_LAND_"):
+                try:
+                    return _get_env_str("SEC_" + env_name)
+
+                except KeyError as ee:
+                    raise e from ee
+
+            raise
+
+        if env_name.startswith("SEC_"):
+            decoded = base64.b64decode(value)
+
+            decrypted_result = kms_client.decrypt(CiphertextBlob=decoded)
+
+            return typing.cast(
+                bytes, decrypted_result["Plaintext"]).decode("utf-8")
+
+        else:
+            return value
+
+except ImportError:
+    def _get_env_str(env_name: str) -> str:
+        return os.environ[env_name]
 
 
 class BaseEnv(Generic[_T]):
@@ -84,7 +123,20 @@ class BaseEnv(Generic[_T]):
         return self._default
 
     def _get(self) -> str:
-        return os.environ[self.name]
+        return _get_env_str(self.name)
+
+    @staticmethod
+    def _decrypt_env_str(env_str: str) -> str:
+        import boto3
+
+        kms_client = boto3.client("kms")
+
+        decoded = base64.b64decode(env_str)
+
+        decrypted_result = kms_client.decrypt(CiphertextBlob=decoded)
+
+        return typing.cast(
+            bytes, decrypted_result["Plaintext"]).decode("utf-8")
 
     @abc.abstractmethod
     def get(self) -> _T:
@@ -201,6 +253,9 @@ class ListEnv(BaseEnv[List[str]]):
             v = self._get_default()
 
         return self.adjust_value(v)
+
+
+_USE_KMS = BoolEnv("LAND_USE_KMS", default=False)
 
 
 _TC = TypeVar("_TC", bound="BaseEnvStore")

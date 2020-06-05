@@ -79,8 +79,7 @@ class BackendMeta:
     async def disconnect(self) -> None:
         self.db.close()
 
-        if self.mgr:
-            await self.mgr.close()
+        await self.mgr.close()
 
 
 meta = BackendMeta()

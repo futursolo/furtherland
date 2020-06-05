@@ -71,7 +71,7 @@ class Resident(BaseModel):
     @classmethod
     async def create_resident(
             cls, name: str, *,
-            status: ResidencyStatus = ResidencyStatus.Visitor,
+            status: ResidencyStatus = ResidencyStatus.Resident,
             display_name: Optional[str] = None,
             password_hash: Optional[str] = None,
             totp_hash: Optional[str] = None,

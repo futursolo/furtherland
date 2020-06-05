@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2020 Kaede Hoshikawa
+#   Copyright 2019 Kaede Hoshikawa
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -15,20 +15,11 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from typing import TypeVar, Generic, Any, Callable, Coroutine
+from typing import Callable, Generic, TypeVar, Any
 
 import functools
-import asyncio
-import typing
 
 _T = TypeVar("_T")
-
-
-class FurtherlandError(Exception):
-    """
-    Base Exception for Furtherland.
-    """
-    pass
 
 
 class _LazyPropertyWrapper(Generic[_T]):
@@ -54,17 +45,3 @@ def lazy_property(func: Callable[[Any], _T]) -> _LazyPropertyWrapper[_T]:
     lazy_evaluation.py
     """
     return _LazyPropertyWrapper(func)
-
-
-_AsyncFn = TypeVar("_AsyncFn", bound=Callable[..., Coroutine[Any, Any, Any]])
-_Fn = TypeVar("_Fn", bound=Callable[..., Any])
-
-
-def flatten_async(f: _AsyncFn) -> _Fn:
-    loop = asyncio.get_event_loop()
-
-    @functools.wraps(f)
-    def wrapper(*args: Any, **kwargs: Any) -> Any:
-        return loop.run_until_complete(f(*args, **kwargs))
-
-    return typing.cast(_Fn, wrapper)

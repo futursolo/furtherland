@@ -17,7 +17,7 @@
 
 from .common import BaseModel
 
-from peewee import ForeignKeyField, CharField, DateTimeField
+from peewee import ForeignKeyField, CharField, DateTimeField, TextField
 from .residents import Resident
 from .options import BaseOption
 

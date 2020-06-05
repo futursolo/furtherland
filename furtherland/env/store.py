@@ -60,3 +60,13 @@ class EnvStore(BaseEnvStore):
                      "Please set to False during production."],
                     display_name="Debug Mode Switch",
                     default=False)
+
+    use_kms = BoolEnv(
+        "USE_KMS", ["Set this to 1 enables AWS KMS.",
+                    "All variables prefixed by `SEC_` will be decrypted by "
+                    "KMS.",
+                    "For example: `LAND_SECRET` will not be decrypted by KMS.",
+                    "             However, `SEC_LAND_SECRET` will be "
+                    "decrypted by KMS.",
+                    "This variable has no effect if boto3 is not installed."],
+        display_name="Enable Amazon Key Management Service", default=False)
