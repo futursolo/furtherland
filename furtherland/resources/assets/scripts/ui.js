@@ -105,13 +105,14 @@ let flInputTpl = createTemplate(`
       height: 100%;
       flex-grow: 1;
       border-radius: 500px;
-      border: 2px solid rgb(200, 200, 200);
+      border: 3px solid rgb(200, 200, 200);
       background-color: rgb(250, 250, 250);
       box-sizing: border-box;
       padding-left: 20px;
       padding-right: 20px;
       outline: 0;
       transition: border-color 0.20s, background-color 0.20s;
+      font-size: 1rem;
     }
 
     input:focus {
@@ -120,11 +121,11 @@ let flInputTpl = createTemplate(`
     }
 
     input:invalid {
-      border: 2px solid rgb(238, 82, 26);
+      border: 3px solid rgb(238, 82, 26);
     }
 
     input:invalid:focus {
-      border: 2px solid rgb(240, 99, 48);
+      border: 3px solid rgb(240, 99, 48);
       background-color: rgb(254, 237, 234);
     }
   </style>
