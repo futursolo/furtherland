@@ -678,6 +678,12 @@ class BaseRequestHandler:
 
         await self._response.flush()
 
+    async def get_static_path(self, path: str) -> str:
+        """
+        Resolve static files into path.
+        """
+        return self.app.handlers.reverse("static", file=path)
+
     async def get_sketch_args(self) -> Dict[str, Any]:
         """
         Get the default arguments for template rendering.
@@ -686,6 +692,7 @@ class BaseRequestHandler:
         """
         return {
             "handler": self,
+            "static_path": self.get_static_path
         }
 
     async def draw_str(self, sketch_name: str, **kwargs: Any) -> str:

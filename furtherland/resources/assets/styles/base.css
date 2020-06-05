@@ -1,0 +1,65 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+     /* min-height: 100vh; */
+    font-size: 15px;
+}
+
+@media only screen and (max-width: 340px) {
+    body, html {
+        font-size: 14px;
+    }
+}
+
+html[lang="zh-hant"] {
+  font-family: "PingFang TC", "Helvetica Neue", Helvetica, sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  background-color: rgb(238, 239, 242);
+}
+
+.body-container {
+  max-width: 1200px;
+}
+
+.title {
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.second-title {
+  font-size: 0.9rem;
+  text-align: center;
+  color: rgb(100, 100, 100);
+}
+
+.login-card {
+  max-width: 400px;
+  width: calc(100vw - 40px);
+  margin-top: 20px;
+}
+
+.stretch-button {
+  width: 100%;
+}
+
+.privacy-disclaimer {
+    font-size: 0.8rem;
+    color: rgb(100, 100, 100);
+    padding-left: 1em;
+    text-indent: -1em;
+}
+
+.login-footer {
+  font-size: 0.8rem;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  color: rgb(150, 150, 150);
+}

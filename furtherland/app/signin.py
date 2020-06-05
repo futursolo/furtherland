@@ -21,5 +21,5 @@ _land = FurtherLand.get()
 
 
 class SignInHandler(BaseRequestHandler):
-    async def get(self, **kwargs: str) -> str:
-        return "<h1>Hello!</h1>"
+    async def get(self, **kwargs: str) -> None:
+        await self.draw("signin.skt.html")
