@@ -95,3 +95,23 @@ class BaseRequestHandler(hakoniwa.RequestHandler):
     @property
     def land(self) -> FurtherLand:
         return _land
+
+
+class FaviconHandler(hakoniwa.StaticFileHandler):
+    static_path = resources.get_asset_root()
+
+    async def get(self, **kwargs: str) -> None:
+        await self.handle_static_file(file_uri_path="favicon.ico")
+
+
+_land.app.handlers.add(hakoniwa.ReRule(r"^favicon.ico$", FaviconHandler))
+
+
+class RobotsTxtHandler(hakoniwa.StaticFileHandler):
+    static_path = resources.get_asset_root()
+
+    async def get(self, **kwargs: str) -> None:
+        await self.handle_static_file(file_uri_path="robots.txt")
+
+
+_land.app.handlers.add(hakoniwa.ReRule(r"^robots.txt$", RobotsTxtHandler))
