@@ -105,8 +105,8 @@ let flInputTpl = createTemplate(`
       height: 100%;
       flex-grow: 1;
       border-radius: 500px;
-      border: 3px solid rgb(200, 200, 200);
-      background-color: rgb(250, 250, 250);
+      border: 1px solid rgb(150, 150, 150);
+      background-color: rgb(255, 255, 255);
       box-sizing: border-box;
       padding-left: 20px;
       padding-right: 20px;
@@ -115,17 +115,20 @@ let flInputTpl = createTemplate(`
       font-size: 1rem;
     }
 
+    input:hover {
+      border-color: rgb(100, 100, 100);
+    }
+
     input:focus {
       border-color: rgb(125, 198, 235);
-      background-color: rgb(255, 255, 255);
     }
 
     input:invalid {
-      border: 3px solid rgb(238, 82, 26);
+      border: 1px solid rgb(238, 82, 26);
     }
 
     input:invalid:focus {
-      border: 3px solid rgb(240, 99, 48);
+      border: 1px solid rgb(240, 99, 48);
       background-color: rgb(254, 237, 234);
     }
   </style>

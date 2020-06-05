@@ -45,7 +45,7 @@ body {
   margin-top: 20px;
   height: 500px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-around;
   align-items: center;
 }
