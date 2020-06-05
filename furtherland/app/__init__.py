@@ -57,8 +57,13 @@ class Furtherland:
     def get() -> Furtherland:
         return land
 
+    async def before(self) -> None:
+        await backend.meta.init()
+
     async def process_lambda_request(
             self, event: Dict[str, Any]) -> Dict[str, Any]:
+        await self.before()
+
         result = await self.app.process_lambda_request(event)
 
         # Disconnect Database to prevent MySQL Database has gone away error.

@@ -55,6 +55,9 @@ class BackendMeta:
                 yield
 
     async def init(self) -> None:
+        if self.initialised():
+            return
+
         _ssl_params: Dict[str, Union[str, Dict[str, str]]] = {}
         db_url = _backend_envs.url.get()
 
