@@ -1,0 +1,60 @@
+env: # Or as an environment variable
+      super_secret: ${{ secrets.SuperSecret }}
+
+
+on:
+  push:
+
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: Deploy Preview
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Fetch all history for all tags and branches
+        run: git fetch --prune --unshallow
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools pipenv
+          pipenv install --dev
+
+      - name: Lint with flake8
+        run: |
+          pipenv run flake8 furtherland
+          pipenv run flake8 hakoniwa
+
+      - name: Mypy
+        run: |
+          pipenv run mypy --python-version 3.7 --strict --show-traceback --ignore-missing-imports --show-error-context --implicit-reexport --pretty -p furtherland
+          pipenv run mypy --python-version 3.7 --strict --show-traceback --ignore-missing-imports --show-error-context --implicit-reexport --pretty -p hakoniwa
+
+      - name: Create requirements.txt
+        run: pipenv lock -r > requirements.txt
+
+      - name: Copy dependencies
+        run: |
+          python setup.py egg_info
+          pip install -r furtherland.egg-info/requires.txt -t .
+
+      - name: Create Zip
+        run: |
+          rm -rf /tmp/furtherland-binaries.zip
+          zip -r /tmp/furtherland-binaries.zip ./* -x "*.pip-cache*" -x "*.git*" -x "*.mypy_cache" -x "*.egg-info" -x "*.dist-info" -x "foundation" -x "factory" -x "spirit"
+
+      - name: Upload to Lambda
+        run: |
+          aws lambda update-function-code --function-name land-preview --publish --zip-file fileb:///tmp/furtherland-binaries.zip
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

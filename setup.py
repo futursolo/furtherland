@@ -45,7 +45,8 @@ if __name__ == "__main__":
         description="A Light-weight, pluggable Blog Platform",
         long_description=open("README.rst", "r").read(),
         packages=["furtherland", *
-                  [f"furtherland.{i}" for i in find_packages("furtherland")]],
+                  [f"furtherland.{i}" for i in find_packages("furtherland")],
+                  "hakoniwa"],
         include_package_data=True,
         setup_requires=setup_requires,
         install_requires=install_requires,
