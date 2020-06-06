@@ -15,15 +15,30 @@
     </div>
 
     <div class="password-card">
-      <div class="space" style="height: 20px;"></div>
+      <div class="space" style="height: 30px;"></div>
       <div class="title">歡迎回來，「futursolo」。</div>
+      <div class="space" style="height: 20px;"></div>
       <div class="avatar"></div>
       <div class="space" style="height: 20px;"></div>
-      <div class="second-title">如要繼續，請輸入密碼並點擊「下一步」。</div>
+      <div class="second-title">如要繼續，請輸入密碼並點擊「登入」。</div>
       <div class="space" style="height: 30px;"></div>
       <fl-input type="password" name="password" placeholder="密碼" class="stretched-item"></fl-input>
       <div class="space" style="height: 30px;"></div>
-      <fl-button class="stretched-item" onclick={ onPasswordNext }>下一步</fl-button>
+      <fl-button class="stretched-item" onclick={ onPasswordNext }>登入</fl-button>
+      <div class="space" style="height: 30px;"></div>
+    </div>
+
+    <div class="otp-card">
+      <div class="space" style="height: 30px;"></div>
+      <div class="title">額外的安全驗證</div>
+      <div class="space" style="height: 20px;"></div>
+      <div class="avatar"></div>
+      <div class="space" style="height: 20px;"></div>
+      <div class="second-title">由於你已啟用兩步驗證，你需要輸入兩步驗證代碼來完成登入。</div>
+      <div class="space" style="height: 30px;"></div>
+      <fl-input type="text" name="otpcode" placeholder="兩步驗證代碼" class="stretched-item"></fl-input>
+      <div class="space" style="height: 30px;"></div>
+      <fl-button class="stretched-item" onclick={ onOtpNext }>驗證</fl-button>
       <div class="space" style="height: 30px;"></div>
     </div>
 
@@ -75,10 +90,10 @@
     }
 
     .avatar {
-      height: 80px;
-      width: 80px;
-      border-radius: 40px;
-      background-image: url(https://www.gravatar.com/avatar/0dd494a963ae648caebe34288b664ca6?s=160);
+      height: 100px;
+      width: 100px;
+      border-radius: 50px;
+      background-image: url(https://www.gravatar.com/avatar/0dd494a963ae648caebe34288b664ca6?s=200);
       background-repeat: no-repeat;
       background-size: contain;
       background-position: center;
@@ -105,6 +120,11 @@
             this.onUsernameNext();
           }
         });
+        this.$("fl-input[name=\"password\"]").addEventListener("keydown", (e) => {
+          if(e.keyCode == 13){
+            this.onPasswordNext();
+          }
+        });
       },
 
       onUsernameNext () {
@@ -113,6 +133,11 @@
       },
 
       onPasswordNext () {
+        this.$(".password-card").style.display = "none";
+        this.$(".otp-card").style.display = "flex";
+      },
+
+      onOtpNext () {
       }
     }
   </script>
