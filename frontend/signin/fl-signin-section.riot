@@ -33,10 +33,12 @@
           this.root.style.display = "none";
         }
 
-        if (props.busy) {
-          this.overlayDiv.style.display = "block";
-        } else {
-          this.overlayDiv.style.display = "none";
+        if (this.overlayDiv) {
+          if (props.busy) {
+            this.overlayDiv.style.display = "block";
+          } else {
+            this.overlayDiv.style.display = "none";
+          }
         }
       },
 
