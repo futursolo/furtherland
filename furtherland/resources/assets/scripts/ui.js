@@ -114,6 +114,8 @@ let flInputTpl = createTemplate(`
       transition: box-shadow 0.20s, border-color 0.20s, background-color 0.20s;
       font-size: 1rem;
       box-shadow: 0 0 0 2px rgba(125, 198, 235, 0);
+
+      -webkit-appearance: none;
     }
 
     input:hover {
@@ -381,6 +383,10 @@ customElements.define("fl-input", class extends HTMLElement {
     }
 
     this.inputElement.selectionDirection = val;
+  }
+
+  focus() {
+    this.inputElement.focus();
   }
 });
 

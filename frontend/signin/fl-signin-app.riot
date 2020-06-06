@@ -7,58 +7,64 @@
     <div class="space" style="height: 20px;"></div>
     <fl-input type="text" name="username" placeholder="用戶名" class="stretched-item"></fl-input>
     <div class="space" style="height: 30px;"></div>
-    <fl-input type="password" name="password" placeholder="密碼" class="stretched-item"></fl-input>
-    <div class="space" style="height: 30px;"></div>
-    <fl-button class="stretched-item">登入</fl-button>
+    <fl-button class="stretched-item">下一步</fl-button>
     <div class="space" style="height: 30px;"></div>
   </fl-card>
   <div class="footer">&copy;&nbsp;2020 未來領域管理局</div>
 
   <style>
-  :host {
-    max-width: 1200px;
-  }
+    :host {
+      max-width: 1200px;
+    }
 
-  .title {
-    font-size: 1.5rem;
-    text-align: center;
-  }
+    .title {
+      font-size: 1.5rem;
+      text-align: center;
+    }
 
-  .second-title {
-    font-size: 0.9rem;
-    text-align: center;
-    color: rgb(100, 100, 100);
-  }
+    .second-title {
+      font-size: 0.9rem;
+      text-align: center;
+      color: rgb(100, 100, 100);
+    }
 
-  fl-card {
-    max-width: 400px;
-    width: calc(100vw - 40px);
-    margin-top: 20px;
-    height: 500px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-  }
+    fl-card {
+      max-width: 400px;
+      width: calc(100vw - 40px);
+      margin-top: 20px;
+      height: 500px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
+    }
 
-  .logo {
-    height: 80px;
-    width: 100%;
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-  }
+    .logo {
+      height: 80px;
+      width: 100%;
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-position: center;
+    }
 
-  .stretched-item {
-    width: 100%;
-  }
+    .stretched-item {
+      width: 100%;
+    }
 
-  .footer {
-    font-size: 0.8rem;
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    color: rgb(150, 150, 150);
-  }
+    .footer {
+      font-size: 0.8rem;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      color: rgb(150, 150, 150);
+    }
   </style>
+
+  <script>
+    export default {
+      onMounted(props, state) {
+        this.$("fl-input[name=\"username\"]").focus();
+      }
+    }
+  </script>
 </fl-signin-app>
