@@ -101,7 +101,7 @@
 
   <script>
     import FlSigninSection from './fl-signin-section.riot';
-    import Mutex from 'async-mutex';
+    import { Mutex, Semaphone, withTimeout } from 'async-mutex';
 
     export default {
       components: {
