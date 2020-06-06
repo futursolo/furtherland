@@ -1,6 +1,6 @@
 <fl-signin-app>
   <fl-card class="fl-no-margin">
-    <fl-signin-section visible="{ currentSection === 'username' }">
+    <fl-signin-section visible="{ state.currentSection === 'username' }" busy="{ state.busy }">
       <div class="space" style="height: 30px;"></div>
       <div class="title">歡迎來到未來領域管理局</div>
       <div class="space" style="height: 20px;"></div>
@@ -14,7 +14,7 @@
       <div class="space" style="height: 30px;"></div>
     </fl-signin-section>
 
-    <fl-signin-section visible="{ currentSection === 'password' }">
+    <fl-signin-section visible="{ state.currentSection === 'password' }" busy="{ state.busy }">
       <div class="space" style="height: 30px;"></div>
       <div class="title">歡迎回來，「futursolo」。</div>
       <div class="space" style="height: 20px;"></div>
@@ -28,7 +28,7 @@
       <div class="space" style="height: 30px;"></div>
     </fl-signin-section>
 
-    <fl-signin-section visible="{ currentSection === 'otp' }">
+    <fl-signin-section visible="{ state.currentSection === 'otp' }" busy="{ state.busy }">
       <div class="space" style="height: 30px;"></div>
       <div class="title">額外的安全驗證</div>
       <div class="space" style="height: 20px;"></div>
@@ -48,6 +48,10 @@
   <style>
     :host {
       max-width: 1200px;
+    }
+
+    .stretched-item {
+      width: 100%;
     }
 
     .title {
@@ -86,10 +90,6 @@
       background-position: center;
     }
 
-    .stretched-item {
-      width: 100%;
-    }
-
     .footer {
       font-size: 0.8rem;
       height: 30px;
@@ -101,45 +101,83 @@
 
   <script>
     import FlSigninSection from './fl-signin-section.riot';
+    import Mutex from 'async-mutex';
 
     export default {
       components: {
         FlSigninSection
       },
 
+      state: {
+        currentSection: "username",
+        mutex: new Mutex(),
+        busy: false,
+      },
+
       onMounted(props, state) {
-        this.$("fl-input[name=\"username\"]").addEventListener("keydown", (e) => {
+        this.usernameInput = this.$("fl-input[name=\"username\"]");
+        this.passwordInput = this.$("fl-input[name=\"password\"]");
+        this.otpcodeInput = this.$("fl-input[name=\"otpcode\"]");
+
+        this.usernameInput.addEventListener("keydown", (e) => {
           if(e.keyCode == 13) {
             this.onUsernameNext();
           }
         });
 
-        this.$("fl-input[name=\"password\"]").addEventListener("keydown", (e) => {
+        this.passwordInput.addEventListener("keydown", (e) => {
           if(e.keyCode == 13) {
             this.onPasswordNext();
           }
         });
 
-        this.$("fl-input[name=\"otpcode\"]").addEventListener("keydown", (e) => {
+        this.otpcodeInput.addEventListener("keydown", (e) => {
           if(e.keyCode == 13) {
             this.onOtpNext();
           }
         });
-
-        this.currentSection = "username";
-        this.update();
       },
 
-      onUsernameNext () {
-        this.currentSection = 'password';
-        this.update();
-        this.$("fl-input[name=\"password\"]").focus();
+      async onUsernameNext () {
+        const release = await this.state.mutex.acquire();
+        try {
+          if (this.state.currentSection !== "username") {
+            return;
+          }
+
+          this.usernameInput.disabled = true;
+          this.update({ busy: true });
+
+          await new Promise(r => setTimeout(r, 2000));
+
+          this.update({ currentSection: 'password' });
+          this.passwordInput.focus();
+
+          this.update({ busy: false });
+        } finally {
+          release();
+        }
       },
 
-      onPasswordNext () {
-        this.currentSection = 'otp';
-        this.update();
-        this.$("fl-input[name=\"otpcode\"]").focus();
+      async onPasswordNext () {
+        const release = await this.state.mutex.acquire();
+        try {
+          if (this.state.currentSection !== "password") {
+            return;
+          }
+
+          this.passwordInput.disabled = true;
+          this.update({ busy: true });
+
+          await new Promise(r => setTimeout(r, 2000));
+
+          this.update({ currentSection: 'otp' });
+          this.otpcodeInput.focus();
+
+          this.update({ busy: false });
+        } finally {
+          release();
+        }
       },
 
       onOtpNext () {
