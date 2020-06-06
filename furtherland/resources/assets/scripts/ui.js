@@ -409,9 +409,9 @@ createShadowDomOnlyElement("fl-spinner", createTemplate(`
     }
 
     .bounce {
-      width: 18px;
-      height: 18px;
-      background-color: #333;
+      width: 0.7rem;
+      height: 0.7rem;
+      background-color: rgb(100, 100, 100);
       transition: background-color 0.20s;
 
       border-radius: 100%;
