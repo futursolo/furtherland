@@ -1,0 +1,71 @@
+<fl-signin-app>
+  <fl-card class="login-card fl-no-margin">
+    <div class="space" style="height: 30px;"></div>
+    <div class="title">歡迎來到未來領域管理局</div>
+    <div class="space" style="height: 20px;"></div>
+    <div class="login-logo" style="background-image: url(/assets/images/favicon-wide.png)"></div>
+    <div class="space" style="height: 20px;"></div>
+    <fl-input type="text" name="username" placeholder="用戶名" class="stretched-item"></fl-input>
+    <div class="space" style="height: 30px;"></div>
+    <fl-input type="password" name="password" placeholder="密碼" class="stretched-item"></fl-input>
+    <div class="space" style="height: 30px;"></div>
+    <fl-button class="stretched-item">登入</fl-button>
+    <div class="space" style="height: 30px;"></div>
+  </fl-card>
+  <div class="login-footer">&copy;&nbsp;2020 未來領域管理局</div>
+
+  <style>
+  :host {
+    max-width: 1200px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .second-title {
+    font-size: 0.9rem;
+    text-align: center;
+    color: rgb(100, 100, 100);
+  }
+
+  .login-card {
+    max-width: 400px;
+    width: calc(100vw - 40px);
+    margin-top: 20px;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .login-logo {
+    height: 80px;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+  }
+
+  .stretched-item {
+    width: 100%;
+  }
+
+  .privacy-disclaimer {
+      font-size: 0.8rem;
+      color: rgb(100, 100, 100);
+      padding-left: 1em;
+      text-indent: -1em;
+  }
+
+  .login-footer {
+    font-size: 0.8rem;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    color: rgb(150, 150, 150);
+  }
+  </style>
+</fl-signin-app>

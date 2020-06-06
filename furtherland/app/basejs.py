@@ -15,32 +15,9 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from __future__ import annotations
-from typing import Dict, Any
-
-from ..utils import flatten_async
-
-from .common import FurtherLand
-
-from . import signin
-from .import basejs
-
-import hakoniwa
-
-__all__ = ["FurtherLand"]
-
-_land = FurtherLand.get()
+from .common import BaseRequestHandler
 
 
-_land.app.handlers.add(
-    hakoniwa.ReRule(r"^signin$", signin.SignInHandler), name="signin")
-
-
-_land.app.handlers.add(
-    hakoniwa.ReRule(r"^base.js$", basejs.BaseJsHandler), name="basejs")
-
-
-@flatten_async
-async def process_lambda_request(
-        event: Dict[str, Any], context: Any) -> Dict[str, Any]:
-    return await _land.process_lambda_request(event)
+class BaseJsHandler(BaseRequestHandler):
+    async def get(self, **kwargs: str) -> None:
+        await self.draw("base.skt.js")

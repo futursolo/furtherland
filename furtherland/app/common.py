@@ -96,6 +96,14 @@ class BaseRequestHandler(hakoniwa.RequestHandler):
     def land(self) -> FurtherLand:
         return _land
 
+    async def infer_base_url(self) -> str:
+        return "https://preview.futures.moe"
+
+    async def get_sketch_args(self) -> Dict[str, Any]:
+        args = await super().get_sketch_args()
+
+        args["land_base_url"] = await self.infer_base_url()
+
 
 class FaviconHandler(hakoniwa.StaticFileHandler):
     static_path = resources.get_asset_root()

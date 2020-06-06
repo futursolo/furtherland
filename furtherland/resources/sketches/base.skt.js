@@ -30,3 +30,7 @@ if (document.body.classList.contains("min-height-100vh") && isMobileSafari()) {
   document.body.style.minHeight = "100vh";
   document.body.parentNode.style.minHeight = "100vh";
 }
+
+window.flAppOption = {
+  baseUrl: "<%r= land_base_url %>"
+};

@@ -13,66 +13,17 @@ body, html {
 }
 
 html[lang="zh-hant"] {
-  font-family: "PingFang TC", "Helvetica Neue", Helvetica, sans-serif;
+    font-family: "PingFang TC", "Helvetica Neue", Helvetica, sans-serif;
 }
 
 body {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-  background-color: rgb(244, 245, 249);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
 }
 
-.body-container {
-  max-width: 1200px;
-}
 
-.title {
-  font-size: 1.5rem;
-  text-align: center;
-}
-
-.second-title {
-  font-size: 0.9rem;
-  text-align: center;
-  color: rgb(100, 100, 100);
-}
-
-.login-card {
-  max-width: 400px;
-  width: calc(100vw - 40px);
-  margin-top: 20px;
-  height: 500px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-}
-
-.login-logo {
-  height: 80px;
-  width: 100%;
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-}
-
-.stretched-item {
-  width: 100%;
-}
-
-.privacy-disclaimer {
-    font-size: 0.8rem;
-    color: rgb(100, 100, 100);
-    padding-left: 1em;
-    text-indent: -1em;
-}
-
-.login-footer {
-  font-size: 0.8rem;
-  height: 30px;
-  line-height: 30px;
-  text-align: center;
-  color: rgb(150, 150, 150);
+body.fl-body-grey {
+    background-color: rgb(244, 245, 249);
 }

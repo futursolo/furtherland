@@ -11,29 +11,16 @@
     <link rel="stylesheet" type="text/css" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="<%r= await static_path('styles/base.css') %>">
 
+    <script></script>
+
     <script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-loader.js" crossorigin="anonymous"></script>
     <script src="<%r= await static_path('scripts/ui.js') %>"></script>
   </head>
 
-  <body class="min-height-100vh">
-    <div class="body-container">
-      <fl-card class="login-card fl-no-margin">
-        <div class="space" style="height: 30px;"></div>
-        <div class="title">歡迎來到未來領域管理局</div>
-        <div class="space" style="height: 20px;"></div>
-        <div class="login-logo" style="background-image: url(<%r= await static_path('images/favicon-wide.png') %>)"></div>
-        <div class="space" style="height: 20px;"></div>
-        <fl-input type="text" name="username" placeholder="用戶名" class="stretched-item"></fl-input>
-        <div class="space" style="height: 30px;"></div>
-        <fl-input type="password" name="password" placeholder="密碼" class="stretched-item"></fl-input>
-        <div class="space" style="height: 30px;"></div>
-        <fl-button class="stretched-item">登入</fl-button>
-        <div class="space" style="height: 30px;"></div>
-      </fl-card>
-      <div class="login-footer">&copy;&nbsp;2019 未來領域管理局</div>
-    </div>
+  <body class="min-height-100vh fl-body-grey">
+    <div id="app-root"></div>
 
-    <script src="<%r= await static_path('scripts/base.js') %>"></script>
+    <script src="<%r= '/base.js' %>"></script>
     <script src="<%r= await static_path('scripts/signin.bundle.js') %>"></script>
   </body>
 </html>
