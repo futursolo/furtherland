@@ -390,6 +390,86 @@ customElements.define("fl-input", class extends HTMLElement {
   }
 });
 
+// Based on: https://tobiasahlin.com/spinkit/
+createShadowDomOnlyElement("fl-spinner", createTemplate(`
+  <style>
+    :host {
+      display: inline-flex;
+      align-items: center;
+      flex-direction: row;
+      justify-content: space-evenly;
+
+      padding-left: 20px;
+      padding-right: 20px;
+      height: 40px;
+      width: 120px;
+      box-sizing: border-box;
+
+      text-align: center;
+    }
+
+    .bounce {
+      width: 18px;
+      height: 18px;
+      background-color: #333;
+      transition: background-color 0.20s;
+
+      border-radius: 100%;
+      display: inline-block;
+      -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+      animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    }
+
+    :host(.fl-blue) .bounce {
+      background-color: rgb(92, 184, 230);
+    }
+
+    :host(.fl-black) .bounce {
+      background-color: rgb(5, 5, 5);
+    }
+
+    :host(.fl-red) .bounce {
+      background-color: rgb(238, 82, 26);
+    }
+
+    :host(.fl-green) .bounce {
+      background-color: rgb(50, 191, 50);
+    }
+
+    :host(.fl-yellow) .bounce {
+      background-color: rgb(255, 193, 7);
+    }
+
+    .bounce1 {
+      -webkit-animation-delay: -0.32s;
+      animation-delay: -0.32s;
+    }
+
+    .bounce2 {
+      -webkit-animation-delay: -0.16s;
+      animation-delay: -0.16s;
+    }
+
+    @-webkit-keyframes sk-bouncedelay {
+      0%, 80%, 100% { -webkit-transform: scale(0) }
+      40% { -webkit-transform: scale(1.0) }
+    }
+
+    @keyframes sk-bouncedelay {
+      0%, 80%, 100% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+      } 40% {
+        -webkit-transform: scale(1.0);
+        transform: scale(1.0);
+      }
+    }
+  </style>
+  <div class="bounce1 bounce"></div>
+  <div class="bounce2 bounce"></div>
+  <div class="bounce3 bounce"></div>
+  `));
+
 createShadowDomOnlyElement("fl-card", createTemplate(`
   <style>
     :host {
