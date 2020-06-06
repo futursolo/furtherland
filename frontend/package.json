@@ -11,18 +11,16 @@
   "author": "Kaede Hoshikawa",
   "license": "Apache-2.0",
   "devDependencies": {
+    "@babel/core": "^7.10.2",
+    "@babel/plugin-transform-runtime": "^7.10.1",
     "@riotjs/cli": "^4.0.3",
     "@riotjs/compiler": "^4.9.1",
     "@riotjs/hot-reload": "^4.0.1",
     "@riotjs/parcel-plugin-riot": "^4.0.1",
-    "babel-core": "^6.26.3",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-runtime": "^6.26.0",
     "typescript": "^3.9.5"
   },
   "dependencies": {
     "async-mutex": "^0.2.2",
-    "babel-polyfill": "^6.26.0",
     "parcel-bundler": "^1.12.4",
     "riot": "^4.13.1"
   }

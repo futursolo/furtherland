@@ -1,10 +1,5 @@
 {
     "plugins": [
-        ["transform-runtime",
-            {
-                "polyfill": true,
-                "regenerator": true
-            }
-        ]
+        ["@babel/plugin-transform-runtime", { "regenerator": true } ]
     ]
 }
