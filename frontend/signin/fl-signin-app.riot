@@ -1,14 +1,32 @@
 <fl-signin-app>
   <fl-card class="fl-no-margin">
-    <div class="space" style="height: 30px;"></div>
-    <div class="title">歡迎來到未來領域管理局</div>
-    <div class="space" style="height: 20px;"></div>
-    <div class="logo" style="background-image: url(/assets/images/favicon-wide.png)"></div>
-    <div class="space" style="height: 20px;"></div>
-    <fl-input type="text" name="username" placeholder="用戶名" class="stretched-item"></fl-input>
-    <div class="space" style="height: 30px;"></div>
-    <fl-button class="stretched-item">下一步</fl-button>
-    <div class="space" style="height: 30px;"></div>
+    <div class="username-card">
+      <div class="space" style="height: 30px;"></div>
+      <div class="title">歡迎來到未來領域管理局</div>
+      <div class="space" style="height: 20px;"></div>
+      <div class="logo" style="background-image: url(/assets/images/favicon-wide.png)"></div>
+      <div class="space" style="height: 20px;"></div>
+      <div class="second-title">如要繼續，請輸入用戶名並點擊「下一步」。</div>
+      <div class="space" style="height: 20px;"></div>
+      <fl-input type="text" name="username" placeholder="用戶名" class="stretched-item" autofocus></fl-input>
+      <div class="space" style="height: 30px;"></div>
+      <fl-button class="stretched-item" onclick={ onUsernameNext }>下一步</fl-button>
+      <div class="space" style="height: 30px;"></div>
+    </div>
+
+    <div class="password-card">
+      <div class="space" style="height: 20px;"></div>
+      <div class="title">歡迎回來，「futursolo」。</div>
+      <div class="avatar"></div>
+      <div class="space" style="height: 20px;"></div>
+      <div class="second-title">如要繼續，請輸入密碼並點擊「下一步」。</div>
+      <div class="space" style="height: 30px;"></div>
+      <fl-input type="password" name="password" placeholder="密碼" class="stretched-item"></fl-input>
+      <div class="space" style="height: 30px;"></div>
+      <fl-button class="stretched-item" onclick={ onPasswordNext }>下一步</fl-button>
+      <div class="space" style="height: 30px;"></div>
+    </div>
+
   </fl-card>
   <div class="footer">&copy;&nbsp;2020 未來領域管理局</div>
 
@@ -33,15 +51,34 @@
       width: calc(100vw - 40px);
       margin-top: 20px;
       height: 500px;
+    }
+
+    .username-card, .password-card {
+      height: 100%;
+      width: 100%;
       display: flex;
       flex-direction: column;
       justify-content: space-around;
       align-items: center;
     }
 
+    .password-card {
+      display: none;
+    }
+
     .logo {
       height: 80px;
       width: 100%;
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-position: center;
+    }
+
+    .avatar {
+      height: 80px;
+      width: 80px;
+      border-radius: 40px;
+      background-image: url(https://www.gravatar.com/avatar/0dd494a963ae648caebe34288b664ca6?s=160);
       background-repeat: no-repeat;
       background-size: contain;
       background-position: center;
@@ -63,7 +100,19 @@
   <script>
     export default {
       onMounted(props, state) {
-        this.$("fl-input[name=\"username\"]").focus();
+        this.$("fl-input[name=\"username\"]").addEventListener("keydown", () => {
+          if(e.keyCode == 13){
+            onUsernameNext()
+          }
+        });
+      },
+
+      onUsernameNext () {
+        this.$(".username-card").display = "none";
+        this.$(".password-card").display = "flex";
+      },
+
+      onPasswordNext () {
       }
     }
   </script>
