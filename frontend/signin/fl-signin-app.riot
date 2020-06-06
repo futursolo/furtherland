@@ -3,51 +3,64 @@
     <fl-signin-section visible="{ state.currentSection === 'busy' }">
       <div>
         <div class="second-title">請稍候...</div>
-        <div class="space" style="height: 20px;"></div>
         <fl-spinner></fl-spinner>
       </div>
     </fl-signin-section>
 
     <fl-signin-section visible="{ state.currentSection === 'username' }">
-      <div class="space" style="height: 30px;"></div>
+      <div class="space" style="height: 20px;"></div>
       <div class="title">歡迎來到未來領域管理局</div>
       <div class="space" style="height: 20px;"></div>
       <div class="logo" style="background-image: url(/assets/images/favicon-wide.png)"></div>
-      <div class="space" style="height: 20px;"></div>
+
+      <div class="space" style="height: 1px; flex-grow: 1;"></div>
+
       <div class="second-title">如要繼續，請輸入用戶名並點擊「下一步」。</div>
       <div class="space" style="height: 20px;"></div>
       <fl-input type="text" name="username" placeholder="用戶名" class="stretched-item" autofocus></fl-input>
-      <div class="space" style="height: 30px;"></div>
+      <div class="space" style="height: 20px;"></div>
       <fl-button class="stretched-item" onclick={ onUsernameNext }>下一步</fl-button>
-      <div class="space" style="height: 30px;"></div>
+      <div class="space" style="height: 20px;"></div>
     </fl-signin-section>
 
     <fl-signin-section visible="{ state.currentSection === 'password' }">
-      <div class="space" style="height: 30px;"></div>
+      <div class="space" style="height: 20px;"></div>
       <div class="title">歡迎回來，「futursolo」。</div>
       <div class="space" style="height: 20px;"></div>
-      <div class="avatar"></div>
-      <div class="space" style="height: 20px;"></div>
+      <div>
+        <div class="avatar"></div>
+        <div class="second-title">futursolo</div>
+        <div class="name">星川かえで</div>
+      </div>
+
+      <div class="space" style="height: 1px; flex-grow: 1;"></div>
+
       <div class="second-title">如要繼續，請輸入密碼並點擊「登入」。</div>
-      <div class="space" style="height: 30px;"></div>
+      <div class="space" style="height: 20px;"></div>
       <fl-input type="password" name="password" placeholder="密碼" class="stretched-item"></fl-input>
-      <div class="space" style="height: 30px;"></div>
+      <div class="space" style="height: 20px;"></div>
       <fl-button class="stretched-item" onclick={ onPasswordNext }>登入</fl-button>
-      <div class="space" style="height: 30px;"></div>
+      <div class="space" style="height: 20px;"></div>
     </fl-signin-section>
 
     <fl-signin-section visible="{ state.currentSection === 'otp' }">
-      <div class="space" style="height: 30px;"></div>
+      <div class="space" style="height: 20px;"></div>
       <div class="title">額外的安全驗證</div>
       <div class="space" style="height: 20px;"></div>
-      <div class="avatar"></div>
-      <div class="space" style="height: 20px;"></div>
+      <div>
+        <div class="avatar"></div>
+        <div class="second-title">futursolo</div>
+        <div class="name">星川かえで</div>
+      </div>
+
+      <div class="space" style="height: 1px; flex-grow: 1;"></div>
+
       <div class="second-title">由於你已啟用兩步驗證，你需要輸入兩步驗證代碼來完成登入。</div>
-      <div class="space" style="height: 30px;"></div>
+      <div class="space" style="height: 20px;"></div>
       <fl-input type="text" name="otpcode" placeholder="兩步驗證代碼" class="stretched-item"></fl-input>
-      <div class="space" style="height: 30px;"></div>
+      <div class="space" style="height: 20px;"></div>
       <fl-button class="stretched-item" onclick={ onOtpNext }>驗證</fl-button>
-      <div class="space" style="height: 30px;"></div>
+      <div class="space" style="height: 20px;"></div>
     </fl-signin-section>
 
   </fl-card>
