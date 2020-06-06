@@ -66,8 +66,10 @@ jobs:
 
       - name: Create Zip
         run: |
+          cd furtherland-binaries
           rm -rf /tmp/furtherland-binaries.zip
-          zip -r /tmp/furtherland-binaries.zip ./furtherland-binaries/*
+          zip -r /tmp/furtherland-binaries.zip ./*
+          cd ..
 
       - name: Upload to Lambda
         run: |
@@ -76,3 +78,9 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: furtherland-binaries
+          path: /tmp/furtherland-binaries.zip
