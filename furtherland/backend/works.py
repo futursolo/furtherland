@@ -15,7 +15,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from .common import BaseModel
+from .common import BaseModel, BackendMeta
 
 from peewee import ForeignKeyField, CharField, DateTimeField, TextField, \
     BooleanField, IntegerField
@@ -28,6 +28,8 @@ import datetime
 import enum
 
 __all__ = ["Work", "WorkOption"]
+
+_meta = BackendMeta.get()
 
 
 @enum.unique
@@ -44,6 +46,7 @@ class WorkStatus(enum.IntEnum):
     Published = 1
 
 
+@_meta.add_model
 class Work(BaseModel):
     slug = CharField(null=False, unique=True, index=True, max_length=254)
     title = TextField()
@@ -66,6 +69,7 @@ class Work(BaseModel):
         Class, index=True, backref="options", on_delete="SET NULL")
 
 
+@_meta.add_model
 class WorkOption(BaseOption):
     name = CharField(null=False, index=True, max_length=254)
     for_work = ForeignKeyField(
@@ -79,6 +83,7 @@ class WorkOption(BaseOption):
         )
 
 
+@_meta.add_model
 class WorkTagRelationship(BaseModel):
     for_tag = ForeignKeyField(
         Tag, index=True, backref="work_rels", on_delete="CASCADE")

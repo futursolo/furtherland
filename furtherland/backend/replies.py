@@ -15,7 +15,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from .common import BaseModel
+from .common import BaseModel, BackendMeta
 
 from peewee import ForeignKeyField, CharField, TextField, DateTimeField, \
     IntegerField, FixedCharField
@@ -27,6 +27,8 @@ import datetime
 
 __all__ = ["Reply", "ReplyOption"]
 
+_meta = BackendMeta.get()
+
 
 class ReplyStatus:
     Hidden = -1
@@ -34,6 +36,7 @@ class ReplyStatus:
     Approved = 1
 
 
+@_meta.add_model
 class Reply(BaseModel):
 
     # html.escape
@@ -62,6 +65,7 @@ class Reply(BaseModel):
     parent = ForeignKeyField("self", null=True, index=True, backref="children")
 
 
+@_meta.add_model
 class ReplyOption(BaseOption):
     name = CharField(null=False, index=True, max_length=254)
     for_reply = ForeignKeyField(

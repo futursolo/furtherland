@@ -16,7 +16,7 @@
 #   limitations under the License.
 
 from __future__ import annotations
-from typing import Dict, Union, AsyncIterator
+from typing import Dict, Union, AsyncIterator, TypeVar, Type, List
 
 from peewee import Model
 
@@ -32,11 +32,15 @@ import contextlib
 
 _backend_envs = BackendEnvStore.get()
 
+_TModelCls = TypeVar("_TModelCls", bound=Type["BaseModel"])
+
 
 class BackendMeta:
     def __init__(self) -> None:
         self._db: peewee.DatabaseProxy = peewee.DatabaseProxy()
         self._initialised = False
+
+        self._models: List[Type[BaseModel]] = []
 
     @property
     def db(self) -> peewee.DatabaseProxy:
@@ -75,6 +79,7 @@ class BackendMeta:
 
         self._db.initialize(
             playhouse.db_url.connect(db_url, **_ssl_params))
+
         self._initialised = True
 
     def initialised(self) -> bool:
@@ -88,6 +93,15 @@ class BackendMeta:
     @staticmethod
     def get() -> BackendMeta:
         return _meta
+
+    def add_model(self, m: _TModelCls) -> _TModelCls:
+        if self.initialised():
+            raise RuntimeError(
+                "You cannot add more models after the meta is initialised.")
+
+        self._models.append(m)
+
+        return m
 
 
 _meta = BackendMeta()

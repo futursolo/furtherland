@@ -15,7 +15,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from .common import BaseModel
+from .common import BaseModel, BackendMeta
 
 from peewee import ForeignKeyField, CharField, DateTimeField, TextField
 from .residents import Resident
@@ -25,7 +25,10 @@ import datetime
 
 __all__ = ["Visit", "VisitOption"]
 
+_meta = BackendMeta.get()
 
+
+@_meta.add_model
 class Visit(BaseModel):
     for_resident = ForeignKeyField(
         Resident, backref="visits", on_delete="CASCADE")
@@ -36,6 +39,7 @@ class Visit(BaseModel):
     last_user_agent = TextField()
 
 
+@_meta.add_model
 class VisitOption(BaseOption):
     name = CharField(null=False, index=True, max_length=254)
     for_visit = ForeignKeyField(

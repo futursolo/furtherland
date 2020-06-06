@@ -15,20 +15,24 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from .common import BaseModel
+from .common import BaseModel, BackendMeta
 
 from peewee import ForeignKeyField, CharField, TextField
 from .options import BaseOption
 
 __all__ = ["Tag", "TagOption"]
 
+_meta = BackendMeta.get()
 
+
+@_meta.add_model
 class Tag(BaseModel):
     slug = CharField(null=False, index=True, unique=True, max_length=254)
     display_name = TextField()
     description = TextField()
 
 
+@_meta.add_model
 class TagOption(BaseOption):
     name = CharField(null=False, index=True, max_length=254)
     for_tag = ForeignKeyField(

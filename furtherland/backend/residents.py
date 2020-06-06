@@ -29,6 +29,8 @@ import enum
 
 __all__ = ["ResidencyStatus", "Resident", "ResidentOption"]
 
+_meta = BackendMeta.get()
+
 
 @enum.unique
 class ResidencyStatus(enum.IntEnum):
@@ -51,6 +53,7 @@ class ResidencyStatus(enum.IntEnum):
     # Please note that the first resident will automatically become master.
 
 
+@_meta.add_model
 class Resident(BaseModel):
     name = CharField(null=False, index=True, unique=True, max_length=64)
     display_name = TextField()
@@ -78,9 +81,7 @@ class Resident(BaseModel):
             email_md5: Optional[str] = None,
             email: Optional[str] = None,
             homepage: Optional[str] = None) -> Resident:
-        meta = BackendMeta.get()
-
-        resident: Resident = await meta.mgr.create(
+        resident: Resident = await _meta.mgr.create(
             cls, name=name, status=status, display_name=display_name,
             password_hash=password_hash, totp_hash=totp_hash,
             email_md5=email_md5, email=email, homepage=homepage)
@@ -88,6 +89,7 @@ class Resident(BaseModel):
         return resident
 
 
+@_meta.add_model
 class ResidentOption(BaseOption):
     name = CharField(null=False, index=True, max_length=254)
     for_resident = ForeignKeyField(

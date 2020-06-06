@@ -193,6 +193,7 @@ class BaseOption(BaseModel):
             _TOption, await self.meta.mgr.get(self, name=self.name, **idents))
 
 
+@_meta.add_model
 class Option(BaseOption):
     """
     Furtherland Global Options.

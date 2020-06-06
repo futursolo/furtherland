@@ -101,7 +101,7 @@ class FaviconHandler(hakoniwa.StaticFileHandler):
     static_path = resources.get_asset_root()
 
     async def get(self, **kwargs: str) -> None:
-        await self.handle_static_file(file_uri_path="favicon.ico")
+        await self.handle_static_file(file_uri_path="images/favicon.ico")
 
 
 _land.app.handlers.add(hakoniwa.ReRule(r"^favicon.ico$", FaviconHandler))

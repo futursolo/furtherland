@@ -15,14 +15,17 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from .common import BaseModel
+from .common import BaseModel, BackendMeta
 
 from peewee import ForeignKeyField, CharField, TextField
 from .options import BaseOption
 
 __all__ = ["Class", "ClassOption"]
 
+_meta = BackendMeta.get()
 
+
+@_meta.add_model
 class Class(BaseModel):
     slug = CharField(null=False, index=True, unique=True, max_length=254)
     display_name = TextField()
@@ -30,6 +33,7 @@ class Class(BaseModel):
     parent = ForeignKeyField("self", null=True, index=True, backref="children")
 
 
+@_meta.add_model
 class ClassOption(BaseOption):
     name = CharField(null=False, index=True, max_length=254)
     for_class = ForeignKeyField(

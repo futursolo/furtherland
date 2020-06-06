@@ -137,3 +137,6 @@ test_furtherland.env
 # Ignore Files managed by Pipenv
 requirements.txt
 dev-requirements.txt
+
+# node
+node_modules/
