@@ -1,0 +1,34 @@
+<fl-signin-section>
+  <slot></slot>
+
+  <style>
+    :host {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
+    }
+  </style>
+
+  <script>
+    export default {
+      updateVisibility(props, state) {
+        if(props.visible) {
+          this.style.display = "flex";
+        } else {
+          this.style.display = "none";
+        }
+      },
+
+      onBeforeMount(props, state) {
+        this.updateVisibility(props, state);
+      },
+
+      onBeforeUpdate(props, state) {
+        this.updateVisibility(props, state);
+      },
+    }
+  </script>
+</fl-signin-section>

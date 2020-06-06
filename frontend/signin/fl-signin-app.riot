@@ -1,6 +1,6 @@
 <fl-signin-app>
   <fl-card class="fl-no-margin">
-    <div class="username-card">
+    <fl-login-section visible="{ currentSection === 'username' }">
       <div class="space" style="height: 30px;"></div>
       <div class="title">歡迎來到未來領域管理局</div>
       <div class="space" style="height: 20px;"></div>
@@ -12,9 +12,9 @@
       <div class="space" style="height: 30px;"></div>
       <fl-button class="stretched-item" onclick={ onUsernameNext }>下一步</fl-button>
       <div class="space" style="height: 30px;"></div>
-    </div>
+    </fl-login-section>
 
-    <div class="password-card">
+    <fl-login-section visible="{ currentSection === 'password' }">
       <div class="space" style="height: 30px;"></div>
       <div class="title">歡迎回來，「futursolo」。</div>
       <div class="space" style="height: 20px;"></div>
@@ -26,9 +26,9 @@
       <div class="space" style="height: 30px;"></div>
       <fl-button class="stretched-item" onclick={ onPasswordNext }>登入</fl-button>
       <div class="space" style="height: 30px;"></div>
-    </div>
+    </fl-login-section>
 
-    <div class="otp-card">
+    <fl-login-section visible="{ currentSection === 'otp' }">
       <div class="space" style="height: 30px;"></div>
       <div class="title">額外的安全驗證</div>
       <div class="space" style="height: 20px;"></div>
@@ -40,7 +40,7 @@
       <div class="space" style="height: 30px;"></div>
       <fl-button class="stretched-item" onclick={ onOtpNext }>驗證</fl-button>
       <div class="space" style="height: 30px;"></div>
-    </div>
+    </fl-login-section>
 
   </fl-card>
   <div class="footer">&copy;&nbsp;2020 未來領域管理局</div>
@@ -66,19 +66,6 @@
       width: calc(100vw - 40px);
       margin-top: 20px;
       height: 500px;
-    }
-
-    .username-card, .password-card, .otp-card {
-      height: 100%;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      align-items: center;
-    }
-
-    .password-card, .otp-card {
-      display: none;
     }
 
     .logo {
@@ -113,28 +100,46 @@
   </style>
 
   <script>
+    import FlSigninSection from './fl-signin-section.riot';
+
     export default {
+      components: {
+        FlSigninSection
+      },
+
       onMounted(props, state) {
         this.$("fl-input[name=\"username\"]").addEventListener("keydown", (e) => {
           if(e.keyCode == 13){
             this.onUsernameNext();
           }
         });
+
         this.$("fl-input[name=\"password\"]").addEventListener("keydown", (e) => {
           if(e.keyCode == 13){
             this.onPasswordNext();
           }
         });
+
+        this.$("fl-input[name=\"otp\"]").addEventListener("keydown", (e) => {
+          if(e.keyCode == 13){
+            this.onOtpNext();
+          }
+        });
+
+        this.currentSection = "username";
+        this.update();
       },
 
       onUsernameNext () {
-        this.$(".username-card").style.display = "none";
-        this.$(".password-card").style.display = "flex";
+        this.currentSection = 'password';
+        this.update();
+        this.$("fl-input[name=\"password\"]").focus();
       },
 
       onPasswordNext () {
-        this.$(".password-card").style.display = "none";
-        this.$(".otp-card").style.display = "flex";
+        this.currentSection = 'otp';
+        this.update();
+        this.$("fl-input[name=\"otpcode\"]").focus();
       },
 
       onOtpNext () {
