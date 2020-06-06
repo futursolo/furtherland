@@ -20,4 +20,5 @@ from .common import BaseRequestHandler
 
 class BaseJsHandler(BaseRequestHandler):
     async def get(self, **kwargs: str) -> None:
+        self.set_header("content-type", "text/javascript")
         await self.draw("base.skt.js")
