@@ -41,10 +41,12 @@
       },
 
       onBeforeMount(props, state) {
-        this.overlayDiv = this.$(".overlay");
-
         this.updateVisibility(props, state);
       },
+
+      onMounted(props, state) {
+        this.overlayDiv = this.$(".overlay");
+      }
 
       onBeforeUpdate(props, state) {
         this.updateVisibility(props, state);
