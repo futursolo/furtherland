@@ -1,6 +1,6 @@
 <fl-signin-app>
   <fl-card class="fl-no-margin">
-    <fl-login-section visible="{ currentSection === 'username' }">
+    <fl-signin-section visible="{ currentSection === 'username' }">
       <div class="space" style="height: 30px;"></div>
       <div class="title">歡迎來到未來領域管理局</div>
       <div class="space" style="height: 20px;"></div>
@@ -12,9 +12,9 @@
       <div class="space" style="height: 30px;"></div>
       <fl-button class="stretched-item" onclick={ onUsernameNext }>下一步</fl-button>
       <div class="space" style="height: 30px;"></div>
-    </fl-login-section>
+    </fl-signin-section>
 
-    <fl-login-section visible="{ currentSection === 'password' }">
+    <fl-signin-section visible="{ currentSection === 'password' }">
       <div class="space" style="height: 30px;"></div>
       <div class="title">歡迎回來，「futursolo」。</div>
       <div class="space" style="height: 20px;"></div>
@@ -26,9 +26,9 @@
       <div class="space" style="height: 30px;"></div>
       <fl-button class="stretched-item" onclick={ onPasswordNext }>登入</fl-button>
       <div class="space" style="height: 30px;"></div>
-    </fl-login-section>
+    </fl-signin-section>
 
-    <fl-login-section visible="{ currentSection === 'otp' }">
+    <fl-signin-section visible="{ currentSection === 'otp' }">
       <div class="space" style="height: 30px;"></div>
       <div class="title">額外的安全驗證</div>
       <div class="space" style="height: 20px;"></div>
@@ -40,7 +40,7 @@
       <div class="space" style="height: 30px;"></div>
       <fl-button class="stretched-item" onclick={ onOtpNext }>驗證</fl-button>
       <div class="space" style="height: 30px;"></div>
-    </fl-login-section>
+    </fl-signin-section>
 
   </fl-card>
   <div class="footer">&copy;&nbsp;2020 未來領域管理局</div>
@@ -109,19 +109,19 @@
 
       onMounted(props, state) {
         this.$("fl-input[name=\"username\"]").addEventListener("keydown", (e) => {
-          if(e.keyCode == 13){
+          if(e.keyCode == 13) {
             this.onUsernameNext();
           }
         });
 
         this.$("fl-input[name=\"password\"]").addEventListener("keydown", (e) => {
-          if(e.keyCode == 13){
+          if(e.keyCode == 13) {
             this.onPasswordNext();
           }
         });
 
-        this.$("fl-input[name=\"otp\"]").addEventListener("keydown", (e) => {
-          if(e.keyCode == 13){
+        this.$("fl-input[name=\"otpcode\"]").addEventListener("keydown", (e) => {
+          if(e.keyCode == 13) {
             this.onOtpNext();
           }
         });

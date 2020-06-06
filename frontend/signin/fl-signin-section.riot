@@ -16,9 +16,9 @@
     export default {
       updateVisibility(props, state) {
         if(props.visible) {
-          this.style.display = "flex";
+          this.root.style.display = "flex";
         } else {
-          this.style.display = "none";
+          this.root.style.display = "none";
         }
       },
 
