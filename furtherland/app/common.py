@@ -104,6 +104,8 @@ class BaseRequestHandler(hakoniwa.RequestHandler):
 
         args["land_base_url"] = await self.infer_base_url()
 
+        return args
+
 
 class FaviconHandler(hakoniwa.StaticFileHandler):
     static_path = resources.get_asset_root()
