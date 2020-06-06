@@ -98,6 +98,11 @@
   </style>
 
   <script>
+    function onUsernameNext () {
+      this.$(".username-card").style.display = "none";
+      this.$(".password-card").style.display = "flex";
+    }
+
     export default {
       onMounted(props, state) {
         this.$("fl-input[name=\"username\"]").addEventListener("keydown", (e) => {
@@ -108,8 +113,7 @@
       },
 
       onUsernameNext () {
-        this.$(".username-card").display = "none";
-        this.$(".password-card").display = "flex";
+        onUsernameNext ()
       },
 
       onPasswordNext () {
