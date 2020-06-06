@@ -20,7 +20,7 @@
       <fl-input type="text" name="username" placeholder="用戶名" class="stretched-item" autofocus></fl-input>
       <div class="space" style="height: 25px;"></div>
       <fl-button class="stretched-item" onclick={ onUsernameNext }>下一步</fl-button>
-      <div class="space" style="height: 25px;"></div>
+      <div class="space" style="height: 50px;"></div>
     </fl-signin-section>
 
     <fl-signin-section visible="{ state.currentSection === 'password' }">
@@ -40,8 +40,8 @@
       <fl-input type="password" name="password" placeholder="密碼" class="stretched-item"></fl-input>
       <div class="space" style="height: 25px;"></div>
       <fl-button class="stretched-item" onclick={ onPasswordNext }>登入</fl-button>
-      <div style="height: 25px; width: 100%;">
-        <div class="second-title">使用其它帳戶？</div>
+      <div style="height: 50px; width: 100%;">
+        <div style="height: 50px; width: 100%; line-height: 50px; cursor: default;" class="second-title" onclick="{ restart }">使用其它帳戶？</div>
       </div>
     </fl-signin-section>
 
@@ -62,8 +62,8 @@
       <fl-input type="text" name="otpcode" placeholder="兩步驗證代碼" class="stretched-item"></fl-input>
       <div class="space" style="height: 25px;"></div>
       <fl-button class="stretched-item" onclick={ onOtpNext }>驗證</fl-button>
-      <div style="height: 25px; width: 100%;">
-        <div class="second-title" onclick="{ restart }">使用其它帳戶？</div>
+      <div style="height: 50px; width: 100%;">
+        <div style="height: 50px; width: 100%; line-height: 50px; cursor: default;" class="second-title" onclick="{ restart }">使用其它帳戶？</div>
       </div>
     </fl-signin-section>
 
