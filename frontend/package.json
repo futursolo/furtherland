@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "async-mutex": "^0.2.2",
+    "babel-polyfill": "^6.26.0",
     "parcel-bundler": "^1.12.4",
     "riot": "^4.13.1"
   }
