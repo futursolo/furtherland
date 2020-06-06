@@ -1,6 +1,14 @@
 <fl-signin-app>
   <fl-card class="fl-no-margin">
-    <fl-signin-section visible="{ state.currentSection === 'username' }" busy="{ state.busy }">
+    <fl-signin-section visible="{ state.currentSection === 'busy' }">
+      <div class="spinner">
+          <div class="bounce1"></div>
+          <div class="bounce2"></div>
+          <div class="bounce3"></div>
+      </div>
+    </fl-signin-section>
+
+    <fl-signin-section visible="{ state.currentSection === 'username' }">
       <div class="space" style="height: 30px;"></div>
       <div class="title">歡迎來到未來領域管理局</div>
       <div class="space" style="height: 20px;"></div>
@@ -14,7 +22,7 @@
       <div class="space" style="height: 30px;"></div>
     </fl-signin-section>
 
-    <fl-signin-section visible="{ state.currentSection === 'password' }" busy="{ state.busy }">
+    <fl-signin-section visible="{ state.currentSection === 'password' }">
       <div class="space" style="height: 30px;"></div>
       <div class="title">歡迎回來，「futursolo」。</div>
       <div class="space" style="height: 20px;"></div>
@@ -28,7 +36,7 @@
       <div class="space" style="height: 30px;"></div>
     </fl-signin-section>
 
-    <fl-signin-section visible="{ state.currentSection === 'otp' }" busy="{ state.busy }">
+    <fl-signin-section visible="{ state.currentSection === 'otp' }">
       <div class="space" style="height: 30px;"></div>
       <div class="title">額外的安全驗證</div>
       <div class="space" style="height: 20px;"></div>
@@ -97,6 +105,49 @@
       text-align: center;
       color: rgb(150, 150, 150);
     }
+
+
+    .spinner {
+      margin: 100px auto 0;
+      width: 70px;
+      text-align: center;
+    }
+
+    .spinner > div {
+      width: 18px;
+      height: 18px;
+      background-color: #333;
+
+      border-radius: 100%;
+      display: inline-block;
+      -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+      animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    }
+
+    .spinner .bounce1 {
+      -webkit-animation-delay: -0.32s;
+      animation-delay: -0.32s;
+    }
+
+    .spinner .bounce2 {
+      -webkit-animation-delay: -0.16s;
+      animation-delay: -0.16s;
+    }
+
+    @-webkit-keyframes sk-bouncedelay {
+      0%, 80%, 100% { -webkit-transform: scale(0) }
+      40% { -webkit-transform: scale(1.0) }
+    }
+
+    @keyframes sk-bouncedelay {
+      0%, 80%, 100% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+      } 40% {
+        -webkit-transform: scale(1.0);
+        transform: scale(1.0);
+      }
+    }
   </style>
 
   <script>
@@ -111,7 +162,6 @@
       state: {
         currentSection: "username",
         mutex: new Mutex(),
-        busy: false,
       },
 
       onMounted(props, state) {
@@ -145,15 +195,13 @@
             return;
           }
 
+          this.update({ currentSection: 'busy' });
           this.usernameInput.disabled = true;
-          this.update({ busy: true });
 
           await new Promise(r => setTimeout(r, 2000));
 
           this.update({ currentSection: 'password' });
           this.passwordInput.focus();
-
-          this.update({ busy: false });
         } finally {
           release();
         }
@@ -166,15 +214,13 @@
             return;
           }
 
+          this.update({ currentSection: 'busy' });
           this.passwordInput.disabled = true;
-          this.update({ busy: true });
 
           await new Promise(r => setTimeout(r, 2000));
 
           this.update({ currentSection: 'otp' });
           this.otpcodeInput.focus();
-
-          this.update({ busy: false });
         } finally {
           release();
         }

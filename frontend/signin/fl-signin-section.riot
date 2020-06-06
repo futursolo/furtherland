@@ -1,5 +1,4 @@
 <fl-signin-section>
-  <div class="overlay"></div>
   <slot></slot>
 
   <style>
@@ -12,16 +11,6 @@
       align-items: center;
       position: relative;
     }
-
-    .overlay {
-      height: 100%;
-      width: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-      background: rgba(0, 0, 0, 0.2);
-      display: none;
-    }
   </style>
 
   <script>
@@ -32,22 +21,10 @@
         } else {
           this.root.style.display = "none";
         }
-
-        if (this.overlayDiv) {
-          if (props.busy) {
-            this.overlayDiv.style.display = "block";
-          } else {
-            this.overlayDiv.style.display = "none";
-          }
-        }
       },
 
       onBeforeMount(props, state) {
         this.updateVisibility(props, state);
-      },
-
-      onMounted(props, state) {
-        this.overlayDiv = this.$(".overlay");
       },
 
       onBeforeUpdate(props, state) {
