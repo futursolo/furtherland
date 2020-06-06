@@ -59,9 +59,10 @@ jobs:
 
       - name: Copy dependencies
         run: |
-          python setup.py egg_info
+          python setup.py dist_info
           pip install -r furtherland.egg-info/requires.txt -t ./furtherland-binaries
           cp -r furtherland ./furtherland-binaries/
+          cp -r furtherland.dist-info ./furtherland-binaries/
           cp -r hakoniwa ./furtherland-binaries/
 
       - name: Create Zip
