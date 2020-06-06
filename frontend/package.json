@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "parcel build signin/main.ts --out-file signin.bundle.js --no-cache && cp dist/* ../furtherland/resources/assets/scripts/"
+    "build": "parcel build signin/main.ts --out-file signin.bundle.js --out-dir ../furtherland/resources/assets/scripts/ --public-url /assets/scripts/"
   },
   "author": "Kaede Hoshikawa",
   "license": "Apache-2.0",
