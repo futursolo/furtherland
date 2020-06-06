@@ -140,3 +140,7 @@ dev-requirements.txt
 
 # node
 node_modules/
+
+# Parcel
+*.bundle.js
+*.bundle.js.map
