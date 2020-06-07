@@ -17,16 +17,14 @@
       <fl-input type="text" name="name" placeholder="用戶名" class="stretched-item" autofocus disabled="{ state.currentSection !== 'name' }"></fl-input>
       <fl-button class="stretched-item" onclick={ onNameNext }>下一步</fl-button>
       <div class="bottom-links">
-        <div class="second-title">註冊新帳戶</div>
+        <div class="second-title bottom-link-item" style="text-align: left;">註冊新帳戶</div>
         <div class="second-title"> { "|" } </div>
-        <div class="second-title">忘記用戶名或密碼</div>
+        <div class="second-title bottom-link-item" style="text-align: right;">忘記用戶名或密碼</div>
       </div>
     </fl-signin-section>
 
     <fl-signin-section visible="{ state.currentSection === 'password' }">
-      <div class="space" style="height: 25px;"></div>
       <div class="title">歡迎回來</div>
-      <div class="space" style="height: 25px;"></div>
       <div style="text-align: center;">
         <fl-avatar src="{ getResidentImageUrl() }"></fl-avatar>
         <div class="second-title">{ state.resident.name }</div>
@@ -36,21 +34,17 @@
       <div class="flex-grow-space"></div>
 
       <div class="second-title">如要繼續，請輸入密碼並點擊「登入」。</div>
-      <div class="space" style="height: 25px;"></div>
       <fl-input type="password" name="password" placeholder="密碼" class="stretched-item" disabled="{ state.currentSection !== 'password' }"></fl-input>
-      <div class="space" style="height: 25px;"></div>
       <fl-button class="stretched-item" onclick={ onPasswordNext }>登入</fl-button>
       <div class="bottom-links">
-        <div class="second-title"><span onclick="{ restart }">使用其它帳戶</span></div>
+        <div class="second-title bottom-link-item" style="text-align: left;"><span onclick="{ restart }">使用其它帳戶</span></div>
         <div class="second-title"> { "|" } </div>
-        <div class="second-title">忘記用戶名或密碼</div>
+        <div class="second-title bottom-link-item" style="text-align: right;">忘記用戶名或密碼</div>
       </div>
     </fl-signin-section>
 
     <fl-signin-section visible="{ state.currentSection === 'otp' }">
-      <div class="space" style="height: 25px;"></div>
       <div class="title">額外的安全驗證</div>
-      <div class="space" style="height: 25px;"></div>
       <div style="text-align: center;">
         <fl-avatar src="{ getResidentImageUrl() }"></fl-avatar>
         <div class="second-title">{ state.resident.name }</div>
@@ -60,14 +54,12 @@
       <div class="flex-grow-space"></div>
 
       <div class="second-title">由於你已啟用兩步驗證，你需要輸入兩步驗證代碼來完成登入。</div>
-      <div class="space" style="height: 25px;"></div>
       <fl-input type="text" name="otpcode" placeholder="兩步驗證代碼" class="stretched-item" disabled="{ state.currentSection !== 'otp' }"></fl-input>
-      <div class="space" style="height: 25px;"></div>
       <fl-button class="stretched-item" onclick={ onOtpNext }>驗證</fl-button>
       <div class="bottom-links">
-        <div class="second-title"><span onclick="{ restart }">使用其它帳戶</span></div>
+        <div class="second-title bottom-link-item" style="text-align: left;"><span onclick="{ restart }">使用其它帳戶</span></div>
         <div class="second-title"> { "|" } </div>
-        <div class="second-title">忘記用戶名或密碼</div>
+        <div class="second-title bottom-link-item" style="text-align: right;">忘記用戶名或密碼</div>
       </div>
     </fl-signin-section>
 
@@ -77,6 +69,7 @@
   <style>
     :host {
       max-width: 1200px;
+      display: block;
     }
 
     .stretched-item {
@@ -131,6 +124,12 @@
       align-items: center;
     }
 
+    .bottom-link-item {
+      width: 150px;
+      padding-left: 5px;
+      padding-right: 5px;
+    }
+
     .footer {
       font-size: 0.8rem;
       height: 30px;
@@ -145,19 +144,24 @@
     import FlAvatar from '../common/fl-avatar.riot';
     import { Mutex, Semaphone, withTimeout } from 'async-mutex';
 
+    function getDefaultState() {
+      return {
+        currentSection: "name",
+        cred: {},
+        resident: {}
+      };
+    }
+
     export default {
       components: {
         FlSigninSection,
         FlAvatar
       },
 
-      state: {
-        currentSection: "name",
-        mutex: new Mutex(),
+      state: getDefaultState(),
 
-        cred: {},
-
-        resident: {}
+      onBeforeMount(props, state) {
+        this.mutex = new Mutex();
       },
 
       onMounted(props, state) {
@@ -189,18 +193,18 @@
       },
 
       async restart() {
-        const release = await this.state.mutex.acquire();
+        const release = await this.mutex.acquire();
         try {
           if (this.state.currentSection === "busy") {
             return;
           }
 
-          this.state.cred = {};
-          this.state.resident = {};
 
           this.nameInput.value = "";
           this.passwordInput.value = "";
           this.otpcodeInput.value = "";
+
+          this.update(getDefaultState());
 
           this.update({ currentSection: 'name' });
           this.nameInput.focus();
@@ -210,7 +214,7 @@
       },
 
       async onNameNext () {
-        const release = await this.state.mutex.acquire();
+        const release = await this.mutex.acquire();
         try {
           if (this.state.currentSection !== "name") {
             return;
@@ -232,7 +236,7 @@
       },
 
       async onPasswordNext () {
-        const release = await this.state.mutex.acquire();
+        const release = await this.mutex.acquire();
         try {
           if (this.state.currentSection !== "password") {
             return;
