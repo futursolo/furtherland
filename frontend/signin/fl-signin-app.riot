@@ -1,26 +1,26 @@
 <fl-signin-app>
   <fl-card class="fl-no-margin">
     <fl-signin-section visible="{ state.currentSection === 'busy' }">
-      <div style="text-align: center;">
+      <div style="text-align: center; height: 400px; flex-grow: 1; display: flex; justify-content: center; align-items: center; flex-direction: column;">
         <div class="second-title">請稍候...</div>
         <fl-spinner></fl-spinner>
       </div>
     </fl-signin-section>
 
-    <fl-signin-section visible="{ state.currentSection === 'username' }">
-      <div class="space" style="height: 25px;"></div>
+    <fl-signin-section visible="{ state.currentSection === 'name' }">
       <div class="title">歡迎來到未來領域管理局</div>
-      <div class="space" style="height: 25px;"></div>
       <div class="logo" style="background-image: url(/assets/images/favicon-wide.png)"></div>
 
-      <div class="space" style="height: 1px; flex-grow: 1;"></div>
+      <div class="flex-grow-space"></div>
 
       <div class="second-title">如要繼續，請輸入用戶名並點擊「下一步」。</div>
-      <div class="space" style="height: 25px;"></div>
-      <fl-input type="text" name="username" placeholder="用戶名" class="stretched-item" autofocus></fl-input>
-      <div class="space" style="height: 25px;"></div>
-      <fl-button class="stretched-item" onclick={ onUsernameNext }>下一步</fl-button>
-      <div class="space" style="height: 50px;"></div>
+      <fl-input type="text" name="name" placeholder="用戶名" class="stretched-item" autofocus disabled="{ state.currentSection !== 'name' }"></fl-input>
+      <fl-button class="stretched-item" onclick={ onNameNext }>下一步</fl-button>
+      <div class="bottom-links">
+        <div class="second-title">註冊新帳戶</div>
+        <div class="second-title"> { "|" } </div>
+        <div class="second-title">忘記用戶名或密碼</div>
+      </div>
     </fl-signin-section>
 
     <fl-signin-section visible="{ state.currentSection === 'password' }">
@@ -28,20 +28,22 @@
       <div class="title">歡迎回來</div>
       <div class="space" style="height: 25px;"></div>
       <div style="text-align: center;">
-        <div class="avatar"></div>
-        <div class="second-title">futursolo</div>
-        <div class="name">星川かえで</div>
+        <fl-avatar src="{ getResidentImageUrl() }"></fl-avatar>
+        <div class="second-title">{ state.resident.name }</div>
+        <div class="name">{ state.resident.displayName }</div>
       </div>
 
-      <div class="space" style="height: 1px; flex-grow: 1;"></div>
+      <div class="flex-grow-space"></div>
 
       <div class="second-title">如要繼續，請輸入密碼並點擊「登入」。</div>
       <div class="space" style="height: 25px;"></div>
-      <fl-input type="password" name="password" placeholder="密碼" class="stretched-item"></fl-input>
+      <fl-input type="password" name="password" placeholder="密碼" class="stretched-item" disabled="{ state.currentSection !== 'password' }"></fl-input>
       <div class="space" style="height: 25px;"></div>
       <fl-button class="stretched-item" onclick={ onPasswordNext }>登入</fl-button>
-      <div style="height: 50px; width: 100%;">
-        <div style="height: 50px; width: 100%; line-height: 50px; cursor: default;" class="second-title" onclick="{ restart }">使用其它帳戶？</div>
+      <div class="bottom-links">
+        <div class="second-title"><span onclick="{ restart }">使用其它帳戶</span></div>
+        <div class="second-title"> { "|" } </div>
+        <div class="second-title">忘記用戶名或密碼</div>
       </div>
     </fl-signin-section>
 
@@ -50,20 +52,22 @@
       <div class="title">額外的安全驗證</div>
       <div class="space" style="height: 25px;"></div>
       <div style="text-align: center;">
-        <div class="avatar"></div>
-        <div class="second-title">futursolo</div>
-        <div class="name">星川かえで</div>
+        <fl-avatar src="{ getResidentImageUrl() }"></fl-avatar>
+        <div class="second-title">{ state.resident.name }</div>
+        <div class="name">{ state.resident.displayName }</div>
       </div>
 
-      <div class="space" style="height: 1px; flex-grow: 1;"></div>
+      <div class="flex-grow-space"></div>
 
       <div class="second-title">由於你已啟用兩步驗證，你需要輸入兩步驗證代碼來完成登入。</div>
       <div class="space" style="height: 25px;"></div>
-      <fl-input type="text" name="otpcode" placeholder="兩步驗證代碼" class="stretched-item"></fl-input>
+      <fl-input type="text" name="otpcode" placeholder="兩步驗證代碼" class="stretched-item" disabled="{ state.currentSection !== 'otp' }"></fl-input>
       <div class="space" style="height: 25px;"></div>
       <fl-button class="stretched-item" onclick={ onOtpNext }>驗證</fl-button>
-      <div style="height: 50px; width: 100%;">
-        <div style="height: 50px; width: 100%; line-height: 50px; cursor: default;" class="second-title" onclick="{ restart }">使用其它帳戶？</div>
+      <div class="bottom-links">
+        <div class="second-title"><span onclick="{ restart }">使用其它帳戶</span></div>
+        <div class="second-title"> { "|" } </div>
+        <div class="second-title">忘記用戶名或密碼</div>
       </div>
     </fl-signin-section>
 
@@ -97,6 +101,18 @@
       height: 500px;
     }
 
+    fl-signin-section > * {
+      margin-top: 12px;
+      margin-bottom: 12px;
+    }
+
+    fl-signin-section > .flex-grow-space {
+      margin-top: 0;
+      margin-bottom: 0;
+      height: 1px;
+      flex-grow: 1;
+    }
+
     .logo {
       height: 80px;
       width: 100%;
@@ -105,14 +121,14 @@
       background-position: center;
     }
 
-    .avatar {
-      height: 100px;
-      width: 100px;
-      border-radius: 50px;
-      background-image: url(https://www.gravatar.com/avatar/0dd494a963ae648caebe34288b664ca6?s=200);
-      background-repeat: no-repeat;
-      background-size: contain;
-      background-position: center;
+    .bottom-links {
+      width: 100%;
+      cursor: default;
+
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
     }
 
     .footer {
@@ -126,27 +142,32 @@
 
   <script>
     import FlSigninSection from './fl-signin-section.riot';
+    import FlAvatar from '../common/fl-avatar.riot';
     import { Mutex, Semaphone, withTimeout } from 'async-mutex';
 
     export default {
       components: {
-        FlSigninSection
+        FlSigninSection,
+        FlAvatar
       },
 
       state: {
-        currentSection: "username",
+        currentSection: "name",
         mutex: new Mutex(),
+
         cred: {},
+
+        resident: {}
       },
 
       onMounted(props, state) {
-        this.usernameInput = this.$("fl-input[name=\"username\"]");
+        this.nameInput = this.$("fl-input[name=\"name\"]");
         this.passwordInput = this.$("fl-input[name=\"password\"]");
         this.otpcodeInput = this.$("fl-input[name=\"otpcode\"]");
 
-        this.usernameInput.addEventListener("keydown", (e) => {
+        this.nameInput.addEventListener("keydown", (e) => {
           if(e.keyCode == 13) {
-            this.onUsernameNext();
+            this.onNameNext();
           }
         });
 
@@ -163,6 +184,10 @@
         });
       },
 
+      getResidentImageUrl() {
+        return this.state.resident.imageUrl || "https://www.gravatar.com/avatar/55ea921519aa759f6a15711ad4faea7c?s=200&d=mp";
+      },
+
       async restart() {
         const release = await this.state.mutex.acquire();
         try {
@@ -171,32 +196,35 @@
           }
 
           this.state.cred = {};
+          this.state.resident = {};
 
-          this.update({ currentSection: 'username' });
-          this.usernameInput.focus();
+          this.nameInput.value = "";
+          this.passwordInput.value = "";
+          this.otpcodeInput.value = "";
+
+          this.update({ currentSection: 'name' });
+          this.nameInput.focus();
         } finally {
           release();
         }
       },
 
-      async onUsernameNext () {
+      async onNameNext () {
         const release = await this.state.mutex.acquire();
         try {
-          if (this.state.currentSection !== "username") {
+          if (this.state.currentSection !== "name") {
             return;
           }
 
           this.update({ currentSection: 'busy' });
-          this.usernameInput.disabled = true;
 
           await new Promise(r => setTimeout(r, 2000));
 
-
-          this.update({ currentSection: 'password' });
-
-          this.usernameInput.disabled = false;
-          this.usernameInput.value = "";
-
+          this.update({ currentSection: 'password', resident: {
+            name: "futursolo",
+            displayName: "星川かえで",
+            imageUrl: "https://www.gravatar.com/avatar/0dd494a963ae648caebe34288b664ca6?s=200&d=mp",
+          } });
           this.passwordInput.focus();
         } finally {
           release();
@@ -211,15 +239,10 @@
           }
 
           this.update({ currentSection: 'busy' });
-          this.passwordInput.disabled = true;
 
           await new Promise(r => setTimeout(r, 2000));
 
           this.update({ currentSection: 'otp' });
-
-          this.passwordInput.disabled = false;
-          this.passwordInput.value = "";
-
           this.otpcodeInput.focus();
         } finally {
           release();

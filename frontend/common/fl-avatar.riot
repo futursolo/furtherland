@@ -1,0 +1,29 @@
+<fl-avatar>
+  <style>
+    :host {
+      height: 100px;
+      width: 100px;
+      border-radius: 100%;
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-position: center;
+    }
+  </style>
+
+  <script>
+  export default {
+    props: {
+      src: "https://www.gravatar.com/avatar/55ea921519aa759f6a15711ad4faea7c?s=200&d=mp",
+    },
+
+    onMounted(props, state) {
+      this.root.style.backgroundImage = `url(${props.src})`;
+    },
+
+    onUpdated(props, state) {
+      this.root.style.backgroundImage = `url(${props.src})`;
+    }
+  }
+  </script>
+
+</fl-avatar>
