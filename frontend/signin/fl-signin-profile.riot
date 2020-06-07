@@ -1,0 +1,53 @@
+<fl-signin-profile>
+  <fl-avatar src="{ getResidentImageUrl() }"></fl-avatar>
+  <div class="name">{ props.resident.name || "" }</div>
+  <div class="display-name">{ props.resident.displayName || "" }</div>
+
+  <style>
+    :host {
+      display: block;
+      text-align: center;
+    }
+
+    .name {
+      font-size: 0.9rem;
+      color: rgb(100, 100, 100);
+    }
+  </style>
+
+  <script>
+    import FlAvatar from '../common/fl-avatar.riot';
+
+    export default {
+      components: {
+        FlAvatar
+      },
+
+      props: {
+        resident: {},
+        visible: true
+      },
+
+      updateVisibility(props, state) {
+        if(props.visible) {
+          this.root.style.display = "block";
+        } else {
+          this.root.style.display = "none";
+        }
+      },
+
+      getResidentImageUrl() {
+        return this.props.resident.imageUrl || "https://www.gravatar.com/avatar/55ea921519aa759f6a15711ad4faea7c?s=200&d=mp";
+      },
+
+      onBeforeMount(props, state) {
+        this.updateVisibility(props, state);
+      },
+
+      onBeforeUpdate(props, state) {
+        this.updateVisibility(props, state);
+      },
+    }
+  </script>
+
+</fl-signin-profile>
