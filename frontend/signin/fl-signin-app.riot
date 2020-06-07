@@ -21,13 +21,13 @@
       <div class="bottom-links">
         <div class="second-title bottom-link-item" style="text-align: right;">註冊新帳戶</div>
         <div class="second-title"> { "|" } </div>
-        <div class="second-title bottom-link-item" style="text-align: left;">忘記用戶名或密碼</div>
+        <div class="second-title bottom-link-item" style="text-align: left;">忘記密碼</div>
       </div>
     </fl-signin-section>
 
     <fl-signin-section visible="{ state.currentSection === 'password' }">
       <div class="title">{ state.title }</div>
-      <fl-signin-profile resident="{ state.resident }"></fl-signin-profile>
+      <fl-signin-profile resident="{ state.resident }" visible></fl-signin-profile>
 
       <div class="flex-grow-space"></div>
 
@@ -37,13 +37,13 @@
       <div class="bottom-links">
         <div class="second-title bottom-link-item" style="text-align: right;"><span onclick="{ restart }">使用其它帳戶</span></div>
         <div class="second-title"> { "|" } </div>
-        <div class="second-title bottom-link-item" style="text-align: left;">忘記用戶名或密碼</div>
+        <div class="second-title bottom-link-item" style="text-align: left;">忘記密碼</div>
       </div>
     </fl-signin-section>
 
     <fl-signin-section visible="{ state.currentSection === 'otp' }">
       <div class="title">{ state.title }</div>
-      <fl-signin-profile resident="{ state.resident }"></fl-signin-profile>
+      <fl-signin-profile resident="{ state.resident }" visible></fl-signin-profile>
 
       <div class="flex-grow-space"></div>
 
@@ -53,7 +53,7 @@
       <div class="bottom-links">
         <div class="second-title bottom-link-item" style="text-align: right;"><span onclick="{ restart }">使用其它帳戶</span></div>
         <div class="second-title"> { "|" } </div>
-        <div class="second-title bottom-link-item" style="text-align: left;">忘記用戶名或密碼</div>
+        <div class="second-title bottom-link-item" style="text-align: left;">忘記密碼</div>
       </div>
     </fl-signin-section>
 
