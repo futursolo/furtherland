@@ -939,7 +939,10 @@ class RequestHandler(BaseRequestHandler):
 
         If the arg cannot be found, it will return an empty list.
         """
-        return self._body_args.get_list(name, []) if self._body_args else []
+        if not self._body_args:
+            return []
+
+        return self._body_args.get_list(name, [])  # type: ignore
 
     async def verify_csrf_token(self) -> None:
         try:
