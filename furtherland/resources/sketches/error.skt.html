@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Internal Server Error</title>
+    <style>
+    body{
+        background-color: rgb(245, 245, 245);
+    }
+    .message{
+        background-color: rgb(255, 255, 255);
+        max-width: 1000px;
+        width: calc(100% - 20px);
+        margin-top: 20px;
+        margin-bottom: 20px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 35px;
+        text-align: center;
+        color: rgb(100, 100, 100);
+    }
+    </style>
+</head>
+<body>
+    <div class="message">
+        <div class="line">Oops! Something went wrong!</div>
+        <div class="line"><%= status_code %> : <%= error_message %></div>
+        <div class="line"><a href="https://github.com/futursolo/furtherland/issues/new">Go to GitHub and create a new issue =></a></div>
+    </div>
+</body>
+</html>

@@ -18,12 +18,14 @@
 from typing import Optional, Dict, Union, ClassVar, List, Coroutine, \
     Callable, Any, TypeVar, Type
 
+from .utils import lazy_property, Json
 from .httputils import format_timestamp, HttpCookies
 
 from . import requests
 from . import constants
 from . import exceptions
 from . import responses
+from . import security
 
 import asyncio
 import magicdict
@@ -37,6 +39,9 @@ import datetime
 import base64
 import email.utils
 import time
+import hmac
+import urllib.parse
+import json
 
 if typing.TYPE_CHECKING:
     from . import web
@@ -894,12 +899,138 @@ class BaseRequestHandler:
 
 
 class RequestHandler(BaseRequestHandler):
-    async def verify_csrf_value(self) -> None:
-        pass
+    def __init__(
+        self, app: "web.Application", request: requests.Request,
+        path_kwargs: Optional[Dict[str, str]] = None
+    ) -> None:
+        super().__init__(app, request, path_kwargs)
+        self._body_args: Optional[
+            magicdict.FrozenTolerantMagicDict[str, str]] = None
+
+        self.body: Json = None
+
+    def get_body_arg(
+        self, name: str,
+            default: Union[str, _Identifier] = _RAISE_ERROR) -> str:
+        """
+        Return first argument in the body with the name.
+
+        :arg name: the name of the argument.
+        :arg default: the default value if no value is found. If the default
+            value is not specified, it means that the argument is required, it
+            will produce an error if the argument cannot be found.
+        """
+        try:
+            if self._body_args:
+                return self._body_args[name]  # type: ignore
+
+            else:
+                raise KeyError(name)
+
+        except KeyError:
+            if default is _RAISE_ERROR:
+                raise
+
+        return default  # type: ignore
+
+    def get_all_body_args(self, name: str) -> List[str]:
+        """
+        Return all body args with the name by list.
+
+        If the arg cannot be found, it will return an empty list.
+        """
+        return self._body_args.get_list(name, []) if self._body_args else []
+
+    async def verify_csrf_token(self) -> None:
+        try:
+            csrf_submit = self.get_body_arg("_csrf_token")
+
+            if not hmac.compare_digest(self.csrf_token, csrf_submit):
+                raise exceptions.HttpError(
+                    constants.HttpStatusCode.FORBIDDEN)
+
+        except (KeyError, ValueError, TimeoutError, UnicodeDecodeError) as e:
+            raise exceptions.HttpError(
+                constants.HttpStatusCode.FORBIDDEN) from e
+
+    @lazy_property
+    def csrf_token(self) -> str:
+        try:
+            csrf_token = self.get_secure_cookie(
+                "_csrf_token", max_age=datetime.timedelta(days=1))
+
+        except (KeyError, ValueError, TimeoutError, UnicodeDecodeError):
+            csrf_token = security.BaseSecurityContext.get_random_str(
+                16, altchars=b"-_")
+
+            self.set_secure_cookie(
+                "_csrf_token", csrf_token, httponly=True,
+                max_age=datetime.timedelta(days=1))
+
+        return csrf_token
+
+    @property
+    def csrf_form_html(self) -> str:
+        """
+        Return a HTML form field contains _csrf value.
+        """
+        return "<input type=\"hidden\" name=\"_csrf_token\" value=\"{}\">"\
+            .format(self.csrf_token)
+
+    async def get_sketch_args(self) -> Dict[str, Any]:
+        args = await super().get_sketch_args()
+
+        args["csrf_token"] = self.csrf_token
+        args["csrf_form_html"] = self.csrf_form_html
+
+        return args
 
     async def _process_body(self) -> None:
+        if self.request.method in (constants.HttpRequestMethod.GET,
+                                   constants.HttpRequestMethod.OPTIONS,
+                                   constants.HttpRequestMethod.HEAD):
+            try:
+                await self.request.read()
+
+            except EOFError:
+                pass
+
+            if self.app._csrf_protect:
+                self.csrf_token
+
+            return
+
+        content_type = self.get_header("content-type", "")
+
+        if content_type in ("application/x-www-form-urlencoded",
+                            "application/x-url-encoded"):
+            self._body_args = magicdict.FrozenTolerantMagicDict(
+                urllib.parse.parse_qsl(await self.request.read()))
+
+            self.body = self._body_args
+
+        elif content_type.startswith("multipart/form-data"):
+            raise NotImplementedError
+
+        elif content_type == "application/json":
+            body = await self.request.read()
+
+            try:
+                body_str = body.decode("utf-8")
+                self.body = json.loads(body_str.strip() or "null")
+
+            except (UnicodeDecodeError, TypeError,
+                    json.decoder.JSONDecodeError) as e:
+                raise exceptions.HttpError(
+                    constants.HttpStatusCode.BAD_REQUEST,
+                    "Cannot Decode Json.") from e
+
+        else:
+            raise exceptions.HttpError(
+                constants.HttpStatusCode.BAD_REQUEST, "Unknown content-type.")
+
         if self.app._csrf_protect:
-            await self.verify_csrf_value()
+            await self.verify_csrf_token()
 
 
 class StaticFileHandler(RequestHandler):

@@ -15,11 +15,37 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from typing import Callable, Generic, TypeVar, Any
+from __future__ import annotations
+from typing import Callable, Generic, TypeVar, Any, Dict, Union, Sequence
+from typing_extensions import Protocol
 
 import functools
+import typing
 
 _T = TypeVar("_T")
+
+
+class _JsonList(Protocol):
+    def __getitem__(self, idx: int) -> Json: ...
+
+    # hack to enforce an actual list
+    def sort(self) -> None: ...
+
+
+class _JsonDict(Protocol):
+    def __getitem__(self, key: str) -> Json: ...
+
+    # hack to enforce an actual dict
+    @staticmethod
+    @typing.overload
+    def fromkeys(seq: Sequence[Any]) -> Dict[Any, Any]: ...
+
+    @staticmethod  # noqa: F811
+    @typing.overload
+    def fromkeys(seq: Sequence[Any], value: Any) -> Dict[Any, Any]: ...
+
+
+Json = Union[str, int, float, bool, None, _JsonList, _JsonDict]
 
 
 class _LazyPropertyWrapper(Generic[_T]):
