@@ -26,8 +26,7 @@ import sys
 if not sys.version_info[:3] >= (3, 7, 0):
     raise RuntimeError("Teleme requires Python 3.7.0 or higher.")
 
-setup_requires = ["setuptools>=43",
-                  "setuptools-scm>=3.5.0", "importlib_metadata>=1.6.0"]
+setup_requires = ["setuptools>=43", "setuptools-scm>=3.5.0"]
 
 install_requires = [
     i for i in open("requirements.txt").readlines() if i.find("==") != -1]
