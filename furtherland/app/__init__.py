@@ -23,7 +23,6 @@ from ..utils import flatten_async
 from .common import FurtherLand
 
 from . import signin
-from .import basejs
 
 import hakoniwa
 
@@ -34,10 +33,6 @@ _land = FurtherLand.get()
 
 _land.app.handlers.add(
     hakoniwa.ReRule(r"^signin$", signin.SignInHandler), name="signin")
-
-
-_land.app.handlers.add(
-    hakoniwa.ReRule(r"^base.js$", basejs.BaseJsHandler), name="basejs")
 
 
 @flatten_async

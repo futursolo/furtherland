@@ -59,7 +59,8 @@ class Request(abc.ABC):
 
     @lazy_property
     def queries(self) -> magicdict.FrozenTolerantMagicDict[str, str]:
-        return magicdict.FrozenTolerantMagicDict(self._parsed_uri.query)
+        return magicdict.FrozenTolerantMagicDict(
+            urllib.parse.parse_qsl(self._parsed_uri.query))
 
     @property
     @abc.abstractmethod

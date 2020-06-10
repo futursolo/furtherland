@@ -99,7 +99,8 @@ class MagicHttpRequest(requests.ReadableRequest):
 
     @property
     def headers(self) -> magicdict.FrozenTolerantMagicDict[str, str]:
-        return self._initial.headers
+        return typing.cast(
+            magicdict.FrozenTolerantMagicDict[str, str], self._initial.headers)
 
     @property
     def body(self) -> Optional[bytes]:
@@ -152,7 +153,8 @@ class MagicHttpResponse(responses.WritableResponse):
 
     @property
     def headers(self) -> magicdict.FrozenTolerantMagicDict[str, str]:
-        return self._initial.headers
+        return typing.cast(
+            magicdict.FrozenTolerantMagicDict[str, str], self._initial.headers)
 
     async def write(self, data: bytes) -> None:
         self._writer.write(data)

@@ -8,6 +8,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="referrer" content="origin">
     <meta name="csrf-token" content="<%= csrf_token %>">
+    <meta name="fl-base-url" content="<%= land_base_url %>">
 
     <link rel="stylesheet" type="text/css" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="<%r= await static_path('styles/base.css') %>">
@@ -21,7 +22,7 @@
   <body class="min-height-100vh fl-body-grey">
     <div id="fl-app-root"></div>
 
-    <script src="<%r= '/base.js' %>"></script>
+    <script src="<%r= await static_path('scripts/base.js') %>"></script>
     <script src="<%r= await static_path('scripts/signin.bundle.js') %>"></script>
   </body>
 </html>

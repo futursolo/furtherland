@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "bda7ce3a4dfa451e4318bfd43e665d2091d7d4e580e30c7cd5740fe8fd4b1629"
+            "sha256": "0932948667c72019a2dbfca23745f44c7b59bfe9bcd64c702359968bfa34369a"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -114,12 +114,21 @@
             "index": "pypi",
             "version": "==0.1.2"
         },
+        "importlib-metadata": {
+            "hashes": [
+                "sha256:0505dd08068cfec00f53a74a0ad927676d7757da81b7436a6eefe4c7cf75c545",
+                "sha256:15ec6c0fd909e893e3a08b3a7c76ecb149122fb14b7efe1199ddd4c7c57ea958"
+            ],
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'",
+            "version": "==1.6.1"
+        },
         "magicdict": {
             "hashes": [
-                "sha256:06033cfc43bd3925934a96e994c8363c6a18d371a904d4dd686f0dca94106642",
-                "sha256:90a87aee00d0d8226171f5b54ed57310e92a8c140b44c5863322f6121bb705be"
+                "sha256:6724c63d80637df561af924e9f258e9299a06e9aafbdd9582de79db86432e784",
+                "sha256:82d5b346368ded876cfd0d5e012536adb22bf8b28180caebf94e2c4e3104ec8a"
             ],
-            "version": "==1.0.3"
+            "index": "pypi",
+            "version": "==1.0.4"
         },
         "magichttp": {
             "hashes": [
@@ -191,6 +200,14 @@
             ],
             "index": "pypi",
             "version": "==3.7.4.2"
+        },
+        "zipp": {
+            "hashes": [
+                "sha256:aa36550ff0c0b7ef7fa639055d797116ee891440eac1a56f378e2d3179e0320b",
+                "sha256:c599e4d75c98f6798c509911d08a22e6c021d074469042177c8c86fb92eefd96"
+            ],
+            "markers": "python_version >= '3.6'",
+            "version": "==3.1.0"
         }
     },
     "develop": {
@@ -207,7 +224,7 @@
                 "sha256:0505dd08068cfec00f53a74a0ad927676d7757da81b7436a6eefe4c7cf75c545",
                 "sha256:15ec6c0fd909e893e3a08b3a7c76ecb149122fb14b7efe1199ddd4c7c57ea958"
             ],
-            "markers": "python_version < '3.8'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'",
             "version": "==1.6.1"
         },
         "mccabe": {

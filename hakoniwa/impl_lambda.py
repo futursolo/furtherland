@@ -63,7 +63,7 @@ class LambdaRequest(requests.Request):
         self._headers: magicdict.FrozenTolerantMagicDict[str, str] = \
             magicdict.FrozenTolerantMagicDict(header_list)
 
-        scheme_str = self._headers.get("x-forwarded-proto", "").lower()
+        scheme_str = self._headers.get_first("x-forwarded-proto", "").lower()
         self._scheme = constants.HttpScheme(scheme_str) if scheme_str else None
 
         self._res_fur: asyncio.Future["LambdaResponse"] = \
@@ -120,7 +120,7 @@ class LambdaRequest(requests.Request):
 
         response = LambdaResponse(
             self, status_code=status_code,
-            headers=magicdict.FrozenTolerantMagicDict(headers))
+            headers=magicdict.FrozenTolerantMagicDict(headers or {}))
 
         self._res_fur.set_result(response)
 

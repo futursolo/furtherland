@@ -192,7 +192,7 @@ class BaseRequestHandler:
           it will raise an error if the header cannot be found.
         """
         try:
-            return typing.cast(str, self.request.headers[name])
+            return self.request.headers[name]
 
         except KeyError:
             if default is not None:
@@ -206,7 +206,7 @@ class BaseRequestHandler:
 
         If the header cannot be found, it will return an empty list.
         """
-        return typing.cast(List[str], self.request.headers.get_list(name))
+        return self.request.headers.get_list(name)
 
     def set_header(self, name: str, value: str) -> None:
         """
@@ -564,7 +564,7 @@ class BaseRequestHandler:
             will produce an error if the argument cannot be found.
         """
         try:
-            return self.request.queries[name]  # type: ignore
+            return self.request.queries[name]
 
         except KeyError:
             if default is _RAISE_ERROR:
@@ -578,7 +578,7 @@ class BaseRequestHandler:
 
         If the arg cannot be found, it will return an empty list.
         """
-        return self.request.queries.get_list(name)  # type: ignore
+        return self.request.queries.get_list(name)
 
     async def _process_body(self) -> None:
         pass
@@ -907,7 +907,8 @@ class RequestHandler(BaseRequestHandler):
         self._body_args: Optional[
             magicdict.FrozenTolerantMagicDict[str, str]] = None
 
-        self.body: Json = None
+        self.body: Union[magicdict.FrozenTolerantMagicDict[str, str], Json] = \
+            None
 
     def get_body_arg(
         self, name: str,
@@ -922,7 +923,7 @@ class RequestHandler(BaseRequestHandler):
         """
         try:
             if self._body_args:
-                return self._body_args[name]  # type: ignore
+                return self._body_args[name]
 
             else:
                 raise KeyError(name)
@@ -1007,8 +1008,9 @@ class RequestHandler(BaseRequestHandler):
 
         if content_type in ("application/x-www-form-urlencoded",
                             "application/x-url-encoded"):
+            body_bytes = await self.request.read()
             self._body_args = magicdict.FrozenTolerantMagicDict(
-                urllib.parse.parse_qsl(await self.request.read()))
+                urllib.parse.parse_qsl(body_bytes.decode("utf-8")))
 
             self.body = self._body_args
 
