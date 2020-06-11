@@ -16,7 +16,7 @@
     <!-- Signin Sections -->
     <fl-section if="{ state.currentSection === 'name' }">
       <div class="second-title">如要繼續，請輸入用戶名並點擊「下一步」。</div>
-      <fl-input type="text" name="name" placeholder="用戶名" class="stretched-item" autofocus disabled="{ state.currentSection !== 'name' }" required minlength="3"></fl-input>
+      <fl-input type="text" name="name" placeholder="用戶名" class="stretched-item" autofocus disabled="{ state.currentSection !== 'name' }" onkeydown="{ onNameKeyDown }" required minlength="3"></fl-input>
       <fl-button class="stretched-item" onclick={ onNameNext }>下一步</fl-button>
       <div class="bottom-links">
         <div class="second-title bottom-link-item" style="text-align: right;">註冊新帳戶</div>
@@ -28,7 +28,7 @@
     <fl-section if="{ state.currentSection === 'password' }">
       <div class="second-title">如要繼續，請輸入密碼並點擊「登入」。</div>
 
-      <fl-input type="password" name="password" placeholder="密碼" class="stretched-item" disabled="{ state.currentSection !== 'password' }" required minlength="8"></fl-input>
+      <fl-input type="password" name="password" placeholder="密碼" class="stretched-item" disabled="{ state.currentSection !== 'password' }" onkeydown="{ onPasswordKeyDown }" required minlength="8"></fl-input>
       <fl-button class="stretched-item" onclick={ onPasswordNext }>登入</fl-button>
       <div class="bottom-links">
         <div class="second-title bottom-link-item" style="text-align: right;"><span onclick="{ restart }">使用其它帳戶</span></div>
@@ -39,7 +39,7 @@
 
     <fl-section if="{ state.currentSection === 'otp' }">
       <div class="second-title">由於你已啟用兩步驗證，你需要輸入兩步驗證代碼來完成登入。</div>
-      <fl-input type="text" name="otpcode" placeholder="兩步驗證代碼" class="stretched-item" disabled="{ state.currentSection !== 'otp' }" required minlength="6" maxlength="6" pattern="[0-9]+"></fl-input>
+      <fl-input type="text" name="otpcode" placeholder="兩步驗證代碼" class="stretched-item" disabled="{ state.currentSection !== 'otp' }" onkeydown="{ onOtpKeyDown }" required minlength="6" maxlength="6" pattern="[0-9]+"></fl-input>
       <fl-button class="stretched-item" onclick={ onOtpNext }>驗證</fl-button>
       <div class="bottom-links">
         <div class="second-title bottom-link-item" style="text-align: right;"><span onclick="{ restart }">使用其它帳戶</span></div>
@@ -168,12 +168,8 @@
         this.mutex = new Mutex();
       },
 
-      onMounted(props, state) {},
-
-      onUpdated(props, state) {},
-
       focusCurrentInput() {
-        this.$("fl-input[name=\"name\"]").focus();
+        this.$("fl-input").focus();
       },
 
       async restart() {
@@ -216,6 +212,12 @@
         }
       },
 
+      onNameKeyDown(e) {
+        if(e.keyCode == 13) {
+          this.onNameNext();
+        }
+      },
+
       async onPasswordNext () {
         const release = await this.mutex.acquire();
         try {
@@ -238,10 +240,16 @@
         }
       },
 
+      onPasswordKeyDown(e) {
+        if(e.keyCode == 13) {
+          this.onPasswordNext();
+        }
+      },
+
       async onOtpNext () {
         const release = await this.mutex.acquire();
         try {
-          if (this.state.currentSection !== "password") {
+          if (this.state.currentSection !== "otp") {
             return;
           }
 
@@ -258,7 +266,13 @@
         } finally {
           release();
         }
-      }
+      },
+
+      onOtpKeyDown(e) {
+        if(e.keyCode == 13) {
+          this.onOtpNext();
+        }
+      },
     }
   </script>
 </fl-signin-app>
