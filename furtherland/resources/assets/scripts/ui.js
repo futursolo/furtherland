@@ -95,15 +95,6 @@ let flInputTpl = createTemplate(`
     :host {
       height: 40px;
 
-      display: inline-block;
-    }
-
-    form {
-      height: 100%;
-      width: 100%;
-      padding: 0;
-      margin: 0;
-
       display: inline-flex;
       flex-direction: row;
       justify-content: center;

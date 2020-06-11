@@ -1,8 +1,8 @@
 <fl-signin-app>
   <fl-card class="fl-no-margin">
-    <div class="title">{ state.title }</div>
+    <div style="font-size: 1.5rem">{ state.title }</div>
     <fl-signin-profile resident="{ state.resident }" if="{ Object.keys(state.resident).length !== 0 }"></fl-signin-profile>
-     <div class="logo" style="background-image: url(/assets/images/favicon-wide.png)"  if="{ Object.keys(state.resident).length === 0 }"></div>
+     <div class="logo" style="background-image: url({ getAssetUrl('images/favicon-wide.png') })"  if="{ Object.keys(state.resident).length === 0 }"></div>
 
      <div class="flex-grow-space stretched-item" if="{ state.currentSection !== 'busy' }"></div>
 
@@ -62,11 +62,6 @@
 
     .stretched-item {
       width: 100%;
-    }
-
-    .title {
-      font-size: 1.5rem;
-      text-align: center;
     }
 
     .second-title {
@@ -142,6 +137,7 @@
     import FlSection from '../common/fl-section.riot';
     import FlSigninProfile from './fl-signin-profile.riot';
     import { Mutex, Semaphone, withTimeout } from 'async-mutex';
+    import { getAssetUrl } from '../common/helpers';
 
     function getDefaultState() {
       return {
@@ -164,12 +160,18 @@
 
       state: getDefaultState(),
 
+      getAssetUrl: getAssetUrl,
+
       onBeforeMount(props, state) {
         this.mutex = new Mutex();
       },
 
       focusCurrentInput() {
         this.$("fl-input").focus();
+      },
+
+      validateCurrentInput() {
+        return this.$("fl-input").reportValidity();
       },
 
       async restart() {
@@ -193,7 +195,7 @@
             return;
           }
 
-          if (!(this.$("fl-input[name=\"name\"]").reportValidity())) {
+          if (!(this.validateCurrentInput())) {
             return
           };
 
@@ -225,7 +227,7 @@
             return;
           }
 
-          if (!(this.$("fl-input[name=\"password\"]").reportValidity())) {
+          if (!(this.validateCurrentInput())) {
             return
           };
 
@@ -253,7 +255,7 @@
             return;
           }
 
-          if (!(this.$("fl-input[name=\"otpcode\"]").reportValidity())) {
+          if (!(this.validateCurrentInput())) {
             return
           };
 

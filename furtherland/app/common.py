@@ -97,7 +97,8 @@ class BaseRequestHandler(hakoniwa.RequestHandler):
         return _land
 
     async def infer_base_url(self) -> str:
-        return "https://preview.futures.moe"
+        return (self.request.scheme.value  # type: ignore
+                + "://" + self.request.authority)
 
     async def get_sketch_args(self) -> Dict[str, Any]:
         args = await super().get_sketch_args()
