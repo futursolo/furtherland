@@ -153,6 +153,7 @@ customElements.define("fl-input", class extends HTMLElement {
       });
 
       this.inputElement.addEventListener("input", () => {
+        console.log(this.inputElement.willValidate);
         if (!(this.inputElement.willValidate)) {
           return;
         }
@@ -162,8 +163,12 @@ customElements.define("fl-input", class extends HTMLElement {
             numTrues += 1;
           }
         });
+
+        console.log(numTrues);
+        console.log(this.inputElement.validity);
+        console.log(this.getAttribute("pattern-hint"));
         if (this.inputElement.validity.patternMismatch && numTrues === 1) {
-          this.inputElement.setCustomValidity(this.getAttribute("patternmessage") || "");
+          this.inputElement.setCustomValidity(this.getAttribute("pattern-hint") || "");
         } else {
           this.inputElement.setCustomValidity("");
         }
