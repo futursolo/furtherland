@@ -98,13 +98,6 @@
       position: relative;
     }
 
-    .flex-grow-space {
-      margin-top: 0;
-      margin-bottom: 0;
-      height: 1px;
-      flex-grow: 1;
-    }
-
     fl-section {
       width: 100%;
     }
@@ -115,8 +108,15 @@
     }
 
     :host.rigid fl-card > :not(fl-section), :host.rigid fl-section > * {
-      margin-top: 8px;
-      margin-bottom: 8px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .flex-grow-space {
+      margin-top: 0;
+      margin-bottom: 0;
+      height: 1px;
+      flex-grow: 1;
     }
 
     .logo {
