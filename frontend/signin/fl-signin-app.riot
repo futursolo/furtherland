@@ -1,7 +1,7 @@
 <fl-signin-app>
   <fl-card class="fl-no-margin">
     <div class="title">{ state.title }</div>
-    <fl-signin-profile resident="{ state.resident }" visible="{ true }" if="{ Object.keys(state.resident).length !== 0 }"></fl-signin-profile>
+    <fl-signin-profile resident="{ state.resident }" if="{ Object.keys(state.resident).length !== 0 }"></fl-signin-profile>
      <div class="logo" style="background-image: url(/assets/images/favicon-wide.png)"  if="{ Object.keys(state.resident).length === 0 }"></div>
 
      <div class="flex-grow-space stretched-item"></div>
@@ -91,7 +91,11 @@
       flex-grow: 1;
     }
 
-    fl-signin-section > * {
+    fl-section {
+      width: 100%;
+    }
+
+    fl-card > :not(fl-section), fl-section > * {
       margin-top: 12px;
       margin-bottom: 12px;
     }

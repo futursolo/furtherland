@@ -30,27 +30,10 @@
 
       props: {
         resident: {},
-        visible: true
-      },
-
-      updateVisibility(props, state) {
-        if(props.visible) {
-          this.root.style.display = "block";
-        } else {
-          this.root.style.display = "none";
-        }
       },
 
       getResidentImageUrl() {
         return this.props.resident.imageUrl || "https://www.gravatar.com/avatar/55ea921519aa759f6a15711ad4faea7c?s=200&d=mp";
-      },
-
-      onBeforeMount(props, state) {
-        this.updateVisibility(props, state);
-      },
-
-      onBeforeUpdate(props, state) {
-        this.updateVisibility(props, state);
       },
     }
   </script>
