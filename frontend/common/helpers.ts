@@ -5,5 +5,5 @@ export function getBaseUrl() {
 }
 
 export function getAssetUrl(partialPath: string) {
-    return path.join(getBaseUrl(), "assets", partialPath);
+    return getBaseUrl() + path.join("/assets", partialPath);
 }

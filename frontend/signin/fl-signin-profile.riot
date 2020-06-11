@@ -1,7 +1,7 @@
 <fl-signin-profile>
   <fl-avatar src="{ getResidentImageUrl() }"></fl-avatar>
-  <div class="name">{ props.resident.name || "" }</div>
-  <div class="display-name">{ props.resident.displayName || "" }</div>
+  <div class="fl-signin-profile-name">{ props.resident.name || "" }</div>
+  <div class="fl-signin-profile-display-name">{ props.resident.displayName || "" }</div>
 
   <style>
     :host {
@@ -14,7 +14,7 @@
       color: rgb(100, 100, 100);
     }
 
-    .display-name {
+    .fl-signin-profile-display-name {
       font-size: 1rem;
       color: black;
     }
