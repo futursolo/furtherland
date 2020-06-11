@@ -215,7 +215,9 @@
             return;
           }
 
-          this.nameForm.reportValidity();
+          if (!(this.nameForm.reportValidity())) {
+            return
+          };
 
           this.update({ currentSection: 'busy' });
 
