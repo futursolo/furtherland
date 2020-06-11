@@ -219,7 +219,7 @@
             this.update(getDefaultState("signup"));
           }
 
-          focusFirstInput();
+          this.focusFirstInput();
         } finally {
           release();
         }
@@ -246,7 +246,7 @@
             imageUrl: "https://www.gravatar.com/avatar/0dd494a963ae648caebe34288b664ca6?s=200&d=mp",
           } });
 
-          focusFirstInput();
+          this.focusFirstInput();
         } finally {
           release();
         }
@@ -277,7 +277,7 @@
 
           this.update({ currentSection: 'otp', title: "額外的安全驗證"});
 
-          focusFirstInput();
+          this.focusFirstInput();
         } finally {
           release();
         }
@@ -308,7 +308,7 @@
 
           // this.update({ currentSection: 'otp', title: "額外的安全驗證"});
 
-          // focusFirstInput();
+          // this.focusFirstInput();
         } finally {
           release();
         }

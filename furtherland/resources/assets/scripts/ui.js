@@ -135,6 +135,33 @@ let flInputTpl = createTemplate(`
   </style>
   <input type="text">`);
 
+[Log] ValidityState(ui.js, line 168)
+
+badInput: false
+
+customError: false
+
+patternMismatch: true
+
+rangeOverflow: false
+
+rangeUnderflow: false
+
+stepMismatch: false
+
+tooLong: false
+
+tooShort: true
+
+typeMismatch: false
+
+valid: false
+
+valueMissing: false
+
+ValidityStateプロトタイプ
+
+
 customElements.define("fl-input", class extends HTMLElement {
   connectedCallback() {
     if (!this.shadowRoot) {
@@ -153,23 +180,29 @@ customElements.define("fl-input", class extends HTMLElement {
       });
 
       this.inputElement.addEventListener("input", () => {
-        console.log(this.inputElement.willValidate);
         if (!(this.inputElement.willValidate)) {
           return;
         }
-        let numTrues = 0;
-        Object.values(this.inputElement.validity).forEach((item) => {
-          if (item === true) {
-            numTrues += 1;
-          }
-        });
 
-        console.log(numTrues);
-        console.log(this.inputElement.validity);
-        console.log(this.getAttribute("pattern-hint"));
-        if (this.inputElement.validity.patternMismatch && numTrues === 1) {
+        if (this.inputElement.validity.valid) {
+          return;
+        }
+
+        if (this.inputElement.validity.badInput || this.inputElement.validity.rangeOverflow ||
+          this.inputElement.validity.rangeUnderflow || this.inputElement.validity.stepMismatch ||
+          this.inputElement.validity.tooLong || this.inputElement.validity.tooShort ||
+          this.inputElement.validity.typeMismatch || this.inputElement.validity.valueMissing) {
+          this.inputElement.setCustomValidity("");
+          return;
+        }
+
+        if (this.inputElement.validity.patternMismatch) {
           this.inputElement.setCustomValidity(this.getAttribute("pattern-hint") || "");
-        } else {
+          return;
+        }
+
+        // clear custom error when value changes.
+        if (this.inputElement.validity.customError) {
           this.inputElement.setCustomValidity("");
         }
       });
