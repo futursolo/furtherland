@@ -151,6 +151,23 @@ customElements.define("fl-input", class extends HTMLElement {
       this.inputElement.addEventListener("keydown", () => {
         this.inputElement.classList.remove("invalid");
       });
+
+      this.inputElement.addEventListener("input", () => {
+        if (!(this.inputElement.willValidate)) {
+          return;
+        }
+        let numTrues = 0;
+        Object.values(this.inputElement.validity).forEach((item) => {
+          if (item === true) {
+            numTrues += 1;
+          }
+        });
+        if (this.inputElement.validity.patternMismatch && numTrues === 1) {
+          this.inputElement.setCustomValidity(this.getAttribute("patternmessage") || "");
+        } else {
+          this.inputElement.setCustomValidity("");
+        }
+      });
     }
 
     for (let i of this.constructor.observedAttributes) {
@@ -186,7 +203,7 @@ customElements.define("fl-input", class extends HTMLElement {
     return [
       "maxlength", "minlength", "pattern", "placeholder", "readonly", "spellcheck",
       "autocorrect", "required", "autocomplete", "autofocus", "disabled", "form",
-      "list", "name", "tabindex", "type", "value"
+      "list", "name", "tabindex", "type", "value", "title"
     ];
   }
 
@@ -272,6 +289,14 @@ customElements.define("fl-input", class extends HTMLElement {
     } else {
       this.inputElement.value = val;
     }
+  }
+
+  get title() {
+    return this.getAttribute("title");
+  }
+
+  set name(title) {
+    this.setAttribute("title", name);
   }
 
   get validity() {
