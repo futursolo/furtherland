@@ -95,6 +95,15 @@ let flInputTpl = createTemplate(`
     :host {
       height: 40px;
 
+      display: inline-block;
+    }
+
+    form {
+      height: 100%;
+      width: 100%;
+      padding: 0;
+      margin: 0;
+
       display: inline-flex;
       flex-direction: row;
       justify-content: center;
@@ -127,18 +136,13 @@ let flInputTpl = createTemplate(`
       box-shadow: 0 0 0 2px rgba(125, 198, 235, 1);
     }
 
-    input:invalid {
+    input.invalid {
       border: 1px solid rgb(238, 82, 26);
-      box-shadow: 0 0 0 2px rgba(238, 82, 26, 1);
-    }
-
-    input:invalid:focus {
-      border: 1px solid rgb(240, 99, 48);
       box-shadow: 0 0 0 2px rgba(238, 82, 26, 1);
       background-color: rgb(254, 237, 234);
     }
   </style>
-  <input type="text">`);
+  <form><input type="text"></form>`);
 
 customElements.define("fl-input", class extends HTMLElement {
   connectedCallback() {
@@ -148,7 +152,14 @@ customElements.define("fl-input", class extends HTMLElement {
       });
       shadowRoot.appendChild(flInputTpl.content.cloneNode(true));
       this.inputElement = shadowRoot.querySelector("input");
-      shadowRoot.child
+
+      this.inputElement.addEventListener("focus", () => {
+        this.inputElement.classList.remove("invalid");
+      });
+
+      this.inputElement.addEventListener("keydown", () => {
+        this.inputElement.classList.remove("invalid");
+      });
     }
 
     for (let i of this.constructor.observedAttributes) {
@@ -387,6 +398,28 @@ customElements.define("fl-input", class extends HTMLElement {
 
   focus() {
     this.inputElement.focus();
+  }
+
+  checkValidity() {
+    return this.inputElement.checkValidity();
+  }
+
+  reportValidity() {
+    let isValid = this.inputElement.reportValidity();
+
+    if (!isValid) {
+      this.inputElement.classList.add("invalid");
+    }
+
+    return isValid;
+  }
+
+  setValidity(isValid) {
+    if (isValid) {
+      this.inputElement.classList.remove("invalid");
+    } else {
+      this.inputElement.classList.add("invalid");
+    }
   }
 });
 

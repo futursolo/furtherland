@@ -4,13 +4,12 @@ A lightweight Blog Platform with asyncio support.
 
 Getting Started
 ---------------
-```shell
-$ python3 -m furtherland.env --env-file furtherland.env
-$ export LAND_ENV_FILE=$(pwd)/furtherland.env
-$ python3 -m furtherland.app
-```
+.. code-block:: shell
+  $ python3 -m furtherland.env --env-file furtherland.env
+  $ export LAND_ENV_FILE=$(pwd)/furtherland.env
+  $ python3 -m furtherland.app
 
-This would generate a new config file for Furtherland.
+This would generate a env file for Furtherland.
 
 Important
 ---------
