@@ -16,7 +16,9 @@
       <div class="flex-grow-space"></div>
 
       <div class="second-title">如要繼續，請輸入用戶名並點擊「下一步」。</div>
-      <fl-input type="text" name="name" placeholder="用戶名" class="stretched-item" autofocus disabled="{ state.currentSection !== 'name' }"></fl-input>
+      <form name="form-name">
+        <fl-input type="text" name="name" placeholder="用戶名" class="stretched-item" autofocus disabled="{ state.currentSection !== 'name' }" required minlength="3"></fl-input>
+      </form>
       <fl-button class="stretched-item" onclick={ onNameNext }>下一步</fl-button>
       <div class="bottom-links">
         <div class="second-title bottom-link-item" style="text-align: right;">註冊新帳戶</div>
@@ -32,7 +34,7 @@
       <div class="flex-grow-space"></div>
 
       <div class="second-title">如要繼續，請輸入密碼並點擊「登入」。</div>
-      <fl-input type="password" name="password" placeholder="密碼" class="stretched-item" disabled="{ state.currentSection !== 'password' }"></fl-input>
+      <fl-input type="password" name="password" placeholder="密碼" class="stretched-item" disabled="{ state.currentSection !== 'password' }" required minlength="8"></fl-input>
       <fl-button class="stretched-item" onclick={ onPasswordNext }>登入</fl-button>
       <div class="bottom-links">
         <div class="second-title bottom-link-item" style="text-align: right;"><span onclick="{ restart }">使用其它帳戶</span></div>
@@ -48,7 +50,7 @@
       <div class="flex-grow-space"></div>
 
       <div class="second-title">由於你已啟用兩步驗證，你需要輸入兩步驗證代碼來完成登入。</div>
-      <fl-input type="text" name="otpcode" placeholder="兩步驗證代碼" class="stretched-item" disabled="{ state.currentSection !== 'otp' }"></fl-input>
+      <fl-input type="text" name="otpcode" placeholder="兩步驗證代碼" class="stretched-item" disabled="{ state.currentSection !== 'otp' }" required length="6"></fl-input>
       <fl-button class="stretched-item" onclick={ onOtpNext }>驗證</fl-button>
       <div class="bottom-links">
         <div class="second-title bottom-link-item" style="text-align: right;"><span onclick="{ restart }">使用其它帳戶</span></div>
@@ -164,6 +166,10 @@
         this.passwordInput = this.$("fl-input[name=\"password\"]");
         this.otpcodeInput = this.$("fl-input[name=\"otpcode\"]");
 
+        this.nameForm = this.$("form[name=\"name\"]");
+        // this.passwordInput = this.$("fl-input[name=\"password\"]");
+        // this.otpcodeInput = this.$("fl-input[name=\"otpcode\"]");
+
         this.nameInput.addEventListener("keydown", (e) => {
           if(e.keyCode == 13) {
             this.onNameNext();
@@ -208,6 +214,8 @@
           if (this.state.currentSection !== "name") {
             return;
           }
+
+          this.nameForm.reportValidity();
 
           this.update({ currentSection: 'busy' });
 
