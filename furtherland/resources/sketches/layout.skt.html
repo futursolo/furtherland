@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html lang="zh-hant">
+  <head>
+    <meta charset="utf-8">
+    <title><% block title %><% end %></title>
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="referrer" content="origin">
+    <meta name="csrf-token" content="<%= csrf_token %>">
+    <meta name="fl-base-url" content="<%= land_base_url %>">
+    <meta name="fl-app-name" content="<% block app_name %><% end %>">
+
+    <link rel="stylesheet" type="text/css" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="<%r= await static_path('styles/base.css') %>">
+
+    <script></script>
+
+    <script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-loader.js" crossorigin="anonymous"></script>
+    <script src="<%r= await static_path('scripts/ui.js') %>"></script>
+  </head>
+
+  <body class="min-height-100vh fl-body-grey">
+    <div id="fl-app-root"></div>
+
+    <%r= self.body %>
+
+    <script src="<%r= await static_path('scripts/base.js') %>"></script>
+  </body>
+</html>

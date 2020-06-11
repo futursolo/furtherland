@@ -23,3 +23,8 @@ _land = FurtherLand.get()
 class SignInHandler(BaseRequestHandler):
     async def get(self, **kwargs: str) -> None:
         await self.draw("signin.skt.html")
+
+
+class SignUpHandler(BaseRequestHandler):
+    async def get(self, **kwargs: str) -> None:
+        await self.draw("signup.skt.html")

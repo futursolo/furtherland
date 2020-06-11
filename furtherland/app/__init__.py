@@ -30,9 +30,11 @@ __all__ = ["FurtherLand"]
 
 _land = FurtherLand.get()
 
-
 _land.app.handlers.add(
     hakoniwa.ReRule(r"^signin$", signin.SignInHandler), name="signin")
+
+_land.app.handlers.add(
+    hakoniwa.ReRule(r"^signup$", signin.SignUpHandler), name="signup")
 
 
 @flatten_async

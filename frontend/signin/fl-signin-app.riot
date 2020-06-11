@@ -4,9 +4,9 @@
     <fl-signin-profile resident="{ state.resident }" if="{ Object.keys(state.resident).length !== 0 }"></fl-signin-profile>
      <div class="logo" style="background-image: url({ getAssetUrl('images/favicon-wide.png') })"  if="{ Object.keys(state.resident).length === 0 }"></div>
 
-     <div class="flex-grow-space stretched-item" if="{ state.currentSection !== 'busy' }"></div>
+     <div class="flex-grow-space stretched-item" if="{ state.currentSection !== 'busy' && state.currentSection !== 'signupDone' }"></div>
 
-    <fl-section if="{ state.currentSection === 'busy' }">
+    <fl-section if="{ state.currentSection === 'busy' }" style="flex-grow: 1;">
       <div style="text-align: center; flex-grow: 1; display: flex; justify-content: center; align-items: center; flex-direction: column;">
         <div class="second-title">請稍候...</div>
         <fl-spinner></fl-spinner>
@@ -16,7 +16,7 @@
     <!-- Signin Sections -->
     <fl-section if="{ state.currentSection === 'name' }">
       <div class="second-title">如要繼續，請輸入用戶名並點擊「下一步」。</div>
-      <fl-input type="text" name="name" placeholder="用戶名" class="stretched-item" autofocus disabled="{ state.currentSection !== 'name' }" onkeydown="{ onNameKeyDown }" required minlength="3"></fl-input>
+      <fl-input type="text" name="name" placeholder="用戶名" class="stretched-item" autofocus disabled="{ state.currentSection !== 'name' }" onkeyup="{ onNameKeyUp }" required minlength="3" maxlength="32" pattern="[a-zA-Z0-9]+" value="{ state.inputNameVal }"></fl-input>
       <fl-button class="stretched-item" onclick={ onNameNext }>下一步</fl-button>
       <div class="bottom-links">
         <div class="second-title bottom-link-item" style="text-align: right;">註冊新帳戶</div>
@@ -28,7 +28,7 @@
     <fl-section if="{ state.currentSection === 'password' }">
       <div class="second-title">如要繼續，請輸入密碼並點擊「登入」。</div>
 
-      <fl-input type="password" name="password" placeholder="密碼" class="stretched-item" disabled="{ state.currentSection !== 'password' }" onkeydown="{ onPasswordKeyDown }" required minlength="8"></fl-input>
+      <fl-input type="password" name="password" placeholder="密碼" class="stretched-item" autofocus disabled="{ state.currentSection !== 'password' }" onkeyup="{ onPasswordKeyUp }" required minlength="8" value="{ state.inputPasswordVal }"></fl-input>
       <fl-button class="stretched-item" onclick={ onPasswordNext }>登入</fl-button>
       <div class="bottom-links">
         <div class="second-title bottom-link-item" style="text-align: right;"><span onclick="{ restart }">使用其它帳戶</span></div>
@@ -39,7 +39,7 @@
 
     <fl-section if="{ state.currentSection === 'otp' }">
       <div class="second-title">由於你已啟用兩步驗證，你需要輸入兩步驗證代碼來完成登入。</div>
-      <fl-input type="text" name="otpcode" placeholder="兩步驗證代碼" class="stretched-item" disabled="{ state.currentSection !== 'otp' }" onkeydown="{ onOtpKeyDown }" required minlength="6" maxlength="6" pattern="[0-9]+"></fl-input>
+      <fl-input type="text" name="otpcode" placeholder="兩步驗證代碼" class="stretched-item" autofocus disabled="{ state.currentSection !== 'otp' }" onkeyup="{ onOtpKeyUp }" required minlength="6" maxlength="6" pattern="[0-9]+" value="{ state.inputOtpcodeVal }"></fl-input>
       <fl-button class="stretched-item" onclick={ onOtpNext }>驗證</fl-button>
       <div class="bottom-links">
         <div class="second-title bottom-link-item" style="text-align: right;"><span onclick="{ restart }">使用其它帳戶</span></div>
@@ -49,6 +49,21 @@
     </fl-section>
     <!-- End Signin Sections -->
     <!-- Signup Sections -->
+    <fl-section if="{ state.currentSection === 'signup' }">
+      <div class="second-title">要註冊新帳戶，請填寫以下項目。</div>
+      <fl-input type="text" name="name" placeholder="用戶名" class="stretched-item" autofocus disabled="{ state.currentSection !== 'signup' }" required minlength="3" maxlength="32" pattern="[a-zA-Z0-9]+" value="{ state.inputNameVal }"></fl-input>
+      <fl-input type="email" name="email" placeholder="電子郵件地址" class="stretched-item" disabled="{ state.currentSection !== 'signup' }" required value="{ state.inputEmailVal }"></fl-input>
+      <fl-input type="password" name="password" placeholder="密碼" class="stretched-item" autofocus disabled="{ state.currentSection !== 'signup' }" required minlength="8" value="{ state.inputPasswordVal }"></fl-input>
+      <fl-button class="stretched-item" onclick={ onSignupNext }>註冊</fl-button>
+      <div class="bottom-links">
+        <div class="second-title bottom-link-item"><a href="{ getBaseUrl() + "/signin" }">已有帳戶？</a></div>
+      </div>
+    </fl-section>
+
+    <fl-section if="{ state.currentSection === 'signupDone' }">
+      <div class="second-title">點擊「繼續」來登入。</div>
+      <a href="{ getBaseUrl() + "/signin" }"><fl-button class="stretched-item">繼續</fl-button></a>
+    </fl-section>
     <!-- End Signup Sections -->
 
   </fl-card>
@@ -92,7 +107,6 @@
 
     fl-section {
       width: 100%;
-      flex-grow: 1;
     }
 
     fl-card > :not(fl-section), fl-section > * {
@@ -139,14 +153,15 @@
     import { Mutex, Semaphone, withTimeout } from 'async-mutex';
     import { getAssetUrl } from '../common/helpers';
 
-    function getDefaultState() {
+    function getDefaultState(defaultSection: string) {
       return {
-        currentSection: "name",
+        currentSection: defaultSection || "",
         title: "歡迎來到未來領域管理局",
         cred: {},
         resident: {},
 
         inputNameVal: "",
+        inputEmailVal: "",
         inputPasswordVal: "",
         inputOtpcodeVal: "",
       };
@@ -164,14 +179,20 @@
 
       onBeforeMount(props, state) {
         this.mutex = new Mutex();
+
+        if (props.appName === "signin") {
+          this.state.currentSection = "name";
+        } else if (props.appName === "signup") {
+          this.state.currentSection = "signup";
+        }
       },
 
-      focusCurrentInput() {
+      focusFirstInput() {
         this.$("fl-input").focus();
       },
 
-      validateCurrentInput() {
-        return this.$("fl-input").reportValidity();
+      validateCurrentInputs() {
+        return this.$$("fl-input").forEach((item, index) => { item.reportValidity() });
       },
 
       async restart() {
@@ -181,8 +202,13 @@
             return;
           }
 
-          this.update(getDefaultState());
-          this.focusCurrentInput();
+          if (props.appName === "signin") {
+            this.update(getDefaultState("name"));
+          } else if (props.appName === "signup") {
+            this.update(getDefaultState("signup"));
+          }
+
+          // this.focusFirstInput();
         } finally {
           release();
         }
@@ -195,7 +221,7 @@
             return;
           }
 
-          if (!(this.validateCurrentInput())) {
+          if (!(this.validateCurrentInputs())) {
             return
           };
 
@@ -208,16 +234,18 @@
             displayName: "星川かえで",
             imageUrl: "https://www.gravatar.com/avatar/0dd494a963ae648caebe34288b664ca6?s=200&d=mp",
           } });
-          this.focusCurrentInput();
+          // this.focusFirstInput();
         } finally {
           release();
         }
       },
 
-      onNameKeyDown(e) {
+      onNameKeyUp(e) {
         if(e.keyCode == 13) {
           this.onNameNext();
         }
+
+        this.update({ inputNameVal: e.target.value });
       },
 
       async onPasswordNext () {
@@ -227,7 +255,7 @@
             return;
           }
 
-          if (!(this.validateCurrentInput())) {
+          if (!(this.validateCurrentInputs())) {
             return
           };
 
@@ -236,16 +264,18 @@
           await new Promise(r => setTimeout(r, 2000));
 
           this.update({ currentSection: 'otp', title: "額外的安全驗證"});
-          this.focusCurrentInput();
+          // this.focusFirstInput();
         } finally {
           release();
         }
       },
 
-      onPasswordKeyDown(e) {
+      onPasswordKeyUp(e) {
         if(e.keyCode == 13) {
           this.onPasswordNext();
         }
+
+        this.update({ inputPasswordVal: e.target.value });
       },
 
       async onOtpNext () {
@@ -255,7 +285,7 @@
             return;
           }
 
-          if (!(this.validateCurrentInput())) {
+          if (!(this.validateCurrentInputs())) {
             return
           };
 
@@ -264,17 +294,45 @@
           // await new Promise(r => setTimeout(r, 2000));
 
           // this.update({ currentSection: 'otp', title: "額外的安全驗證"});
-          // this.focusCurrentInput();
+          // this.focusFirstInput();
         } finally {
           release();
         }
       },
 
-      onOtpKeyDown(e) {
+      onOtpKeyUp(e) {
         if(e.keyCode == 13) {
           this.onOtpNext();
         }
+
+        this.update({ inputOtpcodeVal: e.target.value });
       },
+
+      onSignupNext() {
+        const release = await this.mutex.acquire();
+        try {
+          if (this.state.currentSection !== "signup") {
+            return;
+          }
+
+          if (!(this.validateCurrentInputs())) {
+            return
+          };
+
+          this.update({ currentSection: 'busy' });
+
+          await new Promise(r => setTimeout(r, 2000));
+
+          this.update({ currentSection: 'signupDone', title: "註冊成功", resident: {
+            name: "futursolo",
+            displayName: "星川かえで",
+            imageUrl: "https://www.gravatar.com/avatar/0dd494a963ae648caebe34288b664ca6?s=200&d=mp",
+          }});
+          // this.focusFirstInput();
+        } finally {
+          release();
+        }
+      }
     }
   </script>
 </fl-signin-app>
