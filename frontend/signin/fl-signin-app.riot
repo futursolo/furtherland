@@ -51,7 +51,7 @@
     <!-- Signup Sections -->
     <fl-section if="{ state.currentSection === 'signup' }">
       <div class="second-title">要註冊新帳戶，請填寫以下項目。</div>
-      <fl-input type="text" name="name" placeholder="用戶名" class="stretched-item" autofocus disabled="{ state.currentSection !== 'signup' }" onkeyup="{ onNameKeyUp } required minlength="3" maxlength="32" pattern="[a-zA-Z0-9]+" value="{ state.inputNameVal }"></fl-input>
+      <fl-input type="text" name="name" placeholder="用戶名" class="stretched-item" autofocus disabled="{ state.currentSection !== 'signup' }" onkeyup="{ onNameKeyUp }" required minlength="3" maxlength="32" pattern="[a-zA-Z0-9]+" value="{ state.inputNameVal }"></fl-input>
       <fl-input type="email" name="email" placeholder="電子郵件地址" class="stretched-item" disabled="{ state.currentSection !== 'signup' }" onkeyup="{ onEmailKeyUp }" required value="{ state.inputEmailVal }"></fl-input>
       <fl-input type="password" name="password" placeholder="密碼" class="stretched-item" disabled="{ state.currentSection !== 'signup' }" onkeyup="{ onPasswordKeyUp }" required minlength="8" value="{ state.inputPasswordVal }"></fl-input>
       <fl-button class="stretched-item" onclick={ onSignupNext }>註冊</fl-button>
