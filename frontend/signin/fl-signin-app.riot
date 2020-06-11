@@ -4,7 +4,7 @@
     <fl-signin-profile resident="{ state.resident }" if="{ Object.keys(state.resident).length !== 0 }"></fl-signin-profile>
      <div class="logo" style="background-image: url({ getAssetUrl('images/favicon-wide.png') }); { state.currentSection === 'signup' ? 'height: 60px;' : '' }" if="{ Object.keys(state.resident).length === 0 }" style=""></div>
 
-     <div class="flex-grow-space stretched-item" if="{ state.currentSection !== 'busy' && state.currentSection !== 'signupDone' }"></div>
+     <div class="flex-grow-space stretched-item" if="{ state.currentSection !== 'busy' && state.currentSection !== 'signupDone' }" style="margin-top: 0; margin-bottom: 0;"></div>
 
     <fl-section if="{ state.currentSection === 'busy' }" style="flex-grow: 1;">
       <div style="text-align: center; flex-grow: 1; display: flex; justify-content: center; align-items: center; flex-direction: column;">
