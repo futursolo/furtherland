@@ -19,7 +19,7 @@
       <fl-input type="text" name="name" placeholder="用戶名" class="stretched-item" autofocus disabled="{ state.currentSection !== 'name' }" onkeyup="{ onNameKeyUp }" required minlength="3" maxlength="32" pattern="[a-zA-Z0-9]+" value="{ state.inputNameVal }"></fl-input>
       <fl-button class="stretched-item" onclick={ onNameNext }>下一步</fl-button>
       <div class="bottom-links">
-        <div class="second-title bottom-link-item" style="text-align: right;"><a href="{ getBaseUrl() + "/signup" }">註冊新帳戶</a></div>
+        <div class="second-title bottom-link-item" style="text-align: right;"><a href="{ getBaseUrl() + "/signup" }" style="text-decoration: none">註冊新帳戶</a></div>
         <div class="second-title"> { "|" } </div>
         <div class="second-title bottom-link-item" style="text-align: left;">忘記密碼</div>
       </div>
@@ -56,7 +56,7 @@
       <fl-input type="password" name="password" placeholder="密碼" class="stretched-item" disabled="{ state.currentSection !== 'signup' }" onkeyup="{ onPasswordKeyUp }" required minlength="8" value="{ state.inputPasswordVal }"></fl-input>
       <fl-button class="stretched-item" onclick={ onSignupNext }>註冊</fl-button>
       <div class="bottom-links">
-        <div class="second-title bottom-link-item"><a href="{ getBaseUrl() + "/signin" }">已有帳戶？</a></div>
+        <div class="second-title bottom-link-item"><a href="{ getBaseUrl() + "/signin" }"style="text-decoration: none">已有帳戶？</a></div>
       </div>
     </fl-section>
 
@@ -188,12 +188,14 @@
         }
       },
 
-      focusFirstInput() {
-        this.$("fl-input").focus();
-      },
-
       validateCurrentInputs() {
-        return this.$$("fl-input").forEach((item, index) => { item.reportValidity() });
+        for (const item of this.$$("fl-input")) {
+          if (!(item.reportValidity())) {
+            return false;
+          }
+        }
+
+        return true;
       },
 
       async restart() {
@@ -209,7 +211,6 @@
             this.update(getDefaultState("signup"));
           }
 
-          // this.focusFirstInput();
         } finally {
           release();
         }
@@ -235,7 +236,6 @@
             displayName: "星川かえで",
             imageUrl: "https://www.gravatar.com/avatar/0dd494a963ae648caebe34288b664ca6?s=200&d=mp",
           } });
-          // this.focusFirstInput();
         } finally {
           release();
         }
@@ -265,7 +265,6 @@
           await new Promise(r => setTimeout(r, 2000));
 
           this.update({ currentSection: 'otp', title: "額外的安全驗證"});
-          // this.focusFirstInput();
         } finally {
           release();
         }
@@ -295,7 +294,6 @@
           // await new Promise(r => setTimeout(r, 2000));
 
           // this.update({ currentSection: 'otp', title: "額外的安全驗證"});
-          // this.focusFirstInput();
         } finally {
           release();
         }
@@ -329,7 +327,6 @@
             displayName: null,
             imageUrl: "https://www.gravatar.com/avatar/0dd494a963ae648caebe34288b664ca6?s=200&d=mp",
           }});
-          // this.focusFirstInput();
         } finally {
           release();
         }
