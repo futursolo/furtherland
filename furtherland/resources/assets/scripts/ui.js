@@ -135,33 +135,6 @@ let flInputTpl = createTemplate(`
   </style>
   <input type="text">`);
 
-[Log] ValidityState(ui.js, line 168)
-
-badInput: false
-
-customError: false
-
-patternMismatch: true
-
-rangeOverflow: false
-
-rangeUnderflow: false
-
-stepMismatch: false
-
-tooLong: false
-
-tooShort: true
-
-typeMismatch: false
-
-valid: false
-
-valueMissing: false
-
-ValidityStateプロトタイプ
-
-
 customElements.define("fl-input", class extends HTMLElement {
   connectedCallback() {
     if (!this.shadowRoot) {
@@ -175,14 +148,8 @@ customElements.define("fl-input", class extends HTMLElement {
         this.inputElement.classList.remove("invalid");
       });
 
-      this.inputElement.addEventListener("keydown", () => {
-        this.inputElement.classList.remove("invalid");
-      });
-
       this.inputElement.addEventListener("input", () => {
-        if (!(this.inputElement.willValidate)) {
-          return;
-        }
+        this.inputElement.classList.remove("invalid");
 
         if (this.inputElement.validity.valid) {
           return;
@@ -451,14 +418,26 @@ customElements.define("fl-input", class extends HTMLElement {
   }
 
   focus() {
+    if (!this.inputElement) {
+      return;
+    }
+
     this.inputElement.focus();
   }
 
   checkValidity() {
+    if (!this.inputElement) {
+      return false;
+    }
+
     return this.inputElement.checkValidity();
   }
 
   reportValidity() {
+    if (!this.inputElement) {
+      return false;
+    }
+
     let isValid = this.inputElement.reportValidity();
 
     if (!isValid) {
@@ -468,12 +447,12 @@ customElements.define("fl-input", class extends HTMLElement {
     return isValid;
   }
 
-  setValidity(isValid) {
-    if (isValid) {
-      this.inputElement.classList.remove("invalid");
-    } else {
-      this.inputElement.classList.add("invalid");
+  setCustomValidity(message) {
+    if (!this.inputElement) {
+      return;
     }
+
+    this.inputElement.setCustomValidity(message);
   }
 });
 
