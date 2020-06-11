@@ -15,7 +15,8 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from typing import Dict, Any, Optional, Union, Pattern, Callable, Awaitable
+from typing import Dict, Any, Optional, Union, Pattern, Callable, Awaitable, \
+    Type
 
 from . import requests
 # from . import responses
@@ -56,8 +57,8 @@ class Application:
         secure_cookie_max_age: datetime.timedelta =
         datetime.timedelta(days=30),
             safe_cookies: bool = True) -> None:
-        self.handlers: destination.Dispatcher[handlers.BaseRequestHandler] = \
-            destination.Dispatcher()
+        self.handlers: destination.Dispatcher[
+            Type[handlers.BaseRequestHandler]] = destination.Dispatcher()
 
         if sketch_path is not None:
             if skt_ctx is None:

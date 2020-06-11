@@ -688,7 +688,7 @@ class BaseRequestHandler:
         """
         Resolve static files into path.
         """
-        return typing.cast(str, self.app.handlers.reverse("static", file=path))
+        return self.app.handlers.reverse("static", file=path)
 
     async def get_sketch_args(self) -> Dict[str, Any]:
         """
