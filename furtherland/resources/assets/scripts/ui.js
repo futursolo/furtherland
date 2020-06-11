@@ -142,7 +142,7 @@ let flInputTpl = createTemplate(`
       background-color: rgb(254, 237, 234);
     }
   </style>
-  <form><input type="text"></form>`);
+  <input type="text">`);
 
 customElements.define("fl-input", class extends HTMLElement {
   connectedCallback() {
