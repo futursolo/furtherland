@@ -1,20 +1,19 @@
 <fl-signin-app>
   <fl-card class="fl-no-margin">
-    <fl-signin-section visible="{ state.currentSection === 'busy' }">
-      <div class="title">{ state.title }</div>
-      <fl-signin-profile resident="{ state.resident }" visible="{ Object.keys(state.resident).length !== 0 }"></fl-signin-profile>
+    <div class="title">{ state.title }</div>
+    <fl-signin-profile resident="{ state.resident }" visible="{ true }" if="{ Object.keys(state.resident).length !== 0 }"></fl-signin-profile>
+     <div class="logo" style="background-image: url(/assets/images/favicon-wide.png)"  if="{ Object.keys(state.resident).length === 0 }"></div>
+
+     <div class="flex-grow-space stretched-item"></div>
+
+    <fl-section visible="{ state.currentSection === 'busy' }">
       <div style="text-align: center; flex-grow: 1; display: flex; justify-content: center; align-items: center; flex-direction: column;">
         <div class="second-title">請稍候...</div>
         <fl-spinner></fl-spinner>
       </div>
-    </fl-signin-section>
+    </fl-section>
 
-    <fl-signin-section visible="{ state.currentSection === 'name' }">
-      <div class="title">{ state.title }</div>
-      <div class="logo" style="background-image: url(/assets/images/favicon-wide.png)"></div>
-
-      <div class="flex-grow-space"></div>
-
+    <fl-section visible="{ state.currentSection === 'name' }">
       <div class="second-title">如要繼續，請輸入用戶名並點擊「下一步」。</div>
       <fl-input type="text" name="name" placeholder="用戶名" class="stretched-item" autofocus disabled="{ state.currentSection !== 'name' }" required minlength="3"></fl-input>
       <fl-button class="stretched-item" onclick={ onNameNext }>下一步</fl-button>
@@ -23,14 +22,9 @@
         <div class="second-title"> { "|" } </div>
         <div class="second-title bottom-link-item" style="text-align: left;">忘記密碼</div>
       </div>
-    </fl-signin-section>
+    </fl-section>
 
-    <fl-signin-section visible="{ state.currentSection === 'password' }">
-      <div class="title">{ state.title }</div>
-      <fl-signin-profile resident="{ state.resident }" visible="{ true }"></fl-signin-profile>
-
-      <div class="flex-grow-space"></div>
-
+    <fl-section visible="{ state.currentSection === 'password' }">
       <div class="second-title">如要繼續，請輸入密碼並點擊「登入」。</div>
 
       <fl-input type="password" name="password" placeholder="密碼" class="stretched-item" disabled="{ state.currentSection !== 'password' }" required minlength="8"></fl-input>
@@ -40,23 +34,18 @@
         <div class="second-title"> { "|" } </div>
         <div class="second-title bottom-link-item" style="text-align: left;">忘記密碼</div>
       </div>
-    </fl-signin-section>
+    </fl-section>
 
-    <fl-signin-section visible="{ state.currentSection === 'otp' }">
-      <div class="title">{ state.title }</div>
-      <fl-signin-profile resident="{ state.resident }" visible="{ true }"></fl-signin-profile>
-
-      <div class="flex-grow-space"></div>
-
+    <fl-section visible="{ state.currentSection === 'otp' }">
       <div class="second-title">由於你已啟用兩步驗證，你需要輸入兩步驗證代碼來完成登入。</div>
-      <fl-input type="text" name="otpcode" placeholder="兩步驗證代碼" class="stretched-item" disabled="{ state.currentSection !== 'otp' }" required minlength="6" maxlength="6"></fl-input>
+      <fl-input type="text" name="otpcode" placeholder="兩步驗證代碼" class="stretched-item" disabled="{ state.currentSection !== 'otp' }" required minlength="6" maxlength="6" pattern="[0-9]+"></fl-input>
       <fl-button class="stretched-item" onclick={ onOtpNext }>驗證</fl-button>
       <div class="bottom-links">
         <div class="second-title bottom-link-item" style="text-align: right;"><span onclick="{ restart }">使用其它帳戶</span></div>
         <div class="second-title"> { "|" } </div>
         <div class="second-title bottom-link-item" style="text-align: left;">忘記密碼</div>
       </div>
-    </fl-signin-section>
+    </fl-section>
 
   </fl-card>
   <div class="footer">&copy;&nbsp;2020 未來領域管理局</div>
@@ -87,18 +76,24 @@
       width: calc(100vw - 40px);
       margin-top: 20px;
       height: 500px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
+      position: relative;
+    }
+
+    .flex-grow-space {
+      margin-top: 0;
+      margin-bottom: 0;
+      height: 1px;
+      flex-grow: 1;
     }
 
     fl-signin-section > * {
       margin-top: 12px;
       margin-bottom: 12px;
-    }
-
-    fl-signin-section > .flex-grow-space {
-      margin-top: 0;
-      margin-bottom: 0;
-      height: 1px;
-      flex-grow: 1;
     }
 
     .logo {
@@ -134,8 +129,8 @@
     }
   </style>
 
-  <script>
-    import FlSigninSection from './fl-signin-section.riot';
+  <script type="typescript">
+    import FlSection from '../common/fl-section.riot';
     import FlSigninProfile from './fl-signin-profile.riot';
     import { Mutex, Semaphone, withTimeout } from 'async-mutex';
 
@@ -150,7 +145,7 @@
 
     export default {
       components: {
-        FlSigninSection,
+        FlSection,
         FlSigninProfile
       },
 

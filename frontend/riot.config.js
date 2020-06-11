@@ -1,11 +1,9 @@
 const {
   registerPreprocessor
 } = require('@riotjs/compiler');
-const {
-  ts
-} = require('typescript');
+const ts = require('typescript');
 
-registerPreprocessor('javascript', 'ts', function(code, {
+registerPreprocessor('javascript', 'typescript', function(code, {
   options
 }) {
   const {

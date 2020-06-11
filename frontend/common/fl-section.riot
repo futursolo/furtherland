@@ -1,4 +1,4 @@
-<fl-signin-section>
+<fl-section>
   <slot></slot>
 
   <style>
@@ -13,8 +13,12 @@
     }
   </style>
 
-  <script>
+  <script type="typescript">
     export default {
+      props: {
+        visible: true
+      },
+
       updateVisibility(props, state) {
         if(props.visible) {
           this.root.style.display = "flex";
@@ -32,4 +36,4 @@
       },
     }
   </script>
-</fl-signin-section>
+</fl-section>
