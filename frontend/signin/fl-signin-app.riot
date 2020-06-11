@@ -2,7 +2,7 @@
   <fl-card class="fl-no-margin">
     <div style="font-size: 1.5rem">{ state.title }</div>
     <fl-signin-profile resident="{ state.resident }" if="{ Object.keys(state.resident).length !== 0 }"></fl-signin-profile>
-     <div class="logo" style="background-image: url({ getAssetUrl('images/favicon-wide.png') })" if="{ Object.keys(state.resident).length === 0 }" style="{ state.currentSection === 'signup' ? 'height: 65px;' : '' }"></div>
+     <div class="logo" style="background-image: url({ getAssetUrl('images/favicon-wide.png') }); { state.currentSection === 'signup' ? 'height: 65px;' : '' }" if="{ Object.keys(state.resident).length === 0 }" style=""></div>
 
      <div class="flex-grow-space stretched-item" if="{ state.currentSection !== 'busy' && state.currentSection !== 'signupDone' }"></div>
 
@@ -114,6 +114,11 @@
       margin-bottom: 12px;
     }
 
+    :host.rigid fl-card > :not(fl-section), :host.rigid fl-section > * {
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
     .logo {
       height: 80px;
       width: 100%;
@@ -190,6 +195,10 @@
 
       onMonuted() {
         setTimeout(() => { this.focusFirstInput() }, 1);
+
+        if (props.appName === "signup") {
+          this.root.classList.add("rigid");
+        }
       },
 
       focusFirstInput() {
