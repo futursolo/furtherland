@@ -10,28 +10,4 @@
       position: relative;
     }
   </style>
-
-  <script type="typescript">
-    export default {
-      props: {
-        visible: true
-      },
-
-      updateVisibility(props, state) {
-        if(props.visible) {
-          this.root.style.display = "flex";
-        } else {
-          this.root.style.display = "none";
-        }
-      },
-
-      onBeforeMount(props, state) {
-        this.updateVisibility(props, state);
-      },
-
-      onBeforeUpdate(props, state) {
-        this.updateVisibility(props, state);
-      },
-    }
-  </script>
 </fl-section>

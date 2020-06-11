@@ -4,16 +4,17 @@
     <fl-signin-profile resident="{ state.resident }" if="{ Object.keys(state.resident).length !== 0 }"></fl-signin-profile>
      <div class="logo" style="background-image: url(/assets/images/favicon-wide.png)"  if="{ Object.keys(state.resident).length === 0 }"></div>
 
-     <div class="flex-grow-space stretched-item"></div>
+     <div class="flex-grow-space stretched-item" if="{ state.currentSection !== 'busy' }"></div>
 
-    <fl-section visible="{ state.currentSection === 'busy' }">
+    <fl-section if="{ state.currentSection === 'busy' }">
       <div style="text-align: center; flex-grow: 1; display: flex; justify-content: center; align-items: center; flex-direction: column;">
         <div class="second-title">請稍候...</div>
         <fl-spinner></fl-spinner>
       </div>
     </fl-section>
 
-    <fl-section visible="{ state.currentSection === 'name' }">
+    <!-- Signin Sections -->
+    <fl-section if="{ state.currentSection === 'name' }">
       <div class="second-title">如要繼續，請輸入用戶名並點擊「下一步」。</div>
       <fl-input type="text" name="name" placeholder="用戶名" class="stretched-item" autofocus disabled="{ state.currentSection !== 'name' }" required minlength="3"></fl-input>
       <fl-button class="stretched-item" onclick={ onNameNext }>下一步</fl-button>
@@ -24,7 +25,7 @@
       </div>
     </fl-section>
 
-    <fl-section visible="{ state.currentSection === 'password' }">
+    <fl-section if="{ state.currentSection === 'password' }">
       <div class="second-title">如要繼續，請輸入密碼並點擊「登入」。</div>
 
       <fl-input type="password" name="password" placeholder="密碼" class="stretched-item" disabled="{ state.currentSection !== 'password' }" required minlength="8"></fl-input>
@@ -36,7 +37,7 @@
       </div>
     </fl-section>
 
-    <fl-section visible="{ state.currentSection === 'otp' }">
+    <fl-section if="{ state.currentSection === 'otp' }">
       <div class="second-title">由於你已啟用兩步驗證，你需要輸入兩步驗證代碼來完成登入。</div>
       <fl-input type="text" name="otpcode" placeholder="兩步驗證代碼" class="stretched-item" disabled="{ state.currentSection !== 'otp' }" required minlength="6" maxlength="6" pattern="[0-9]+"></fl-input>
       <fl-button class="stretched-item" onclick={ onOtpNext }>驗證</fl-button>
@@ -46,6 +47,9 @@
         <div class="second-title bottom-link-item" style="text-align: left;">忘記密碼</div>
       </div>
     </fl-section>
+    <!-- End Signin Sections -->
+    <!-- Signup Sections -->
+    <!-- End Signup Sections -->
 
   </fl-card>
   <div class="footer">&copy;&nbsp;2020 未來領域管理局</div>
@@ -93,6 +97,7 @@
 
     fl-section {
       width: 100%;
+      flex-grow: 1;
     }
 
     fl-card > :not(fl-section), fl-section > * {
@@ -143,7 +148,11 @@
         currentSection: "name",
         title: "歡迎來到未來領域管理局",
         cred: {},
-        resident: {}
+        resident: {},
+
+        inputNameVal: "",
+        inputPasswordVal: "",
+        inputOtpcodeVal: "",
       };
     }
 
@@ -159,28 +168,12 @@
         this.mutex = new Mutex();
       },
 
-      onMounted(props, state) {
-        this.nameInput = this.$("fl-input[name=\"name\"]");
-        this.passwordInput = this.$("fl-input[name=\"password\"]");
-        this.otpcodeInput = this.$("fl-input[name=\"otpcode\"]");
+      onMounted(props, state) {},
 
-        this.nameInput.addEventListener("keydown", (e) => {
-          if(e.keyCode == 13) {
-            this.onNameNext();
-          }
-        });
+      onUpdated(props, state) {},
 
-        this.passwordInput.addEventListener("keydown", (e) => {
-          if(e.keyCode == 13) {
-            this.onPasswordNext();
-          }
-        });
-
-        this.otpcodeInput.addEventListener("keydown", (e) => {
-          if(e.keyCode == 13) {
-            this.onOtpNext();
-          }
-        });
+      focusCurrentInput() {
+        this.$("fl-input[name=\"name\"]").focus();
       },
 
       async restart() {
@@ -190,12 +183,8 @@
             return;
           }
 
-          this.nameInput.value = "";
-          this.passwordInput.value = "";
-          this.otpcodeInput.value = "";
-
           this.update(getDefaultState());
-          this.nameInput.focus();
+          this.focusCurrentInput();
         } finally {
           release();
         }
@@ -208,7 +197,7 @@
             return;
           }
 
-          if (!(this.nameInput.reportValidity())) {
+          if (!(this.$("fl-input[name=\"name\"]").reportValidity())) {
             return
           };
 
@@ -221,7 +210,7 @@
             displayName: "星川かえで",
             imageUrl: "https://www.gravatar.com/avatar/0dd494a963ae648caebe34288b664ca6?s=200&d=mp",
           } });
-          this.passwordInput.focus();
+          this.focusCurrentInput();
         } finally {
           release();
         }
@@ -234,7 +223,7 @@
             return;
           }
 
-          if (!(this.passwordInput.reportValidity())) {
+          if (!(this.$("fl-input[name=\"password\"]").reportValidity())) {
             return
           };
 
@@ -243,16 +232,32 @@
           await new Promise(r => setTimeout(r, 2000));
 
           this.update({ currentSection: 'otp', title: "額外的安全驗證"});
-          this.otpcodeInput.focus();
+          this.focusCurrentInput();
         } finally {
           release();
         }
       },
 
-      onOtpNext () {
-          if (!(this.otpcodeInput.reportValidity())) {
+      async onOtpNext () {
+        const release = await this.mutex.acquire();
+        try {
+          if (this.state.currentSection !== "password") {
+            return;
+          }
+
+          if (!(this.$("fl-input[name=\"otpcode\"]").reportValidity())) {
             return
           };
+
+          // this.update({ currentSection: 'busy' });
+
+          // await new Promise(r => setTimeout(r, 2000));
+
+          // this.update({ currentSection: 'otp', title: "額外的安全驗證"});
+          // this.focusCurrentInput();
+        } finally {
+          release();
+        }
       }
     }
   </script>
