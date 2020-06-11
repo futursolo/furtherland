@@ -19,7 +19,7 @@
       <fl-input type="text" name="name" placeholder="用戶名" class="stretched-item" autofocus disabled="{ state.currentSection !== 'name' }" onkeyup="{ onNameKeyUp }" required minlength="3" maxlength="32" pattern="[a-zA-Z0-9]+" value="{ state.inputNameVal }"></fl-input>
       <fl-button class="stretched-item" onclick={ onNameNext }>下一步</fl-button>
       <div class="bottom-links">
-        <div class="second-title bottom-link-item" style="text-align: right;">註冊新帳戶</div>
+        <div class="second-title bottom-link-item" style="text-align: right;"><a href="{ getBaseUrl() + "/signup" }">註冊新帳戶</a></div>
         <div class="second-title"> { "|" } </div>
         <div class="second-title bottom-link-item" style="text-align: left;">忘記密碼</div>
       </div>
@@ -151,7 +151,7 @@
     import FlSection from '../common/fl-section.riot';
     import FlSigninProfile from './fl-signin-profile.riot';
     import { Mutex, Semaphone, withTimeout } from 'async-mutex';
-    import { getAssetUrl } from '../common/helpers';
+    import { getAssetUrl, getBaseUrl } from '../common/helpers';
 
     function getDefaultState(defaultSection: string) {
       return {
@@ -176,6 +176,7 @@
       state: getDefaultState(),
 
       getAssetUrl: getAssetUrl,
+      getBaseUrl: getBaseUrl,
 
       onBeforeMount(props, state) {
         this.mutex = new Mutex();
