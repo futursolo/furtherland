@@ -155,17 +155,11 @@ customElements.define("fl-input", class extends HTMLElement {
           return;
         }
 
-        if (this.inputElement.validity.badInput || this.inputElement.validity.rangeOverflow ||
-          this.inputElement.validity.rangeUnderflow || this.inputElement.validity.stepMismatch ||
-          this.inputElement.validity.tooLong || this.inputElement.validity.tooShort ||
-          this.inputElement.validity.typeMismatch || this.inputElement.validity.valueMissing) {
-          this.inputElement.setCustomValidity("");
-          return;
-        }
-
         if (this.inputElement.validity.patternMismatch) {
           this.inputElement.setCustomValidity(this.getAttribute("pattern-hint") || "");
           return;
+        } else {
+          this.inputElement.setCustomValidity("");
         }
 
         // clear custom error when value changes.

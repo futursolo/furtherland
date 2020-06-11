@@ -1,7 +1,7 @@
 <fl-signin-app>
   <fl-card class="fl-no-margin">
     <div style="font-size: 1.5rem">{ state.title }</div>
-    <fl-signin-profile resident="{ state.resident }" if="{ Object.keys(state.resident).length !== 0 }"></fl-signin-profile>
+    <fl-signin-profile resident="{ state.resident }" if="{ Object.keys(state.resident).length !== 0 && state.currentSection !== 'signup' }"></fl-signin-profile>
      <div class="logo" style="background-image: url({ getAssetUrl('images/favicon-wide.png') })"  if="{ Object.keys(state.resident).length === 0 }"></div>
 
      <div class="flex-grow-space stretched-item" if="{ state.currentSection !== 'busy' && state.currentSection !== 'signupDone' }"></div>
@@ -62,7 +62,7 @@
 
     <fl-section if="{ state.currentSection === 'signupDone' }" style="flex-grow: 1; text-align: center; justify-content: center;">
       <div class="second-title">點擊「繼續」來登入。</div>
-      <a href="{ getBaseUrl() + "/signin" }"><fl-button class="stretched-item">繼續</fl-button></a>
+      <a href="{ getBaseUrl() + "/signin" }" class="stretched-item"><fl-button class="stretched-item">繼續</fl-button></a>
     </fl-section>
     <!-- End Signup Sections -->
 
@@ -189,7 +189,7 @@
       },
 
       onMonuted() {
-        this.focusFirstInput();
+        setTimeout(() => { this.focusFirstInput() }, 1);
       },
 
       focusFirstInput() {
