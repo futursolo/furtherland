@@ -24,7 +24,7 @@ from . import residents
 import hakoniwa
 
 
-handlers = hakoniwa.ReSubDispatcher(r"^apiv1$", RestRequestHandler)
+handlers = hakoniwa.ReSubDispatcher(r"^apiv1/", RestRequestHandler)
 
 handlers.add(
     hakoniwa.ReRule(r"^residents/(?P<name>[a-zA-Z0-9]*?)$",
