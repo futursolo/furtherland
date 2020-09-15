@@ -20,4 +20,4 @@ from .common import RestRequestHandler
 
 class ResidentHandler(RestRequestHandler):
     async def get(self, **kwargs: str) -> None:
-        await self.ok(["test", kwargs])
+        await self.ok(["test", kwargs])  # type: ignore

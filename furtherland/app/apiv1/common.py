@@ -76,7 +76,7 @@ class RestRequestHandler(BaseRequestHandler):
 
         status_code = hakoniwa.HttpStatusCode(status_code)
 
-        await self.write_json({
+        await self.write_json({  # type: ignore
             "ok": True,
             "status": {
                 "code": int(status_code),
@@ -88,19 +88,19 @@ class RestRequestHandler(BaseRequestHandler):
     async def failed(self, __e: ApiError) -> None:
         j: Dict[str, Json] = {
             "ok": False,
-            "status": {
+            "status": {  # type: ignore
                 "code": int(__e.status_code),
                 "description": str(__e.status_code.phrase)
             },
         }
 
         if __e.reason is not None:
-            j["reason"] = {
+            j["reason"] = {  # type: ignore
                 "code": __e.reason[0],
                 "description": __e.reason[1]
             }
 
-        await self.write_json(j)
+        await self.write_json(j)  # type: ignore
 
     async def after(self) -> None:
         if not self._body_buf:
