@@ -844,7 +844,7 @@ class BaseRequestHandler:
             message: Optional[str] = e._err_str
 
         else:
-            status_code = 500
+            status_code = constants.HttpStatusCode.INTERNAL_SERVER_ERROR
             message = None
 
         self.set_status_code(status_code)

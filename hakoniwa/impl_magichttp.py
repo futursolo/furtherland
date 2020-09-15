@@ -31,7 +31,7 @@ if typing.TYPE_CHECKING:
     from . import web
 
 
-class MagichttpServerProtocol(magichttp.HttpServerProtocol):  # type: ignore
+class MagichttpServerProtocol(magichttp.HttpServerProtocol):
     def __init__(self, __app: "web.Application") -> None:
         self._keep_reading: Optional["asyncio.Task[None]"] = None
         self._app = __app
@@ -52,7 +52,8 @@ class MagichttpServerProtocol(magichttp.HttpServerProtocol):  # type: ignore
         finally:
             await asyncio.wait(list(tasks), return_when=asyncio.ALL_COMPLETED)
 
-    def connection_made(self, transport: asyncio.Transport) -> None:
+    def connection_made(  # type: ignore
+            self, transport: asyncio.Transport) -> None:
         super().connection_made(transport)
 
         self._keep_reading = self._loop.create_task(
@@ -87,11 +88,11 @@ class MagicHttpRequest(requests.ReadableRequest):
 
     @property
     def uri(self) -> str:
-        return self._initial.uri  # type: ignore
+        return self._initial.uri
 
     @property
     def authority(self) -> str:
-        return self._initial.authority  # type: ignore
+        return self._initial.authority
 
     @property
     def scheme(self) -> constants.HttpScheme:
@@ -99,8 +100,7 @@ class MagicHttpRequest(requests.ReadableRequest):
 
     @property
     def headers(self) -> magicdict.FrozenTolerantMagicDict[str, str]:
-        return typing.cast(
-            magicdict.FrozenTolerantMagicDict[str, str], self._initial.headers)
+        return self._initial.headers
 
     @property
     def body(self) -> Optional[bytes]:
@@ -120,7 +120,7 @@ class MagicHttpRequest(requests.ReadableRequest):
         self, status_code: constants.HttpStatusCode, *,
         headers: Optional[Mapping[str, str]] = None
     ) -> "MagicHttpResponse":
-        writer = await self._reader.write_response(status_code, headers)
+        writer = self._reader.write_response(status_code, headers=headers)
         return MagicHttpResponse(writer, self)
 
     @property
@@ -145,7 +145,7 @@ class MagicHttpResponse(responses.WritableResponse):
 
     @property
     def status_code(self) -> constants.HttpStatusCode:
-        self._initial.status_code
+        return self._initial.status_code
 
     @property
     def version(self) -> constants.HttpVersion:
@@ -153,8 +153,7 @@ class MagicHttpResponse(responses.WritableResponse):
 
     @property
     def headers(self) -> magicdict.FrozenTolerantMagicDict[str, str]:
-        return typing.cast(
-            magicdict.FrozenTolerantMagicDict[str, str], self._initial.headers)
+        return self._initial.headers
 
     async def write(self, data: bytes) -> None:
         self._writer.write(data)
@@ -164,7 +163,7 @@ class MagicHttpResponse(responses.WritableResponse):
         await self._writer.wait_finished()
 
     def finished(self) -> bool:
-        return self._writer.finished()  # type: ignore
+        return self._writer.finished()
 
     async def wait_finished(self) -> None:
         await self._writer.wait_finished()

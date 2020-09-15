@@ -13,7 +13,8 @@ registerPreprocessor('javascript', 'typescript', function(code, {
   const result = ts.transpileModule(code, {
     fileName: file,
     compilerOptions: {
-      module: ts.ModuleKind.ESNext
+      module: ts.ModuleKind.ESNext,
+      strict: true
     }
   })
 
