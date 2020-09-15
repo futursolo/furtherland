@@ -33,10 +33,12 @@ from .visits import Visit, VisitOption
 
 # Table: Classes
 # Table: Class_Options
+#        for_class: -> Class.id(one-to-many)
 from .classes import Class, ClassOption
 
-# Table: furtherland_tags
-# Table: furtherland_tag_options
+# Table: Tags
+# Table: Tag_Options
+#        for_tag: -> Tag.id(one-to-many)
 from .tags import Tag, TagOption
 
 # Table: Works

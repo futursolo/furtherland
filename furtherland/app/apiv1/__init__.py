@@ -16,31 +16,16 @@
 #   limitations under the License.
 
 from __future__ import annotations
-from typing import Dict, Any
 
-from ..utils import flatten_async
+from .common import RestRequestHandler
 
-from .common import FurtherLand
-
-from . import signin
-from . import apiv1
+from . import residents
 
 import hakoniwa
 
-__all__ = ["FurtherLand"]
 
-_land = FurtherLand.get()
+handlers = hakoniwa.ReSubDispatcher(r"^apiv1$", RestRequestHandler)
 
-_land.app.handlers.add(
-    hakoniwa.ReRule(r"^signin$", signin.SignInHandler), name="signin")
-
-_land.app.handlers.add(
-    hakoniwa.ReRule(r"^signup$", signin.SignUpHandler), name="signup")
-
-_land.app.handlers.add(apiv1.handlers, name="api")  # type: ignore
-
-
-@flatten_async
-async def process_lambda_request(
-        event: Dict[str, Any], context: Any) -> Dict[str, Any]:
-    return await _land.process_lambda_request(event)
+handlers.add(
+    hakoniwa.ReRule(r"^residents/(?P<name>[a-zA-Z0-9]*?)$",
+                    residents.ResidentHandler), name="residents")

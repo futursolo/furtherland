@@ -852,6 +852,9 @@ class BaseRequestHandler:
         try:
             await self.write_error(status_code, e, message)
 
+        except asyncio.CancelledError:
+            raise
+
         except Exception as e2:
             traceback.print_exception(e2.__class__, e2, e2.__traceback__)
 
@@ -947,7 +950,8 @@ class RequestHandler(BaseRequestHandler):
 
     async def verify_csrf_token(self) -> None:
         try:
-            csrf_submit = self.get_body_arg("_csrf_token")
+            csrf_submit = self.get_header("x-csrf-token") or \
+                self.get_body_arg("_csrf_token")
 
             if not hmac.compare_digest(self.csrf_token, csrf_submit):
                 raise exceptions.HttpError(
