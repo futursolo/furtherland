@@ -24,4 +24,4 @@ magicdict = "<2,>=1.0.6"
 mypy = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
