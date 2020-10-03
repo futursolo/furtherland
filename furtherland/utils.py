@@ -61,8 +61,10 @@ _Fn = TypeVar("_Fn", bound=Callable[..., Any])
 
 
 def flatten_async(f: _AsyncFn) -> _Fn:
+    loop = asyncio.get_event_loop()
+
     @functools.wraps(f)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
-        return asyncio.run(f(*args, **kwargs))
+        return loop.run_until_complete(f(*args, **kwargs))
 
     return typing.cast(_Fn, wrapper)
