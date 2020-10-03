@@ -15,9 +15,20 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+from ...exceptions import OutOfScope
+
+from ... import residents
 from .common import RestRequestHandler
 
 
 class ResidentHandler(RestRequestHandler):
     async def get(self, **kwargs: str) -> None:
-        await self.ok(["test", kwargs])  # type: ignore
+        resident_name: str = kwargs.get("name", "")
+
+        if not resident_name:
+            self.set_header("x-accepted-oauth-scopes", "residents:list")
+            raise OutOfScope
+
+        resident = await residents.Resident.from_name(resident_name)
+
+        self.ok(str(resident))

@@ -16,6 +16,7 @@
 #   limitations under the License.
 
 from __future__ import annotations
+from typing import Type
 
 from .common import RestRequestHandler
 
@@ -24,8 +25,12 @@ from . import residents
 import hakoniwa
 
 
-handlers = hakoniwa.ReSubDispatcher(r"^apiv1/", RestRequestHandler)
+handlers: hakoniwa.ReSubDispatcher[Type[hakoniwa.BaseRequestHandler]] = \
+    hakoniwa.ReSubDispatcher(r"^apiv1/")
 
 handlers.add(
-    hakoniwa.ReRule(r"^residents/(?P<name>[a-zA-Z0-9]*?)$",
+    hakoniwa.ReRule(r"^residents/(?P<name>[a-zA-Z0-9_\-]*?)$",
                     residents.ResidentHandler), name="residents")
+
+# Default route, should be the last one added to handlers.
+handlers.add(hakoniwa.ReRule(r"^(.*?)$", RestRequestHandler))

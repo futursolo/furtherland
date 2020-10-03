@@ -16,8 +16,9 @@
 #   limitations under the License.
 
 from __future__ import annotations
-from typing import Union, Optional, Tuple, Any, Dict, ClassVar
+from typing import Union, Optional, Dict
 
+from ...exceptions import ApiError
 from ..common import BaseRequestHandler
 
 from hakoniwa.utils import Json
@@ -25,22 +26,6 @@ from hakoniwa.utils import Json
 import json
 import hakoniwa
 import traceback
-
-
-class ApiError(hakoniwa.HttpError):
-    default_status_code: ClassVar[Union[int, hakoniwa.HttpStatusCode]] = \
-        hakoniwa.HttpStatusCode.INTERNAL_SERVER_ERROR
-
-    @property
-    def reason(self) -> Optional[Tuple[int, str]]:
-        return None
-
-    def __init__(
-        self,
-        status_code: Optional[Union[int, hakoniwa.HttpStatusCode]] = None,
-            *args: Any, **kwargs: Any) -> None:
-        super().__init__(
-            status_code or self.default_status_code, *args, **kwargs)
 
 
 class RestRequestHandler(BaseRequestHandler):

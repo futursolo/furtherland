@@ -15,7 +15,17 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-import importlib_metadata
+import typing
+
+if typing.TYPE_CHECKING:  # pragma: no cover
+    import importlib.metadata as importlib_metadata
+
+else:
+    try:
+        import importlib.metadata as importlib_metadata
+
+    except ImportError:
+        import importlib_metadata
 
 __version__ = importlib_metadata.version(__name__.split(".", 1)[0])
 

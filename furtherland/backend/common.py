@@ -80,6 +80,10 @@ class BackendMeta:
         self._db.initialize(
             playhouse.db_url.connect(db_url, **_ssl_params))
 
+        for t in self._models:
+            if t.__name__ in ("Resident", "ResidentOption", "Option"):
+                t.create_table()
+
         self._initialised = True
 
     def initialised(self) -> bool:

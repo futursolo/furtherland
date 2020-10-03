@@ -37,7 +37,7 @@ _land.app.handlers.add(
 _land.app.handlers.add(
     hakoniwa.ReRule(r"^signup$", signin.SignUpHandler), name="signup")
 
-_land.app.handlers.add(apiv1.handlers, name="api")  # type: ignore
+_land.app.handlers.add(apiv1.handlers, name="api")
 
 
 @flatten_async

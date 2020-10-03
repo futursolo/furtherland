@@ -16,8 +16,9 @@
 #   limitations under the License.
 
 from __future__ import annotations
-from typing import Optional, Type, Dict
+from typing import Type, Dict
 
+from .exceptions import NoSuchResident
 from .utils import lazy_property
 
 from .backend import BaseModel as _BaseModel, Resident as _Resident, \
@@ -52,5 +53,10 @@ class Resident(options.WithOption):
 
         return _OptionMixIn
 
-    async def from_visit(self, visit: visits.Visit) -> Optional[Resident]:
+    @classmethod
+    async def from_visit(cls, visit: visits.Visit) -> Resident:
         raise NotImplementedError
+
+    @classmethod
+    async def from_name(cls, name: str) -> Resident:
+        raise NoSuchResident
