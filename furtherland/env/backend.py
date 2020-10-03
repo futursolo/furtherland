@@ -62,6 +62,13 @@ class BackendCaPathEnv(StrEnv):
     def adjust_value(self, v: str) -> str:
         return v if v else certifi.where()
 
+    def _get_default(self) -> str:
+        try:
+            return super()._get_default()
+
+        except KeyError:
+            return certifi.where()
+
     def _get_env_file_default_hint(self) -> str:
         return "certifi.where()"
 
