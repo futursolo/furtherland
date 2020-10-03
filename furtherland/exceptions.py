@@ -43,6 +43,11 @@ class OutOfScope(ApiError):
         "Token is not authorised with scope required for this request.")
 
 
+class MethodNotAllowed(ApiError):
+    default_status_code = hakoniwa.HttpStatusCode.METHOD_NOT_ALLOWED
+    reason = (1601710747, "Method is not allowed for requested resource.")
+
+
 class NoSuchResident(ApiError):
     default_status_code = hakoniwa.HttpStatusCode.NOT_FOUND
     reason = (1601696112, "No such resident.")

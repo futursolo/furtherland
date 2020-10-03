@@ -752,7 +752,7 @@ class BaseRequestHandler:
         """
         Handler for GET requests.
         """
-        raise exceptions.HttpError(constants.HttpStatusCode.METHOD_NOT_ALLOWED)
+        raise exceptions.HttpError(constants.HttpStatusCode.NOT_FOUND)
 
     async def post(self, **kwargs: str) -> Optional[Union[str, bytes]]:
         """

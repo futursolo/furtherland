@@ -52,6 +52,27 @@ class ResidencyStatus(enum.IntEnum):
     Master = 100  # Can change Site wide settings.
     # Please note that the first resident will automatically become master.
 
+    def to_string(self) -> str:
+        if self == ResidencyStatus.Disabled:
+            return "disabled"
+
+        elif self == ResidencyStatus.Pending:
+            return "pending"
+
+        elif self == ResidencyStatus.Resident:
+            return "resident"
+
+        elif self == ResidencyStatus.Writer:
+            return "writer"
+
+        elif self == ResidencyStatus.Moderator:
+            return "moderator"
+
+        elif self == ResidencyStatus.Master:
+            return "master"
+
+        raise NotImplementedError
+
 
 @_meta.add_model
 class Resident(BaseModel):
@@ -82,7 +103,7 @@ class Resident(BaseModel):
             email: Optional[str] = None,
             homepage: Optional[str] = None) -> Resident:
         resident: Resident = await _meta.mgr.create(
-            cls, name=name, status=status, display_name=display_name,
+            cls, name=name, status=status.value, display_name=display_name,
             password_hash=password_hash, totp_hash=totp_hash,
             email_md5=email_md5, email=email, homepage=homepage)
 

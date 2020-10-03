@@ -15,7 +15,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from ...exceptions import OutOfScope
+from ...exceptions import OutOfScope, MethodNotAllowed
 
 from ... import residents
 from .common import RestRequestHandler
@@ -26,9 +26,26 @@ class ResidentHandler(RestRequestHandler):
         resident_name: str = kwargs.get("name", "")
 
         if not resident_name:
-            self.set_header("x-accepted-oauth-scopes", "residents:list")
+            self.set_header("x-land-accepted-oauth-scopes", "residents:list")
             raise OutOfScope
 
         resident = await residents.Resident.from_name(resident_name)
 
-        self.ok(str(resident))
+        self.ok(resident.output_public)
+
+    async def post(self, **kwargs: str) -> None:
+        if kwargs.get("name", ""):
+            raise MethodNotAllowed
+
+        resident_count = await residents.Resident.count()
+
+        if resident_count > 0:
+            raise OutOfScope
+
+        name = self.get_body_arg("name", "")
+
+        await residents.Resident.create(
+            name=name, status=residents.ResidencyStatus.Master,
+            password_hash=None,
+            email_md5=None,
+            email=None)

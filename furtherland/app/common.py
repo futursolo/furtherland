@@ -65,6 +65,7 @@ class FurtherLand:
                 return
 
             asyncio.get_event_loop().set_debug(_env_store.debug.get())
+            print(_env_store.debug.get())
 
             await _meta.init()
 
