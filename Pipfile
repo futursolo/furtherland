@@ -9,7 +9,7 @@ flake8 = ">=3.8.3"
 
 [packages]
 peewee = ">=3.13.3,<4"
-peewee-async = ">=0.7.0,<0.8"
+peewee-async = ">=0.7.1,<0.8"
 certifi = ">=2020.6.20"
 python-dotenv = ">=0.14.0,<1"
 cryptography = ">=3.1,<4"
