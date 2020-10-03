@@ -65,6 +65,7 @@ class BackendMeta:
 
         _ssl_params: Dict[str, Union[str, Dict[str, str]]] = {}
         db_url = _backend_envs.url.get()
+        print(db_url)
 
         if _backend_envs.use_tls.get():
             if db_url.startswith(("pgsql", "postgres")):
