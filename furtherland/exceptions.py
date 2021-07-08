@@ -15,47 +15,35 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from typing import Any, ClassVar, Optional, Tuple, Union
-
-import hakoniwa
+from typing import Any, Dict
 
 
-class ApiError(hakoniwa.HttpError):
-    default_status_code: ClassVar[
-        Union[int, hakoniwa.HttpStatusCode]
-    ] = hakoniwa.HttpStatusCode.INTERNAL_SERVER_ERROR
+class GraphQLError(Exception):
+    @property
+    def exts(self) -> Dict[str, Any]:
+        return {}
 
     @property
-    def reason(self) -> Optional[Tuple[int, str]]:
-        return None
-
-    def __init__(
-        self,
-        status_code: Optional[Union[int, hakoniwa.HttpStatusCode]] = None,
-        *args: Any,
-        **kwargs: Any
-    ) -> None:
-        super().__init__(status_code or self.default_status_code, *args, **kwargs)
+    def reason(self) -> str:
+        return "Unknown GraphQL Error"
 
 
-class OutOfScope(ApiError):
-    default_status_code = hakoniwa.HttpStatusCode.FORBIDDEN
-    reason = (
-        1601696780,
-        "Token is not authorised with scope required for this request.",
-    )
+class OutOfScope(GraphQLError):
+    reason = "Token is not authorised with scope required for this request."
+
+    def __init__(self, required_scope: str, *args: Any) -> None:
+        self._required_scope = required_scope
+
+        super().__init__(*args)
+
+    @property
+    def required_scope(self) -> str:
+        return self._required_scope
+
+    @property
+    def exts(self) -> Dict[str, Any]:
+        return {"required_scope": self.required_scope}
 
 
-class MethodNotAllowed(ApiError):
-    default_status_code = hakoniwa.HttpStatusCode.METHOD_NOT_ALLOWED
-    reason = (1601710747, "Method is not allowed for requested resource.")
-
-
-class NoSuchResident(ApiError):
-    default_status_code = hakoniwa.HttpStatusCode.NOT_FOUND
-    reason = (1601696112, "No such resident.")
-
-
-class BadRequest(ApiError):
-    default_status_code = hakoniwa.HttpStatusCode.BAD_REQUEST
-    reason = (1601722187, "The request cannot be understood by the server.")
+class NoSuchResident(GraphQLError):
+    reason = "No such resident."

@@ -45,6 +45,7 @@ aiomysql = ">=0.0.20,<0.1"
 tortoise-orm = { extras = ["aiomysql"], version = "^0.17.0" }
 tartiflette = "^1.3.3"
 pydantic = "^1.8.2"
+scramp = "^1.4.0"
 
 [tool.poetry.dev-dependencies]
 # Sort imports
@@ -62,7 +63,7 @@ mypy = "^0.812"
 flake8 = "^3.9.0"
 
 # Enforce docstring for public classes and functions
-flake8-docstrings = "^1.6.0"
+#flake8-docstrings = "^1.6.0"
 
 # Enforce snake_case
 pep8-naming = "^0.11.1"
@@ -84,9 +85,6 @@ flake8-variables-names = "^0.0.4"
 
 # Simplify Logic
 flake8-simplify = "^0.14.0"
-
-# Dictionary
-flake8-spellcheck = "^0.24.0"
 
 # Dynamic Versioning
 poetry-dynamic-versioning = "^0.13.0"

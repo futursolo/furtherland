@@ -20,6 +20,8 @@ import asyncio
 import functools
 import typing
 
+import pydantic
+
 _T = TypeVar("_T")
 
 
@@ -68,3 +70,24 @@ def flatten_async(f: _AsyncFn) -> _Fn:
         return loop.run_until_complete(f(*args, **kwargs))
 
     return typing.cast(_Fn, wrapper)
+
+
+def to_camel_case(
+    field_name: str,
+) -> str:
+    parts = []
+
+    for index, part in enumerate(field_name.split("_")):
+        if index == 0:
+            parts.append(part)
+
+            continue
+
+        parts.append(part.capitalize())
+
+    return "".join(parts)
+
+
+class BaseModel(pydantic.BaseModel):
+    class Config:
+        alias_generator = to_camel_case

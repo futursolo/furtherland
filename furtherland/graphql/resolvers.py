@@ -15,22 +15,11 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from __future__ import annotations
-from typing import Type
+from typing import Any, Dict
 
-from .common import RestRequestHandler
-
-from . import residents
-
-import hakoniwa
+from tartiflette import Resolver
 
 
-handlers: hakoniwa.ReSubDispatcher[Type[hakoniwa.BaseRequestHandler]] = \
-    hakoniwa.ReSubDispatcher(r"^apiv1/")
-
-handlers.add(
-    hakoniwa.ReRule(r"^residents/(?P<name>[a-zA-Z0-9_\-]*?)$",
-                    residents.ResidentHandler), name="residents")
-
-# Default route, should be the last one added to handlers.
-handlers.add(hakoniwa.ReRule(r"^(.*?)$", RestRequestHandler))
+@Resolver("Mutation.register")
+def mut_register(*args: Any) -> Dict[str, Any]:
+    raise NotImplementedError

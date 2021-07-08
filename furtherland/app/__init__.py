@@ -16,31 +16,26 @@
 #   limitations under the License.
 
 from __future__ import annotations
-from typing import Dict, Any
 
-from ..utils import flatten_async
-
-from .common import FurtherLand
-
-from . import signin
-from . import apiv1
+from typing import Any, Dict
 
 import hakoniwa
+
+from ..utils import flatten_async
+from . import graphql
+from .common import FurtherLand
 
 __all__ = ["FurtherLand"]
 
 _land = FurtherLand.get()
 
 _land.app.handlers.add(
-    hakoniwa.ReRule(r"^signin$", signin.SignInHandler), name="signin")
-
-_land.app.handlers.add(
-    hakoniwa.ReRule(r"^signup$", signin.SignUpHandler), name="signup")
-
-_land.app.handlers.add(apiv1.handlers, name="api")
+    hakoniwa.ReRule("^graphql$", graphql.GraphQLHandler), name="graphql"
+)
 
 
 @flatten_async
 async def process_lambda_request(
-        event: Dict[str, Any], context: Any) -> Dict[str, Any]:
+    event: Dict[str, Any], context: Any
+) -> Dict[str, Any]:
     return await _land.process_lambda_request(event)

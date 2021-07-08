@@ -32,11 +32,11 @@ jobs:
         run: |
           poetry run mypy furtherland
 
-      - name: Make Binary Directory
-        run: mkdir furtherland-binaries
-
       - name: Create Zip
         run: |
+          mkdir furtherland-binaries
+          poetry build
+          pip install $(ls dist/furtherland-*.whl) -t furtherland-binaries
           cd furtherland-binaries
           rm -rf /tmp/furtherland-binaries.zip
           zip -r /tmp/furtherland-binaries.zip ./*
