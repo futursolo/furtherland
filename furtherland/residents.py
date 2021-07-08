@@ -16,26 +16,25 @@
 #   limitations under the License.
 
 from __future__ import annotations
-from typing import Type, Dict, Optional
+
+from typing import Dict, Optional, Type
+import typing
+
+from tortoise.exceptions import DoesNotExist
+import passlib.hash.scram as passlib_scram
 
 from hakoniwa.utils import Json
 
+from . import options, visits
+from .backend import Backend
+from .backend import BaseModel as _BaseModel
+from .backend import ResidencyStatus as ResidencyStatus
+from .backend import Resident as _Resident
+from .backend import ResidentOption as _ResidentOption
 from .exceptions import NoSuchResident
 from .utils import lazy_property
 
-from .backend import BaseModel as _BaseModel, Resident as _Resident, \
-    ResidentOption as _ResidentOption, BackendMeta, \
-    ResidencyStatus as ResidencyStatus
-
-from . import options
-from . import visits
-
-import typing
-
-
 __all__ = ["Resident", "ResidencyStatus"]
-
-_meta = BackendMeta.get()
 
 
 class Resident(options.WithOption):
@@ -59,38 +58,38 @@ class Resident(options.WithOption):
 
     @property
     def resident_id(self) -> int:
-        return typing.cast(int, self._model.id)
+        return typing.cast(int, self._model.id)  # type: ignore
 
     @property
     def name(self) -> str:
-        return typing.cast(str, self._model.name)
+        return self._model.name
 
     @property
     def status(self) -> ResidencyStatus:
-        return ResidencyStatus(self._model.status)
+        return self._model.status
 
     @property
     def display_name(self) -> Optional[str]:
-        return typing.cast(Optional[str], self._model.display_name)
+        return self._model.display_name
 
     @property
     def email_md5(self) -> Optional[str]:
-        return typing.cast(Optional[str], self._model.email_md5)
+        return self._model.email_md5
 
     @property
     def email(self) -> Optional[str]:
-        return typing.cast(Optional[str], self._model.email)
+        return self._model.email
 
     @property
     def homepage(self) -> Optional[str]:
-        return typing.cast(Optional[str], self._model.homepage)
+        return self._model.homepage
 
     @property
     def output_public(self) -> Json:
         result: Dict[str, Json] = {
             "id": self.resident_id,
             "name": self.name,
-            "status": self.status.to_string()
+            "status": self.status.to_string(),
         }
 
         if self.display_name is not None:
@@ -120,33 +119,46 @@ class Resident(options.WithOption):
     @classmethod
     async def from_name(cls, name: str) -> Resident:
         try:
-            model = await _meta.mgr.get(_Resident, name=name)
+            model = await _Resident.get(name=name)
 
-        except _Resident.DoesNotExist as e:
+        except DoesNotExist as e:
             raise NoSuchResident from e
 
         return cls(model)
 
     @classmethod
     async def create(
-            cls, name: str, status: ResidencyStatus = ResidencyStatus.Resident,
-            display_name: Optional[str] = None,
-            password_hash: Optional[str] = None,
-            totp_hash: Optional[str] = None,
-            email_md5: Optional[str] = None,
-            email: Optional[str] = None,
-            homepage: Optional[str] = None) -> Resident:
+        cls,
+        name: str,
+        status: ResidencyStatus = ResidencyStatus.Resident,
+        display_name: Optional[str] = None,
+        password_hash: Optional[str] = None,
+        totp_hash: Optional[str] = None,
+        email_md5: Optional[str] = None,
+        email: Optional[str] = None,
+        homepage: Optional[str] = None,
+    ) -> Resident:
 
         model = await _Resident.create_resident(
-            name=name, status=status, display_name=display_name,
-            password_hash=password_hash, totp_hash=totp_hash,
-            email_md5=email_md5, email=email, homepage=homepage)
+            name=name,
+            status=status,
+            display_name=display_name,
+            password_hash=password_hash,
+            totp_hash=totp_hash,
+            email_md5=email_md5,
+            email=email,
+            homepage=homepage,
+        )
 
         return cls(model)
 
     @classmethod
     async def count(cls) -> int:
-        return typing.cast(int, await _meta.mgr.count(_Resident.select()))
+        return await _Resident.all().count()
+
+    async def change_password(self, new_password: str) -> None:
+        hash_ = typing.cast(str, passlib_scram.hash(new_password))
+        await self._model.change_password_hash(hash_)
 
     def verify_totp(self, code: int) -> bool:
         raise NotImplementedError

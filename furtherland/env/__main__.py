@@ -15,21 +15,30 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from .store import EnvStore
-
-import sys
-import os
 import argparse
+import os
+import sys
+
+from .store import EnvStore
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
         "python3 -m furtherland.env",
-        description="Furtherland Env File Creator.")
-    parser.add_argument("-E", "--env-file", default=os.getcwd(),
-                        help="Location to create the env file")
-    parser.add_argument("--override", action='store_true',
-                        help="Override existing env file", default=False)
+        description="Furtherland Env File Creator.",
+    )
+    parser.add_argument(
+        "-E",
+        "--env-file",
+        default=os.getcwd(),
+        help="Location to create the env file",
+    )
+    parser.add_argument(
+        "--override",
+        action="store_true",
+        help="Override existing env file",
+        default=False,
+    )
 
     parsed_args = parser.parse_args()
 
@@ -59,7 +68,8 @@ def main() -> None:
 
     with open(file_path, "w+") as f:
         f.write(
-            "\n".join(EnvStore.get(_skip_required=True)._to_env_file_str()))
+            "\n".join(EnvStore.get(_skip_required=True)._to_env_file_str())
+        )
 
     print(f"New env file is created at {file_path}.")
 

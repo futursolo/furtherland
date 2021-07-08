@@ -15,14 +15,14 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from typing import Type, TypeVar, Dict, Any, Generic, Union, Optional
-
-from .utils import lazy_property
-from .backend import BaseModel as _BaseModel, BaseOption as _BaseOption, \
-    Option as _Option
-
+from typing import Any, Dict, Generic, Optional, Type, TypeVar, Union
 import abc
+import functools
 
+from .backend import BaseModel as _BaseModel
+from .backend import BaseOption as _BaseOption
+from .backend import Option as _Option
+from .utils import lazy_property
 
 __all__ = ["BaseOption", "StrOption", "IntOption", "FloatOption"]
 
@@ -31,7 +31,7 @@ _T = TypeVar("_T", bound=Union[int, str, float])
 
 
 class BaseOption(Generic[_T]):
-    model_cls:  Type[_BaseOption] = _Option
+    model_cls: Type[_BaseOption] = _Option
     prefix = "core_"
 
     def __init__(self, name: str) -> None:
@@ -50,7 +50,8 @@ class BaseOption(Generic[_T]):
 
     async def _get(self, default: Optional[_T] = None) -> _BaseOption:
         return await _Option.get_option(
-            self._full_name, default=default, **self.ident_fields())
+            self._full_name, default=default, **self.ident_fields()
+        )
 
     @abc.abstractmethod
     async def get(self, default: Optional[_T] = None) -> _T:
@@ -83,9 +84,9 @@ class IntOption(BaseOption[int]):
 
     async def inc(self, step: int, default: int = 0) -> int:
         opt = await self._get(default=default)
-        after_opt = await opt.inc_int(step)
+        await opt.inc_int(step)
 
-        return after_opt.as_int()
+        return opt.as_int()
 
 
 class FloatOption(BaseOption[float]):
@@ -95,12 +96,6 @@ class FloatOption(BaseOption[float]):
     async def set(self, value: float) -> None:
         opt = await self._get(default=value)
         await opt.update_float(value)
-
-    async def inc(self, step: float, default: float = 0.0) -> float:
-        opt = await self._get(default=default)
-        after_opt = await opt.inc_float(step)
-
-        return after_opt.as_float()
 
 
 class OptionMixIn(abc.ABC):
@@ -126,25 +121,21 @@ class WithOption(abc.ABC):
 
     @lazy_property
     def StrOption(self) -> Type[StrOption]:
-        class _StrOption(
-                StrOption, self._OptionMixIn):  # type: ignore
+        class _StrOption(StrOption, self._OptionMixIn):  # type: ignore
             pass
 
         return _StrOption
 
     @lazy_property
     def IntOption(self) -> Type[IntOption]:
-        class _IntOption(
-                IntOption, self._OptionMixIn):  # type: ignore
+        class _IntOption(IntOption, self._OptionMixIn):  # type: ignore
             pass
 
         return _IntOption
 
     @lazy_property
     def FloatOption(self) -> Type[FloatOption]:
-        class _FloatOption(
-                FloatOption,
-                self._OptionMixIn):  # type: ignore
+        class _FloatOption(FloatOption, self._OptionMixIn):  # type: ignore
             pass
 
         return _FloatOption

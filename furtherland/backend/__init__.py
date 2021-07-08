@@ -15,53 +15,74 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from .common import BackendMeta, BaseModel
-
-# Table: Options
-from .options import BaseOption, Option
-
-# Table: Residents
-# Table: Resident_Options
-#        for_resident: -> Resident.id(one-to-many)
-from .residents import Resident, ResidencyStatus, ResidentOption
-
-# Table: Visits
-#        for_resident: -> Resident.id(one-to-many)
-# Table: Visit_Options
-#        for_visit: -> Visit.id(one-to-many)
-from .visits import Visit, VisitOption
-
 # Table: Classes
 # Table: Class_Options
 #        for_class: -> Class.id(one-to-many)
 from .classes import Class, ClassOption
 
-# Table: Tags
-# Table: Tag_Options
-#        for_tag: -> Tag.id(one-to-many)
-from .tags import Tag, TagOption
+# Backend and BaseModel
+from .common import Backend, BaseModel
 
-# Table: Works
-#        for_resident: -> Optional[Resident.id](one-to-many)
-#        for_class: Optional[Resident.id](one-to-many)
-# Table: Work_Options
-#        for_work: -> Work.id(one-to-many)
-# Table: Work_Tag_Relationships
-#        for_work: -> Work.id(one-to-many)
-#        for_tag: -> Tag.id(one-to-many)
-from .works import Work, WorkOption, WorkTagRelationship
-
+# Table: Options
+from .options import BaseOption, Option
 
 # Table: Replies
-#        for_work: -> Work.id(one-to-many)
-#        for_resident: -> Optional[Resident.id](one-to-many)
+#        for_work: -> Work(one-to-many)
+#        parent: -> Optional[Reply](one-to-many)
+#        for_resident: -> Optional[Resident](one-to-many)
+#        options: List[Reply_Option](backref)
+#        children: List[Reply](backref)
 # Table: Reply_Options
-#        for_reply: -> Reply.id(one-to-many)
+#        for_reply: -> Reply(one-to-many)
 from .replies import Reply, ReplyOption
 
-__all__ = ["BackendMeta", "BaseModel",
-           "BaseOption", "Option",
-           "Resident", "ResidencyStatus", "ResidentOption",
-           "Visit", "VisitOption", "Class", "ClassOption",
-           "Tag", "TagOption", "Work", "WorkOption", "WorkTagRelationship",
-           "Reply", "ReplyOption"]
+# Table: Residents
+#        options: List[Resident_Option](backref)
+#        works: List[Work](backref)
+#        replies: List[Reply](backref)
+#        visits: List[Visit](backref)
+# Table: Resident_Options
+#        for_resident: -> Resident(one-to-many)
+from .residents import ResidencyStatus, Resident, ResidentOption
+
+# Table: Tags
+#        works: List[Work](many-to-many)
+#        options: List[Tag_Option](backref)
+# Table: Tag_Options
+#        for_tag: -> Tag(one-to-many)
+from .tags import Tag, TagOption
+
+# Table: Visits
+#        for_resident: -> Resident(one-to-many)
+#        options: List[Visit_Option](backref)
+# Table: Visit_Options
+#        for_visit: -> Visit(one-to-many)
+from .visits import Visit, VisitOption
+
+# Table: Works
+#        for_resident: -> Optional[Resident](one-to-many)
+#        for_class: Optional[Resident](one-to-many)
+#        tags: List[Tag](many-to-many)
+# Table: Work_Options
+#        for_work: -> Work(one-to-many)
+from .works import Work, WorkOption
+
+__all__ = [
+    "Backend",
+    "BaseModel",
+    "BaseOption",
+    "Option",
+    "Resident",
+    "ResidencyStatus",
+    "ResidentOption",
+    "Visit",
+    "VisitOption",
+    "Class",
+    "ClassOption",
+    "Tag",
+    "TagOption",
+    "Work",
+    "WorkOption",
+    "Reply",
+    "ReplyOption",
+]

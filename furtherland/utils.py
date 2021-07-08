@@ -15,10 +15,9 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from typing import TypeVar, Generic, Any, Callable, Coroutine
-
-import functools
+from typing import Any, Callable, Coroutine, Generic, TypeVar
 import asyncio
+import functools
 import typing
 
 _T = TypeVar("_T")
@@ -28,13 +27,14 @@ class FurtherlandError(Exception):
     """
     Base Exception for Furtherland.
     """
+
     pass
 
 
 class _LazyPropertyWrapper(Generic[_T]):
     def __init__(self, func: Callable[[Any], _T]) -> None:
         self.func = func
-        functools.update_wrapper(self, func)  # type: ignore
+        functools.update_wrapper(self, func)
 
     def __get__(self, obj: Any, *args: Any, **kwargs: Any) -> _T:
         if obj is None:
@@ -46,7 +46,7 @@ class _LazyPropertyWrapper(Generic[_T]):
 
 def lazy_property(func: Callable[[Any], _T]) -> _LazyPropertyWrapper[_T]:
     """
-    A Cached Property Decorator.
+    A cached, read-only property decorator.
 
     References:
     https://en.wikipedia.org/wiki/Lazy_evaluation

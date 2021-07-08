@@ -16,14 +16,14 @@
 #   limitations under the License.
 
 from __future__ import annotations
-from typing import Type, Dict, AsyncIterator, Any
 
-from .utils import lazy_property
-
-from .backend import BaseModel as _BaseModel, Class as _Class, \
-    ClassOption as _ClassOption
+from typing import Any, AsyncIterator, Dict, Type
 
 from . import options
+from .backend import BaseModel as _BaseModel
+from .backend import Class as _Class
+from .backend import ClassOption as _ClassOption
+from .utils import lazy_property
 
 __all__ = ["Class"]
 

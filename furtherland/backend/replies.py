@@ -15,65 +15,83 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from .common import BaseModel, BackendMeta
-
-from peewee import ForeignKeyField, CharField, TextField, DateTimeField, \
-    IntegerField, FixedCharField
-from .options import BaseOption
-from .works import Work
-from .residents import Resident
-
 import datetime
+import enum
+
+from tortoise import fields
+from tortoise.fields import data as d_fields
+from tortoise.fields import relational as ref_fields
+
+from .common import Backend, BaseModel
+from .options import BaseOption
+from .residents import Resident
+from .works import Work
 
 __all__ = ["Reply", "ReplyOption"]
 
-_meta = BackendMeta.get()
 
-
-class ReplyStatus:
+@enum.unique
+class ReplyStatus(enum.IntEnum):
     Hidden = -1
     Pending = 0
     Approved = 1
 
 
-@_meta.add_model
+@Backend.add_model
 class Reply(BaseModel):
 
     # html.escape
     # re.sub(re.compile(r"(data:)", re.IGNORECASE), "data：")
     # re.sub(re.compile(r"(javascript:)", re.IGNORECASE), "javascript：")
-    content = TextField()
-    content_rendered = TextField()
+    content = d_fields.TextField()
+    content_rendered = d_fields.TextField()
 
-    status = IntegerField(null=False)
+    status = d_fields.IntEnumField(ReplyStatus, null=False)
 
-    for_work = ForeignKeyField(
-        Work, index=True, backref="replies", on_delete="CASCADE")
-    for_resident = ForeignKeyField(
-        Resident, index=True, backref="replies", on_delete="CASCADE")
+    for_work = ref_fields.ForeignKeyField(
+        Work._meta.full_name,
+        index=True,
+        related_name="replies",
+        on_delete="CASCADE",
+    )
+    for_resident = ref_fields.ForeignKeyField(
+        Resident._meta.full_name,
+        index=True,
+        related_name="replies",
+        on_delete="CASCADE",
+    )
 
     # html.escape
-    visitor_name = TextField()
-    visitor_email_md5 = FixedCharField(index=True, unique=True, max_length=32)
-    visitor_email = CharField(index=True, unique=True, max_length=254)
-    visitor_homepage = TextField()
-    visitor_ip = CharField(null=False, max_length=40)
-    visitor_user_agent = TextField()
+    visitor_name = d_fields.TextField()
+    visitor_email_md5 = d_fields.CharField(
+        index=True, unique=True, max_length=32
+    )
+    visitor_email = d_fields.CharField(index=True, unique=True, max_length=254)
+    visitor_homepage = d_fields.TextField()
+    visitor_ip = d_fields.CharField(null=False, max_length=40)
+    visitor_user_agent = d_fields.TextField()
 
-    created = DateTimeField(null=False, default=datetime.datetime.utcnow)
+    created = d_fields.DatetimeField(null=False, auto_now_add=True)
 
-    parent = ForeignKeyField("self", null=True, index=True, backref="children")
+    parent = ref_fields.ForeignKeyField(
+        "models.Reply", null=True, index=True, related_name="children"
+    )
+
+    options: ref_fields.ReverseRelation[ReplyOption]
+    children: ref_fields.ReverseRelation[Reply]
 
 
-@_meta.add_model
+@Backend.add_model
 class ReplyOption(BaseOption):
-    name = CharField(null=False, index=True, max_length=254)
-    for_reply = ForeignKeyField(
-        Reply, index=True, backref="options", on_delete="CASCADE")
+    name = d_fields.CharField(null=False, index=True, max_length=254)
+    for_reply = ref_fields.ForeignKeyField(
+        Reply._meta.full_name,
+        index=True,
+        related_name="options",
+        on_delete="CASCADE",
+    )
 
-    _ident_fields = ["for_reply"]
+    _ident_fields = set(["for_reply"])
 
     class Meta:
-        indexes = (
-            (("name", "for_reply"), True),
-        )
+        unique_together = (("name", "for_reply"),)

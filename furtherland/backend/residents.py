@@ -16,20 +16,25 @@
 #   limitations under the License.
 
 from __future__ import annotations  # noqa: F401
+
 from typing import Optional
-
-from .common import BaseModel, BackendMeta
-from .options import BaseOption
-
-from peewee import CharField, BigIntegerField, DateTimeField, \
-    ForeignKeyField, FixedCharField, TextField
-
 import datetime
 import enum
+import typing
+
+from tortoise import fields
+from tortoise.fields import data as d_fields
+from tortoise.fields import relational as ref_fields
+
+from .common import Backend, BaseModel
+from .options import BaseOption
+
+if typing.TYPE_CHECKING:
+    from .replies import Reply
+    from .visits import Visit
+    from .works import Work
 
 __all__ = ["ResidencyStatus", "Resident", "ResidentOption"]
-
-_meta = BackendMeta.get()
 
 
 @enum.unique
@@ -74,51 +79,74 @@ class ResidencyStatus(enum.IntEnum):
         raise NotImplementedError
 
 
-@_meta.add_model
+@Backend.add_model
 class Resident(BaseModel):
-    name = CharField(null=False, index=True, unique=True, max_length=64)
-    display_name = TextField()
+    name = d_fields.CharField(
+        null=False, index=True, unique=True, max_length=64
+    )
+    display_name = d_fields.TextField()
 
-    status = BigIntegerField(null=False)
+    status = d_fields.IntEnumField(ResidencyStatus, null=False)
 
-    password_hash = TextField()  # passlib.hash.scram
-    totp_hash = TextField()
+    password_hash = d_fields.TextField()  # passlib.hash.scram
+    totp_hash = d_fields.TextField()
 
-    email_md5 = FixedCharField(index=True, unique=True, max_length=32)
-    email = CharField(index=True, unique=True, max_length=254)
-    homepage = TextField()
+    email_md5 = d_fields.CharField(index=True, unique=True, max_length=32)
+    email = d_fields.CharField(index=True, unique=True, max_length=254)
+    homepage = d_fields.TextField()
 
-    created = DateTimeField(null=False, default=datetime.datetime.utcnow)
+    created = d_fields.DatetimeField(null=False, auto_now_add=True)
 
-    language = CharField(max_length=10)
+    language = d_fields.CharField(max_length=10)
+
+    options: ref_fields.ReverseRelation[ResidentOption]
+    visits: ref_fields.ReverseRelation[Visit]
+
+    works: ref_fields.ReverseRelation[Work]
+    replies: ref_fields.ReverseRelation[Reply]
 
     @classmethod
     async def create_resident(
-            cls, name: str, *,
-            status: ResidencyStatus = ResidencyStatus.Resident,
-            display_name: Optional[str] = None,
-            password_hash: Optional[str] = None,
-            totp_hash: Optional[str] = None,
-            email_md5: Optional[str] = None,
-            email: Optional[str] = None,
-            homepage: Optional[str] = None) -> Resident:
-        resident: Resident = await _meta.mgr.create(
-            cls, name=name, status=status.value, display_name=display_name,
-            password_hash=password_hash, totp_hash=totp_hash,
-            email_md5=email_md5, email=email, homepage=homepage)
+        cls,
+        name: str,
+        *,
+        status: ResidencyStatus = ResidencyStatus.Resident,
+        display_name: Optional[str] = None,
+        password_hash: Optional[str] = None,
+        totp_hash: Optional[str] = None,
+        email_md5: Optional[str] = None,
+        email: Optional[str] = None,
+        homepage: Optional[str] = None,
+    ) -> Resident:
+        return await cls.create(
+            name=name,
+            status=status,
+            display_name=display_name,
+            password_hash=password_hash,
+            totp_hash=totp_hash,
+            email_md5=email_md5,
+            email=email,
+            homepage=homepage,
+        )
 
-        return resident
+    async def change_password_hash(self, password_hash: str) -> None:
+        self.update_from_dict({"password_hash": password_hash})
+        await self.save(update_fields=["password_hash"], force_update=True)
 
 
-@_meta.add_model
+@Backend.add_model
 class ResidentOption(BaseOption):
-    name = CharField(null=False, index=True, max_length=254)
-    for_resident = ForeignKeyField(
-        Resident, index=True, backref="options", on_delete="CASCADE")
+    name = d_fields.CharField(null=False, index=True, max_length=254)
+    for_resident: ref_fields.ForeignKeyRelation[
+        Resident
+    ] = ref_fields.ForeignKeyField(
+        Resident._meta.full_name,
+        index=True,
+        related_name="options",
+        on_delete="CASCADE",
+    )
 
-    _ident_fields = ["for_resident"]
+    _ident_fields = set(["for_resident"])
 
     class Meta:
-        indexes = (
-            (("name", "for_resident"), True),
-        )
+        unique_together = (("name", "for_resident"),)

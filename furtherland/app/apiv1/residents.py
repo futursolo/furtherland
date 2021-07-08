@@ -15,10 +15,13 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from ...exceptions import OutOfScope, MethodNotAllowed
+from ...exceptions import OutOfScope, MethodNotAllowed, BadRequest
 
 from ... import residents
 from .common import RestRequestHandler
+
+import hashlib
+import email_validator
 
 
 class ResidentHandler(RestRequestHandler):
@@ -40,12 +43,28 @@ class ResidentHandler(RestRequestHandler):
         resident_count = await residents.Resident.count()
 
         if resident_count > 0:
+            self.set_header("x-land-accepted-oauth-scopes", "residents:create")
             raise OutOfScope
 
-        name = self.get_body_arg("name", "")
+        try:
+            name = self.body["name"]
+            password = self.body["password"]
+            email = self.body["email"]
 
-        await residents.Resident.create(
+            if not (isinstance(name, str) and isinstance(password, str) and
+                    isinstance(email, str)):
+                raise TypeError
+
+            email_validator.validate_email(email, check_deliverability=False)
+
+        except (KeyError, TypeError, email_validator.EmailNotValidError) as e:
+            raise BadRequest from e
+
+        resident = await residents.Resident.create(
             name=name, status=residents.ResidencyStatus.Master,
-            password_hash=None,
-            email_md5=None,
-            email=None)
+            email_md5=hashlib.md5(email.encode("utf-8")).hexdigest(),
+            email=email)
+
+        await resident.change_password(password)
+
+        await self.ok(resident.output_private)

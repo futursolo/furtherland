@@ -15,32 +15,46 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from .common import BaseModel, BackendMeta
+from __future__ import annotations
 
-from peewee import ForeignKeyField, CharField, TextField
+import typing
+
+from tortoise import fields
+from tortoise.fields import data as d_fields
+from tortoise.fields import relational as ref_fields
+
+from .common import Backend, BaseModel
 from .options import BaseOption
+
+if typing.TYPE_CHECKING:
+    from .works import Work
 
 __all__ = ["Tag", "TagOption"]
 
-_meta = BackendMeta.get()
 
-
-@_meta.add_model
+@Backend.add_model
 class Tag(BaseModel):
-    slug = CharField(null=False, index=True, unique=True, max_length=254)
-    display_name = TextField()
-    description = TextField()
+    slug = d_fields.CharField(
+        null=False, index=True, unique=True, max_length=254
+    )
+    display_name = d_fields.TextField()
+    description = d_fields.TextField()
+
+    options: ref_fields.ReverseRelation[TagOption]
+    works: ref_fields.ManyToManyRelation[Work]
 
 
-@_meta.add_model
+@Backend.add_model
 class TagOption(BaseOption):
-    name = CharField(null=False, index=True, max_length=254)
-    for_tag = ForeignKeyField(
-        Tag, index=True, backref="options", on_delete="CASCADE")
+    name = d_fields.CharField(null=False, index=True, max_length=254)
+    for_tag: ref_fields.ForeignKeyRelation[Tag] = ref_fields.ForeignKeyField(
+        Tag._meta.full_name,
+        index=True,
+        related_name="options",
+        on_delete="CASCADE",
+    )
 
-    _ident_fields = ["for_tag"]
+    _ident_fields = set(["for_tag"])
 
     class Meta:
-        indexes = (
-            (("name", "for_tag"), True),
-        )
+        unique_together = (("name", "for_tag"),)

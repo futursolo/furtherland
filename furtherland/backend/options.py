@@ -15,25 +15,26 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from typing import Union, TypeVar, Type, Any, Optional, Dict, List
-
-from peewee import CharField, TextField, BigIntegerField, FloatField, \
-    Check
-from ..utils import FurtherlandError
-from .common import BaseModel, BackendMeta
-
+from typing import Any, Dict, List, Optional, Set, Type, TypeVar, Union
+import abc
 import typing
 
+from tortoise import fields
+from tortoise.exceptions import DoesNotExist
+from tortoise.expressions import F
+from tortoise.fields import data as d_fields
 
-__all__ = ["NoSuchOption", "OptionTypeError", "Option"]
+from ..utils import FurtherlandError
+from .common import Backend, BaseModel
 
-_meta = BackendMeta.get()
+__all__ = ["NoSuchOption", "OptionTypeError", "BaseOption", "Option"]
 
 
 class NoSuchOption(KeyError, FurtherlandError):
     """
     No option with such name.
     """
+
     pass
 
 
@@ -41,6 +42,7 @@ class OptionTypeError(TypeError, FurtherlandError):
     """
     Option is found but with another type.
     """
+
     pass
 
 
@@ -48,18 +50,29 @@ _TOption = TypeVar("_TOption", bound="BaseOption")
 
 
 class BaseOption(BaseModel):
-    str_value = TextField()
-    int_value = BigIntegerField()
-    float_value = FloatField()
+    """
+    The base class of options
+    """
 
-    _ident_fields: List[str] = []
+    str_value = d_fields.TextField()
+    int_value = d_fields.BigIntField()
+    float_value = d_fields.FloatField()
+
+    _ident_fields: Set[str] = set()
 
     class Meta:
-        constraints = [Check(
-            "( CASE WHEN str_value IS NULL THEN 0 ELSE 1 END "
-            "+ CASE WHEN int_value IS NULL THEN 0 ELSE 1 END "
-            "+ CASE WHEN float_value IS NULL THEN 0 ELSE 1 END"
-            ") = 1")]
+        """
+        constraints = [
+            Check(
+                "( CASE WHEN str_value IS NULL THEN 0 ELSE 1 END "
+                "+ CASE WHEN int_value IS NULL THEN 0 ELSE 1 END "
+                "+ CASE WHEN float_value IS NULL THEN 0 ELSE 1 END"
+                ") = 1"
+            )
+        ]
+        """
+
+        abstract = True
 
     def _as_raw_value(self) -> Union[str, int, float]:
         if self.str_value is not None:
@@ -74,13 +87,19 @@ class BaseOption(BaseModel):
         else:
             raise ValueError("Unknown Option Type.")
 
+    @property
+    @abc.abstractmethod
+    def name(self) -> str:
+        raise NotImplementedError
+
     def as_str(self) -> str:
         val = self._as_raw_value()
 
         if not isinstance(val, str):
             raise OptionTypeError(
                 f"expected Option {self.name} to be a string, "
-                f"found `{type(val)}`.")
+                f"found `{type(val)}`."
+            )
 
         return val
 
@@ -90,7 +109,8 @@ class BaseOption(BaseModel):
         if not isinstance(val, int):
             raise OptionTypeError(
                 f"expected Option {self.name} to be an integer, "
-                f"found `{type(val)}`.")
+                f"found `{type(val)}`."
+            )
 
         return val
 
@@ -100,23 +120,25 @@ class BaseOption(BaseModel):
         if not isinstance(val, float):
             raise OptionTypeError(
                 f"expected Option {self.name} to be a floating-point number, "
-                f"found `{type(val)}`.")
+                f"found `{type(val)}`."
+            )
 
         return val
 
     @classmethod
     async def get_option(
-        cls: Type[_TOption], name: str, *,
+        cls: Type[_TOption],
+        name: str,
+        *,
         default: Optional[Union[int, str, float]] = None,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> _TOption:
 
         try:
             if default is None:
-                return typing.cast(
-                    _TOption, await _meta.mgr.get(cls, name=name))
+                return await cls.get(name=name)
 
-        except cls.DoesNotExist as e:
+        except DoesNotExist as e:
             raise NoSuchOption(name) from e
 
         defaults: Dict[str, Union[str, int, float]] = {}
@@ -133,67 +155,78 @@ class BaseOption(BaseModel):
         else:
             raise OptionTypeError(f"{type(default)} is not a valid type.")
 
-        if list(kwargs.keys()) != cls._ident_fields:
+        if set(kwargs.keys()) <= cls._ident_fields:
             raise OptionTypeError(
                 "The following identity fields are required: "
-                f"{cls._ident_fields}")
+                f"{cls._ident_fields}"
+            )
 
-        opt, _ = await _meta.mgr.get_or_create(
-            cls, defaults=defaults, name=name, **kwargs)
-        return typing.cast(_TOption, opt)
+        opt, _ = await cls.get_or_create(
+            defaults=defaults, name=name, **kwargs
+        )
+        return opt
 
-    async def _del_option(self, **kwargs: Any) -> None:
-        if list(kwargs.keys()) != self._ident_fields:
+    """
+    async def del_option(self, **kwargs: Any) -> None:
+        if set(kwargs.keys()) <= self._ident_fields:
             raise OptionTypeError(
                 "The following identity fields are required: "
-                f"{self._ident_fields}")
+                f"{self._ident_fields}"
+            )
 
         del_count = await self.meta.mgr.execute(
-            self.delete().where(name=self.name, **kwargs))
+            self.delete().where(name=self.name, **kwargs)
+        )
 
         if del_count < 1:
             raise NoSuchOption(self.name)
+    """
 
     async def update_str(self, value: str) -> None:
         self.as_str()
-        self.str_value = value
 
-        await self.meta.mgr.update(self, only=("str_value",))
+        self.update_from_dict({"str_value": value})
+
+        await self.save(update_fields=["str_value"], force_update=True)
 
     async def update_int(self, value: int) -> None:
         self.as_int()
-        self.int_value = value
 
-        await self.meta.mgr.update(self, only=("int_value",))
+        self.update_from_dict({"int_value": value})
+
+        await self.save(update_fields=["int_value"], force_update=True)
 
     async def update_float(self, value: float) -> None:
         self.as_float()
-        self.float_value = value
 
-        await self.meta.mgr.update(self, only=("float_value",))
+        self.update_from_dict({"float_value": value})
 
-    async def inc_int(self: _TOption, step: int) -> _TOption:
+        await self.save(update_fields=["float_value"], force_update=True)
+
+    async def inc_int(self, step: int) -> None:
         self.as_int()
-        idents = {(k, getattr(self, k)) for k in self._ident_fields}
-        await self.meta.mgr.execute(
-            self.update(int_value=self.int_value + step)
-            .where(name=self.name, **idents))
 
-        return typing.cast(
-            _TOption, await self.meta.mgr.get(self, name=self.name, **idents))
+        self.update_from_dict({"int_value": F("int_value") + step})
 
+        await self.save(update_fields=["int_value"], force_update=True)
+
+    """
     async def inc_float(self: _TOption, step: float) -> _TOption:
         self.as_float()
         idents = {(k, getattr(self, k)) for k in self._ident_fields}
         await self.meta.mgr.execute(
-            self.update(float_value=self.float_value + step)
-            .where(name=self.name, **idents))
+            self.update(float_value=self.float_value + step).where(
+                name=self.name, **idents
+            )
+        )
 
         return typing.cast(
-            _TOption, await self.meta.mgr.get(self, name=self.name, **idents))
+            _TOption, await self.meta.mgr.get(self, name=self.name, **idents)
+        )
+    """
 
 
-@_meta.add_model
+@Backend.add_model
 class Option(BaseOption):
     """
     Furtherland Global Options.
@@ -215,4 +248,7 @@ class Option(BaseOption):
     This is the low-level api. You may want to use
     :module:`furtherland.options`.
     """
-    name = CharField(null=False, index=True, unique=True, max_length=254)
+
+    name = d_fields.CharField(
+        null=False, index=True, unique=True, max_length=254
+    )

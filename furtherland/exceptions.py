@@ -15,14 +15,15 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from typing import ClassVar, Union, Optional, Tuple, Any
+from typing import Any, ClassVar, Optional, Tuple, Union
 
 import hakoniwa
 
 
 class ApiError(hakoniwa.HttpError):
-    default_status_code: ClassVar[Union[int, hakoniwa.HttpStatusCode]] = \
-        hakoniwa.HttpStatusCode.INTERNAL_SERVER_ERROR
+    default_status_code: ClassVar[
+        Union[int, hakoniwa.HttpStatusCode]
+    ] = hakoniwa.HttpStatusCode.INTERNAL_SERVER_ERROR
 
     @property
     def reason(self) -> Optional[Tuple[int, str]]:
@@ -31,16 +32,18 @@ class ApiError(hakoniwa.HttpError):
     def __init__(
         self,
         status_code: Optional[Union[int, hakoniwa.HttpStatusCode]] = None,
-            *args: Any, **kwargs: Any) -> None:
-        super().__init__(
-            status_code or self.default_status_code, *args, **kwargs)
+        *args: Any,
+        **kwargs: Any
+    ) -> None:
+        super().__init__(status_code or self.default_status_code, *args, **kwargs)
 
 
 class OutOfScope(ApiError):
     default_status_code = hakoniwa.HttpStatusCode.FORBIDDEN
     reason = (
         1601696780,
-        "Token is not authorised with scope required for this request.")
+        "Token is not authorised with scope required for this request.",
+    )
 
 
 class MethodNotAllowed(ApiError):
@@ -51,3 +54,8 @@ class MethodNotAllowed(ApiError):
 class NoSuchResident(ApiError):
     default_status_code = hakoniwa.HttpStatusCode.NOT_FOUND
     reason = (1601696112, "No such resident.")
+
+
+class BadRequest(ApiError):
+    default_status_code = hakoniwa.HttpStatusCode.BAD_REQUEST
+    reason = (1601722187, "The request cannot be understood by the server.")

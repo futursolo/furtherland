@@ -16,12 +16,12 @@
 #   limitations under the License.
 
 from __future__ import annotations
-from typing import Dict, Any
 
+from typing import Any, Dict
+import asyncio
+import datetime
 
 import hakoniwa
-import datetime
-import asyncio
 
 # Workaround to make sure autopep8 would leave it alone.
 try:
@@ -39,8 +39,6 @@ else:
 
 __all__ = ["FurtherLand", "BaseRequestHandler"]
 
-_meta = backend.BackendMeta.get()
-
 _init_lock = asyncio.Lock()
 
 
@@ -51,10 +49,9 @@ class FurtherLand:
             csrf_protect=True,
             static_path=resources.get_asset_root(),
             static_handler_path=r"^assets/(?P<file>.*?)$",
-
             security_secret=_env_store.secret.get(),
             secure_cookie_max_age=datetime.timedelta(days=180),
-            safe_cookies=True
+            safe_cookies=True,
         )
 
         self._inited = False
@@ -64,9 +61,9 @@ class FurtherLand:
             if self._inited:
                 return
 
-            asyncio.get_event_loop().set_debug(_env_store.debug.get())
+            await backend.Backend.get().init()
 
-            await _meta.init()
+            asyncio.get_event_loop().set_debug(_env_store.debug.get())
 
             self._inited = True
 
@@ -78,15 +75,15 @@ class FurtherLand:
         await self.init()
 
     async def process_lambda_request(
-            self, event: Dict[str, Any]) -> Dict[str, Any]:
+        self, event: Dict[str, Any]
+    ) -> Dict[str, Any]:
         await self.before()
 
-        result = await self.app.process_lambda_request(event)
-
         # Disconnect Database to prevent MySQL Database has gone away error.
-        await _meta.disconnect()
+        async with backend.Backend.get():
+            result = await self.app.process_lambda_request(event)
 
-        return result
+            return result
 
 
 _land = FurtherLand()
@@ -98,8 +95,7 @@ class BaseRequestHandler(hakoniwa.RequestHandler):
         return _land
 
     async def infer_base_url(self) -> str:
-        return (self.request.scheme.value  # type: ignore
-                + "://" + self.request.authority)
+        return self.request.scheme.value + "://" + self.request.authority
 
     async def get_sketch_args(self) -> Dict[str, Any]:
         args = await super().get_sketch_args()

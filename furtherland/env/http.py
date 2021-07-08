@@ -15,7 +15,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from .common import BaseEnvStore, StrEnv, BoolEnv, IntEnv
+from .common import BaseEnvStore, BoolEnv, IntEnv, StrEnv
 
 __all__ = ["HttpEnvStore"]
 
@@ -23,22 +23,26 @@ __all__ = ["HttpEnvStore"]
 class HttpEnvStore(BaseEnvStore):
     _prefix = "HTTP_"
 
-    address = StrEnv(
-        "ADDRESS", "The address to bind.", default="localhost")
+    address = StrEnv("ADDRESS", "The address to bind.", default="localhost")
 
-    port = IntEnv(
-        "PORT", "The port to bind.", default=1741)
+    port = IntEnv("PORT", "The port to bind.", default=1741)
 
     base_url = StrEnv(
-        "BASE_URL", [
+        "BASE_URL",
+        [
             "The Base URL of the site.",
             "This can usually be inferred. "
             "But if you are using a reverse proxy,",
-            "It is strongly recommended that you set this URL."])
+            "It is strongly recommended that you set this URL.",
+        ],
+    )
 
     assume_tls = BoolEnv(
-        "ASSUME_TLS", [
+        "ASSUME_TLS",
+        [
             "Assume TLS Connection even if it is not.",
             "Useful when running behind a reverse proxy.",
-            "Has no effect when TLS is enabled."],
-        default=False)
+            "Has no effect when TLS is enabled.",
+        ],
+        default=False,
+    )

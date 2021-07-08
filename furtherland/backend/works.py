@@ -15,21 +15,25 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from .common import BaseModel, BackendMeta
-
-from peewee import ForeignKeyField, CharField, DateTimeField, TextField, \
-    BooleanField, IntegerField
-from .residents import Resident
-from .options import BaseOption
-from .classes import Class
-from .tags import Tag
-
 import datetime
 import enum
+import typing
+
+from tortoise import fields
+from tortoise.fields import data as d_fields
+from tortoise.fields import relational as ref_fields
+
+from ..env import BackendEnvStore
+from .classes import Class
+from .common import Backend, BaseModel
+from .options import BaseOption
+from .residents import Resident
+from .tags import Tag
+
+if typing.TYPE_CHECKING:
+    from .replies import Reply
 
 __all__ = ["Work", "WorkOption"]
-
-_meta = BackendMeta.get()
 
 
 @enum.unique
@@ -46,51 +50,63 @@ class WorkStatus(enum.IntEnum):
     Published = 1
 
 
-@_meta.add_model
+@Backend.add_model
 class Work(BaseModel):
-    slug = CharField(null=False, unique=True, index=True, max_length=254)
-    title = TextField()
+    slug = d_fields.CharField(
+        null=False, unique=True, index=True, max_length=254
+    )
+    title = d_fields.TextField()
 
-    content = TextField()
-    content_rendered = TextField()
+    content = d_fields.TextField()
+    content_rendered = d_fields.TextField()
 
-    status = IntegerField(null=False)
+    status = d_fields.IntEnumField(WorkStatus, null=False)
 
-    created = DateTimeField(null=False, default=datetime.datetime.utcnow)
-    modified = DateTimeField(null=True, default=datetime.datetime.utcnow)
+    created = d_fields.DatetimeField(null=False, auto_now_add=True)
+    modified = d_fields.DatetimeField(null=False, auto_now=True)
 
-    allow_comments = BooleanField(null=False, default=True)
+    allow_comments = d_fields.BooleanField(null=False, default=True)
 
-    _Type = IntegerField(null=False, index=True)
+    type_ = d_fields.IntEnumField(WorkType, null=False, index=True)
 
-    for_resident = ForeignKeyField(
-        Resident, index=True, backref="visits", on_delete="SET NULL")
-    for_class = ForeignKeyField(
-        Class, index=True, backref="options", on_delete="SET NULL")
+    for_resident: ref_fields.ForeignKeyRelation[
+        Resident
+    ] = ref_fields.ForeignKeyField(
+        Resident._meta.full_name,
+        index=True,
+        related_name="works",
+        on_delete="SET NULL",
+    )
+    for_class: ref_fields.ForeignKeyRelation[
+        Class
+    ] = ref_fields.ForeignKeyField(
+        Class._meta.full_name,
+        index=True,
+        related_name="works",
+        on_delete="SET NULL",
+    )
+
+    tags: ref_fields.ManyToManyRelation[Tag] = ref_fields.ManyToManyField(
+        Tag._meta.full_name,
+        related_name="works",
+        through=BackendEnvStore.get().table_prefix.get() + "work_tag_rels",
+    )
+
+    options: ref_fields.ReverseRelation[WorkOption]
+    replies: ref_fields.ReverseRelation[Reply]
 
 
-@_meta.add_model
+@Backend.add_model
 class WorkOption(BaseOption):
-    name = CharField(null=False, index=True, max_length=254)
-    for_work = ForeignKeyField(
-        Work, index=True, backref="options", on_delete="CASCADE")
+    name = d_fields.CharField(null=False, index=True, max_length=254)
+    for_work: ref_fields.ForeignKeyRelation[Work] = ref_fields.ForeignKeyField(
+        Work._meta.full_name,
+        index=True,
+        related_name="options",
+        on_delete="CASCADE",
+    )
 
-    _ident_fields = ["for_work"]
-
-    class Meta:
-        indexes = (
-            (("name", "for_work"), True),
-        )
-
-
-@_meta.add_model
-class WorkTagRelationship(BaseModel):
-    for_tag = ForeignKeyField(
-        Tag, index=True, backref="work_rels", on_delete="CASCADE")
-    for_work = ForeignKeyField(
-        Work, index=True, backref="tag_rels", on_delete="CASCADE")
+    _ident_fields = set(["for_work"])
 
     class Meta:
-        indexes = (
-            (("for_work", "for_tag"), True),
-        )
+        unique_together = (("name", "for_work"),)

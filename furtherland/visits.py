@@ -16,15 +16,14 @@
 #   limitations under the License.
 
 from __future__ import annotations
-from typing import Type, Dict, Optional
 
+from typing import Dict, Optional, Type
+
+from . import options, residents
+from .backend import BaseModel as _BaseModel
+from .backend import Visit as _Visit
+from .backend import VisitOption as _VisitOption
 from .utils import lazy_property
-
-from .backend import BaseModel as _BaseModel, Visit as _Visit, \
-    VisitOption as _VisitOption
-
-from . import options
-from . import residents
 
 __all__ = ["Visit"]
 

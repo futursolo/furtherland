@@ -16,18 +16,27 @@
 #   limitations under the License.
 
 from __future__ import annotations
-from typing import TypeVar, Generic, Union, List, Optional, Dict, Type, Any
 
+from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
+import abc
+import base64
+import inspect
+import json
 import os
 import typing
 import warnings
-import abc
-import inspect
-import json
-import base64
 
-__all__ = ["MissingRequiredEnv", "MalformedEnvError", "BaseEnv", "StrEnv",
-           "BoolEnv", "IntEnv", "ListEnv", "FloatEnv", "BaseEnvStore"]
+__all__ = [
+    "MissingRequiredEnv",
+    "MalformedEnvError",
+    "BaseEnv",
+    "StrEnv",
+    "BoolEnv",
+    "IntEnv",
+    "ListEnv",
+    "FloatEnv",
+    "BaseEnvStore",
+]
 
 
 _T = TypeVar("_T", bound=Union[int, str, bool, float, List[str]])
@@ -37,6 +46,7 @@ class MissingRequiredEnv(KeyError):
     """
     Raised when required Env is not found.
     """
+
     pass
 
 
@@ -44,11 +54,13 @@ class MalformedEnvError(ValueError):
     """
     Raised when the value of the env is not valid.
     """
+
     pass
 
 
 try:
     import boto3
+
     kms_client = boto3.client("kms")
 
     def _get_env_str(env_name: str) -> str:
@@ -73,13 +85,16 @@ try:
 
             decrypted_result = kms_client.decrypt(CiphertextBlob=decoded)
 
-            return typing.cast(
-                bytes, decrypted_result["Plaintext"]).decode("utf-8")
+            return typing.cast(bytes, decrypted_result["Plaintext"]).decode(
+                "utf-8"
+            )
 
         else:
             return value
 
+
 except ImportError:
+
     def _get_env_str(env_name: str) -> str:
         return os.environ[env_name]
 
@@ -88,21 +103,28 @@ class BaseEnv(Generic[_T]):
     __env_type_str__ = "(unknown)"
 
     def __init__(
-        self, name: str, description: Union[str, List[str]] = [], *,
-        display_name: Optional[str] = None, default: Optional[_T] = None,
-            required: bool = False) -> None:
+        self,
+        name: str,
+        description: Union[str, List[str]] = [],
+        *,
+        display_name: Optional[str] = None,
+        default: Optional[_T] = None,
+        required: bool = False,
+    ) -> None:
         assert len(name) > 0, "Name cannot be empty"
 
         upper_name = name.upper()
         if name != upper_name:
             warnings.warn(
                 f"Environment Variable should be in uppercase. expected "
-                f"`{upper_name}`, got `{name}`.")
+                f"`{upper_name}`, got `{name}`."
+            )
 
         self._name = upper_name
         self._default: Optional[_T] = default
-        self.description: List[str] = [description] if isinstance(
-            description, str) else description
+        self.description: List[str] = (
+            [description] if isinstance(description, str) else description
+        )
         self.required = required
 
         self.display_name = display_name
@@ -135,8 +157,9 @@ class BaseEnv(Generic[_T]):
 
         decrypted_result = kms_client.decrypt(CiphertextBlob=decoded)
 
-        return typing.cast(
-            bytes, decrypted_result["Plaintext"]).decode("utf-8")
+        return typing.cast(bytes, decrypted_result["Plaintext"]).decode(
+            "utf-8"
+        )
 
     @abc.abstractmethod
     def get(self) -> _T:
@@ -147,16 +170,17 @@ class BaseEnv(Generic[_T]):
 
     def _get_env_file_default(self) -> str:
         # json.dumps will quote the string properly
-        return "" if self._default in (None, "") else json.dumps(
-            self._default)
+        return "" if self._default in (None, "") else json.dumps(self._default)
 
     def _get_env_file_default_hint(self) -> Optional[str]:
         return str(self._default) if self._default is not None else None
 
     def _to_env_file_str(self) -> List[str]:
         lines: List[str] = []
-        lines.append(f"# Env: {self.name}" + (
-            f" - {self.display_name}" if self.display_name else ""))
+        lines.append(
+            f"# Env: {self.name}"
+            + (f" - {self.display_name}" if self.display_name else "")
+        )
         lines.append(f"# Type: {self.__env_type_str__}")
 
         if self.required:
@@ -171,8 +195,12 @@ class BaseEnv(Generic[_T]):
 
         lines.extend(["# " + i for i in self.description])
 
-        lines.append(("#" if not self.required else "") +
-                     self.name + "=" + self._get_env_file_default())
+        lines.append(
+            ("#" if not self.required else "")
+            + self.name
+            + "="
+            + self._get_env_file_default()
+        )
 
         return lines
 
@@ -222,7 +250,12 @@ class BoolEnv(BaseEnv[bool]):
     def get(self) -> bool:
         try:
             v = super()._get().lower().strip() not in (
-                "", "0", "false", "off", "no")
+                "",
+                "0",
+                "false",
+                "off",
+                "no",
+            )
 
         except KeyError:
             v = self._get_default()
@@ -243,6 +276,7 @@ class ListEnv(BaseEnv[List[str]]):
     """
     Does not support comma escaping at the moment.
     """
+
     __env_type_str__ = "List[str]"
 
     def get(self) -> List[str]:
@@ -274,7 +308,8 @@ class BaseEnvStore:
             if v._name.lower() != k:
                 raise AttributeError(
                     f"Name for Env `{v._name.lower()}` is different "
-                    f"than its attribute name `{k}`.")
+                    f"than its attribute name `{k}`."
+                )
             v.set_prefix(self.prefix)
 
             try:
@@ -291,11 +326,13 @@ class BaseEnvStore:
             if v2._prefix.lower()[:-1] != k2.lower():
                 raise AttributeError(
                     f"Name for `{v2.__name__}` `{v2._prefix}` is different "
-                    f"than its attribute name `{k2}`.")
+                    f"than its attribute name `{k2}`."
+                )
 
-            assert v2.__parent_prefix_set__ is False or \
-                v2._parent_prefix == self._prefix, \
-                "You cannot reuse Envs."
+            assert (
+                v2.__parent_prefix_set__ is False
+                or v2._parent_prefix == self._prefix
+            ), "You cannot reuse Envs."
             v2.__parent_prefix_set__ = True
             v2._parent_prefix = self.prefix
 

@@ -15,33 +15,51 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from .common import BaseModel, BackendMeta
+import typing
 
-from peewee import ForeignKeyField, CharField, TextField
+from tortoise import fields
+from tortoise.fields import data as d_fields
+from tortoise.fields import relational as ref_fields
+
+from .common import Backend, BaseModel
 from .options import BaseOption
+
+if typing.TYPE_CHECKING:
+    from .works import Work
 
 __all__ = ["Class", "ClassOption"]
 
-_meta = BackendMeta.get()
 
-
-@_meta.add_model
+@Backend.add_model
 class Class(BaseModel):
-    slug = CharField(null=False, index=True, unique=True, max_length=254)
-    display_name = TextField()
-    description = TextField()
-    parent = ForeignKeyField("self", null=True, index=True, backref="children")
+    slug = d_fields.CharField(
+        null=False, index=True, unique=True, max_length=254
+    )
+    display_name = d_fields.TextField()
+    description = d_fields.TextField()
+    parent = ref_fields.ForeignKeyField(
+        "models.Class", related_name="children", null=True, index=True
+    )
+
+    options: ref_fields.ReverseRelation[ClassOption]
+    children: ref_fields.ReverseRelation[Class]
+
+    works: ref_fields.ReverseRelation[Work]
 
 
-@_meta.add_model
+@Backend.add_model
 class ClassOption(BaseOption):
-    name = CharField(null=False, index=True, max_length=254)
-    for_class = ForeignKeyField(
-        Class, index=True, backref="options", on_delete="CASCADE")
+    name = d_fields.CharField(null=False, index=True, max_length=254)
+    for_class: ref_fields.ForeignKeyRelation[
+        Class
+    ] = ref_fields.ForeignKeyField(
+        Class._meta.full_name,
+        index=True,
+        related_name="options",
+        on_delete="CASCADE",
+    )
 
-    _ident_fields = ["for_class"]
+    _ident_fields = set(["for_class"])
 
     class Meta:
-        indexes = (
-            (("name", "for_class"), True),
-        )
+        unique_together = (("name", "for_class"),)

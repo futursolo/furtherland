@@ -16,153 +16,109 @@
 #   limitations under the License.
 
 from __future__ import annotations
-from typing import Dict, Union, AsyncIterator, TypeVar, Type, List
 
-from peewee import Model
+from typing import Any, Type, TypeVar
+import functools
+import string
+import typing
 
-from ..utils import lazy_property
+from tortoise import Tortoise
+from tortoise.models import Model
+
 from ..env import BackendEnvStore
 
-import peewee
-import peewee_async
-import playhouse.db_url
-import string
-import contextlib
+"""
+Backend (Dababase) Model Definiation
+"""
+
+_TBaseModel = TypeVar("_TBaseModel", bound="Type[BaseModel]")
 
 
-_backend_envs = BackendEnvStore.get()
+class Backend:
+    """Backend Connection Manager"""
 
-_TModelCls = TypeVar("_TModelCls", bound=Type["BaseModel"])
-
-
-class BackendMeta:
     def __init__(self) -> None:
-        self._db: peewee.DatabaseProxy = peewee.DatabaseProxy()
-        self._initialised = False
-
-        self._models: List[Type[BaseModel]] = []
-
-    @property
-    def db(self) -> peewee.DatabaseProxy:
-        return self._db
-
-    @lazy_property
-    def mgr(self) -> peewee_async.Manager:
-        return peewee_async.Manager(self.db)
-
-    @contextlib.asynccontextmanager
-    async def lock(self, skip_locking: bool = False) -> AsyncIterator[None]:
-        if skip_locking:
-            yield
-
-        else:
-            async with self.mgr.atomic():
-                yield
+        self._inited = False
 
     async def init(self) -> None:
-        if self.initialised():
-            return
+        if not self._inited:
+            await Tortoise.init(
+                db_url="sqlite://db.sqlite3",
+                # TODO: SSL
+                modules={"models": ["furtherland.backend"]},
+                use_tz=True,
+            )
+            self._inited = True
 
-        _ssl_params: Dict[str, Union[str, Dict[str, str]]] = {}
-        db_url = _backend_envs.url.get()
+    async def __aenter__(self) -> Backend:
+        await self.init()
+        return self
 
-        if _backend_envs.use_tls.get():
-            if db_url.startswith(("pgsql", "postgres")):
-                _ssl_params["sslrootcert"] = _backend_envs.ca_path.get()
-                _ssl_params["sslmode"] = "verify-full"
-
-            elif db_url.startswith("mysql"):
-                _ssl_params["ssl"] = {"ca": _backend_envs.ca_path.get()}
-
-            else:
-                pass  # SQLite does not support TLS.
-
-        self._db.initialize(
-            playhouse.db_url.connect(db_url, **_ssl_params))
-
-        for t in self._models:
-            if t.__name__ in ("Resident", "ResidentOption", "Option"):
-                t.create_table()
-
-        self._initialised = True
-
-    def initialised(self) -> bool:
-        return self._initialised
-
-    async def disconnect(self) -> None:
-        self.db.close()
-
-        await self.mgr.close()
+    async def __aexit__(self, *exc: Any) -> None:
+        await Tortoise.close_connections()
 
     @staticmethod
-    def get() -> BackendMeta:
-        return _meta
+    def add_model(cls: _TBaseModel) -> _TBaseModel:
+        @functools.wraps(cls)
+        @BaseModel.with_name
+        class MyModel(cls):  # type: ignore
+            pass
 
-    def add_model(self, m: _TModelCls) -> _TModelCls:
-        if self.initialised():
-            raise RuntimeError(
-                "You cannot add more models after the meta is initialised.")
+        return typing.cast(_TBaseModel, MyModel)
 
-        self._models.append(m)
-
-        return m
-
-
-_meta = BackendMeta()
-
-_CACHED_NAMES: Dict[str, str] = {}
+    @staticmethod
+    @functools.cache
+    def get() -> Backend:
+        return Backend()
 
 
-class BaseModel(Model):  # type: ignore
+@functools.cache
+def get_table_name(cls_name: str) -> str:
     """
-    Base Database Model.
+    :code:`class ResidentOption:...` ->
+    :code:`furtherland_resident_options`
     """
+
+    # Don't put underscore for first character.
+    changable_part = cls_name[1:]
+
+    # Prefix
+    fragments = [BackendEnvStore.get().table_prefix.get(), cls_name[0].lower()]
+
+    for s in changable_part:
+        if s in string.ascii_uppercase:
+            fragments.append("_" + s.lower())
+
+        else:
+            fragments.append(s)
+
+    if cls_name.endswith("ss"):  # for names like: classes
+        fragments.append("es")
+
+    elif cls_name.endswith("y"):  # for names like: replies
+        fragments.pop(-1)
+        fragments.append("ies")
+
+    else:
+        fragments.append("s")
+
+    return "".join(fragments)
+
+
+class BaseModel(Model):
     class Meta:
-        database = _meta.db
-
-        def table_function(cls) -> str:
-            """
-            :code:`class ResidentOption:...` ->
-            :code:`furtherland_resident_options`
-            """
-            cls_name: str = cls.__name__  # type: ignore
-
-            if cls_name not in _CACHED_NAMES:
-                changable_part = cls_name[1:]
-
-                fragments = [
-                    BackendEnvStore.get().table_prefix.get(),
-                    cls_name[0].lower()
-                ]
-
-                for s in changable_part:
-                    if s in string.ascii_uppercase:
-                        fragments.append("_" + s.lower())
-
-                    else:
-                        fragments.append(s)
-
-                if cls_name.endswith("ss"):  # for names like: classes
-                    fragments.append("es")
-
-                elif cls_name.endswith("y"):  # for names like: replies
-                    fragments.pop(-1)
-                    fragments.append("ies")
-
-                else:
-                    fragments.append("s")
-
-                _CACHED_NAMES[cls_name] = "".join(fragments)
-
-            return _CACHED_NAMES[cls_name]
+        abstract = True
 
     @staticmethod
-    def mgr() -> peewee_async.Manager:
-        return _meta.mgr
+    def with_name(cls: _TBaseModel) -> _TBaseModel:
+        """
+        :code:`class ResidentOption:...` ->
+        :code:`furtherland_resident_options`
+        """
+        cls_name: str = cls.__name__
 
-    @staticmethod
-    async def seed_table() -> None:
-        pass
+        cls._meta.db_table = get_table_name(cls_name)
+        return cls
 
 
-__all__ = ["BaseModel", "BackendMeta"]
+__all__ = ["BaseModel", "Backend"]

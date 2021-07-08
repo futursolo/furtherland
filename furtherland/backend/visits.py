@@ -15,39 +15,54 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from .common import BaseModel, BackendMeta
-
-from peewee import ForeignKeyField, CharField, DateTimeField, TextField
-from .residents import Resident
-from .options import BaseOption
-
 import datetime
+
+from tortoise import fields
+from tortoise.fields import data as d_fields
+from tortoise.fields import relational as ref_fields
+
+from .common import Backend, BaseModel
+from .options import BaseOption
+from .residents import Resident
 
 __all__ = ["Visit", "VisitOption"]
 
-_meta = BackendMeta.get()
 
-
-@_meta.add_model
+@Backend.add_model
 class Visit(BaseModel):
-    for_resident = ForeignKeyField(
-        Resident, backref="visits", on_delete="CASCADE")
+    for_resident: ref_fields.ForeignKeyRelation[
+        Resident
+    ] = ref_fields.ForeignKeyField(
+        Resident._meta.full_name,
+        index=True,
+        null=True,
+        on_delete="CASCADE",
+        related_name="visits",
+    )
 
-    last_active = DateTimeField(null=False, default=datetime.datetime.utcnow)
-    last_verify = DateTimeField()  # Last time the password is entered.
-    last_ip = CharField(null=False, max_length=40)
-    last_user_agent = TextField()
+    last_active = d_fields.DatetimeField(null=False, auto_now_add=True)
+    last_verify = (
+        d_fields.DatetimeField()
+    )  # Last time the password is entered.
+    last_ip = d_fields.CharField(null=False, max_length=40)
+    last_user_agent = d_fields.TextField()
+
+    options: ref_fields.ReverseRelation[VisitOption]
 
 
-@_meta.add_model
+@Backend.add_model
 class VisitOption(BaseOption):
-    name = CharField(null=False, index=True, max_length=254)
-    for_visit = ForeignKeyField(
-        Visit, index=True, backref="options", on_delete="CASCADE")
+    name = d_fields.CharField(null=False, index=True, max_length=254)
+    for_visit: ref_fields.ForeignKeyRelation[
+        Visit
+    ] = ref_fields.ForeignKeyField(
+        Visit._meta.full_name,
+        index=True,
+        related_name="options",
+        on_delete="CASCADE",
+    )
 
-    _ident_fields = ["for_visit"]
+    _ident_fields = set(["for_visit"])
 
     class Meta:
-        indexes = (
-            (("name", "for_visit"), True),
-        )
+        unique_together = (("name", "for_visit"),)
