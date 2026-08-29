@@ -133,7 +133,7 @@ export const globalStyles = {
   },
 };
 
-const Theme = (props: PropsWithChildren) => {
+const SyncTheme = (props: PropsWithChildren) => {
   const { children } = props;
   const prefersDarkTheme = useMediaQuery('(prefers-color-scheme: dark)');
   const themeKind = useStore(themeAtom);
@@ -150,4 +150,4 @@ const Theme = (props: PropsWithChildren) => {
   return children;
 };
 
-export default Theme;
+export default SyncTheme;
