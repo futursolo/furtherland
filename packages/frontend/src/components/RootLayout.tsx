@@ -16,13 +16,14 @@ const Layout = (props: PropsWithChildren<{ headerKind: 'home' | 'default' }>) =>
   const { children, headerKind } = props;
 
   return (
-    <SyncTheme>
+    <>
+      <SyncTheme />
       <RootLayout>
         <Header headerKind={headerKind} />
         {children}
         <Footer />
       </RootLayout>
-    </SyncTheme>
+    </>
   );
 };
 
