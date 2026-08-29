@@ -14,6 +14,13 @@ A personal blog / static-site project ("furtherland") built with **Astro** (`out
 - It is OK to install Node, Yarn (via corepack), and any missing dependencies (via `yarn install`) in the current environment to be able to run the project.
 - When adding or updating dependencies, do **not** look up or read version numbers (e.g. via `yarn info <pkg> version` or the registry) unless absolutely necessary — just run `yarn add <pkg>` for new dependencies or `yarn up <pkg>` to update existing ones.
 
+## Git workflow
+
+- **Always inspect the current branch before making changes** (e.g. `git branch --show-current` and `git status`).
+- **If the current branch is `main`, always start a new branch first** before doing any work (e.g. `git switch -c <branch-name>` or `git checkout -b <branch-name>`). Do not make changes or commit directly on `main`.
+- Choose a descriptive branch name derived from the task (e.g. `fix/<summary>`, `feat/<summary>`).
+- If a suitable non-`main` branch already exists and the work belongs there, continue on it; otherwise create a new one.
+
 ## Commands
 
 Run from the **repository root** unless noted. There is **no test suite**.
