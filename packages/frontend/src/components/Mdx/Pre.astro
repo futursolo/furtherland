@@ -14,7 +14,7 @@ import { theme } from '@@frontend/providers/theme';
 const { style, ...rest } = Astro.props;
 ---
 
-<pre {...rest}><slot /></pre>
+<pre style={{...(typeof style === 'object' ? style : {})}} {...rest}><slot /></pre>
 
 <style define:vars={{ codeBgColour: theme.colour.background.code.cssVar }}>
 /* biome-ignore-all lint: lint/complexity/noImportantStyles */

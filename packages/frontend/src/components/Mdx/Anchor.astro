@@ -4,6 +4,8 @@ import type { HTMLAttributes } from 'astro/types';
 // Pure-Astro counterpart of the (now-removed) React `Anchor` island. Renders an
 // inline link (`<a>`) used for the `[text](url)` form in MDX.
 type Props = HTMLAttributes<'a'>;
+
+import { theme } from '@@frontend/providers/theme';
 ---
 
 <!-- biome-ignore lint/a11y/useValidAnchor: the `href` is supplied by MDX via props -->
@@ -12,9 +14,9 @@ type Props = HTMLAttributes<'a'>;
   <slot />
 </a>
 
-<style>
+<style define:vars={{ colour: theme.fontColour.primary.cssVar }}>
 a {
-  color: var(--fl-theme-main-colour-primary);
+  color: var(--colour);
   font-weight: bold;
   text-decoration: none;
 }
