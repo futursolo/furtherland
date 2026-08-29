@@ -1,0 +1,60 @@
+---
+// Page layout: static-page chrome (main > container > h1 > article).
+// Replaces the React Page island so the page shell is server-rendered; only
+// the styled H1 heading hydrates as a small React island.
+import H1 from '@@frontend/components/H1';
+import BaseLayout from '@@frontend/layouts/BaseLayout.astro';
+
+interface Props {
+  /** Document <title> value (passed to BaseLayout). */
+  pageTitle: string;
+  /** Visible page heading rendered inside the layout. */
+  title: string;
+}
+
+const { pageTitle, title } = Astro.props;
+---
+
+<BaseLayout title={pageTitle}>
+  <slot name="head" slot="head" />
+  <main class="page-main">
+    <div class="page-container">
+      <H1 client:load>{title}</H1>
+      <article class="page-content">
+        <slot />
+      </article>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+.page-main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
+  padding-top: 20px;
+  padding-bottom: 20px;
+  min-height: auto;
+}
+
+.page-container {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  max-width: 960px;
+}
+
+.page-content {
+  box-sizing: border-box;
+  width: 100%;
+}
+</style>

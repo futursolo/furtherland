@@ -1,0 +1,67 @@
+---
+// Post layout: blog-post chrome (main > container > h1 > author > article > comments).
+// Replaces the React PostPage island so the post shell is server-rendered; the
+// styled H1, Author block, and PostComments each hydrate as small React islands.
+import Author from '@@frontend/components/Author';
+import H1 from '@@frontend/components/H1';
+import PostComments from '@@frontend/components/PostComments';
+import BaseLayout from '@@frontend/layouts/BaseLayout.astro';
+
+interface Props {
+  /** Document <title> value (passed to BaseLayout). */
+  pageTitle: string;
+  /** Visible post heading rendered inside the layout. */
+  title: string;
+  slug: string;
+  date: string;
+  isDraft: boolean;
+}
+
+const { pageTitle, title, slug, date, isDraft } = Astro.props;
+---
+
+<BaseLayout title={pageTitle}>
+  <slot name="head" slot="head" />
+  <main class="post-main">
+    <div class="post-container">
+      <H1 client:load>{title}</H1>
+      <Author client:load date={date} isDraft={isDraft} />
+      <article class="post-content">
+        <slot />
+      </article>
+      <PostComments client:load slug={slug} />
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+.post-main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
+  padding-top: 20px;
+  padding-bottom: 20px;
+  min-height: auto;
+}
+
+.post-container {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  max-width: 960px;
+}
+
+.post-content {
+  box-sizing: border-box;
+  width: 100%;
+}
+</style>

@@ -1,9 +1,8 @@
 ---
 import MdxAnchor from '@@frontend/components/Mdx/Anchor.astro';
 import MdxPre from '@@frontend/components/Mdx/Pre.astro';
-import Page from '@@frontend/components/Page';
 import { SITE_NAME, SITE_URL } from '@@frontend/constants/site';
-import BaseLayout from '@@frontend/layouts/BaseLayout.astro';
+import PageLayout from '@@frontend/layouts/PageLayout.astro';
 import formatTitle from '@@frontend/utils/formatTitle';
 
 import { type CollectionEntry, getCollection, render } from 'astro:content';
@@ -33,7 +32,7 @@ const pageTitle = formatTitle(title);
 const { Content } = await render(entry);
 ---
 
-<BaseLayout title={pageTitle}>
+<PageLayout pageTitle={pageTitle} title={title}>
   <Fragment slot="head">
     {description ? <meta name="description" content={description} /> : ''}
     <link rel="canonical" href={pageUrl}>
@@ -43,7 +42,5 @@ const { Content } = await render(entry);
     {description ? <meta property="og:description" content={description} /> : ''}
     <meta property="og:site_name" content={SITE_NAME}>
   </Fragment>
-  <Page client:load title={title}>
-    <Content components={mdxComponents} />
-  </Page>
-</BaseLayout>
+  <Content components={mdxComponents} />
+</PageLayout>

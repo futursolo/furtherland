@@ -1,9 +1,8 @@
 ---
 import MdxAnchor from '@@frontend/components/Mdx/Anchor.astro';
 import MdxPre from '@@frontend/components/Mdx/Pre.astro';
-import PostPage from '@@frontend/components/PostPage';
 import { AUTHOR_NAME, SITE_NAME, SITE_URL } from '@@frontend/constants/site';
-import BaseLayout from '@@frontend/layouts/BaseLayout.astro';
+import PostLayout from '@@frontend/layouts/PostLayout.astro';
 import formatTitle from '@@frontend/utils/formatTitle';
 
 import { type CollectionEntry, getCollection, render } from 'astro:content';
@@ -33,7 +32,7 @@ const pageTitle = formatTitle(title);
 const { Content } = await render(entry);
 ---
 
-<BaseLayout title={pageTitle}>
+<PostLayout pageTitle={pageTitle} title={title} slug={slug} date={date} isDraft={isDraft}>
   <Fragment slot="head">
     {description ? <meta name="description" content={description} /> : ''}
     <link rel="canonical" href={pageUrl}>
@@ -45,7 +44,5 @@ const { Content } = await render(entry);
     <meta property="article:published_time" content={new Date(date).toISOString()}>
     <meta property="article:author" content={AUTHOR_NAME}>
   </Fragment>
-  <PostPage client:load slug={slug} date={date} title={title} isDraft={isDraft}>
-    <Content components={mdxComponents} />
-  </PostPage>
-</BaseLayout>
+  <Content components={mdxComponents} />
+</PostLayout>

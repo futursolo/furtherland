@@ -1,0 +1,28 @@
+---
+// Root layout: owns the site chrome (SyncTheme, Header, Footer) that wraps
+// every page. Replaces the React RootLayout island so the shell can be
+// server-rendered while individual interactive pieces hydrate separately.
+import Footer from '@@frontend/components/Footer';
+import Header from '@@frontend/components/Header';
+import SyncTheme from '@@frontend/providers/theme';
+
+const { headerKind } = Astro.props as { headerKind: 'home' | 'default' };
+---
+
+<SyncTheme client:load />
+<div class="root-layout">
+  <Header client:load headerKind={headerKind} />
+  <slot />
+  <Footer client:load />
+</div>
+
+<style>
+.root-layout {
+  display: flex;
+  width: 100%;
+  min-height: 100%;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+</style>
