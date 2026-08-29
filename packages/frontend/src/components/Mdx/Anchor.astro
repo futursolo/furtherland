@@ -1,11 +1,25 @@
 ---
-import type { ComponentProps } from 'react';
+import type { HTMLAttributes } from 'astro/types';
 
-import Anchor from '@@frontend/components/Anchor';
-
-interface Props extends ComponentProps<'a'> {}
+// Pure-Astro counterpart of the (now-removed) React `Anchor` island. Renders an
+// inline link (`<a>`) used for the `[text](url)` form in MDX.
+type Props = HTMLAttributes<'a'>;
 ---
 
-<Anchor client:load {...Astro.props}>
+<!-- biome-ignore lint/a11y/useValidAnchor: the `href` is supplied by MDX via props -->
+<!-- biome-ignore lint/a11y/useAnchorContent: the link content is supplied by MDX via the slot -->
+<a {...Astro.props}>
   <slot />
-</Anchor>
+</a>
+
+<style>
+a {
+  color: var(--fl-theme-main-colour-primary);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+</style>

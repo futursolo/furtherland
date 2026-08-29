@@ -1,11 +1,37 @@
 ---
-import type { ComponentProps } from 'react';
+import type { HTMLAttributes } from 'astro/types';
 
-import Pre from '@@frontend/components/Pre';
-
-interface Props extends ComponentProps<'pre'> {}
+// Pure-Astro counterpart of the (now-removed) React `Pre` island. Renders a
+// shiki-highlighted code block. The element receives the `class`/`style` shiki
+// puts on the `<pre>` (e.g. `astro-shiki github-light github-dark`) via prop
+// spread; Astro merges its scoped-hash class into the class list on top.
+type Props = HTMLAttributes<'pre'>;
 ---
 
-<Pre client:load {...Astro.props}>
-  <slot />
-</Pre>
+<pre {...Astro.props}><slot /></pre>
+
+<style>
+pre {
+  /* biome-ignore lint/complexity/noImportantStyles: overrides shiki's inline code-block background */
+  background-color: var(--fl-theme-background-colour-code) !important;
+  padding: 1.5rem;
+  border-radius: 4px;
+}
+
+pre > code {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+:global(html[data-theme="dark"]) pre,
+:global(html[data-theme="dark"]) pre span {
+  /* biome-ignore lint/complexity/noImportantStyles: overrides shiki's per-span inline color for the dark theme */
+  color: var(--shiki-dark) !important;
+  /* biome-ignore lint/complexity/noImportantStyles: overrides shiki's per-span inline font-style for the dark theme */
+  font-style: var(--shiki-dark-font-style) !important;
+  /* biome-ignore lint/complexity/noImportantStyles: overrides shiki's per-span inline font-weight for the dark theme */
+  font-weight: var(--shiki-dark-font-weight) !important;
+  /* biome-ignore lint/complexity/noImportantStyles: overrides shiki's per-span inline text-decoration for the dark theme */
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+</style>
