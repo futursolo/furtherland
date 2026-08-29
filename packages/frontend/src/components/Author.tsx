@@ -1,4 +1,5 @@
 import { AUTHOR_NAME } from '@@frontend/constants/site';
+import { theme } from '@@frontend/providers/theme';
 import { styled } from '@@frontend/utils';
 
 import Box from './Box';
@@ -39,14 +40,14 @@ const AuthorRightLayout = styled(Box)({
   paddingLeft: 10,
   paddingRight: 10,
 });
-const AuthorName = styled(Box)(({ theme }) => ({
+const AuthorName = styled(Box)({
   fontSize: theme.fontSize.default,
   color: theme.fontColour.primary.cssVar,
-}));
-const AuthoredDate = styled(Box)(({ theme }) => ({
+});
+const AuthoredDate = styled(Box)({
   fontSize: theme.fontSize.secondary,
   color: theme.fontColour.secondary.cssVar,
-}));
+});
 
 const Author = (props: AuthorProps) => {
   const { date, isDraft } = props;

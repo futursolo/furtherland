@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import { useTheme } from '@emotion/react';
 import { useStore } from '@nanostores/react';
 import { FiMoon, FiSun } from 'react-icons/fi';
 
@@ -8,6 +7,7 @@ import themeAtom, { persistThemeKind } from '@@frontend/atoms/theme';
 import Box from '@@frontend/components/Box';
 import ClientOnly from '@@frontend/components/ClientOnly';
 import FlexSpace from '@@frontend/components/FlexSpace';
+import { theme } from '@@frontend/providers/theme';
 import { styled } from '@@frontend/utils';
 
 import LinkItem from './LinkItem';
@@ -85,8 +85,6 @@ export const NavPlaceholder = styled(Box)({ height: 60, width: '100%' });
 const Nav = () => {
   const [layoutEl, setLayoutEl] = useState<HTMLElement | null>(null);
   const [navPos, setNavPos] = useState<'top' | 'default'>('default');
-
-  const theme = useTheme();
 
   useEffect(() => {
     if (layoutEl) {

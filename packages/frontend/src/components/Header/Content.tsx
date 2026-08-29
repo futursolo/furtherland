@@ -1,5 +1,6 @@
 import Box from '@@frontend/components/Box';
 import { SITE_NAME } from '@@frontend/constants/site';
+import { theme } from '@@frontend/providers/theme';
 import { styled } from '@@frontend/utils';
 
 const Layout = styled(Box)({
@@ -15,7 +16,7 @@ const Layout = styled(Box)({
   justifyContent: 'space-around',
 });
 
-const Title = styled(Box)(({ theme }) => ({
+const Title = styled(Box)({
   userSelect: 'none',
   cursor: 'default',
 
@@ -32,7 +33,7 @@ const Title = styled(Box)(({ theme }) => ({
   [theme.breakpoint.sm.mediaDown()]: {
     fontSize: '2rem',
   },
-}));
+});
 
 const Content = () => (
   <Layout>

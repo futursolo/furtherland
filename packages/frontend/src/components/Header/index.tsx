@@ -1,13 +1,14 @@
 import Box from '@@frontend/components/Box';
 import FlexSpace from '@@frontend/components/FlexSpace';
 import Nav from '@@frontend/components/Nav';
+import { theme } from '@@frontend/providers/theme';
 import { styled } from '@@frontend/utils';
 
 import Content from './Content';
 import HeaderBackground from './HeaderBackground';
 import HomeContent from './HomeContent';
 
-const HeaderLayout = styled.header(({ theme }) => ({
+const HeaderLayout = styled.header({
   width: '100%',
   color: 'white',
   height: 200,
@@ -29,9 +30,9 @@ const HeaderLayout = styled.header(({ theme }) => ({
       height: '100vh',
     },
   },
-}));
+});
 
-const HeaderContainer = styled(Box)(({ theme }) => ({
+const HeaderContainer = styled(Box)({
   backgroundColor: theme.colour.background.header.cssVar,
   transition: 'background-color 0.3s',
 
@@ -44,7 +45,7 @@ const HeaderContainer = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'space-between',
-}));
+});
 
 const StickyHeader = styled(Box)({
   height: '65%',
