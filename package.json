@@ -20,5 +20,8 @@
   "dependencies": {
     "@mdx-js/react": "^3.1.1",
     "react": "^19.2.8"
+  },
+  "resolutions": {
+    "tar": "7.5.21"
   }
 }
