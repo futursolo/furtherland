@@ -2,7 +2,7 @@
 import MdxAnchor from '@@frontend/components/Mdx/Anchor.astro';
 import MdxPre from '@@frontend/components/Mdx/Pre.astro';
 import PostPage from '@@frontend/components/PostPage';
-import { SITE_NAME } from '@@frontend/constants/site';
+import { AUTHOR_NAME, SITE_NAME, SITE_URL } from '@@frontend/constants/site';
 import BaseLayout from '@@frontend/layouts/BaseLayout.astro';
 import formatTitle from '@@frontend/utils/formatTitle';
 
@@ -27,7 +27,7 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { date, slug, title, description, isDraft } = entry.data;
 
-const pageUrl = `https://www.futures.moe/posts/${slug}`;
+const pageUrl = `${SITE_URL}/posts/${slug}`;
 const pageTitle = formatTitle(title);
 
 const { Content } = await render(entry);
@@ -43,7 +43,7 @@ const { Content } = await render(entry);
     {description ? <meta property="og:description" content={description} /> : ''}
     <meta property="og:site_name" content={SITE_NAME}>
     <meta property="article:published_time" content={new Date(date).toISOString()}>
-    <meta property="article:author" content="Kaede Hoshikawa">
+    <meta property="article:author" content={AUTHOR_NAME}>
   </Fragment>
   <PostPage client:load slug={slug} date={date} title={title} isDraft={isDraft}>
     <Content components={mdxComponents} />

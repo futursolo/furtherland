@@ -1,3 +1,4 @@
+import { SITE_NAME } from '@@frontend/constants/site';
 import { styled } from '@@frontend/utils';
 
 import Box from './Box';
@@ -41,7 +42,7 @@ const Footer = () => {
   return (
     <FoooterContainer>
       <FooterLayout>
-        <Title>&copy; 2026 Hoshikawa&apos;s Secret Room</Title>
+        <Title>&copy; 2026 {SITE_NAME}</Title>
         <Copy>
           All articles on this site are licensed under the CC-BY-SA 4.0 International Licence.
         </Copy>

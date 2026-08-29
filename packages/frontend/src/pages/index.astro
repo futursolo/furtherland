@@ -1,6 +1,6 @@
 ---
 import HomePage from '@@frontend/components/HomePage';
-import { SITE_DESCRIPTION, SITE_NAME } from '@@frontend/constants/site';
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@@frontend/constants/site';
 import BaseLayout from '@@frontend/layouts/BaseLayout.astro';
 import formatTitle from '@@frontend/utils/formatTitle';
 
@@ -29,11 +29,11 @@ const title = formatTitle('Home');
 <BaseLayout title={title}>
   <Fragment slot="head">
     <meta name="description" content={SITE_DESCRIPTION}>
-    <link rel="canonical" href="https://www.futures.moe/">
+    <link rel="canonical" href={`${SITE_URL}/`}>
     <meta property="og:type" content="website">
     <meta property="og:title" content={title}>
     <meta property="og:description" content={SITE_DESCRIPTION}>
-    <meta property="og:url" content="https://www.futures.moe/">
+    <meta property="og:url" content={`${SITE_URL}/`}>
     <meta property="og:site_name" content={SITE_NAME}>
   </Fragment>
   <HomePage client:load summaries={summaries} />

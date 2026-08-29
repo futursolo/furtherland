@@ -3,7 +3,7 @@ import type { APIContext } from 'astro';
 import MarkdownIt from 'markdown-it';
 import sanitizeHtml from 'sanitize-html';
 
-import { SITE_DESCRIPTION, SITE_NAME } from '@@frontend/constants/site';
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@@frontend/constants/site';
 
 import { getCollection } from 'astro:content';
 
@@ -36,7 +36,7 @@ export async function GET({ site }: APIContext) {
   return rss({
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
-    site: site ?? new URL('https://www.futures.moe'),
+    site: site ?? new URL(SITE_URL),
     trailingSlash: false,
     customData: '<language>en</language>',
     items,
