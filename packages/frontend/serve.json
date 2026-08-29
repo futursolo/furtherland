@@ -1,0 +1,6 @@
+{
+  "public": "build/client",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "directoryListing": false
+}

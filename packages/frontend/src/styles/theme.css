@@ -1,0 +1,67 @@
+html {
+  --fl-theme-font-colour-primary: rgb(0, 0, 0);
+  --fl-theme-font-colour-secondary: rgb(100, 100, 100);
+  --fl-theme-font-colour-hint: rgb(150, 150, 150);
+  --fl-theme-background-colour-invalid: rgb(254, 237, 234);
+  --fl-theme-background-colour-default: rgb(255, 255, 255);
+  --fl-theme-background-colour-component: rgb(244, 245, 249);
+  --fl-theme-background-colour-component-shadow: rgb(150, 150, 150);
+  --fl-theme-background-colour-code: rgb(246, 248, 255);
+  --fl-theme-background-colour-header: rgba(0, 0, 0, 0.3);
+  --fl-theme-main-colour-primary: rgb(92, 184, 230);
+  --fl-theme-main-colour-primary-hover: rgb(125, 198, 235);
+  --fl-theme-main-colour-secondary: rgb(244, 245, 249);
+  --fl-theme-main-colour-secondary-hover: rgb(221, 224, 238);
+  --fl-theme-main-colour-invalid: rgb(238, 82, 26);
+}
+
+html[data-theme='light'] {
+  --fl-theme-font-colour-primary: rgb(0, 0, 0);
+  --fl-theme-font-colour-secondary: rgb(100, 100, 100);
+  --fl-theme-font-colour-hint: rgb(150, 150, 150);
+  --fl-theme-background-colour-invalid: rgb(254, 237, 234);
+  --fl-theme-background-colour-default: rgb(255, 255, 255);
+  --fl-theme-background-colour-component: rgb(244, 245, 249);
+  --fl-theme-background-colour-component-shadow: rgb(150, 150, 150);
+  --fl-theme-background-colour-code: rgb(246, 248, 255);
+  --fl-theme-background-colour-header: rgba(0, 0, 0, 0.3);
+  --fl-theme-main-colour-primary: rgb(92, 184, 230);
+  --fl-theme-main-colour-primary-hover: rgb(125, 198, 235);
+  --fl-theme-main-colour-secondary: rgb(244, 245, 249);
+  --fl-theme-main-colour-secondary-hover: rgb(221, 224, 238);
+  --fl-theme-main-colour-invalid: rgb(238, 82, 26);
+}
+
+html[data-theme='dark'] {
+  --fl-theme-font-colour-primary: rgb(225, 225, 225);
+  --fl-theme-font-colour-secondary: rgb(150, 150, 150);
+  --fl-theme-font-colour-hint: rgb(100, 100, 100);
+  --fl-theme-background-colour-invalid: rgb(73, 38, 32);
+  --fl-theme-background-colour-default: rgb(20, 20, 20);
+  --fl-theme-background-colour-component: rgb(50, 50, 50);
+  --fl-theme-background-colour-component-shadow: rgb(35, 35, 35);
+  --fl-theme-background-colour-code: rgb(41, 48, 66);
+  --fl-theme-background-colour-header: rgba(0, 0, 0, 0.5);
+  --fl-theme-main-colour-primary: rgb(92, 184, 230);
+  --fl-theme-main-colour-primary-hover: rgb(125, 198, 235);
+  --fl-theme-main-colour-secondary: rgb(50, 50, 50);
+  --fl-theme-main-colour-secondary-hover: rgb(75, 75, 75);
+  --fl-theme-main-colour-invalid: rgb(238, 82, 26);
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Noto Sans, sans-serif,
+    BlinkMacSystemFont, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-size: 15px;
+  background-color: var(--fl-theme-background-colour-default);
+  color: var(--fl-theme-font-colour-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s, color 0.3s;
+}

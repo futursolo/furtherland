@@ -1,0 +1,25 @@
+{
+  "name": "@furtherland/workspace",
+  "private": true,
+  "type": "module",
+  "packageManager": "yarn@4.18.0",
+  "scripts": {
+    "lint": "scripts/lint.sh",
+    "start": "yarn workspace @furtherland/frontend frontend:start",
+    "build": "yarn workspace @furtherland/frontend frontend:build",
+    "preview": "yarn workspace @furtherland/frontend frontend:preview"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.9",
+    "@types/react": "^19.2.18",
+    "@yarnpkg/sdks": "^3.3.1",
+    "typescript": "^6"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {
+    "@mdx-js/react": "^3.1.1",
+    "react": "^19.2.8"
+  }
+}

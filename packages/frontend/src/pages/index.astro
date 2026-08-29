@@ -1,0 +1,40 @@
+---
+import HomePage from '@@frontend/components/HomePage';
+import { SITE_DESCRIPTION, SITE_NAME } from '@@frontend/constants/site';
+import BaseLayout from '@@frontend/layouts/BaseLayout.astro';
+import formatTitle from '@@frontend/utils/formatTitle';
+
+import { type CollectionEntry, getCollection } from 'astro:content';
+
+const summaries: CollectionEntry<'posts'>[] = [];
+
+for (const entry of await getCollection(
+  'posts',
+  (post) => !post.data.isDraft || !import.meta.env.PROD,
+)) {
+  summaries.push(entry);
+}
+
+summaries.sort((l, r) => {
+  if (new Date(l.data.date) === new Date(r.data.date)) {
+    return 0;
+  }
+
+  return new Date(l.data.date) > new Date(r.data.date) ? -1 : 1;
+});
+
+const title = formatTitle('Home');
+---
+
+<BaseLayout title={title}>
+  <Fragment slot="head">
+    <meta name="description" content={SITE_DESCRIPTION}>
+    <link rel="canonical" href="https://www.futures.moe/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content={title}>
+    <meta property="og:description" content={SITE_DESCRIPTION}>
+    <meta property="og:url" content="https://www.futures.moe/">
+    <meta property="og:site_name" content={SITE_NAME}>
+  </Fragment>
+  <HomePage client:load summaries={summaries} />
+</BaseLayout>

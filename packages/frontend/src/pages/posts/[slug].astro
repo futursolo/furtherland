@@ -1,0 +1,51 @@
+---
+import MdxAnchor from '@@frontend/components/Mdx/Anchor.astro';
+import MdxPre from '@@frontend/components/Mdx/Pre.astro';
+import PostPage from '@@frontend/components/PostPage';
+import { SITE_NAME } from '@@frontend/constants/site';
+import BaseLayout from '@@frontend/layouts/BaseLayout.astro';
+import formatTitle from '@@frontend/utils/formatTitle';
+
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+
+const mdxComponents = {
+  a: MdxAnchor,
+  pre: MdxPre,
+};
+
+export async function getStaticPaths() {
+  const paths: { params: { slug: string }; props: { entry: CollectionEntry<'posts'> } }[] = [];
+
+  for (const entry of await getCollection('posts')) {
+    if (import.meta.env.PROD && entry.data.isDraft) continue;
+    paths.push({ params: { slug: entry.data.slug }, props: { entry } });
+  }
+
+  return paths;
+}
+
+const { entry } = Astro.props;
+const { date, slug, title, description, isDraft } = entry.data;
+
+const pageUrl = `https://www.futures.moe/posts/${slug}`;
+const pageTitle = formatTitle(title);
+
+const { Content } = await render(entry);
+---
+
+<BaseLayout title={pageTitle}>
+  <Fragment slot="head">
+    {description ? <meta name="description" content={description} /> : ''}
+    <link rel="canonical" href={pageUrl}>
+    <meta property="og:type" content="article">
+    <meta property="og:title" content={pageTitle}>
+    <meta property="og:url" content={pageUrl}>
+    {description ? <meta property="og:description" content={description} /> : ''}
+    <meta property="og:site_name" content={SITE_NAME}>
+    <meta property="article:published_time" content={new Date(date).toISOString()}>
+    <meta property="article:author" content="Kaede Hoshikawa">
+  </Fragment>
+  <PostPage client:load slug={slug} date={date} title={title} isDraft={isDraft}>
+    <Content components={mdxComponents} />
+  </PostPage>
+</BaseLayout>

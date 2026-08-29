@@ -1,0 +1,12 @@
+{
+  "search.exclude": {
+    "**/.yarn": true,
+    "**/.pnp.*": true
+  },
+  "typescript.tsdk": ".yarn/sdks/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "biome.lspBin": "./scripts/biomeBin.sh",
+  "eslint.enable": false,
+  "prettier.enable": false,
+  "js/ts.tsdk.path": ".yarn/sdks/typescript/lib"
+}
