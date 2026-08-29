@@ -1,0 +1,11 @@
+---
+import type { ComponentProps } from 'react';
+
+import Pre from '@@frontend/components/Pre';
+
+interface Props extends ComponentProps<'pre'> {}
+---
+
+<Pre client:load {...Astro.props}>
+  <slot />
+</Pre>

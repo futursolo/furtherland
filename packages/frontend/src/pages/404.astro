@@ -1,0 +1,30 @@
+---
+import Box from '@@frontend/components/Box.astro';
+import BaseLayout from '@@frontend/layouts/BaseLayout.astro';
+import formatTitle from '@@frontend/utils/formatTitle';
+
+const title = formatTitle('404 Not Found');
+---
+
+<BaseLayout title={title}>
+  <Fragment slot="head">
+    <meta name="robots" content="noindex">
+  </Fragment>
+  <Box class:list={['not-found-layout']}>
+    <Box class:list={['not-found-message']}> Oops! 404 - Page Not Found Error! </Box>
+  </Box>
+</BaseLayout>
+
+<style>
+.not-found-layout {
+  flex-direction: row;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+.not-found-message {
+  font-size: 2rem;
+  font-weight: bold;
+}
+</style>

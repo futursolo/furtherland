@@ -1,0 +1,37 @@
+---
+// Pre-hydration theme script. Runs before the islands hydrate to set the
+// `data-theme` attribute on <html>, avoiding a flash of the wrong theme.
+---
+
+<script is:inline>
+(() => {
+  const theme = localStorage.getItem('fl_theme');
+
+  if (theme) {
+    try {
+      const themeState = JSON.parse(theme);
+
+      if (Date.now() / 1000 - themeState.last_updated <= 6 * 60 * 60) {
+        const themeKind = themeState.kind;
+
+        if (themeKind === 'light') {
+          document.documentElement.setAttribute('data-theme', 'light');
+          return;
+        }
+        if (themeKind === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          return;
+        }
+      }
+    } catch (_e) {
+      // does nothing
+    }
+  }
+
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  } else {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+})();
+</script>

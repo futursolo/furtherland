@@ -1,0 +1,46 @@
+---
+// Base document layout for every page.
+//
+// Mirrors the old React Router `root.tsx` Layout: it owns the <html>/<head>/<body>,
+// injects the pre-hydration theme script, and wraps the page in the shared
+// Providers (Jotai + Emotion ThemeProvider) and RootLayout (Header/Nav/Footer) chrome.
+//
+// React Router's `<Meta />` / `<Links />` / `<Scripts />` / `<ScrollRestoration />`
+// are replaced by Astro: head metadata is written directly in <head> below (and
+// pages may add their own via the `head` slot), and scripts/styles are handled by
+// the `@astrojs/react` integration plus Astro's `inlineStyles` build option.
+import '@@frontend/styles/theme.css';
+
+import RootLayout from '@@frontend/components/RootLayout';
+import ThemePreloadScript from '@@frontend/components/ThemePreloadScript.astro';
+import { SITE_NAME } from '@@frontend/constants/site';
+
+import { ClientRouter } from 'astro:transitions';
+
+const { title = SITE_NAME } = Astro.props;
+const headerKind = Astro.url.pathname === '/' ? 'home' : 'default';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{title}</title>
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={SITE_NAME}
+      href={new URL("rss.xml", Astro.site)}
+    >
+    <link rel="sitemap" type="application/xml" href={new URL("sitemap-index.xml", Astro.site)}>
+    <slot name="head" />
+    <ClientRouter />
+    <ThemePreloadScript />
+  </head>
+  <body>
+    <RootLayout client:load headerKind={headerKind}>
+      <slot />
+    </RootLayout>
+  </body>
+</html>

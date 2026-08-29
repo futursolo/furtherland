@@ -1,0 +1,11 @@
+---
+import type { ComponentProps } from 'react';
+
+import Anchor from '@@frontend/components/Anchor';
+
+interface Props extends ComponentProps<'a'> {}
+---
+
+<Anchor client:load {...Astro.props}>
+  <slot />
+</Anchor>
