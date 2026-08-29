@@ -1,11 +1,40 @@
 ---
-import type { ComponentProps } from 'react';
+// biome-ignore-all lint: lint/complexity/noImportantStyles
+import type { HTMLAttributes } from 'astro/types';
 
-import Pre from '@@frontend/components/Pre';
+// Pure-Astro counterpart of the (now-removed) React `Pre` island. Renders a
+// shiki-highlighted code block. The element receives the `class`/`style` shiki
+// puts on the `<pre>` (e.g. `astro-shiki github-light github-dark`) via prop
+// spread; Astro merges its scoped-hash class into the class list on top.
+type Props = HTMLAttributes<'pre'>;
 
-interface Props extends ComponentProps<'pre'> {}
+import { theme } from '@@frontend/providers/theme';
+
+// Workaround to pop style.
+const { style, ...rest } = Astro.props;
 ---
 
-<Pre client:load {...Astro.props}>
-  <slot />
-</Pre>
+<pre style={{...(typeof style === 'object' ? style : {})}} {...rest}><slot /></pre>
+
+<style define:vars={{ codeBgColour: theme.colour.background.code.cssVar }}>
+/* biome-ignore-all lint: lint/complexity/noImportantStyles */
+
+pre {
+  background-color: var(--codeBgColour) !important;
+  padding: 1.5rem;
+  border-radius: 4px;
+}
+
+pre > code {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+:global(html[data-theme="dark"]) pre,
+:global(html[data-theme="dark"]) pre :global(span) {
+  color: var(--shiki-dark) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+</style>
