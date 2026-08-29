@@ -2,7 +2,6 @@
 
 import { type PropsWithChildren, useEffect } from 'react';
 
-import { ThemeProvider as BaseProvider } from '@emotion/react';
 import { useStore } from '@nanostores/react';
 import { useMediaQuery } from 'usehooks-ts';
 
@@ -79,10 +78,10 @@ const backgroundColours = {
   header: createColour('background-colour-header', 'rgba(0, 0, 0, 0.3)', 'rgba(0, 0, 0, 0.5)'),
 } as const;
 
-const theme = {
+export const theme = {
   fontFamily: `system-ui, -apple-system, 'Segoe UI', Roboto, Noto Sans,
-               sans-serif, BlinkMacSystemFont, sans-serif,
-               "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
+                sans-serif, BlinkMacSystemFont, sans-serif,
+                "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
   breakpoint: breakpoints,
   fontSize: fontSizes,
   fontColour: fontColours,
@@ -148,12 +147,7 @@ const ThemeProvider = (props: PropsWithChildren) => {
     document.documentElement.setAttribute('data-theme', themeKind);
   }, [themeKind]);
 
-  return (
-    <BaseProvider theme={theme}>
-      {/* <Global styles={globalStyles} /> */}
-      {children}
-    </BaseProvider>
-  );
+  return children;
 };
 
 export default ThemeProvider;

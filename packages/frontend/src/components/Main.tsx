@@ -1,3 +1,4 @@
+import { theme } from '@@frontend/providers/theme';
 import { styled } from '@@frontend/utils';
 
 const Main = styled.main({
@@ -18,7 +19,7 @@ const Main = styled.main({
   minHeight: 'auto',
 });
 
-export const MainContainer = styled.div(({ theme }) => ({
+export const MainContainer = styled.div({
   display: 'flex',
   flexGrow: 1,
   flexDirection: 'column',
@@ -27,6 +28,6 @@ export const MainContainer = styled.div(({ theme }) => ({
 
   width: '100%',
   maxWidth: theme.breakpoint.md.width,
-}));
+});
 
 export default Main;

@@ -1,6 +1,7 @@
 import { FiChevronDown } from 'react-icons/fi';
 
 import Box from '@@frontend/components/Box';
+import { theme } from '@@frontend/providers/theme';
 import { styled } from '@@frontend/utils';
 
 const Layout = styled(Box)({
@@ -14,7 +15,7 @@ const Layout = styled(Box)({
   alignItems: 'center',
   justifyContent: 'space-around',
 });
-const ScrollLayout = styled(Box)(({ theme }) => ({
+const ScrollLayout = styled(Box)({
   height: 100,
   fontSize: 100,
 
@@ -22,11 +23,11 @@ const ScrollLayout = styled(Box)(({ theme }) => ({
     height: 60,
     fontSize: 60,
   },
-}));
+});
 
 const ScrollButton = styled(Box)({ cursor: 'pointer', boxSizing: 'border-box' });
 
-const Title = styled(Box)(({ theme }) => ({
+const Title = styled(Box)({
   fontSize: '5rem',
   userSelect: 'none',
   cursor: 'default',
@@ -42,7 +43,7 @@ const Title = styled(Box)(({ theme }) => ({
   [theme.breakpoint.sm.mediaDown()]: {
     fontSize: '2rem',
   },
-}));
+});
 
 const HomeContent = () => {
   const scrollToMain = () => {
