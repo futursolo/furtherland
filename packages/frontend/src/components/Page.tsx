@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react';
 
 import { H1, Main, MainContainer } from '@@frontend/components';
-import ThemeProvider from '@@frontend/providers/theme';
+import Theme from '@@frontend/providers/theme';
 import { styled } from '@@frontend/utils';
 
 interface PageProps {
@@ -17,14 +17,14 @@ const Page = (props: PropsWithChildren<PageProps>) => {
   const { children, title } = props;
 
   return (
-    <ThemeProvider>
+    <Theme>
       <Main>
         <MainContainer>
           <H1>{title}</H1>
           <Content>{children}</Content>
         </MainContainer>
       </Main>
-    </ThemeProvider>
+    </Theme>
   );
 };
 
