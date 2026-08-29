@@ -2,7 +2,7 @@
 import MdxAnchor from '@@frontend/components/Mdx/Anchor.astro';
 import MdxPre from '@@frontend/components/Mdx/Pre.astro';
 import Page from '@@frontend/components/Page';
-import { SITE_NAME } from '@@frontend/constants/site';
+import { SITE_NAME, SITE_URL } from '@@frontend/constants/site';
 import BaseLayout from '@@frontend/layouts/BaseLayout.astro';
 import formatTitle from '@@frontend/utils/formatTitle';
 
@@ -27,7 +27,7 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { slug, title, description } = entry.data;
 
-const pageUrl = `https://www.futures.moe/pages/${slug}`;
+const pageUrl = `${SITE_URL}/pages/${slug}`;
 const pageTitle = formatTitle(title);
 
 const { Content } = await render(entry);

@@ -1,6 +1,7 @@
 import { FiChevronDown } from 'react-icons/fi';
 
 import Box from '@@frontend/components/Box';
+import { SITE_NAME } from '@@frontend/constants/site';
 import { theme } from '@@frontend/providers/theme';
 import { styled } from '@@frontend/utils';
 
@@ -57,7 +58,7 @@ const HomeContent = () => {
 
   return (
     <Layout>
-      <Title>Hoshikawa&apos;s Secret Room</Title>
+      <Title>{SITE_NAME}</Title>
       <ScrollLayout>
         <ScrollButton onClick={scrollToMain}>
           <FiChevronDown />

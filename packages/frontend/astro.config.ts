@@ -4,6 +4,8 @@ import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import { defineConfig } from 'astro/config';
 
+import { SITE_URL } from './src/constants/site';
+
 // Collected during the build (while the Astro module runner is open) so the
 // sitemap's `serialize` — which runs in `astro:build:done`, after the runner is
 // closed — can look up a post's date without re-importing `astro:content`.
@@ -29,7 +31,7 @@ const sitemapIntegration = sitemap({
 sitemapIntegration.hooks['astro:build:content'] = loadPostDates;
 
 export default defineConfig({
-  site: 'https://www.futures.moe',
+  site: SITE_URL,
   output: 'static',
   integrations: [react(), mdx(), sitemapIntegration],
   vite: {
