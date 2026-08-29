@@ -10,7 +10,7 @@
     "preview": "yarn workspace @furtherland/frontend frontend:preview"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.9",
+    "@biomejs/biome": "^2.5.10",
     "@types/react": "^19.2.18",
     "typescript": "^6"
   },
