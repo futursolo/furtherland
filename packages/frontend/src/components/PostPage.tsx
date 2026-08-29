@@ -1,6 +1,7 @@
 import type { PropsWithChildren } from 'react';
 
 import { Author, H1, Main, MainContainer } from '@@frontend/components';
+import PostComments from '@@frontend/components/PostComments';
 import ThemeProvider from '@@frontend/providers/theme';
 import { styled } from '@@frontend/utils';
 
@@ -17,7 +18,7 @@ const Content = styled('article')({
 });
 
 const PostPage = (props: PropsWithChildren<PostPageProps>) => {
-  const { children, date, title, isDraft } = props;
+  const { children, slug, date, title, isDraft } = props;
 
   return (
     <ThemeProvider>
@@ -26,6 +27,7 @@ const PostPage = (props: PropsWithChildren<PostPageProps>) => {
           <H1>{title}</H1>
           <Author date={date} isDraft={isDraft} />
           <Content>{children}</Content>
+          <PostComments slug={slug} />
         </MainContainer>
       </Main>
     </ThemeProvider>
