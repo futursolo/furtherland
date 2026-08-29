@@ -1,3 +1,4 @@
+import { theme } from '@@frontend/providers/theme';
 import { styled } from '@@frontend/utils';
 
 import Box from './Box';
@@ -17,7 +18,7 @@ const FoooterContainer = styled.footer({
   paddingRight: 'max(20px, env(safe-area-inset-right))',
 });
 
-const FooterLayout = styled(Box)(({ theme }) => ({
+const FooterLayout = styled(Box)({
   maxWidth: `calc(${theme.breakpoint.md.asPx()} - 40px)`,
   width: theme.breakpoint.md.width,
 
@@ -29,13 +30,12 @@ const FooterLayout = styled(Box)(({ theme }) => ({
   [theme.breakpoint.md.mediaDown()]: {
     flexDirection: 'column',
   },
-}));
-
+});
 const Title = styled.div({});
-const Copy = styled.div(({ theme }) => ({
+const Copy = styled.div({
   color: theme.fontColour.secondary.cssVar,
   transition: 'color 0.2s',
-}));
+});
 
 const Footer = () => {
   return (

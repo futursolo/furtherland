@@ -1,7 +1,7 @@
-import { withThemeProvider } from '@@frontend/providers/withThemeProvider';
+import { theme } from '@@frontend/providers/theme';
 import { styled } from '@@frontend/utils';
 
-const Pre = styled('pre')(({ theme }) => ({
+const Pre = styled('pre')({
   backgroundColor: `${theme.colour.background.code.cssVar} !important`,
   padding: '1.5rem',
   borderRadius: 4,
@@ -16,6 +16,6 @@ const Pre = styled('pre')(({ theme }) => ({
     fontWeight: 'var(--shiki-dark-font-weight) !important',
     textDecoration: 'var(--shiki-dark-text-decoration) !important',
   },
-}));
+});
 
-export default withThemeProvider(Pre);
+export default Pre;

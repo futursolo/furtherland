@@ -2,9 +2,10 @@ import backgroundAvif from '@@frontend/assets/background.avif';
 import backgroundFallback from '@@frontend/assets/background.jpg';
 import backgroundJxl from '@@frontend/assets/background.jxl';
 import backgroundWebp from '@@frontend/assets/background.webp';
+import { theme } from '@@frontend/providers/theme';
 import { styled } from '@@frontend/utils';
 
-const Layout = styled.div(({ theme }) => ({
+const Layout = styled.div({
   position: 'absolute',
 
   height: 200,
@@ -21,7 +22,7 @@ const Layout = styled.div(({ theme }) => ({
       height: '100vh',
     },
   },
-}));
+});
 
 const Image = styled.img({
   height: '100%',
