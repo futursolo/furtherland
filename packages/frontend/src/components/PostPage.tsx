@@ -37,8 +37,8 @@ const PostPage = (props: PropsWithChildren<PostPageProps>) => {
               src="https://giscus.app/client.js"
               data-repo="futursolo/furtherland"
               data-repo-id="MDEwOlJlcG9zaXRvcnkzMzExMDIzOQ=="
-              data-category="General"
-              data-category-id="DIC_kwDOAfk4384DEcq6"
+              data-category="Post Comments"
+              data-category-id="DIC_kwDOAfk4384DEdL-"
               data-mapping="specific"
               data-term={`slug:${slug}`}
               data-strict="1"
