@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 
-import { type PropsWithChildren, useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { useStore } from '@nanostores/react';
 import { useMediaQuery } from 'usehooks-ts';
@@ -133,8 +133,7 @@ export const globalStyles = {
   },
 };
 
-const ThemeProvider = (props: PropsWithChildren) => {
-  const { children } = props;
+const SyncTheme = () => {
   const prefersDarkTheme = useMediaQuery('(prefers-color-scheme: dark)');
   const themeKind = useStore(themeAtom);
 
@@ -147,7 +146,7 @@ const ThemeProvider = (props: PropsWithChildren) => {
     document.documentElement.setAttribute('data-theme', themeKind);
   }, [themeKind]);
 
-  return children;
+  return null;
 };
 
-export default ThemeProvider;
+export default SyncTheme;
