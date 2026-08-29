@@ -1337,7 +1337,7 @@ __metadata:
     isbot: "npm:^5.2.1"
     markdown-it: "npm:^15.0.0"
     mdx: "npm:^0.3.1"
-    nanostores: "npm:^1.5.1"
+    nanostores: "npm:^1.5.2"
     react: "npm:^19.2.8"
     react-dom: "npm:^19.2.8"
     react-icons: "npm:^5.7.0"
@@ -6612,10 +6612,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanostores@npm:^1.5.1":
-  version: 1.5.1
-  resolution: "nanostores@npm:1.5.1"
-  checksum: 10c0/4bc10ac3a52e6d422fd7edbd64139c339db543dd03aefcda27a8a1f0c346b21834d4e8b3ea69596038f262ee242f2efdd94468ac4cb43e188be5bc0e9bbba165
+"nanostores@npm:^1.5.2":
+  version: 1.5.2
+  resolution: "nanostores@npm:1.5.2"
+  checksum: 10c0/937d5a0619009d438e0f938784a9099d70ae265590e2dafe5b2ff62ff43b01a646f017f9aaeb17b8c5480dc07743b803a5c16f220ffbe763f8db3211cd55b765
   languageName: node
   linkType: hard
 
