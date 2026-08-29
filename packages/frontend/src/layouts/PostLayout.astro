@@ -1,7 +1,11 @@
 ---
-// Post layout: wraps BaseLayout and renders the post chrome via the PostPage
-// React island, which owns the Main/Header/Author/Comments structure.
-import PostPage from '@@frontend/components/PostPage';
+// Post layout: blog-post chrome rendered as Astro with React component islands.
+// Uses Main/H1/Author/PostComments directly — no separate PostPage wrapper needed.
+
+import { Main, MainContainer } from '@@frontend/components';
+import Author from '@@frontend/components/Author';
+import H1 from '@@frontend/components/H1';
+import PostComments from '@@frontend/components/PostComments';
 import BaseLayout from '@@frontend/layouts/BaseLayout.astro';
 
 interface Props {
@@ -18,7 +22,21 @@ const { pageTitle, title, slug, date, isDraft } = Astro.props;
 
 <BaseLayout title={pageTitle}>
   <slot name="head" slot="head" />
-  <PostPage client:load slug={slug} date={date} title={title} isDraft={isDraft}>
-    <slot />
-  </PostPage>
+  <Main client:load>
+    <MainContainer client:load>
+      <H1 client:load>{title}</H1>
+      <Author client:load date={date} isDraft={isDraft} />
+      <article class="post-content">
+        <slot />
+      </article>
+      <PostComments client:load slug={slug} />
+    </MainContainer>
+  </Main>
 </BaseLayout>
+
+<style>
+.post-content {
+  box-sizing: border-box;
+  width: 100%;
+}
+</style>
