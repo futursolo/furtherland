@@ -20,14 +20,14 @@ const HeaderLayout = styled.header({
   },
 
   '&.is-home': {
-    height: '100vh',
+    height: 'calc(100lvh + 60px)',
   },
 
   [theme.breakpoint.md.mediaUp()]: {
     height: 300,
 
     '&.is-home': {
-      height: '100vh',
+      height: 'calc(100lvh + 60px)',
     },
   },
 });

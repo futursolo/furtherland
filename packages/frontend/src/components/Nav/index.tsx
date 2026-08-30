@@ -114,7 +114,13 @@ const Nav = () => {
   }, [layoutEl]);
 
   return (
-    <NavLayout ref={setLayoutEl}>
+    <NavLayout
+      ref={setLayoutEl}
+      style={{
+        paddingLeft: 0,
+        paddingRight: 0,
+      }}
+    >
       <NavLayout
         style={{
           color: 'rgb(255, 255, 255)',
