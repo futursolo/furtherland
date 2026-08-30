@@ -1,0 +1,60 @@
+---
+// Pure-Astro counterpart of the (now-removed) React `Footer` island. Renders the
+// site footer (`<footer>`) with a responsive two-column layout (a title and a
+// licensing note) that stacks vertically on small screens.
+//
+// `define:vars` passes the (runtime, theme-reactive) font colour into the scoped
+// styles, following the same pattern as the `Pre`/`Anchor` MDX components. The
+// responsive breakpoint is expressed with the shared SCSS `breakpoints` partial
+// (`@use ... as bp`), since SCSS `@media` conditions cannot reference CSS custom
+// properties and SFC `{{ }}` interpolation cannot reach inside a `<style>` block.
+import { SITE_NAME } from '@@frontend/constants/site';
+import { theme } from '@@frontend/theme';
+---
+
+<footer class="footer">
+  <div class="layout">
+    <div class="title">&copy; 2026 {SITE_NAME}</div>
+    <div class="copy">
+      All articles on this site are licensed under the CC-BY-SA 4.0 International Licence.
+    </div>
+  </div>
+</footer>
+
+<style lang="scss" define:vars={{ fontColourSecondary: theme.fontColour.secondary.cssVar }}>
+  @use '@@frontend/styles/breakpoints' as bp;
+
+  .footer {
+    height: 100px;
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+
+    box-sizing: border-box;
+
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+  }
+
+  .layout {
+    max-width: calc(#{bp.$bp-md} - 40px);
+    width: #{bp.$bp-md};
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    @include bp.media-down(bp.$bp-md) {
+      flex-direction: column;
+    }
+  }
+
+  .copy {
+    color: var(--fontColourSecondary);
+    transition: color 0.2s;
+  }
+</style>
