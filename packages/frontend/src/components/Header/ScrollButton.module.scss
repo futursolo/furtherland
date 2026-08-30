@@ -1,0 +1,13 @@
+.scroll-button {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+
+  cursor: pointer;
+
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+}
