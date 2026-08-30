@@ -1,5 +1,7 @@
 ---
-import { Author, H2, Link, Main, MainContainer } from '@@frontend/components';
+import { Author, H2, Link } from '@@frontend/components';
+import Main from '@@frontend/components/Main.astro';
+import MainContainer from '@@frontend/components/MainContainer.astro';
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@@frontend/constants/site';
 import BaseLayout from '@@frontend/layouts/BaseLayout.astro';
 import formatTitle from '@@frontend/utils/formatTitle';
@@ -36,8 +38,8 @@ const title = formatTitle('Home');
     <meta property="og:url" content={`${SITE_URL}/`}>
     <meta property="og:site_name" content={SITE_NAME}>
   </Fragment>
-  <Main client:load className="home-main">
-    <MainContainer client:load>
+  <Main class="home-main">
+    <MainContainer>
       <div class="post-list">
         {summaries.map((entry) => {
             const { date, slug, title: postTitle, isDraft } = entry.data;

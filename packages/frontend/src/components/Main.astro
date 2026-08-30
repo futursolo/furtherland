@@ -1,0 +1,42 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+// Pure-Astro counterpart of the (now-removed) React `Main` island. Renders the
+// full-width page `<main>` wrapper: a flex column that centers its content and
+// applies the page padding (with safe-area insets). Props are typed as the
+// built-in attributes for a `<main>` (Astro TypeScript guide, "Built-in HTML
+// attributes"), so consumers can pass `class`, `class:list`, `style` or any
+// other valid `<main>` attribute. A passed `class`/`class:list` is merged with
+// the base `main` class via the `class:list` directive (deduplicated through
+// clsx); all remaining attributes are forwarded to the element. A `<slot/>`
+// holds the children (typically a `MainContainer`).
+// Import with the explicit `.astro` extension to distinguish it from the React
+// `Main` island in the components barrel.
+type Props = HTMLAttributes<'main'>;
+
+const { class: className, 'class:list': classList, ...restProps } = Astro.props;
+---
+
+<main class:list={['main', className, classList]} {...restProps}>
+  <slot />
+</main>
+
+<style>
+.main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
+  padding-top: 20px;
+  padding-bottom: 20px;
+
+  min-height: auto;
+}
+</style>

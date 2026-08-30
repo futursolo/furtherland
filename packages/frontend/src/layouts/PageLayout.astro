@@ -1,7 +1,10 @@
 ---
 // Page layout: static-page chrome rendered as Astro with React component islands.
 // Uses Main/MainContainer/H1 directly — no separate Page wrapper needed.
-import { H1, Main, MainContainer } from '@@frontend/components';
+
+import H1 from '@@frontend/components/H1';
+import Main from '@@frontend/components/Main.astro';
+import MainContainer from '@@frontend/components/MainContainer.astro';
 import BaseLayout from '@@frontend/layouts/BaseLayout.astro';
 
 interface Props {
@@ -16,8 +19,8 @@ const { pageTitle, title } = Astro.props;
 
 <BaseLayout title={pageTitle}>
   <slot name="head" slot="head" />
-  <Main client:load>
-    <MainContainer client:load>
+  <Main>
+    <MainContainer>
       <H1 client:load>{title}</H1>
       <article class="page-content">
         <slot />
