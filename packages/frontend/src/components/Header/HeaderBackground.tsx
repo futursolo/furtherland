@@ -12,14 +12,26 @@ const Layout = styled.div({
   width: '100%',
 
   '&.is-home': {
-    height: 'calc(100lvh + 60px)',
+    height: '100lvh',
+  },
+  // If touch device, this should be extended to cover bottom bar.
+  '@media (pointer: coarse)': {
+    '&.is-home': {
+      height: 'calc(100lvh + 60px)',
+    },
   },
 
   [theme.breakpoint.md.mediaUp()]: {
     height: 300,
 
     '&.is-home': {
-      height: 'calc(100lvh + 60px)',
+      height: '100lvh',
+    },
+    // If touch device, this should be extended to cover bottom bar.
+    '@media (pointer: coarse)': {
+      '&.is-home': {
+        height: 'calc(100lvh + 60px)',
+      },
     },
   },
 });
