@@ -12,14 +12,14 @@ const Layout = styled.div({
   width: '100%',
 
   '&.is-home': {
-    height: '100vh',
+    height: 'calc(100lvh + 60px)',
   },
 
   [theme.breakpoint.md.mediaUp()]: {
     height: 300,
 
-    '&.currently-home': {
-      height: '100vh',
+    '&.is-home': {
+      height: 'calc(100lvh + 60px)',
     },
   },
 });
