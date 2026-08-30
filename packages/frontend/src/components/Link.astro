@@ -1,0 +1,34 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+// Pure-Astro counterpart of the (now-removed) React `Link` island. Renders an
+// inline link (`<a>`) in the theme's primary colour, underlined on hover. Props
+// are typed as the built-in attributes for an `<a>` (Astro TypeScript guide,
+// "Built-in HTML attributes"), so consumers can pass `class`, `class:list`,
+// `style`, `href` or any other valid `<a>` attribute. A passed
+// `class`/`class:list` is merged with the base `link` class via the `class:list`
+// directive (deduplicated through clsx); all remaining attributes are forwarded
+// to the element. A `<slot/>` holds the children.
+type Props = HTMLAttributes<'a'>;
+
+const { class: className, 'class:list': classList, ...restProps } = Astro.props;
+---
+
+<!-- biome-ignore lint/a11y/useValidAnchor: the `href` is supplied by the consumer via props -->
+<!-- biome-ignore lint/a11y/useAnchorContent: the link content is supplied by the consumer via the slot -->
+<a class:list={['link', className, classList]} {...restProps}>
+  <slot />
+</a>
+
+<style lang="scss">
+@use '@@frontend/styles/theme' as theme;
+
+.link {
+  color: theme.$main-colour-primary-css-var;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+</style>

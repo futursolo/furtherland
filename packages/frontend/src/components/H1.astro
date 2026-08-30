@@ -1,0 +1,33 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+// Pure-Astro counterpart of the (now-removed) React `H1` island. Renders a
+// page `<h1>` heading: a full-width flex column, left-aligned, at a `3rem`
+// font size. Props are typed as the built-in attributes for an `<h1>` (Astro
+// TypeScript guide, "Built-in HTML attributes"), so consumers can pass
+// `class`, `class:list`, `style` or any other valid `<h1>` attribute. A passed
+// `class`/`class:list` is merged with the base `h1` class via the `class:list`
+// directive (deduplicated through clsx); all remaining attributes are forwarded
+// to the element. A `<slot/>` holds the children.
+type Props = HTMLAttributes<'h1'>;
+
+const { class: className, 'class:list': classList, ...restProps } = Astro.props;
+---
+
+<!-- biome-ignore lint/a11y/useHeadingContent: the heading content is supplied by the consumer via the slot -->
+<h1 class:list={['h1', className, classList]} {...restProps}>
+  <slot />
+</h1>
+
+<style>
+.h1 {
+  display: flex;
+  width: 100%;
+
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+
+  font-size: 3rem;
+}
+</style>
