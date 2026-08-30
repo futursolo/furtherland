@@ -7,7 +7,7 @@ import themeAtom, { persistThemeKind } from '@@frontend/atoms/theme';
 import Box from '@@frontend/components/Box';
 import ClientOnly from '@@frontend/components/ClientOnly';
 import FlexSpace from '@@frontend/components/FlexSpace';
-import { theme } from '@@frontend/providers/theme';
+import { theme } from '@@frontend/theme';
 import { styled } from '@@frontend/utils';
 
 import LinkItem from './LinkItem';
