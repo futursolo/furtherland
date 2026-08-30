@@ -1,0 +1,69 @@
+---
+// Pure-Astro counterpart of the (now-removed) React `HeaderBackground`. Renders
+// the header's `<picture>` background (JXL/AVIF/WebP with a JPG fallback) in
+// plain HTML, styled with the shared `theme` SCSS partial.
+import backgroundAvif from '@@frontend/assets/background.avif';
+import backgroundFallback from '@@frontend/assets/background.jpg';
+import backgroundJxl from '@@frontend/assets/background.jxl';
+import backgroundWebp from '@@frontend/assets/background.webp';
+
+interface Props {
+  headerKind: 'home' | 'default';
+}
+
+const { headerKind } = Astro.props;
+---
+
+<div class:list={['header-background', { 'is-home': headerKind === 'home' }]}>
+  <picture>
+    <source srcset={backgroundJxl} type="image/jxl">
+    <source srcset={backgroundAvif.src} type="image/avif">
+    <source srcset={backgroundWebp.src} type="image/webp">
+    <img class="image" alt="" src={backgroundFallback.src}>
+  </picture>
+</div>
+
+<style lang="scss">
+  @use '@@frontend/styles/theme' as theme;
+
+  .header-background {
+    position: absolute;
+
+    height: 200px;
+    width: 100%;
+
+    &.is-home {
+      height: 100lvh;
+    }
+
+    // If touch device, this should be extended to cover bottom bar.
+    @media (pointer: coarse) {
+      &.is-home {
+        height: calc(100lvh + 60px);
+      }
+    }
+
+    @include theme.media-up(theme.$breakpoint-md) {
+      height: 300px;
+
+      &.is-home {
+        height: 100lvh;
+      }
+
+      // If touch device, this should be extended to cover bottom bar.
+      @media (pointer: coarse) {
+        &.is-home {
+          height: calc(100lvh + 60px);
+        }
+      }
+    }
+  }
+
+  .image {
+    height: 100%;
+    width: 100%;
+
+    object-fit: cover;
+    object-position: top right;
+  }
+</style>
