@@ -1,5 +1,4 @@
 ---
-// biome-ignore-all lint: lint/complexity/noImportantStyles
 import type { HTMLAttributes } from 'astro/types';
 
 // Pure-Astro counterpart of the (now-removed) React `Pre` island. Renders a
@@ -7,12 +6,9 @@ import type { HTMLAttributes } from 'astro/types';
 // puts on the `<pre>` (e.g. `astro-shiki github-light github-dark`) via prop
 // spread; Astro merges its scoped-hash class into the class list on top.
 type Props = HTMLAttributes<'pre'>;
-
-// Workaround to pop style.
-const { style, ...rest } = Astro.props;
 ---
 
-<pre style={style} {...rest}><slot /></pre>
+<pre {...Astro.props}><slot /></pre>
 
 <style lang="scss">
   @use '@@frontend/styles/theme' as theme;
