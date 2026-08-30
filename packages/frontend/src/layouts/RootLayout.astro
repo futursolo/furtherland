@@ -3,7 +3,7 @@
 // every page. Replaces the React RootLayout island so the shell can be
 // server-rendered while individual interactive pieces hydrate separately.
 import Box from '@@frontend/components/Box.astro';
-import Footer from '@@frontend/components/Footer';
+import Footer from '@@frontend/components/Footer.astro';
 import Header from '@@frontend/components/Header';
 import SyncTheme from '@@frontend/theme';
 
@@ -18,7 +18,7 @@ const { headerKind } = Astro.props;
 <Box class="root-layout">
   <Header client:load headerKind={headerKind} />
   <slot />
-  <Footer client:load />
+  <Footer />
 </Box>
 
 <style>
