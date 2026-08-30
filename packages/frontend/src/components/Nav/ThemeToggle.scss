@@ -1,0 +1,44 @@
+// Both the light and dark toggle buttons (each carrying its own icon *and* its
+// own tooltip / aria-label) are always present in the DOM. Which one is visible
+// is driven purely by the `data-theme` attribute on <html> (kept in sync by
+// `SyncTheme` and the pre-hydration theme script) via `display`. Toggling
+// therefore never re-renders this component — only the CSS `display` of the two
+// buttons changes, so there is no flash of the wrong icon or alt text.
+.theme-toggle {
+  position: relative;
+  height: 60px;
+  width: 60px;
+}
+
+// Both buttons overlay the same 60x60 cell; the non-matching one is hidden
+// (`display: none`) so it takes no layout space.
+.theme-toggle__button {
+  position: absolute;
+  inset: 0;
+
+  height: 60px;
+  width: 60px;
+  padding: 0;
+  margin: 0;
+
+  display: none;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  border: none;
+  background-color: transparent;
+  color: inherit;
+  font: inherit;
+
+  transition: background-color 0.3s, color 0.3s;
+}
+
+html[data-theme='light'] .theme-toggle__button--light {
+  display: flex;
+}
+
+html[data-theme='dark'] .theme-toggle__button--dark {
+  display: flex;
+}
