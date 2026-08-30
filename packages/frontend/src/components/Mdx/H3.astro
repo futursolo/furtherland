@@ -1,0 +1,25 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+// Pure-Astro counterpart of the (now-removed) React `H3` component. Renders an
+// `<h3>` heading in MDX: a full-width flex column, left-aligned, at a `1.7rem`
+// font size. Props are spread onto the element (Astro merges its scoped-hash
+// class into any passed `class`); a `<slot/>` holds the heading content.
+type Props = HTMLAttributes<'h3'>;
+---
+
+<!-- biome-ignore lint/a11y/useHeadingContent: the heading content is supplied by MDX via the slot -->
+<h3 {...Astro.props}><slot /></h3>
+
+<style>
+h3 {
+  display: flex;
+  width: 100%;
+
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+
+  font-size: 1.7rem;
+}
+</style>

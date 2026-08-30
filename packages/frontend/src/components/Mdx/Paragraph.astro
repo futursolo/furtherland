@@ -1,0 +1,17 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+// Pure-Astro counterpart of the (now-removed) React `Paragraph` component.
+// Renders a `<p>` paragraph in MDX with a `2rem` line height. Props are spread
+// onto the element (Astro merges its scoped-hash class into any passed
+// `class`); a `<slot/>` holds the paragraph content.
+type Props = HTMLAttributes<'p'>;
+---
+
+<p {...Astro.props}><slot /></p>
+
+<style>
+p {
+  line-height: 2rem;
+}
+</style>
