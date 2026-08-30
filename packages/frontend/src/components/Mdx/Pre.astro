@@ -12,7 +12,7 @@ type Props = HTMLAttributes<'pre'>;
 const { style, ...rest } = Astro.props;
 ---
 
-<pre style={{...(typeof style === 'object' ? style : {})}} {...rest}><slot /></pre>
+<pre style={style} {...rest}><slot /></pre>
 
 <style lang="scss">
   @use '@@frontend/styles/theme' as theme;
