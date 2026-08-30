@@ -1,5 +1,5 @@
 ---
-import HomePage from '@@frontend/components/HomePage';
+import { Author, H2, Link, Main, MainContainer } from '@@frontend/components';
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@@frontend/constants/site';
 import BaseLayout from '@@frontend/layouts/BaseLayout.astro';
 import formatTitle from '@@frontend/utils/formatTitle';
@@ -36,5 +36,41 @@ const title = formatTitle('Home');
     <meta property="og:url" content={`${SITE_URL}/`}>
     <meta property="og:site_name" content={SITE_NAME}>
   </Fragment>
-  <HomePage client:load summaries={summaries} />
+  <Main client:load className="home-main">
+    <MainContainer client:load>
+      <div class="post-list">
+        {summaries.map((entry) => {
+            const { date, slug, title: postTitle, isDraft } = entry.data;
+            return (
+              <div class="post">
+                <Link client:load href={`/posts/${slug}`}>
+                  <H2 client:load>{postTitle}</H2>
+                </Link>
+                <Author client:load date={date} isDraft={isDraft} />
+              </div>
+            );
+          })}
+      </div>
+    </MainContainer>
+  </Main>
 </BaseLayout>
+
+<style>
+.home-main {
+  min-height: calc(100vh - 160px);
+}
+
+.post-list {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.post {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+}
+</style>
