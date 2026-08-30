@@ -2,7 +2,7 @@ import { FiMoon, FiSun } from 'react-icons/fi';
 
 import themeAtom, { persistThemeKind } from '@@frontend/atoms/theme';
 
-import './ThemeToggle.scss';
+import Styles from './ThemeToggle.module.scss';
 
 const ThemeToggle = () => {
   const toggleTheme = () => {
@@ -11,14 +11,16 @@ const ThemeToggle = () => {
     themeAtom.set(nextThemeKind);
   };
 
+  console.log(Styles);
+
   // Both buttons (and thus both icons *and* both alt texts) are always in the
   // DOM; CSS shows exactly one via `html[data-theme=...]`. Toggling only flips
   // that attribute, so this component never re-renders.
   return (
-    <div className="theme-toggle">
+    <div className={Styles['theme-toggle']}>
       <button
         type="button"
-        className="theme-toggle__button theme-toggle__button--light"
+        className={`${Styles.button} ${Styles['button-light']}`}
         title="Switch to Dark Theme"
         aria-label="Switch to Dark Theme"
         onClick={toggleTheme}
@@ -27,7 +29,7 @@ const ThemeToggle = () => {
       </button>
       <button
         type="button"
-        className="theme-toggle__button theme-toggle__button--dark"
+        className={`${Styles.button} ${Styles['button-dark']}`}
         title="Switch to Light Theme"
         aria-label="Switch to Light Theme"
         onClick={toggleTheme}

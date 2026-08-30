@@ -16,7 +16,7 @@ const scrollToMain = () => {
 };
 
 const ScrollButton = () => (
-  <Box className={Styles.scrollButton} onClick={scrollToMain}>
+  <Box className={Styles['scroll-button']} onClick={scrollToMain}>
     <FiChevronDown />
   </Box>
 );
