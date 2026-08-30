@@ -1,5 +1,6 @@
 ---
-import { Author, H2, Link } from '@@frontend/components';
+import { H2, Link } from '@@frontend/components';
+import Author from '@@frontend/components/Author.astro';
 import Main from '@@frontend/components/Main.astro';
 import MainContainer from '@@frontend/components/MainContainer.astro';
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@@frontend/constants/site';
@@ -48,7 +49,7 @@ const title = formatTitle('Home');
                 <Link client:load href={`/posts/${slug}`}>
                   <H2 client:load>{postTitle}</H2>
                 </Link>
-                <Author client:load date={date} isDraft={isDraft} />
+                <Author date={date} isDraft={isDraft} />
               </div>
             );
           })}
