@@ -1,6 +1,7 @@
 ---
-import { H2, Link } from '@@frontend/components';
 import Author from '@@frontend/components/Author.astro';
+import H2 from '@@frontend/components/H2.astro';
+import Link from '@@frontend/components/Link.astro';
 import Main from '@@frontend/components/Main.astro';
 import MainContainer from '@@frontend/components/MainContainer.astro';
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@@frontend/constants/site';
@@ -46,8 +47,8 @@ const title = formatTitle('Home');
             const { date, slug, title: postTitle, isDraft } = entry.data;
             return (
               <div class="post">
-                <Link client:load href={`/posts/${slug}`}>
-                  <H2 client:load>{postTitle}</H2>
+                <Link href={`/posts/${slug}`}>
+                  <H2>{postTitle}</H2>
                 </Link>
                 <Author date={date} isDraft={isDraft} />
               </div>
