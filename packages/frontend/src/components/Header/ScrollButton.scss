@@ -1,0 +1,18 @@
+.scroll-button {
+  // Base `Box` layout. The Astro `Box`'s scoped `<style>` doesn't reach a React
+  // island, so the flex-column / border-box base is declared here instead.
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+
+  cursor: pointer;
+
+  // Reset native `<button>` chrome + font so the icon scales with the parent
+  // `.scroll-layout` font-size (react-icons render at `1em`) and no default
+  // button appearance shows.
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+}

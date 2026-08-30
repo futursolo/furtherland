@@ -1,38 +1,20 @@
 ---
 // Pure-Astro counterpart of the (now-removed) React `HomeContent`. The home
-// page's header content: the site title and a scroll hint. The hint's click
-// handler is the only interactive piece — a small inline script, since the
-// whole island is replaced on navigation (so a `document` lookup is enough for
-// the scroll target).
-
-import { FiChevronDown } from 'react-icons/fi';
-
+// page's header content: the site title and a scroll hint. The hint is a small
+// React island (`ScrollButton`) — the only interactive leaf of the server-
+// rendered `Header` — which smooth-scrolls to `<main>` (the whole header is
+// replaced on navigation, so a `document` lookup is enough for the target).
 import { SITE_NAME } from '@@frontend/constants/site';
 
-import Box from '../Box.astro';
+import ScrollButton from './ScrollButton';
 ---
 
 <div class="layout">
   <div class="title">{SITE_NAME}</div>
   <div class="scroll-layout">
-    <Box class="scroll-button" aria-label="Scroll to main content">
-      <FiChevronDown />
-    </Box>
+    <ScrollButton client:load />
   </div>
 </div>
-
-<script>
-const scrollToMain = () => {
-  const mainEl = document.querySelector('main');
-  if (!mainEl) {
-    return;
-  }
-  mainEl.scrollIntoView({ behavior: 'smooth' });
-};
-for (const button of document.querySelectorAll('.scroll-button')) {
-  button.addEventListener('click', scrollToMain);
-}
-</script>
 
 <style lang="scss">
   @use '@@frontend/styles/theme' as theme;
@@ -57,19 +39,6 @@ for (const button of document.querySelectorAll('.scroll-button')) {
       height: 60px;
       font-size: 60px;
     }
-  }
-
-  .scroll-button {
-    cursor: pointer;
-    box-sizing: border-box;
-
-    // Reset the native button chrome so the appearance matches the old icon-only
-    // (unstyled `Box`) implementation.
-    appearance: none;
-    border: 0;
-    background: transparent;
-    padding: 0;
-    line-height: 0;
   }
 
   .title {
