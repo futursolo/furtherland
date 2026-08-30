@@ -39,7 +39,7 @@ const title = formatTitle('Home');
   <Main client:load className="home-main">
     <MainContainer client:load>
       <div class="post-list">
-          {summaries.map((entry) => {
+        {summaries.map((entry) => {
             const { date, slug, title: postTitle, isDraft } = entry.data;
             return (
               <div class="post">
