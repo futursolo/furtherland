@@ -1,20 +1,19 @@
-// Theme SCSS port of `src/theme.tsx`. This partial declares:
+// Theme SCSS partial (port of `src/theme.tsx`). This partial declares:
 //
-//   1. The `--fl-theme-*` CSS custom properties for the light theme (`html` /
-//      `html[data-theme='light']`) and the dark theme (`html[data-theme='dark']`).
-//   2. A matching `$<name>-css-var: var(--fl-theme-<name>)` Sass variable per
+//   1. A `$<name>-css-var: var(--fl-theme-<name>)` Sass variable per theme
 //      colour, so stylesheets can reference theme colours through Sass
 //      variables (typo a name and Sass errors at build time) while the value
 //      stays a runtime CSS custom property — keeping it in sync with theme
 //      switching via the `data-theme` attribute.
-//   3. Shared breakpoint helpers (`$bp-*` + `media-up` / `media-down` mixins)
+//   2. Shared breakpoint helpers (`$bp-*` + `media-up` / `media-down` mixins)
 //      for use in Astro `<style lang="scss">` blocks and React (Emotion)
 //      styles. SCSS `@media` conditions cannot reference CSS custom
 //      properties, so breakpoint widths are declared here as literal Sass
 //      values. Keep these in sync with `theme.breakpoint` in `src/theme.tsx`.
 //
-// This partial emits CSS when compiled — import it exactly once, globally,
-// from `globalStyles.scss`.
+// This partial is pure: it declares Sass variables / mixins only and emits no
+// CSS, so it can be `@use`d from any component. The global `--fl-theme-*` CSS
+// custom property declarations live in `globalStyles.scss`.
 
 $bp-lg: 1280px;
 $bp-md: 960px;
@@ -48,55 +47,3 @@ $main-colour-primary-hover-css-var: var(--fl-theme-main-colour-primary-hover);
 $main-colour-secondary-css-var: var(--fl-theme-main-colour-secondary);
 $main-colour-secondary-hover-css-var: var(--fl-theme-main-colour-secondary-hover);
 $main-colour-invalid-css-var: var(--fl-theme-main-colour-invalid);
-
-// Keep the values below in sync with the colour definitions in `src/theme.tsx`.
-html {
-  --fl-theme-font-colour-primary: rgb(0, 0, 0);
-  --fl-theme-font-colour-secondary: rgb(100, 100, 100);
-  --fl-theme-font-colour-hint: rgb(150, 150, 150);
-  --fl-theme-background-colour-invalid: rgb(254, 237, 234);
-  --fl-theme-background-colour-default: rgb(255, 255, 255);
-  --fl-theme-background-colour-component: rgb(244, 245, 249);
-  --fl-theme-background-colour-component-shadow: rgb(150, 150, 150);
-  --fl-theme-background-colour-code: rgb(246, 248, 255);
-  --fl-theme-background-colour-header: rgba(0, 0, 0, 0.3);
-  --fl-theme-main-colour-primary: rgb(92, 184, 230);
-  --fl-theme-main-colour-primary-hover: rgb(125, 198, 235);
-  --fl-theme-main-colour-secondary: rgb(244, 245, 249);
-  --fl-theme-main-colour-secondary-hover: rgb(221, 224, 238);
-  --fl-theme-main-colour-invalid: rgb(238, 82, 26);
-}
-
-html[data-theme='light'] {
-  --fl-theme-font-colour-primary: rgb(0, 0, 0);
-  --fl-theme-font-colour-secondary: rgb(100, 100, 100);
-  --fl-theme-font-colour-hint: rgb(150, 150, 150);
-  --fl-theme-background-colour-invalid: rgb(254, 237, 234);
-  --fl-theme-background-colour-default: rgb(255, 255, 255);
-  --fl-theme-background-colour-component: rgb(244, 245, 249);
-  --fl-theme-background-colour-component-shadow: rgb(150, 150, 150);
-  --fl-theme-background-colour-code: rgb(246, 248, 255);
-  --fl-theme-background-colour-header: rgba(0, 0, 0, 0.3);
-  --fl-theme-main-colour-primary: rgb(92, 184, 230);
-  --fl-theme-main-colour-primary-hover: rgb(125, 198, 235);
-  --fl-theme-main-colour-secondary: rgb(244, 245, 249);
-  --fl-theme-main-colour-secondary-hover: rgb(221, 224, 238);
-  --fl-theme-main-colour-invalid: rgb(238, 82, 26);
-}
-
-html[data-theme='dark'] {
-  --fl-theme-font-colour-primary: rgb(225, 225, 225);
-  --fl-theme-font-colour-secondary: rgb(150, 150, 150);
-  --fl-theme-font-colour-hint: rgb(100, 100, 100);
-  --fl-theme-background-colour-invalid: rgb(73, 38, 32);
-  --fl-theme-background-colour-default: rgb(20, 20, 20);
-  --fl-theme-background-colour-component: rgb(50, 50, 50);
-  --fl-theme-background-colour-component-shadow: rgb(35, 35, 35);
-  --fl-theme-background-colour-code: rgb(41, 48, 66);
-  --fl-theme-background-colour-header: rgba(0, 0, 0, 0.5);
-  --fl-theme-main-colour-primary: rgb(92, 184, 230);
-  --fl-theme-main-colour-primary-hover: rgb(125, 198, 235);
-  --fl-theme-main-colour-secondary: rgb(50, 50, 50);
-  --fl-theme-main-colour-secondary-hover: rgb(75, 75, 75);
-  --fl-theme-main-colour-invalid: rgb(238, 82, 26);
-}
