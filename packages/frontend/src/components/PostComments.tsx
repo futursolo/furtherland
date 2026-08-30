@@ -20,7 +20,6 @@ const GiscusComments = ({ slug }: PostCommentsProps) => {
 
   return (
     <Giscus
-      id="comments"
       repo="futursolo/furtherland"
       repoId="MDEwOlJlcG9zaXRvcnkzMzExMDIzOQ=="
       category="Post Comments"
