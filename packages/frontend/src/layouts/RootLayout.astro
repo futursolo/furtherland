@@ -15,8 +15,17 @@ const { headerKind } = Astro.props;
 ---
 
 <SyncTheme client:load />
-<Box style="width:100%;min-height:100%;justify-content:space-around;align-items:center;">
+<Box class="root-layout">
   <Header client:load headerKind={headerKind} />
   <slot />
   <Footer client:load />
 </Box>
+
+<style>
+.root-layout {
+  width: 100%;
+  min-height: 100%;
+  justify-content: space-around;
+  align-items: center;
+}
+</style>
