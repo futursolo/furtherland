@@ -3,13 +3,14 @@
 // site footer (`<footer>`) with a responsive two-column layout (a title and a
 // licensing note) that stacks vertically on small screens.
 //
-// `define:vars` passes the (runtime, theme-reactive) font colour into the scoped
-// styles, following the same pattern as the `Pre`/`Anchor` MDX components. The
-// responsive breakpoint is expressed with the shared SCSS `breakpoints` partial
-// (`@use ... as bp`), since SCSS `@media` conditions cannot reference CSS custom
-// properties and SFC `{{ }}` interpolation cannot reach inside a `<style>` block.
+// Styles use the shared `theme` SCSS partial: the (runtime, theme-reactive)
+// font colour is referenced through the `$font-colour-secondary-css-var` Sass
+// variable (which resolves to the `--fl-theme-*` CSS custom property, so a
+// typo is a build error and the value follows theme switching), and the
+// responsive breakpoint via the `media-down` mixin — SCSS `@media` conditions
+// cannot reference CSS custom properties and SFC `{{ }}` interpolation cannot
+// reach inside a `<style>` block.
 import { SITE_NAME } from '@@frontend/constants/site';
-import { theme } from '@@frontend/theme';
 ---
 
 <footer class="footer">
@@ -21,8 +22,8 @@ import { theme } from '@@frontend/theme';
   </div>
 </footer>
 
-<style lang="scss" define:vars={{ fontColourSecondary: theme.fontColour.secondary.cssVar }}>
-  @use '@@frontend/styles/breakpoints' as bp;
+<style lang="scss">
+  @use '@@frontend/styles/theme' as theme;
 
   .footer {
     height: 100px;
@@ -40,21 +41,21 @@ import { theme } from '@@frontend/theme';
   }
 
   .layout {
-    max-width: calc(#{bp.$bp-md} - 40px);
-    width: #{bp.$bp-md};
+    max-width: calc(#{theme.$breakpoint-md} - 40px);
+    width: #{theme.$breakpoint-md};
 
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
 
-    @include bp.media-down(bp.$bp-md) {
+    @include theme.media-down(theme.$breakpoint-md) {
       flex-direction: column;
     }
   }
 
   .copy {
-    color: var(--fontColourSecondary);
+    color: theme.$font-colour-secondary-css-var;
     transition: color 0.2s;
   }
 </style>

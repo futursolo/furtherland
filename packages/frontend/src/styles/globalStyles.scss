@@ -1,3 +1,12 @@
+// Global styles for every page — imported once by `BaseLayout.astro`.
+//
+// This file owns the global `--fl-theme-*` CSS custom property declarations
+// (light / dark themes) and the base `html, body` rules. The `theme` SCSS
+// partial (loaded with `@use ... as theme`) provides the `$*-css-var` Sass
+// aliases over those custom properties plus the breakpoint helpers.
+@use './theme' as theme;
+
+// Keep the values below in sync with the colour definitions in `src/theme.tsx`.
 html {
   --fl-theme-font-colour-primary: rgb(0, 0, 0);
   --fl-theme-font-colour-secondary: rgb(100, 100, 100);
@@ -56,11 +65,11 @@ body {
   width: 100%;
   height: 100%;
   min-height: 100vh;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Noto Sans, sans-serif,
-    BlinkMacSystemFont, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', sans-serif,
+    'BlinkMacSystemFont', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   font-size: 15px;
-  background-color: var(--fl-theme-background-colour-default);
-  color: var(--fl-theme-font-colour-primary);
+  background-color: theme.$background-colour-default-css-var;
+  color: theme.$font-colour-primary-css-var;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.3s, color 0.3s;

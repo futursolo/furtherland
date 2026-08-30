@@ -1,0 +1,50 @@
+// Theme SCSS partial (port of `src/theme.tsx`). This partial declares:
+//
+//   1. A `$<name>-css-var: var(--fl-theme-<name>)` Sass variable per theme
+//      colour, so stylesheets can reference theme colours through Sass
+//      variables (typo a name and Sass errors at build time) while the value
+//      stays a runtime CSS custom property — keeping it in sync with theme
+//      switching via the `data-theme` attribute.
+//   2. Shared breakpoint helpers (`$breakpoint-*` + `media-up` / `media-down`
+//      mixins)
+//      for use in Astro `<style lang="scss">` blocks and React (Emotion)
+//      styles. SCSS `@media` conditions cannot reference CSS custom
+//      properties, so breakpoint widths are declared here as literal Sass
+//      values. Keep these in sync with `theme.breakpoint` in `src/theme.tsx`.
+//
+// This partial is pure: it declares Sass variables / mixins only and emits no
+// CSS, so it can be `@use`d from any component. The global `--fl-theme-*` CSS
+// custom property declarations live in `globalStyles.scss`.
+
+$breakpoint-lg: 1280px;
+$breakpoint-md: 960px;
+$breakpoint-sm: 500px;
+
+@mixin media-down($bp) {
+  @media screen and (max-width: $bp) {
+    @content;
+  }
+}
+
+@mixin media-up($bp) {
+  @media screen and (min-width: $bp) {
+    @content;
+  }
+}
+
+$font-colour-primary-css-var: var(--fl-theme-font-colour-primary);
+$font-colour-secondary-css-var: var(--fl-theme-font-colour-secondary);
+$font-colour-hint-css-var: var(--fl-theme-font-colour-hint);
+
+$background-colour-invalid-css-var: var(--fl-theme-background-colour-invalid);
+$background-colour-default-css-var: var(--fl-theme-background-colour-default);
+$background-colour-component-css-var: var(--fl-theme-background-colour-component);
+$background-colour-component-shadow-css-var: var(--fl-theme-background-colour-component-shadow);
+$background-colour-code-css-var: var(--fl-theme-background-colour-code);
+$background-colour-header-css-var: var(--fl-theme-background-colour-header);
+
+$main-colour-primary-css-var: var(--fl-theme-main-colour-primary);
+$main-colour-primary-hover-css-var: var(--fl-theme-main-colour-primary-hover);
+$main-colour-secondary-css-var: var(--fl-theme-main-colour-secondary);
+$main-colour-secondary-hover-css-var: var(--fl-theme-main-colour-secondary-hover);
+$main-colour-invalid-css-var: var(--fl-theme-main-colour-invalid);
