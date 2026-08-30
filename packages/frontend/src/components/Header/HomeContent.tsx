@@ -2,7 +2,7 @@ import { FiChevronDown } from 'react-icons/fi';
 
 import Box from '@@frontend/components/Box';
 import { SITE_NAME } from '@@frontend/constants/site';
-import { theme } from '@@frontend/providers/theme';
+import { theme } from '@@frontend/theme';
 import { styled } from '@@frontend/utils';
 
 const Layout = styled(Box)({

@@ -1,7 +1,7 @@
 import Box from '@@frontend/components/Box';
 import FlexSpace from '@@frontend/components/FlexSpace';
 import Nav from '@@frontend/components/Nav';
-import { theme } from '@@frontend/providers/theme';
+import { theme } from '@@frontend/theme';
 import { styled } from '@@frontend/utils';
 
 import Content from './Content';

@@ -1,5 +1,5 @@
 import { AUTHOR_NAME } from '@@frontend/constants/site';
-import { theme } from '@@frontend/providers/theme';
+import { theme } from '@@frontend/theme';
 import { styled } from '@@frontend/utils';
 
 import Box from './Box';

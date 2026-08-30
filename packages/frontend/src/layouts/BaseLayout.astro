@@ -11,9 +11,9 @@
 // the `@astrojs/react` integration plus Astro's `inlineStyles` build option.
 import '@@frontend/styles/theme.css';
 
-import RootLayout from '@@frontend/components/RootLayout';
 import ThemePreloadScript from '@@frontend/components/ThemePreloadScript.astro';
 import { SITE_NAME } from '@@frontend/constants/site';
+import RootLayout from '@@frontend/layouts/RootLayout.astro';
 
 import { ClientRouter } from 'astro:transitions';
 
@@ -39,7 +39,7 @@ const headerKind = Astro.url.pathname === '/' ? 'home' : 'default';
     <ThemePreloadScript />
   </head>
   <body>
-    <RootLayout client:load headerKind={headerKind}>
+    <RootLayout headerKind={headerKind}>
       <slot />
     </RootLayout>
   </body>

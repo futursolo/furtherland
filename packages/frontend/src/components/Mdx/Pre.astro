@@ -8,7 +8,7 @@ import type { HTMLAttributes } from 'astro/types';
 // spread; Astro merges its scoped-hash class into the class list on top.
 type Props = HTMLAttributes<'pre'>;
 
-import { theme } from '@@frontend/providers/theme';
+import { theme } from '@@frontend/theme';
 
 // Workaround to pop style.
 const { style, ...rest } = Astro.props;

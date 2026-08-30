@@ -2,7 +2,7 @@ import backgroundAvif from '@@frontend/assets/background.avif';
 import backgroundFallback from '@@frontend/assets/background.jpg';
 import backgroundJxl from '@@frontend/assets/background.jxl';
 import backgroundWebp from '@@frontend/assets/background.webp';
-import { theme } from '@@frontend/providers/theme';
+import { theme } from '@@frontend/theme';
 import { styled } from '@@frontend/utils';
 
 const Layout = styled.div({

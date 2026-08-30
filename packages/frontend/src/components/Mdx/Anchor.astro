@@ -5,7 +5,7 @@ import type { HTMLAttributes } from 'astro/types';
 // inline link (`<a>`) used for the `[text](url)` form in MDX.
 type Props = HTMLAttributes<'a'>;
 
-import { theme } from '@@frontend/providers/theme';
+import { theme } from '@@frontend/theme';
 ---
 
 <!-- biome-ignore lint/a11y/useValidAnchor: the `href` is supplied by MDX via props -->
