@@ -4,7 +4,7 @@
 // server-rendered while individual interactive pieces hydrate separately.
 import Box from '@@frontend/components/Box.astro';
 import Footer from '@@frontend/components/Footer.astro';
-import Header from '@@frontend/components/Header';
+import Header from '@@frontend/components/Header/index.astro';
 import SyncTheme from '@@frontend/components/SyncTheme';
 
 interface Props {
@@ -16,7 +16,7 @@ const { headerKind } = Astro.props;
 
 <SyncTheme client:load />
 <Box class="root-layout">
-  <Header client:load headerKind={headerKind} />
+  <Header headerKind={headerKind} />
   <slot />
   <Footer />
 </Box>

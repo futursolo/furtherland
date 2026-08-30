@@ -1,0 +1,116 @@
+---
+// Pure-Astro counterpart of the (now-removed) React `Header` island. Renders the
+// site header (`<header>`) with a responsive background image, the page content
+// (`Content` on sub-pages, `HomeContent` on the home page), and the sticky `Nav`
+// — all styles use the shared `theme` SCSS partial (see `Footer.astro`).
+//
+// Only the `Nav` stays a React island — it hydrates here via `client:load`
+// (it owns scroll/theme state). The rest is server-rendered; the home page's
+// scroll hint is a plain Astro component with a small `<script>` (the whole
+// header is replaced on navigation, so a `document` lookup is enough for the
+// scroll target).
+import Nav from '@@frontend/components/Nav';
+
+import Content from './Content.astro';
+import HeaderBackground from './HeaderBackground.astro';
+import HomeContent from './HomeContent.astro';
+
+interface Props {
+  headerKind: 'home' | 'default';
+}
+
+const { headerKind } = Astro.props;
+---
+
+<header class:list={['header', { 'is-home': headerKind === 'home' }]}>
+  <HeaderBackground headerKind={headerKind} />
+  <div class="header-container">
+    <div class="flex-space" />
+    <div class="sticky-header">
+      {
+        headerKind === 'home' ? (
+          <HomeContent />
+        ) : (
+          <Content />
+        )
+      }
+      <Nav client:load />
+    </div>
+  </div>
+</header>
+
+<style lang="scss">
+  @use '@@frontend/styles/theme' as theme;
+
+  .header {
+    width: 100%;
+    color: white;
+    height: 200px;
+
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.3);
+
+    &.no-shadow {
+      box-shadow: none;
+    }
+
+    &.is-home {
+      height: 100lvh;
+    }
+
+    // If touch device, this should be extended to cover bottom bar.
+    @media (pointer: coarse) {
+      &.is-home {
+        height: calc(100lvh + 60px);
+      }
+    }
+
+    @include theme.media-up(theme.$breakpoint-md) {
+      height: 300px;
+
+      &.is-home {
+        height: 100lvh;
+      }
+
+      // If touch device, this should be extended to cover bottom bar.
+      @media (pointer: coarse) {
+        &.is-home {
+          height: calc(100lvh + 60px);
+        }
+      }
+    }
+  }
+
+  .header-container {
+    background-color: theme.$background-colour-header-css-var;
+    transition: background-color 0.3s;
+
+    width: 100%;
+    height: 100%;
+
+    position: relative;
+    z-index: 10;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .sticky-header {
+    height: 65%;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+
+    position: sticky;
+    bottom: 0;
+  }
+
+  .flex-space {
+    flex-basis: 1;
+    flex-grow: 1;
+  }
+</style>
