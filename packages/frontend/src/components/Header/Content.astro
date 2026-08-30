@@ -1,0 +1,46 @@
+---
+// Pure-Astro counterpart of the (now-removed) React `Content`. The sub-page
+// header content: the site title, centred in the sticky header. (The home page
+// instead renders `HomeContent`, which adds a scroll hint.)
+import { SITE_NAME } from '@@frontend/constants/site';
+---
+
+<div class="content">
+  <div class="title">{SITE_NAME}</div>
+</div>
+
+<style lang="scss">
+  @use '@@frontend/styles/theme' as theme;
+
+  .content {
+    height: 1px;
+    width: 100%;
+
+    flex-grow: 1;
+    flex-basis: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .title {
+    user-select: none;
+    cursor: default;
+
+    font-size: 5rem;
+
+    @include theme.media-down(theme.$breakpoint-lg) {
+      font-size: 4rem;
+    }
+
+    @include theme.media-down(theme.$breakpoint-md) {
+      font-size: 3rem;
+    }
+
+    @include theme.media-down(theme.$breakpoint-sm) {
+      font-size: 2rem;
+    }
+  }
+</style>

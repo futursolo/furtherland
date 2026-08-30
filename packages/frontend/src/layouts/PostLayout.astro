@@ -2,7 +2,7 @@
 // Post layout: blog-post chrome rendered as Astro with React component islands.
 // Uses Main/H1/Author/PostComments directly — no separate PostPage wrapper needed.
 
-import Author from '@@frontend/components/Author';
+import Author from '@@frontend/components/Author.astro';
 import H1 from '@@frontend/components/H1.astro';
 import Main from '@@frontend/components/Main.astro';
 import MainContainer from '@@frontend/components/MainContainer.astro';
@@ -26,7 +26,7 @@ const { pageTitle, title, slug, date, isDraft } = Astro.props;
   <Main>
     <MainContainer>
       <H1>{title}</H1>
-      <Author client:load date={date} isDraft={isDraft} />
+      <Author date={date} isDraft={isDraft} />
       <article class="post-content">
         <slot />
       </article>
