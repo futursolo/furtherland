@@ -4,39 +4,30 @@
 // handler is the only interactive piece — a small inline script, since the
 // whole island is replaced on navigation (so a `document` lookup is enough for
 // the scroll target).
+
+import { FiChevronDown } from 'react-icons/fi';
+
 import { SITE_NAME } from '@@frontend/constants/site';
+
+import Box from '../Box.astro';
 ---
 
 <div class="layout">
   <div class="title">{SITE_NAME}</div>
   <div class="scroll-layout">
-    <button class="scroll-button" type="button" aria-label="Scroll to main content">
-      <svg
-        aria-hidden="true"
-        focusable="false"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        width="24"
-        height="24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <polyline points="6 9 12 15 18 9"></polyline>
-      </svg>
-    </button>
+    <Box class="scroll-button" aria-label="Scroll to main content">
+      <FiChevronDown />
+    </Box>
   </div>
 </div>
 
 <script>
 const scrollToMain = () => {
-  const navEl = document.querySelector('nav');
-  if (!navEl) {
+  const mainEl = document.querySelector('main');
+  if (!mainEl) {
     return;
   }
-  navEl.scrollIntoView({ behavior: 'smooth' });
+  mainEl.scrollIntoView({ behavior: 'smooth' });
 };
 for (const button of document.querySelectorAll('.scroll-button')) {
   button.addEventListener('click', scrollToMain);

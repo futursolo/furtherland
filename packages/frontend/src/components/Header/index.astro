@@ -27,13 +27,11 @@ const { headerKind } = Astro.props;
   <div class="header-container">
     <div class="flex-space" />
     <div class="sticky-header">
-      {
-        headerKind === 'home' ? (
+      {headerKind === 'home' ? (
           <HomeContent />
         ) : (
           <Content />
-        )
-      }
+        )}
       <Nav client:load />
     </div>
   </div>
