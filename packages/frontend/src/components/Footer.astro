@@ -41,15 +41,15 @@ import { SITE_NAME } from '@@frontend/constants/site';
   }
 
   .layout {
-    max-width: calc(#{theme.$bp-md} - 40px);
-    width: #{theme.$bp-md};
+    max-width: calc(#{theme.$breakpoint-md} - 40px);
+    width: #{theme.$breakpoint-md};
 
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
 
-    @include theme.media-down(theme.$bp-md) {
+    @include theme.media-down(theme.$breakpoint-md) {
       flex-direction: column;
     }
   }

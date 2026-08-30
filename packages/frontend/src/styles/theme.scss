@@ -5,7 +5,8 @@
 //      variables (typo a name and Sass errors at build time) while the value
 //      stays a runtime CSS custom property — keeping it in sync with theme
 //      switching via the `data-theme` attribute.
-//   2. Shared breakpoint helpers (`$bp-*` + `media-up` / `media-down` mixins)
+//   2. Shared breakpoint helpers (`$breakpoint-*` + `media-up` / `media-down`
+//      mixins)
 //      for use in Astro `<style lang="scss">` blocks and React (Emotion)
 //      styles. SCSS `@media` conditions cannot reference CSS custom
 //      properties, so breakpoint widths are declared here as literal Sass
@@ -15,9 +16,9 @@
 // CSS, so it can be `@use`d from any component. The global `--fl-theme-*` CSS
 // custom property declarations live in `globalStyles.scss`.
 
-$bp-lg: 1280px;
-$bp-md: 960px;
-$bp-sm: 500px;
+$breakpoint-lg: 1280px;
+$breakpoint-md: 960px;
+$breakpoint-sm: 500px;
 
 @mixin media-down($bp) {
   @media screen and (max-width: $bp) {
