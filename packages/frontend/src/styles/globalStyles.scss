@@ -1,0 +1,24 @@
+// Global styles for every page — imported once by `BaseLayout.astro`.
+//
+// The theme partial is loaded with `@use` (`as *`) on purpose: `theme.scss`
+// emits the `--fl-theme-*` CSS custom properties exactly once, globally, and
+// makes the `$*-css-var` theme variables / breakpoint helpers available to
+// the base rules below.
+@use './theme' as *;
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', sans-serif,
+    'BlinkMacSystemFont', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-size: 15px;
+  background-color: $background-colour-default-css-var;
+  color: $font-colour-primary-css-var;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s, color 0.3s;
+}

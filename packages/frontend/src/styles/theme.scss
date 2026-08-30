@@ -1,3 +1,55 @@
+// Theme SCSS port of `src/theme.tsx`. This partial declares:
+//
+//   1. The `--fl-theme-*` CSS custom properties for the light theme (`html` /
+//      `html[data-theme='light']`) and the dark theme (`html[data-theme='dark']`).
+//   2. A matching `$<name>-css-var: var(--fl-theme-<name>)` Sass variable per
+//      colour, so stylesheets can reference theme colours through Sass
+//      variables (typo a name and Sass errors at build time) while the value
+//      stays a runtime CSS custom property — keeping it in sync with theme
+//      switching via the `data-theme` attribute.
+//   3. Shared breakpoint helpers (`$bp-*` + `media-up` / `media-down` mixins)
+//      for use in Astro `<style lang="scss">` blocks and React (Emotion)
+//      styles. SCSS `@media` conditions cannot reference CSS custom
+//      properties, so breakpoint widths are declared here as literal Sass
+//      values. Keep these in sync with `theme.breakpoint` in `src/theme.tsx`.
+//
+// This partial emits CSS when compiled — import it exactly once, globally,
+// from `globalStyles.scss`.
+
+$bp-lg: 1280px;
+$bp-md: 960px;
+$bp-sm: 500px;
+
+@mixin media-down($bp) {
+  @media screen and (max-width: $bp) {
+    @content;
+  }
+}
+
+@mixin media-up($bp) {
+  @media screen and (min-width: $bp) {
+    @content;
+  }
+}
+
+$font-colour-primary-css-var: var(--fl-theme-font-colour-primary);
+$font-colour-secondary-css-var: var(--fl-theme-font-colour-secondary);
+$font-colour-hint-css-var: var(--fl-theme-font-colour-hint);
+
+$background-colour-invalid-css-var: var(--fl-theme-background-colour-invalid);
+$background-colour-default-css-var: var(--fl-theme-background-colour-default);
+$background-colour-component-css-var: var(--fl-theme-background-colour-component);
+$background-colour-component-shadow-css-var: var(--fl-theme-background-colour-component-shadow);
+$background-colour-code-css-var: var(--fl-theme-background-colour-code);
+$background-colour-header-css-var: var(--fl-theme-background-colour-header);
+
+$main-colour-primary-css-var: var(--fl-theme-main-colour-primary);
+$main-colour-primary-hover-css-var: var(--fl-theme-main-colour-primary-hover);
+$main-colour-secondary-css-var: var(--fl-theme-main-colour-secondary);
+$main-colour-secondary-hover-css-var: var(--fl-theme-main-colour-secondary-hover);
+$main-colour-invalid-css-var: var(--fl-theme-main-colour-invalid);
+
+// Keep the values below in sync with the colour definitions in `src/theme.tsx`.
 html {
   --fl-theme-font-colour-primary: rgb(0, 0, 0);
   --fl-theme-font-colour-secondary: rgb(100, 100, 100);
@@ -47,21 +99,4 @@ html[data-theme='dark'] {
   --fl-theme-main-colour-secondary: rgb(50, 50, 50);
   --fl-theme-main-colour-secondary-hover: rgb(75, 75, 75);
   --fl-theme-main-colour-invalid: rgb(238, 82, 26);
-}
-
-html,
-body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  min-height: 100vh;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Noto Sans, sans-serif,
-    BlinkMacSystemFont, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-  font-size: 15px;
-  background-color: var(--fl-theme-background-colour-default);
-  color: var(--fl-theme-font-colour-primary);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.3s, color 0.3s;
 }
