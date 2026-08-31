@@ -26,7 +26,7 @@ type Props = HTMLAttributes<'table'>;
     overflow-x: auto;
     border: 1px solid theme.$background-colour-component-shadow-css-var;
     border-radius: 4px;
-    background-color: theme.$background-colour-code-css-var;
+    background-color: theme.$background-colour-component-css-var;
   }
 
   .fl-mdx-table table {
@@ -37,8 +37,8 @@ type Props = HTMLAttributes<'table'>;
   }
 
   .fl-mdx-table :global(thead) {
-    // transparent so the wrapper's code-block background shows through the header
-    background-color: transparent;
+    // the theme's dedicated header colour — a distinct band over the body
+    background-color: theme.$background-colour-header-css-var;
   }
 
   .fl-mdx-table :global(th) {
@@ -52,19 +52,7 @@ type Props = HTMLAttributes<'table'>;
   .fl-mdx-table :global(td) {
     padding: 0.6rem 1rem;
     line-height: 1.6;
-    color: theme.$font-colour-secondary-css-var;
+    color: theme.$font-colour-primary-css-var;
     border-bottom: 1px solid theme.$background-colour-component-shadow-css-var;
-  }
-
-  .fl-mdx-table :global(tbody) :global(tr):global(:hover) {
-    background-color: theme.$background-colour-component-css-var;
-  }
-
-  :global(html[data-theme='dark']) .fl-mdx-table :global(td) {
-    border-bottom-color: theme.$background-colour-component-shadow-css-var;
-  }
-
-  :global(html[data-theme='dark']) .fl-mdx-table :global(tbody) :global(tr):global(:hover) {
-    background-color: theme.$main-colour-secondary-css-var;
   }
 </style>
