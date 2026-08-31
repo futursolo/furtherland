@@ -14,7 +14,7 @@ interface Props {
 const { headerKind } = Astro.props;
 ---
 
-<SyncTheme client:load />
+<SyncTheme client:only />
 <Box class="root-layout">
   <Header headerKind={headerKind} />
   <slot />
