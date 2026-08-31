@@ -1,8 +1,8 @@
 import Giscus from '@giscus/react';
 import { useStore } from '@nanostores/react';
+import { useIntersectionObserver } from 'usehooks-ts';
 
 import themeAtom from '@@frontend/atoms/theme';
-import ClientOnly from '@@frontend/components/ClientOnly';
 import { styled } from '@@frontend/utils';
 
 interface PostCommentsProps {
@@ -37,13 +37,9 @@ const GiscusComments = ({ slug }: PostCommentsProps) => {
 };
 
 const PostComments = ({ slug }: PostCommentsProps) => {
-  return (
-    <Comments>
-      <ClientOnly>
-        <GiscusComments slug={slug} />
-      </ClientOnly>
-    </Comments>
-  );
+  const { ref, isIntersecting } = useIntersectionObserver({ freezeOnceVisible: true });
+
+  return <Comments ref={ref}>{isIntersecting ? <GiscusComments slug={slug} /> : null}</Comments>;
 };
 
 export default PostComments;
