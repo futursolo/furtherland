@@ -22,8 +22,11 @@ type Props = HTMLAttributes<'table'>;
 
   .fl-mdx-table {
     width: 100%;
-    overflow-x: auto;
     margin: 1.5rem 0;
+    overflow-x: auto;
+    border: 1px solid theme.$background-colour-component-shadow-css-var;
+    border-radius: 4px;
+    background-color: theme.$background-colour-code-css-var;
   }
 
   .fl-mdx-table table {
@@ -34,7 +37,8 @@ type Props = HTMLAttributes<'table'>;
   }
 
   .fl-mdx-table :global(thead) {
-    background-color: theme.$background-colour-component-css-var;
+    // transparent so the wrapper's code-block background shows through the header
+    background-color: transparent;
   }
 
   .fl-mdx-table :global(th) {
@@ -54,10 +58,6 @@ type Props = HTMLAttributes<'table'>;
 
   .fl-mdx-table :global(tbody) :global(tr):global(:hover) {
     background-color: theme.$background-colour-component-css-var;
-  }
-
-  :global(html[data-theme='dark']) .fl-mdx-table :global(thead) {
-    background-color: theme.$main-colour-secondary-css-var;
   }
 
   :global(html[data-theme='dark']) .fl-mdx-table :global(td) {
