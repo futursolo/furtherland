@@ -1,8 +1,8 @@
 import Giscus from '@giscus/react';
 import { useStore } from '@nanostores/react';
+import { useIntersectionObserver } from 'usehooks-ts';
 
 import themeAtom from '@@frontend/atoms/theme';
-import ClientOnly from '@@frontend/components/ClientOnly';
 
 import Styles from './PostComments.module.scss';
 
@@ -32,13 +32,14 @@ const GiscusComments = ({ slug }: PostCommentsProps) => {
 };
 
 // Post comments wrapper. Styled with SCSS (`./PostComments.module.scss`) rather
-// than Emotion. The `Giscus` iframe is deferred behind `ClientOnly`.
+// than Emotion. The `Giscus` iframe is deferred until the section is scrolled
+// into view (via `useIntersectionObserver`).
 const PostComments = ({ slug }: PostCommentsProps) => {
+  const { ref, isIntersecting } = useIntersectionObserver({ freezeOnceVisible: true });
+
   return (
-    <section className={Styles.comments}>
-      <ClientOnly>
-        <GiscusComments slug={slug} />
-      </ClientOnly>
+    <section ref={ref} className={Styles.comments}>
+      {isIntersecting ? <GiscusComments slug={slug} /> : null}
     </section>
   );
 };
