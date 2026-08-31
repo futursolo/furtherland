@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import Box from '@@frontend/components/Box';
-import FlexSpace from '@@frontend/components/FlexSpace';
+import Box from '@@frontend/components/react/Box';
+import FlexSpace from '@@frontend/components/react/FlexSpace';
 
 import LinkItem from './LinkItem';
 import Styles from './Nav.module.scss';
