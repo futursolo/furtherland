@@ -1,6 +1,7 @@
 ---
 import MdxAnchor from '@@frontend/components/Mdx/Anchor.astro';
 import MdxPre from '@@frontend/components/Mdx/Pre.astro';
+import MdxTable from '@@frontend/components/Mdx/Table.astro';
 import { AUTHOR_NAME, SITE_NAME, SITE_URL } from '@@frontend/constants/site';
 import PostLayout from '@@frontend/layouts/PostLayout.astro';
 import formatTitle from '@@frontend/utils/formatTitle';
@@ -10,6 +11,7 @@ import { type CollectionEntry, getCollection, render } from 'astro:content';
 const mdxComponents = {
   a: MdxAnchor,
   pre: MdxPre,
+  table: MdxTable,
 };
 
 export async function getStaticPaths() {

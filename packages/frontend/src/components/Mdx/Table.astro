@@ -1,0 +1,70 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+// Pure-Astro override for the `table` element in MDX. Renders a table wrapped
+// in a horizontally scrollable container so wide tables do not overflow the
+// page on small screens. The `thead`/`tbody`/`tr`/`th`/`td` are supplied by
+// MDX via the slot and carry the MDX scope hash (not this component's), so the
+// descendant selectors below target them through `:global(...)`, anchored on
+// the hashed `.fl-mdx-table` wrapper. The same `:global` technique is used to
+// scope the dark-theme overrides to `html[data-theme="dark"]`.
+type Props = HTMLAttributes<'table'>;
+---
+
+<div class="fl-mdx-table">
+  <table {...Astro.props}>
+    <slot />
+  </table>
+</div>
+
+<style lang="scss">
+  @use '@@frontend/styles/theme' as theme;
+
+  .fl-mdx-table {
+    width: 100%;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+  }
+
+  .fl-mdx-table table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    color: theme.$font-colour-primary-css-var;
+  }
+
+  .fl-mdx-table :global(thead) {
+    background-color: theme.$background-colour-component-css-var;
+  }
+
+  .fl-mdx-table :global(th) {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: theme.$font-colour-primary-css-var;
+    border-bottom: 2px solid theme.$background-colour-component-shadow-css-var;
+  }
+
+  .fl-mdx-table :global(td) {
+    padding: 0.6rem 1rem;
+    line-height: 1.6;
+    color: theme.$font-colour-secondary-css-var;
+    border-bottom: 1px solid theme.$background-colour-component-shadow-css-var;
+  }
+
+  .fl-mdx-table :global(tbody) :global(tr):global(:hover) {
+    background-color: theme.$background-colour-component-css-var;
+  }
+
+  :global(html[data-theme='dark']) .fl-mdx-table :global(thead) {
+    background-color: theme.$main-colour-secondary-css-var;
+  }
+
+  :global(html[data-theme='dark']) .fl-mdx-table :global(td) {
+    border-bottom-color: theme.$background-colour-component-shadow-css-var;
+  }
+
+  :global(html[data-theme='dark']) .fl-mdx-table :global(tbody) :global(tr):global(:hover) {
+    background-color: theme.$main-colour-secondary-css-var;
+  }
+</style>
