@@ -1,12 +1,11 @@
 import { FiChevronDown } from 'react-icons/fi';
 
-import Box from '../Box';
 import Styles from './ScrollButton.module.scss';
 
 // The home page header's scroll hint. A small React island (the only interactive
 // leaf of the server-rendered `Header`) whose click smooth-scrolls to `<main>`.
-// Styled with SCSS (`./ScrollButton.scss`) rather than Emotion, since it is the
-// single button and the SCSS lives beside the component.
+// A real `<button>` (not a static `<div>`), styled with the adjacent
+// `./ScrollButton.module.scss`, since it is a single interactive control.
 const scrollToMain = () => {
   const mainEl = document.querySelector('main');
   if (!mainEl) {
@@ -16,9 +15,9 @@ const scrollToMain = () => {
 };
 
 const ScrollButton = () => (
-  <Box className={Styles['scroll-button']} onClick={scrollToMain}>
+  <button type="button" className={Styles['scroll-button']} onClick={scrollToMain}>
     <FiChevronDown />
-  </Box>
+  </button>
 );
 
 export default ScrollButton;

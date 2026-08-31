@@ -15,8 +15,6 @@
     "@astrojs/react": "^6.0.4",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
     "@giscus/react": "^3.1.0",
     "@mdx-js/mdx": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
