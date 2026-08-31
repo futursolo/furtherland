@@ -1,0 +1,43 @@
+@use '@@frontend/styles/theme' as theme;
+
+.layout {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  transition: background-color 0.3s, color 0.3s;
+
+  box-sizing: border-box;
+
+  background-color: rgba(255, 255, 255, 0);
+
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+.placeholder {
+  height: 60px;
+  width: 100%;
+}
+
+.inner {
+  color: rgb(255, 255, 255);
+}
+
+.inner-top {
+  position: fixed;
+  top: 0;
+
+  background-color: theme.$background-colour-component-css-var;
+  color: theme.$font-colour-primary-css-var;
+
+  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.3);
+}
+
+.unstyled-link {
+  color: inherit;
+  text-decoration: none;
+}

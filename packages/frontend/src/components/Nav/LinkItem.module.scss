@@ -1,0 +1,30 @@
+.layout {
+  height: 60px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding-left: 15px;
+  padding-right: 15px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+  user-select: none;
+
+  &:hover .indicator {
+    width: 100%;
+  }
+}
+
+.indicator {
+  height: 3px;
+  width: 0%;
+  transition: width 0.2s ease-out;
+}
+
+.text {
+  flex-grow: 1;
+  line-height: 57px;
+}

@@ -11,8 +11,6 @@ const ThemeToggle = () => {
     themeAtom.set(nextThemeKind);
   };
 
-  console.log(Styles);
-
   // Both buttons (and thus both icons *and* both alt texts) are always in the
   // DOM; CSS shows exactly one via `html[data-theme=...]`. Toggling only flips
   // that attribute, so this component never re-renders.
