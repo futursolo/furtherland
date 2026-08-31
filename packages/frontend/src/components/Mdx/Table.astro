@@ -37,11 +37,6 @@ type Props = HTMLAttributes<'table'>;
     color: theme.$font-colour-primary-css-var;
   }
 
-  // Light-only header tint; overridden for the dark theme below.
-  :global(html[data-theme='light']) .fl-mdx-table :global(thead) {
-    background-color: rgba(221, 228, 255, 0.3);
-  }
-
   .fl-mdx-table :global(th) {
     padding: 0.75rem 1rem;
     text-align: left;
@@ -53,6 +48,15 @@ type Props = HTMLAttributes<'table'>;
     padding: 0.6rem 1rem;
     line-height: 1.6;
     color: theme.$font-colour-primary-css-var;
+  }
+
+  :global(html[data-theme='light']) .fl-mdx-table {
+    background-color: rgb(255, 255, 255);
+  }
+
+  // Light-only header tint; overridden for the dark theme below.
+  :global(html[data-theme='light']) .fl-mdx-table :global(thead) {
+    background-color: rgb(242, 245, 255);
   }
 
   // Light-only divider colour, matched by the table outline above.
