@@ -23,7 +23,7 @@ const Links = () => {
   );
 };
 
-export const NavPlaceholder = () => <Box className={Styles['placeholder']} />;
+export const NavPlaceholder = () => <Box className={Styles.placeholder} />;
 
 const Nav = () => {
   const [layoutEl, setLayoutEl] = useState<HTMLElement | null>(null);
@@ -58,7 +58,13 @@ const Nav = () => {
 
   return (
     <nav className={Styles.layout} ref={setLayoutEl} style={{ paddingLeft: 0, paddingRight: 0 }}>
-      <nav className={navPos === 'top' ? `${Styles.inner} ${Styles['inner-top']}` : Styles.inner}>
+      <nav
+        className={
+          navPos === 'top'
+            ? `${Styles.layout} ${Styles.inner} ${Styles['inner-top']}`
+            : `${Styles.layout} ${Styles.inner}`
+        }
+      >
         <Links />
         <FlexSpace />
         <ThemeToggle />
