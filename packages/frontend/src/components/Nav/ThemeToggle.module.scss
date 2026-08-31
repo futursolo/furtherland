@@ -1,0 +1,37 @@
+.theme-toggle {
+  position: relative;
+  height: 60px;
+  width: 60px;
+}
+
+.button {
+  position: absolute;
+  inset: 0;
+
+  height: 60px;
+  width: 60px;
+  padding: 0;
+  margin: 0;
+
+  display: none;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  border: none;
+  background-color: transparent;
+  color: inherit;
+  font: inherit;
+
+  transition: background-color 0.3s, color 0.3s;
+}
+
+:global(html[data-theme='light']) .button-light {
+  display: flex;
+}
+
+
+:global(html[data-theme='dark']) .button-dark {
+  display: flex;
+}
