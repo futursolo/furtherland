@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import Giscus from '@giscus/react';
 import { useStore } from '@nanostores/react';
 import { useIntersectionObserver } from 'usehooks-ts';
@@ -37,9 +39,17 @@ const GiscusComments = ({ slug }: PostCommentsProps) => {
 };
 
 const PostComments = ({ slug }: PostCommentsProps) => {
-  const { ref, isIntersecting } = useIntersectionObserver({ freezeOnceVisible: true });
+  const [wasVisible, setWasVisible] = useState(false);
 
-  return <Comments ref={ref}>{isIntersecting ? <GiscusComments slug={slug} /> : null}</Comments>;
+  const { ref } = useIntersectionObserver({
+    onChange: (isIntersecting) => {
+      if (isIntersecting) {
+        setWasVisible(true);
+      }
+    },
+  });
+
+  return <Comments ref={ref}>{wasVisible ? <GiscusComments slug={slug} /> : null}</Comments>;
 };
 
 export default PostComments;
