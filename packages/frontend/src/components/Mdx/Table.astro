@@ -6,8 +6,9 @@ import type { HTMLAttributes } from 'astro/types';
 // page on small screens. The `thead`/`tbody`/`tr`/`th`/`td` are supplied by
 // MDX via the slot and carry the MDX scope hash (not this component's), so the
 // descendant selectors below target them through `:global(...)`, anchored on
-// the hashed `.fl-mdx-table` wrapper. The same `:global` technique is used to
-// scope the dark-theme overrides to `html[data-theme="dark"]`.
+// the hashed `.fl-mdx-table` wrapper. The base (light) rules use fixed light
+// colours; the dark-theme palette is scoped to `html[data-theme='dark']`
+// (also through `:global(...)`).
 type Props = HTMLAttributes<'table'>;
 ---
 
@@ -24,7 +25,7 @@ type Props = HTMLAttributes<'table'>;
     width: 100%;
     margin: 1.5rem 0;
     overflow-x: auto;
-    border: 1px solid theme.$background-colour-component-shadow-css-var;
+    border: 1px solid rgb(206, 211, 219);
     border-radius: 4px;
     background-color: theme.$background-colour-component-css-var;
   }
@@ -36,9 +37,9 @@ type Props = HTMLAttributes<'table'>;
     color: theme.$font-colour-primary-css-var;
   }
 
-  .fl-mdx-table :global(thead) {
-    // the theme's dedicated header colour — a distinct band over the body
-    background-color: theme.$background-colour-header-css-var;
+  // Light-only header tint; overridden for the dark theme below.
+  :global(html[data-theme='light']) .fl-mdx-table :global(thead) {
+    background-color: rgba(221, 228, 255, 0.3);
   }
 
   .fl-mdx-table :global(th) {
@@ -46,13 +47,38 @@ type Props = HTMLAttributes<'table'>;
     text-align: left;
     font-weight: 600;
     color: theme.$font-colour-primary-css-var;
-    border-bottom: 2px solid theme.$background-colour-component-shadow-css-var;
   }
 
   .fl-mdx-table :global(td) {
     padding: 0.6rem 1rem;
     line-height: 1.6;
     color: theme.$font-colour-primary-css-var;
-    border-bottom: 1px solid theme.$background-colour-component-shadow-css-var;
+  }
+
+  // Light-only divider colour, matched by the table outline above.
+  :global(html[data-theme='light']) .fl-mdx-table :global(th) {
+    border-bottom: 2px solid rgb(206, 211, 219);
+  }
+
+  :global(html[data-theme='light']) .fl-mdx-table :global(td) {
+    border-bottom: 1px solid rgb(206, 211, 219);
+  }
+
+  // Dark-theme palette: a dark body with a lighter header band.
+  :global(html[data-theme='dark']) .fl-mdx-table {
+    border-color: rgb(57, 63, 78);
+    background-color: rgb(51, 53, 62);
+  }
+
+  :global(html[data-theme='dark']) .fl-mdx-table :global(thead) {
+    background-color: rgb(57, 63, 78);
+  }
+
+  :global(html[data-theme='dark']) .fl-mdx-table :global(th) {
+    border-bottom: 2px solid rgb(57, 63, 78);
+  }
+
+  :global(html[data-theme='dark']) .fl-mdx-table :global(td) {
+    border-bottom: 1px solid rgb(57, 63, 78);
   }
 </style>
