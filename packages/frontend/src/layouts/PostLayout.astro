@@ -30,7 +30,7 @@ const { pageTitle, title, slug, date, isDraft } = Astro.props;
       <article class="post-content">
         <slot />
       </article>
-      <PostComments client:only slug={slug} />
+      <PostComments client:visible slug={slug} />
     </MainContainer>
   </Main>
 </BaseLayout>

@@ -23,13 +23,17 @@
 
   border: none;
   background-color: transparent;
-  color: theme.$font-colour-primary-css-var;
+  color: rgb(255, 255, 255);
 
   opacity: 0;
   pointer-events: none;
   z-index: 0;
 
   transition: opacity 0.3s, color 0.3s;
+}
+
+.button-nav-fixed {
+  color: theme.$font-colour-primary-css-var;
 }
 
 :global(html[data-theme='light']) .button-light {
