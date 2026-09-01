@@ -1,3 +1,5 @@
+@use '@@frontend/styles/theme' as theme;
+
 .theme-toggle {
   position: relative;
   height: 60px;
@@ -21,14 +23,13 @@
 
   border: none;
   background-color: transparent;
-  color: inherit;
-  font: inherit;
+  color: theme.$font-colour-primary-css-var;
 
   opacity: 0;
   pointer-events: none;
   z-index: 0;
 
-  transition: opacity 0.3s, background-color 0.3s, color 0.3s;
+  transition: opacity 0.3s, color 0.3s;
 }
 
 :global(html[data-theme='light']) .button-light {
