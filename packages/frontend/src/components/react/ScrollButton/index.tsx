@@ -1,6 +1,6 @@
 import { FiChevronDown } from 'react-icons/fi';
 
-import Box from './Box';
+import Box from '../Box';
 import Styles from './ScrollButton.module.scss';
 
 // The home page header's scroll hint. A small React island (the only interactive

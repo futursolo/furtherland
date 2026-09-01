@@ -67,7 +67,7 @@ const Nav = () => {
       >
         <Links />
         <FlexSpace />
-        <ThemeToggle />
+        <ThemeToggle navPosition={navPos} />
       </nav>
     </nav>
   );

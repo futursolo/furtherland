@@ -4,7 +4,14 @@ import themeAtom, { persistThemeKind } from '@@frontend/atoms/theme';
 
 import Styles from './ThemeToggle.module.scss';
 
-const ThemeToggle = () => {
+interface ThemeToggleProps {
+  // Populate the nav position to prevent safari text colour bug.
+  navPosition: 'top' | 'default';
+}
+
+const ThemeToggle = (props: ThemeToggleProps) => {
+  const { navPosition } = props;
+
   const toggleTheme = () => {
     const nextThemeKind = themeAtom.get() === 'light' ? 'dark' : 'light';
     persistThemeKind(nextThemeKind);
@@ -18,7 +25,11 @@ const ThemeToggle = () => {
     <div className={Styles['theme-toggle']}>
       <button
         type="button"
-        className={`${Styles.button} ${Styles['button-light']}`}
+        className={[
+          Styles.button,
+          Styles['button-light'],
+          ...(navPosition === 'top' ? [Styles['button-nav-fixed']] : []),
+        ].join(' ')}
         title="Switch to Dark Theme"
         aria-label="Switch to Dark Theme"
         onClick={toggleTheme}
@@ -27,7 +38,11 @@ const ThemeToggle = () => {
       </button>
       <button
         type="button"
-        className={`${Styles.button} ${Styles['button-dark']}`}
+        className={[
+          Styles.button,
+          Styles['button-dark'],
+          ...(navPosition === 'top' ? [Styles['button-nav-fixed']] : []),
+        ].join(' ')}
         title="Switch to Light Theme"
         aria-label="Switch to Light Theme"
         onClick={toggleTheme}
