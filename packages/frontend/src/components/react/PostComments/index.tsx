@@ -5,17 +5,12 @@ import { useStore } from '@nanostores/react';
 import { useIntersectionObserver } from 'usehooks-ts';
 
 import themeAtom from '@@frontend/atoms/theme';
-import { styled } from '@@frontend/utils';
+
+import Styles from './PostComments.module.scss';
 
 interface PostCommentsProps {
   slug: string;
 }
-
-const Comments = styled('section')({
-  boxSizing: 'border-box',
-  width: '100%',
-  marginTop: '3rem',
-});
 
 const GiscusComments = ({ slug }: PostCommentsProps) => {
   const themeKind = useStore(themeAtom);
@@ -38,6 +33,9 @@ const GiscusComments = ({ slug }: PostCommentsProps) => {
   );
 };
 
+// Post comments wrapper. Styled with SCSS (`./PostComments.module.scss`) rather
+// than Emotion. The `Giscus` iframe is deferred until the section is scrolled
+// into view (via `useIntersectionObserver`) and stays mounted once shown.
 const PostComments = ({ slug }: PostCommentsProps) => {
   const [wasVisible, setWasVisible] = useState(false);
 
@@ -49,7 +47,11 @@ const PostComments = ({ slug }: PostCommentsProps) => {
     },
   });
 
-  return <Comments ref={ref}>{wasVisible ? <GiscusComments slug={slug} /> : null}</Comments>;
+  return (
+    <section ref={ref} className={Styles.comments}>
+      {wasVisible ? <GiscusComments slug={slug} /> : null}
+    </section>
+  );
 };
 
 export default PostComments;

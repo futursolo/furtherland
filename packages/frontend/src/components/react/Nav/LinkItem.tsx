@@ -1,6 +1,6 @@
 import type React from 'react';
 
-import Box from '@@frontend/components/Box';
+import Box from '@@frontend/components/react/Box';
 
 import Styles from './LinkItem.module.scss';
 

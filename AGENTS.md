@@ -4,7 +4,7 @@ Guidance for AI coding agents working in this repository.
 
 ## What this is
 
-A personal blog / static-site project ("furtherland") built with **Astro** (`output: 'static'`), **React 19** (rendered as islands via `@astrojs/react`), styled with **Emotion**, client state via **nanostores**, and **MDX** for content. It is a Yarn monorepo (node linker: `pnpm`). Pages are authored as Astro `.astro` files that wrap React islands; content is authored as MDX files and prerendered at build time.
+A personal blog / static-site project ("furtherland") built with **Astro** (`output: 'static'`), **React 19** (rendered as islands via `@astrojs/react`), styled with **SCSS** (CSS modules for React islands, `<style lang="scss">` for Astro, plus a shared `theme`/`globalStyles` SCSS partial), client state via **nanostores**, and **MDX** for content. It is a Yarn monorepo (node linker: `pnpm`). Pages are authored as Astro `.astro` files that wrap React islands; content is authored as MDX files and prerendered at build time.
 
 ## Package manager
 
@@ -77,7 +77,7 @@ Astro prerenders all routes at build. Blog post URLs are not hard-coded — `src
 
 - Lint/format/import-ordering is enforced by **Biome** (`biome.jsonc`): 2-space indent, single quotes, semicolons always, trailing commas, 100-col width, LF endings, auto import organization.
 - TypeScript is `strict`. Keep new code type-clean — `yarn lint` runs `tsc --noEmit` against the frontend project.
-- Prefer the existing patterns (styled components via `@@frontend/utils`, nanostores atoms, the `@@frontend/components` barrel) over introducing new conventions.
+- Prefer the existing patterns (SCSS modules beside each React component, the `theme` SCSS partial, nanostores atoms, the `@@frontend/components` barrel) over introducing new conventions.
 - To fix Biome errors (lint/format/import-ordering), run `yarn biome check --write` rather than editing files by hand.
 - Do not add a test framework unless asked; `yarn lint` is the verification gate.
 
