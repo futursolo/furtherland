@@ -5,27 +5,22 @@ declare module '*.mdx' {
   export default value;
 }
 
-// declare module '*.png' {
-//   const value: string;
-//   export = value;
-// }
-
-// declare module '*.jpg' {
-//   const value: string;
-//   export = value;
-// }
-
-// declare module '*.webp' {
-//   const value: string;
-//   export = value;
-// }
-
-// declare module '*.avif' {
-//   const value: string;
-//   export = value;
-// }
-
 declare global {
+  declare module '*.jpg' {
+    const value: import('astro').ImageMetadata;
+    export default value;
+  }
+
+  declare module '*.webp' {
+    const value: import('astro').ImageMetadata;
+    export default value;
+  }
+
+  declare module '*.avif' {
+    const value: import('astro').ImageMetadata;
+    export default value;
+  }
+
   declare module '*.jxl' {
     const value: string;
     export default value;

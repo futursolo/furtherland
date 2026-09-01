@@ -4,7 +4,7 @@ Guidance for AI coding agents working in this repository.
 
 ## What this is
 
-A personal blog / static-site project ("furtherland") built with **Astro** (`output: 'static'`), **React 19** (rendered as islands via `@astrojs/react`), styled with **SCSS** (CSS modules for React islands, `<style lang="scss">` for Astro, plus a shared `theme`/`globalStyles` SCSS partial), client state via **nanostores**, and **MDX** for content. It is a Yarn monorepo (node linker: `pnpm`). Pages are authored as Astro `.astro` files that wrap React islands; content is authored as MDX files and prerendered at build time.
+A personal blog / static-site project ("furtherland") built with **Astro** (`output: 'static'`), **React 19** (rendered as islands via `@astrojs/react`), styled with **SCSS** (CSS modules for React islands, `<style lang="scss">` for Astro, plus a shared `theme`/`globalStyles` SCSS partial), client state via **nanostores**, and **MDX** for content. It is a Yarn monorepo (node linker: `node-modules`). Pages are authored as Astro `.astro` files that wrap React islands; content is authored as MDX files and prerendered at build time.
 
 ## Package manager
 
@@ -32,7 +32,7 @@ Run from the **repository root** unless noted. There is **no test suite**.
 | `yarn frontend:build` | Run from `packages/frontend`. Production build (`yarn astro build`): prerenders every route to static HTML under `build/client`. |
 | `yarn frontend:serve` | Run from `packages/frontend`. Serves the `build/client` output on port 1741 (via `serve.json`). |
 
-Because of the pnpm-style node-modules layout, package scripts that shell out to a dependency (e.g. `astro`, `serve`) must be run through `yarn` from the owning package directory.
+Package scripts that shell out to a dependency (e.g. `astro`, `serve`) must be run through `yarn` from the owning package directory.
 
 ## Monorepo layout
 
@@ -90,5 +90,5 @@ Astro prerenders all routes at build. Blog post URLs are not hard-coded — `src
 
 - Server-only logic uses the `*.server.tsx` / `*.server.ts` file suffix convention; keep server-only imports (e.g. `node:fs`) out of client bundles.
 - The Astro build config (`output`, the native MDX integration, `projectDir` define, `outDir`) lives in `packages/frontend/astro.config.ts`.
-- The frontend `.gitignore` excludes `build/` and `.astro/`; the root `.gitignore` excludes `node_modules/` (pnpm-style layout). Don't commit build output.
+- The frontend `.gitignore` excludes `build/` and `.astro/`; the root `.gitignore` excludes `node_modules/`. Don't commit build output.
 - React Components can accept Astro Components as children, vice versa.

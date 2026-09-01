@@ -47,17 +47,6 @@ export default defineConfig({
           ? resolve(process.cwd(), process.env.FL_CONTENTS_DIR)
           : resolve(join(import.meta.dirname, '..', '..', 'contents'))
       }"`,
-      // Astro's `astro:prefetch` plugin normally replaces these placeholders via a
-      // `transform` filtered on the module id `astro/dist/prefetch/index.js`. With the
-      // pnpm-style node-modules layout the real path is
-      // `node_modules/.store/astro-virtual-<hash>/package/dist/prefetch/index.js`, which
-      // does not contain that substring, so the transform never runs and the raw
-      // identifiers leak into the ClientRouter bundle
-      // (`Uncaught ReferenceError: __PREFETCH_PREFETCH_ALL__ is not defined`).
-      // Define them here with the same values Astro would inject for the default config.
-      __PREFETCH_PREFETCH_ALL__: 'false',
-      __PREFETCH_DEFAULT_STRATEGY__: '"hover"',
-      __EXPERIMENTAL_CLIENT_PRERENDER__: 'false',
     },
   },
   markdown: {
