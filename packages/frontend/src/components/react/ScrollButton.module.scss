@@ -1,8 +1,15 @@
-.scroll-button {
+// The Box wrapper keeps the original box the scroll hint occupied, so the
+// surrounding layout is unaffected by the interactive control inside it.
+.box {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+}
 
+// The interactive control hugs its icon — no larger than its content.
+.button {
+  display: inline-flex;
+  align-items: center;
   cursor: pointer;
 
   appearance: none;
