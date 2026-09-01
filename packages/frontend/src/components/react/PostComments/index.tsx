@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import Giscus from '@giscus/react';
 import { useStore } from '@nanostores/react';
 import { useIntersectionObserver } from 'usehooks-ts';
@@ -33,13 +35,21 @@ const GiscusComments = ({ slug }: PostCommentsProps) => {
 
 // Post comments wrapper. Styled with SCSS (`./PostComments.module.scss`) rather
 // than Emotion. The `Giscus` iframe is deferred until the section is scrolled
-// into view (via `useIntersectionObserver`).
+// into view (via `useIntersectionObserver`) and stays mounted once shown.
 const PostComments = ({ slug }: PostCommentsProps) => {
-  const { ref, isIntersecting } = useIntersectionObserver({ freezeOnceVisible: true });
+  const [wasVisible, setWasVisible] = useState(false);
+
+  const { ref } = useIntersectionObserver({
+    onChange: (isIntersecting) => {
+      if (isIntersecting) {
+        setWasVisible(true);
+      }
+    },
+  });
 
   return (
     <section ref={ref} className={Styles.comments}>
-      {isIntersecting ? <GiscusComments slug={slug} /> : null}
+      {wasVisible ? <GiscusComments slug={slug} /> : null}
     </section>
   );
 };
