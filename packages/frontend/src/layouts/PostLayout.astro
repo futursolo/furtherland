@@ -25,8 +25,8 @@ const { pageTitle, title, slug, date, isDraft } = Astro.props;
   <slot name="head" slot="head" />
   <Main>
     <MainContainer>
-      <H1>{title}</H1>
-      <Author date={date} isDraft={isDraft} />
+      <H1 transition:name={`post-${slug}-title`}>{title}</H1>
+      <Author transition:name={`post-${slug}-author`} date={date} isDraft={isDraft} />
       <article class="post-content">
         <slot />
       </article>
