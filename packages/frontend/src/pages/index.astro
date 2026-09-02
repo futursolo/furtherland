@@ -48,9 +48,9 @@ const title = formatTitle('Home');
             return (
               <div class="post">
                 <Link href={`/posts/${slug}`}>
-                  <H2>{postTitle}</H2>
+                  <H2 transition:name={`post-${slug}-title`}>{postTitle}</H2>
                 </Link>
-                <Author date={date} isDraft={isDraft} />
+                <Author transition:name={`post-${slug}-author`} date={date} isDraft={isDraft} />
               </div>
             );
           })}
