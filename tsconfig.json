@@ -16,8 +16,15 @@
     "strict": true,
     "skipLibCheck": true,
     "paths": {
-      "@@post-components/*": ["./packages/post-components/src/*"],
-      "@@frontend/*": ["./packages/frontend/src/*"]
+      "@@post-components/*": [
+        "./packages/post-components/src/*"
+      ],
+      "@@common/*": [
+        "./packages/common/src/*"
+      ],
+      "@@frontend/*": [
+        "./packages/frontend/src/*"
+      ]
     }
   },
   "include": [
@@ -26,6 +33,9 @@
   "references": [
     {
       "path": "./packages/frontend"
+    },
+    {
+      "path": "./packages/common"
     },
     {
       "path": "./packages/post-components"

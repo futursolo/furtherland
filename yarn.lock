@@ -1060,6 +1060,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@furtherland/common@workspace:packages/common":
+  version: 0.0.0-use.local
+  resolution: "@furtherland/common@workspace:packages/common"
+  dependencies:
+    "@biomejs/biome": "npm:^2.5.11"
+    "@types/node": "npm:^26.4.1"
+    "@types/react": "npm:^19.2.18"
+    "@types/react-dom": "npm:^19.2.5"
+    astro: "npm:^7.2.10"
+    nanostores: "npm:^1.5.2"
+    typescript: "npm:6"
+  languageName: unknown
+  linkType: soft
+
 "@furtherland/frontend@workspace:packages/frontend":
   version: 0.0.0-use.local
   resolution: "@furtherland/frontend@workspace:packages/frontend"
@@ -1106,6 +1120,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@furtherland/post-components@workspace:packages/post-components"
   dependencies:
+    "@biomejs/biome": "npm:^2.5.11"
     "@types/node": "npm:^26.4.1"
     "@types/react": "npm:^19.2.18"
     "@types/react-dom": "npm:^19.2.5"

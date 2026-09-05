@@ -2,7 +2,10 @@
   "extends": "astro/tsconfigs/base",
   "compilerOptions": {
     "target": "esnext",
-    "lib": ["dom", "esnext"],
+    "lib": [
+      "dom",
+      "esnext"
+    ],
     "jsx": "react-jsx",
     "module": "esnext",
     "moduleResolution": "bundler",
@@ -11,6 +14,7 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
+    "noEmit": false,
     "composite": true,
     "plugins": [
       {
@@ -18,10 +22,24 @@
       }
     ],
     "paths": {
-      "@@frontend/*": ["./src/*"]
+      "@@frontend/*": [
+        "./src/*"
+      ],
+      "@@common/*": [
+        "../common/src/*"
+      ],
+      "@@post-components/*": [
+        "../post-componments/src/*"
+      ]
     }
   },
-  "include": ["./src/**/*", "./astro.config.ts", ".astro/types.d.ts"],
+  "include": [
+    "../common/src/**/*",
+    "../post-components/src/**/*",
+    "./src/**/*",
+    "./astro.config.ts",
+    ".astro/types.d.ts"
+  ],
   "references": [
     {
       "path": "../post-components"

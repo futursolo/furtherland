@@ -16,13 +16,12 @@
     "plugins": [],
     "composite": true,
     "paths": {
-      "@@post-components/*": [
+      "@@common/*": [
         "./src/*"
       ]
     }
   },
   "include": [
-    "./src/**/*",
-    "../common/src/**/*"
+    "./src/**/*"
   ]
 }
