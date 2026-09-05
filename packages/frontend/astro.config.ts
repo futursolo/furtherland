@@ -37,7 +37,9 @@ export default defineConfig({
   vite: {
     resolve: {
       alias: {
+        '@@common': resolve(join(import.meta.dirname, '..', 'common', 'src')),
         '@@frontend': resolve(join(import.meta.dirname, 'src')),
+        '@@post-components': resolve(join(import.meta.dirname, '..', 'post-components', 'src')),
       },
     },
     define: {

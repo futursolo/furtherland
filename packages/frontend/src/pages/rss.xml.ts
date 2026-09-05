@@ -5,7 +5,7 @@ import sanitizeHtml from 'sanitize-html';
 
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@@frontend/constants/site';
 
-import { getCollection } from 'astro:content';
+import { type CollectionEntry, getCollection } from 'astro:content';
 
 const markdownParser = new MarkdownIt({
   html: true,
@@ -20,7 +20,10 @@ const renderPostContent = (body: string) =>
   });
 
 export async function GET({ site }: APIContext) {
-  const posts = await getCollection('posts', (post) => !post.data.isDraft);
+  const posts = await getCollection(
+    'posts',
+    (post: CollectionEntry<'posts'>) => !post.data.isDraft,
+  );
 
   // Newest first (ISO dates sort lexicographically), then emit a Date for each item.
   const sortedPosts = [...posts].sort((a, b) => (a.data.date < b.data.date ? 1 : -1));

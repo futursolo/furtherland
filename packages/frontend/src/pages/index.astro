@@ -14,7 +14,7 @@ const summaries: CollectionEntry<'posts'>[] = [];
 
 for (const entry of await getCollection(
   'posts',
-  (post) => !post.data.isDraft || !import.meta.env.PROD,
+  (post: CollectionEntry<'posts'>) => !post.data.isDraft || !import.meta.env.PROD,
 )) {
   summaries.push(entry);
 }

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.5.10/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.11/schema.json",
   "vcs": {
     "enabled": false,
     "clientKind": "git",
@@ -8,9 +8,9 @@
   "files": {
     "ignoreUnknown": false,
     "includes": [
-      "**/packages/frontend/src/**/*.ts",
-      "**/packages/frontend/src/**/*.tsx",
-      "**/packages/frontend/src/**/*.astro",
+      "**/packages/*/src/**/*.ts",
+      "**/packages/*/src/**/*.tsx",
+      "**/packages/*/src/**/*.astro",
       "**/*/biome.jsonc",
       "**/*/tsconfig.json",
       "**/*/astro.config.ts"

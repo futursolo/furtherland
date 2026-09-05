@@ -1,0 +1,23 @@
+{
+  "name": "@furtherland/post-components",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.11",
+    "@types/node": "^26.4.1",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "typescript": "6"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@furtherland/common": "workspace:*",
+    "@mui/material": "^9.4.0",
+    "@mui/system": "^9.4.0",
+    "@mui/x-charts": "^9.13.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  }
+}

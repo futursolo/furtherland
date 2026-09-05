@@ -1,5 +1,4 @@
 {
-  "extends": "astro/tsconfigs/base",
   "compilerOptions": {
     "target": "esnext",
     "lib": ["dom", "esnext"],
@@ -12,18 +11,10 @@
     "strict": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "plugins": [{ "name": "@astrojs/ts-plugin" }],
     "paths": {
-      "@@frontend/*": ["./src/*"],
       "@@common/*": ["../common/src/*"],
-      "@@post-components/*": ["../post-components/src/*"]
+      "@@post-components/*": ["./src/*"]
     }
   },
-  "include": [
-    "../common/src/**/*",
-    "../post-components/src/**/*",
-    "./src/**/*",
-    "./astro.config.ts",
-    ".astro/types.d.ts"
-  ]
+  "include": ["./src/**/*", "../common/src/**/*"]
 }
