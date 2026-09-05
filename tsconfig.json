@@ -14,7 +14,11 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@@post-components/*": ["./packages/post-components/src/*"],
+      "@@frontend/*": ["./packages/frontend/src/*"]
+    }
   },
   "include": [
     "./src/**/*"

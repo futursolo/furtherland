@@ -11,6 +11,7 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
+    "composite": true,
     "plugins": [
       {
         "name": "@astrojs/ts-plugin"
