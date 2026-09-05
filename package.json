@@ -10,9 +10,9 @@
     "preview": "yarn workspace @furtherland/frontend frontend:preview"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.10",
+    "@biomejs/biome": "^2.5.11",
     "@types/react": "^19.2.18",
-    "typescript": "^6"
+    "typescript": "6"
   },
   "workspaces": [
     "packages/*"
