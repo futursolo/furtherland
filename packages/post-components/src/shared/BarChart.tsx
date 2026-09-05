@@ -1,3 +1,5 @@
-const BarChart = () => <></>;
+import { BarChart } from '@mui/x-charts';
 
-export default BarChart;
+import { withThemeProvider } from '@@post-components/mui/theme';
+
+export default withThemeProvider(BarChart);
