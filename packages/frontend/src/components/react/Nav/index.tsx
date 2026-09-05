@@ -10,13 +10,13 @@ import ThemeToggle from './ThemeToggle';
 const Links = () => {
   return (
     <>
-      <a className={Styles['unstyled-link']} href="/">
+      <a className={Styles['unstyled-link']} href="/" data-astro-reload>
         <LinkItem colour="rgba(92, 184, 230, 0.9)">Home</LinkItem>
       </a>
-      <a className={Styles['unstyled-link']} href="/pages/about">
+      <a className={Styles['unstyled-link']} href="/pages/about" data-astro-reload>
         <LinkItem colour="rgba(255, 242, 66, 0.9)">About</LinkItem>
       </a>
-      <a className={Styles['unstyled-link']} href="/pages/links">
+      <a className={Styles['unstyled-link']} href="/pages/links" data-astro-reload>
         <LinkItem colour="rgba(230, 117, 92, 0.9)">Links</LinkItem>
       </a>
     </>
