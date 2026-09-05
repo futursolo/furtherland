@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "peerDependencies": {
+    "react": "^19.0.0"
+  },
   "devDependencies": {
     "@biomejs/biome": "^2.5.11",
     "@types/node": "^26.4.1",

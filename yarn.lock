@@ -1125,6 +1125,8 @@ __metadata:
     "@types/react": "npm:^19.2.18"
     "@types/react-dom": "npm:^19.2.5"
     typescript: "npm:6"
+  peerDependencies:
+    react: ^19.0.0
   languageName: unknown
   linkType: soft
 

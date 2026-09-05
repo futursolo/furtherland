@@ -1,10 +1,7 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": [
-      "dom",
-      "esnext"
-    ],
+    "lib": ["dom", "esnext"],
     "jsx": "react-jsx",
     "module": "esnext",
     "moduleResolution": "bundler",
@@ -13,16 +10,11 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "plugins": [],
-    "composite": true,
+    "noEmit": true,
     "paths": {
-      "@@post-components/*": [
-        "./src/*"
-      ]
+      "@@common/*": ["../common/src/*"],
+      "@@post-components/*": ["./src/*"]
     }
   },
-  "include": [
-    "./src/**/*",
-    "../common/src/**/*"
-  ]
+  "include": ["./src/**/*", "../common/src/**/*"]
 }
