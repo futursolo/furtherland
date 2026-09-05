@@ -1072,6 +1072,7 @@ __metadata:
     "@astrojs/sitemap": "npm:^3.7.4"
     "@astrojs/ts-plugin": "npm:^1.10.11"
     "@biomejs/biome": "npm:^2.5.11"
+    "@furtherland/post-components": "workspace:*"
     "@giscus/react": "npm:^3.1.0"
     "@nanostores/react": "npm:^1.1.0"
     "@types/node": "npm:^26.4.1"
@@ -1098,6 +1099,17 @@ __metadata:
     typescript: "npm:6"
     usehooks-ts: "npm:^3.1.1"
     zod: "npm:^4.5.4"
+  languageName: unknown
+  linkType: soft
+
+"@furtherland/post-components@workspace:*, @furtherland/post-components@workspace:packages/post-components":
+  version: 0.0.0-use.local
+  resolution: "@furtherland/post-components@workspace:packages/post-components"
+  dependencies:
+    "@types/node": "npm:^26.4.1"
+    "@types/react": "npm:^19.2.18"
+    "@types/react-dom": "npm:^19.2.5"
+    typescript: "npm:6"
   languageName: unknown
   linkType: soft
 

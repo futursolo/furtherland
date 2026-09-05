@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": ["esnext"],
+    "lib": [
+      "esnext"
+    ],
     "jsx": "react-jsx",
     "module": "esnext",
     "moduleResolution": "bundler",
@@ -14,5 +16,15 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["./src/**/*"]
+  "include": [
+    "./src/**/*"
+  ],
+  "references": [
+    {
+      "path": "./packages/frontend"
+    },
+    {
+      "path": "./packages/post-components"
+    }
+  ],
 }
