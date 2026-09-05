@@ -1239,7 +1239,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@furtherland/common@workspace:packages/common":
+"@furtherland/common@workspace:*, @furtherland/common@workspace:packages/common":
   version: 0.0.0-use.local
   resolution: "@furtherland/common@workspace:packages/common"
   dependencies:
@@ -1265,6 +1265,7 @@ __metadata:
     "@astrojs/sitemap": "npm:^3.7.4"
     "@astrojs/ts-plugin": "npm:^1.10.11"
     "@biomejs/biome": "npm:^2.5.11"
+    "@furtherland/common": "workspace:*"
     "@furtherland/post-components": "workspace:*"
     "@giscus/react": "npm:^3.1.0"
     "@nanostores/react": "npm:^1.1.0"
@@ -1302,6 +1303,7 @@ __metadata:
     "@biomejs/biome": "npm:^2.5.11"
     "@emotion/react": "npm:^11.14.0"
     "@emotion/styled": "npm:^11.14.1"
+    "@furtherland/common": "workspace:*"
     "@mui/material": "npm:^9.4.0"
     "@mui/system": "npm:^9.4.0"
     "@mui/x-charts": "npm:^9.13.0"
