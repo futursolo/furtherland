@@ -1247,7 +1247,7 @@ __metadata:
     "@types/node": "npm:^26.4.1"
     "@types/react": "npm:^19.2.18"
     "@types/react-dom": "npm:^19.2.5"
-    astro: "npm:^7.2.10"
+    astro: "npm:^7.3.1"
     nanostores: "npm:^1.5.2"
     typescript: "npm:6"
   languageName: unknown
@@ -1273,7 +1273,7 @@ __metadata:
     "@types/react": "npm:^19.2.18"
     "@types/react-dom": "npm:^19.2.5"
     "@types/sanitize-html": "npm:^2.16.1"
-    astro: "npm:^7.2.10"
+    astro: "npm:^7.3.1"
     fast-glob: "npm:^3.3.3"
     isbot: "npm:^5.2.2"
     markdown-it: "npm:^15.0.1"
@@ -3131,9 +3131,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"astro@npm:^7.2.10":
-  version: 7.2.10
-  resolution: "astro@npm:7.2.10"
+"astro@npm:^7.3.1":
+  version: 7.3.1
+  resolution: "astro@npm:7.3.1"
   dependencies:
     "@astrojs/compiler-rs": "npm:^0.4.0"
     "@astrojs/internal-helpers": "npm:0.11.0"
@@ -3188,7 +3188,7 @@ __metadata:
     vitefu: "npm:^1.1.2"
     xxhash-wasm: "npm:^1.1.0"
     yargs-parser: "npm:^22.0.0"
-    zod: "npm:^4.3.6"
+    zod: "npm:^4.5.4"
   peerDependencies:
     "@astrojs/markdown-remark": ^7.3.0
   dependenciesMeta:
@@ -3199,7 +3199,7 @@ __metadata:
       optional: true
   bin:
     astro: ./bin/astro.mjs
-  checksum: 10c0/f8f0e093c8194f655aa452841b736ac278b25f6f528865b885191fa62851e6cf50ee926230504ba3f44f9ea27af7c58021a46ef92cb5c56ddb653e1b0935e394
+  checksum: 10c0/5ec958fb61598c716bd5b4ac7ee80ee1c77eca355aea1be1c619048ad5c8f63bde2a7f643d3605133124828527868556ba72f9ae09d78e958e9e75a58ee39c8a
   languageName: node
   linkType: hard
 
