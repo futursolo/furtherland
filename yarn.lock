@@ -1312,6 +1312,7 @@ __metadata:
     "@types/react-dom": "npm:^19.2.5"
     react: "npm:^19.2.8"
     react-dom: "npm:^19.2.8"
+    ts-pattern: "npm:^5.9.0"
     typescript: "npm:6"
   languageName: unknown
   linkType: soft
@@ -7676,6 +7677,13 @@ __metadata:
   version: 2.2.0
   resolution: "trough@npm:2.2.0"
   checksum: 10c0/58b671fc970e7867a48514168894396dd94e6d9d6456aca427cc299c004fe67f35ed7172a36449086b2edde10e78a71a284ec0076809add6834fb8f857ccb9b0
+  languageName: node
+  linkType: hard
+
+"ts-pattern@npm:^5.9.0":
+  version: 5.9.0
+  resolution: "ts-pattern@npm:5.9.0"
+  checksum: 10c0/7640db25c39d29b287471b2b82d4f7b4674a02098c6ba4d10fed180adfb07d0e0c71930d9e59dc0d90654145e02fd320af63cf0df3c41e100d4154658a612a0a
   languageName: node
   linkType: hard
 
