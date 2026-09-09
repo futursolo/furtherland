@@ -6,7 +6,6 @@
 // aliases over those custom properties plus the breakpoint helpers.
 @use './theme' as theme;
 
-// Keep the values below in sync with the colour definitions in `src/theme.tsx`.
 html {
   --fl-theme-font-colour-primary: rgb(0, 0, 0);
   --fl-theme-font-colour-secondary: rgb(100, 100, 100);

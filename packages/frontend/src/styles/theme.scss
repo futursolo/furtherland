@@ -1,4 +1,4 @@
-// Theme SCSS partial (port of `src/theme.tsx`). This partial declares:
+// Theme SCSS partial. This partial declares:
 //
 //   1. A `$<name>-css-var: var(--fl-theme-<name>)` Sass variable per theme
 //      colour, so stylesheets can reference theme colours through Sass
@@ -10,7 +10,7 @@
 //      for use in Astro `<style lang="scss">` blocks and React SCSS modules
 //      (`*.module.scss`). SCSS `@media` conditions cannot reference CSS custom
 //      properties, so breakpoint widths are declared here as literal Sass
-//      values. Keep these in sync with `theme.breakpoint` in `src/theme.ts`.
+//      values.
 //
 // This partial is pure: it declares Sass variables / mixins only and emits no
 // CSS, so it can be `@use`d from any component. The global `--fl-theme-*` CSS

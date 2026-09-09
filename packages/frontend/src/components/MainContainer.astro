@@ -4,9 +4,8 @@ import type { HTMLAttributes } from 'astro/types';
 // Pure-Astro counterpart of the (now-removed) React `MainContainer` island.
 // Renders the width-constrained inner wrapper that holds a page's content
 // (centred within its `Main` parent). The max-width uses the shared `theme`
-// SCSS partial's `$breakpoint-md` (kept in sync with `theme.breakpoint` in
-// `src/theme.tsx`) — SCSS `@use` is required because Astro's scoped `<style>`
-// block cannot reference a TS theme value. Props are typed as the built-in
+// SCSS partial's `$breakpoint-md` — SCSS `@use` is required because Astro's
+// scoped `<style>` block cannot reference a TS theme value. Props are typed as the built-in
 // attributes for a `<div>`, so consumers can pass `class`, `class:list`,
 // `style` or any other valid `<div>` attribute. A passed `class`/`class:list`
 // is merged with the base `main-container` class via the `class:list`
