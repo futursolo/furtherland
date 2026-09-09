@@ -40,7 +40,7 @@ const title = formatTitle('Home');
     <meta property="og:url" content={`${SITE_URL}/`}>
     <meta property="og:site_name" content={SITE_NAME}>
   </Fragment>
-  <Main class="home-main">
+  <Main isHome={true}>
     <MainContainer>
       <div class="post-list">
         {summaries.map((entry) => {
@@ -60,10 +60,6 @@ const title = formatTitle('Home');
 </BaseLayout>
 
 <style>
-.home-main {
-  min-height: calc(100vh - 160px);
-}
-
 .post-list {
   display: flex;
   flex-direction: column;

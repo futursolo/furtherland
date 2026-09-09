@@ -12,12 +12,12 @@ import type { HTMLAttributes } from 'astro/types';
 // holds the children (typically a `MainContainer`).
 // Import with the explicit `.astro` extension to distinguish it from the React
 // `Main` island in the components barrel.
-type Props = HTMLAttributes<'main'>;
+type Props = HTMLAttributes<'main'> & { isHome?: boolean };
 
-const { class: className, 'class:list': classList, ...restProps } = Astro.props;
+const { class: className, 'class:list': classList, isHome = false, ...restProps } = Astro.props;
 ---
 
-<main class:list={['main', className, classList]} {...restProps}>
+<main class:list={['main', className, classList, ...(isHome ? ['home-main'] : [])]} {...restProps}>
   <slot />
 </main>
 
@@ -38,5 +38,9 @@ const { class: className, 'class:list': classList, ...restProps } = Astro.props;
   padding-bottom: 20px;
 
   min-height: auto;
+}
+
+.home-main {
+  min-height: calc(100vh - 160px);
 }
 </style>
