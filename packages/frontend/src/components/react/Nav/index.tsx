@@ -1,8 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import Box from '@@frontend/components/react/Box';
-import FlexSpace from '@@frontend/components/react/FlexSpace';
-
 import LinkItem from './LinkItem';
 import Styles from './Nav.module.scss';
 import ThemeToggle from './ThemeToggle';
@@ -23,7 +20,7 @@ const Links = () => {
   );
 };
 
-export const NavPlaceholder = () => <Box className={Styles.placeholder} />;
+export const NavPlaceholder = () => <div className={Styles.placeholder} />;
 
 const Nav = () => {
   const [layoutEl, setLayoutEl] = useState<HTMLElement | null>(null);
@@ -66,7 +63,7 @@ const Nav = () => {
         }
       >
         <Links />
-        <FlexSpace />
+        <div className={Styles['flex-space']} />
         <ThemeToggle navPosition={navPos} />
       </nav>
     </nav>

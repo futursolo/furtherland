@@ -19,6 +19,10 @@
 }
 
 .placeholder {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+
   height: 60px;
   width: 100%;
 }
@@ -40,4 +44,9 @@
 .unstyled-link {
   color: inherit;
   text-decoration: none;
+}
+
+.flex-space {
+  flex-basis: 1;
+  flex-grow: 1;
 }

@@ -9,6 +9,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  box-sizing: border-box;
 
   cursor: pointer;
   user-select: none;
@@ -19,12 +20,20 @@
 }
 
 .indicator {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+
   height: 3px;
   width: 0%;
   transition: width 0.2s ease-out;
 }
 
 .text {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+
   flex-grow: 1;
   line-height: 57px;
 }
