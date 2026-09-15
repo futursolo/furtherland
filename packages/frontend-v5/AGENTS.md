@@ -39,11 +39,13 @@ File-based, under `src/routes/**` (`tsr.config.json` sets `target: react`). `src
 
 ## Running intent skill commands
 
-This package's skill allowlist (`intent.skills: ["@tanstack/*"]`) lives in this package's `package.json`. As in the root `AGENTS.md`, set `YARN_GLOBAL_FOLDER` to the project root's `.yarn/berry` via an **absolute** path — `$(git rev-parse --show-toplevel)/.yarn/berry` — never a relative one. From this directory, run:
+This package's skill allowlist (`intent.skills: ["@tanstack/*"]`) lives in this package's `package.json`.
+
+From this directory, run:
 
 ```bash
-YARN_GLOBAL_FOLDER=$(git rev-parse --show-toplevel)/.yarn/berry yarn dlx @tanstack/intent@latest list
-YARN_GLOBAL_FOLDER=$(git rev-parse --show-toplevel)/.yarn/berry yarn dlx @tanstack/intent@latest load <package>#<skill>
+yarn dlx @tanstack/intent@latest list
+yarn dlx @tanstack/intent@latest load <package>#<skill>
 ```
 
 Run `list` from **this** directory to scope to `@tanstack/*`; running it from the repo root instead surfaces the whole workspace (a few extra non-`@tanstack` packages such as `get-tsconfig`).
