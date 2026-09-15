@@ -4,12 +4,12 @@ Guidance for AI coding agents working in this repository.
 
 ## What this is
 
-A personal blog / static-site project ("furtherland") built with **Astro** (`output: 'static'`), **React 19** (rendered as islands via `@astrojs/react`), styled with **SCSS** (CSS modules for React islands, `<style lang="scss">` for Astro, plus a shared `theme`/`globalStyles` SCSS partial), client state via **nanostores**, and **MDX** for content. It is a Yarn monorepo (node linker: `node-modules`). Pages are authored as Astro `.astro` files that wrap React islands; content is authored as MDX files and prerendered at build time.
+A personal blog / static-site project ("furtherland") built with **Astro** (`output: 'static'`), **React 19** (rendered as islands via `@astrojs/react`), styled with **SCSS** (CSS modules for React islands, `<style lang="scss">` for Astro, plus a shared `theme`/`globalStyles` SCSS partial), client state via **nanostores**, and **MDX** for content. It is a Yarn monorepo (node linker: `pnpm`). Pages are authored as Astro `.astro` files that wrap React islands; content is authored as MDX files and prerendered at build time.
 
 ## Package manager
 
 - **Yarn 4** via **corepack**. Run `corepack enable` once if `yarn` is not available.
-- Always set environment variable `YARN_GLOBAL_FOLDER` to .yarn/berry in this repository before running yarn.
+- Always set environment variable `YARN_GLOBAL_FOLDER` to the **project root's** `.yarn/berry` (the `.yarn` directory that sits next to `.git` at the repo root) before running yarn. Point it at the **absolute** path of that directory (e.g. `$(git rev-parse --show-toplevel)/.yarn/berry`), never a relative `.yarn/berry` — a relative value is resolved against the current workspace directory, which creates stray `.yarn/` folders inside `packages/*` and can exhaust disk space.
 - Always invoke dependencies through `yarn` (e.g. `yarn astro dev`), never `npx`/directly.
 - It is OK to install Node, Yarn (via corepack), and any missing dependencies (via `yarn install`) in the current environment to be able to run the project.
 - When adding or updating dependencies, do **not** look up or read version numbers (e.g. via `yarn info <pkg> version` or the registry) unless absolutely necessary — just run `yarn add <pkg>` for new dependencies or `yarn up <pkg>` to update existing ones.
