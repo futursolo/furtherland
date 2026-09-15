@@ -1,14 +1,12 @@
 {
   "name": "@furtherland/frontend-v5",
+  "version": "0.0.0",
   "private": true,
   "type": "module",
   "intent": {
     "skills": [
       "@tanstack/*"
     ]
-  },
-  "imports": {
-    "#/*": "./src/*"
   },
   "scripts": {
     "dev": "vite dev --port 3000",
@@ -41,11 +39,5 @@
     "@vitejs/plugin-react": "^6.1.1",
     "typescript": "^6",
     "vite": "^8.3.0"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild",
-      "lightningcss"
-    ]
   }
 }
