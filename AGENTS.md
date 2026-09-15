@@ -4,7 +4,7 @@ Guidance for AI coding agents working in this repository.
 
 ## What this is
 
-A personal blog / static-site project ("furtherland") built with **Astro** (`output: 'static'`), **React 19** (rendered as islands via `@astrojs/react`), styled with **SCSS** (CSS modules for React islands, `<style lang="scss">` for Astro, plus a shared `theme`/`globalStyles` SCSS partial), client state via **nanostores**, and **MDX** for content. It is a Yarn monorepo (node linker: `node-modules`). Pages are authored as Astro `.astro` files that wrap React islands; content is authored as MDX files and prerendered at build time.
+A personal blog / static-site project ("furtherland") built with **Astro** (`output: 'static'`), **React 19** (rendered as islands via `@astrojs/react`), styled with **SCSS** (CSS modules for React islands, `<style lang="scss">` for Astro, plus a shared `theme`/`globalStyles` SCSS partial), client state via **nanostores**, and **MDX** for content. It is a Yarn monorepo (node linker: `pnpm`). Pages are authored as Astro `.astro` files that wrap React islands; content is authored as MDX files and prerendered at build time.
 
 ## Package manager
 
