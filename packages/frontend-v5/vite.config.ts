@@ -17,7 +17,15 @@ import remarkMdxFrontmatter from 'remark-mdx-frontmatter'
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
 const config = defineConfig({
-  resolve: { tsconfigPaths: true },
+  resolve: { tsconfigPaths: true,
+
+
+        alias: {
+      // Explicit alias (not just `tsconfigPaths`) so Vite's Sass importer
+      // resolves `@use '@@frontend-v5/...'` inside `.scss` files.
+      '@@frontend-v5': resolve(import.meta.dirname, 'src'),
+    },
+   },
   server: { fs: { allow: [repoRoot] } },
   plugins: [devtools(), tanstackStart(), mdx({
   remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter]
