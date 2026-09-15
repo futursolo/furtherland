@@ -22,6 +22,7 @@
     "@tanstack/router-core": "^1.171.30",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
+    "rollup": "^4.63.3",
     "tailwindcss": "^4.3.3",
     "zod": "^4.6.5"
   },
