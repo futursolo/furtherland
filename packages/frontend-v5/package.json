@@ -2,6 +2,11 @@
   "name": "@furtherland/frontend-v5",
   "private": true,
   "type": "module",
+  "intent": {
+    "skills": [
+      "@tanstack/*"
+    ]
+  },
   "imports": {
     "#/*": "./src/*"
   },
