@@ -16,7 +16,7 @@ type MdxModule = {
 // drafts are never imported into the build. The negation is a plain `!` pattern —
 // not an extglob — so Vite's `import.meta.glob` handles it. Frontmatter is left out.
 const mdxModules = import.meta.glob<MdxModule>(
-  ['../../../../contents/posts/**/*.mdx', '!../../../../contents/posts/2099-12-31/**'],
+  ['../../../../contents/posts/**/*.mdx'],
   { eager: true },
 );
 
