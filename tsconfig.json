@@ -14,6 +14,7 @@
     "skipLibCheck": true,
     "paths": {
       "@@common/*": ["./packages/common/src/*"],
+      "@@contents/*": ["./packages/contents/src/*"],
       "@@post-components/*": ["./packages/post-components/src/*"],
       "@@frontend/*": ["./packages/frontend/src/*"],
       "@@frontend-v5/*": ["./packages/frontend-v5/src/*"]
