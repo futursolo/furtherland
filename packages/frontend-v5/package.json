@@ -15,11 +15,15 @@
     "check": "biome check"
   },
   "dependencies": {
+    "@emnapi/core": "^1.11.3",
+    "@emnapi/runtime": "^1.11.3",
     "@tailwindcss/vite": "^4.3.3",
     "@tanstack/react-devtools": "^0.10.12",
     "@tanstack/react-router": "^1.170.36",
     "@tanstack/react-router-devtools": "^1.167.2",
     "@tanstack/react-start": "^1.168.54",
+    "@tanstack/router-core": "^1.171.30",
+    "csstype": "^3.2.3",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "tailwindcss": "^4.3.3"
