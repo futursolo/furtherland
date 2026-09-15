@@ -20,6 +20,8 @@ const mdxModules = import.meta.glob<MdxModule>(
   { eager: true },
 );
 
+// frontmatter is at mdxModules[key].frontmatter
+
 /** Map of slug -> compiled MDX component for every non-draft post. */
 export const posts: Record<string, MdxComponent> = {};
 

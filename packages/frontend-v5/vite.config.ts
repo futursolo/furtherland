@@ -9,6 +9,8 @@ import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import viteReact from '@vitejs/plugin-react';
 
 import { defineConfig } from 'vite';
+import remarkFrontmatter from 'remark-frontmatter'
+import remarkMdxFrontmatter from 'remark-mdx-frontmatter'
 
 // The monorepo root (two levels up from this package). Needed so the dev server
 // and SSR allow reading content that lives outside this package (e.g. contents/).
@@ -17,7 +19,9 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../
 const config = defineConfig({
   resolve: { tsconfigPaths: true },
   server: { fs: { allow: [repoRoot] } },
-  plugins: [devtools(), tanstackStart(), mdx(), viteReact()],
+  plugins: [devtools(), tanstackStart(), mdx({
+  remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter]
+  }), viteReact()],
 });
 
 export default config;
