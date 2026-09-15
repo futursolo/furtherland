@@ -1,10 +1,8 @@
 {
   "name": "@furtherland/frontend-v5",
+  "version": "0.0.0",
   "private": true,
   "type": "module",
-  "imports": {
-    "#/*": "./src/*"
-  },
   "scripts": {
     "dev": "vite dev --port 3000",
     "generate-routes": "tsr generate",
@@ -21,6 +19,7 @@
     "@tanstack/react-router": "^1.170.36",
     "@tanstack/react-router-devtools": "^1.167.2",
     "@tanstack/react-start": "^1.168.54",
+    "@tanstack/router-core": "^1.171.30",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "tailwindcss": "^4.3.3",
@@ -37,11 +36,5 @@
     "@vitejs/plugin-react": "^6.1.1",
     "typescript": "^6",
     "vite": "^8.3.0"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild",
-      "lightningcss"
-    ]
   }
 }
