@@ -3,16 +3,20 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "intent": {
+    "skills": [
+      "@tanstack/*"
+    ]
+  },
   "scripts": {
-    "dev": "vite dev --port 3000",
-    "generate-routes": "tsr generate",
-    "build": "vite build",
-    "preview": "vite preview",
-    "format": "biome format",
-    "lint": "biome lint",
-    "check": "biome check"
+    "frontend-v5:dev": "vite dev --port 3000",
+    "frontend-v5:generate-routes": "tsr generate",
+    "frontend-v5:build": "vite build",
+    "frontend-v5:preview": "vite preview"
   },
   "dependencies": {
+    "@furtherland/post-components": "workspace:*",
+    "@mdx-js/rollup": "^3.1.1",
     "@tailwindcss/vite": "^4.3.3",
     "@tanstack/react-devtools": "^0.10.12",
     "@tanstack/react-router": "^1.170.36",
@@ -21,8 +25,11 @@
     "@tanstack/router-core": "^1.171.30",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
+    "remark-frontmatter": "^5.0.0",
+    "remark-mdx-frontmatter": "^5.2.0",
+    "rollup": "^4.63.3",
     "sass": "^1.104.1",
-    "tailwindcss": "^4.3.3"
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.13",
