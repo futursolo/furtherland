@@ -16,6 +16,7 @@
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.4",
     "@furtherland/common": "workspace:^",
+    "@furtherland/contents": "workspace:^",
     "@furtherland/post-components": "workspace:^",
     "@giscus/react": "^3.1.0",
     "@nanostores/react": "^2.0.1",

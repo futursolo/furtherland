@@ -47,7 +47,7 @@ export default defineConfig({
       'import.meta.contentsDir': `"${
         process.env.FL_CONTENTS_DIR
           ? resolve(process.cwd(), process.env.FL_CONTENTS_DIR)
-          : resolve(join(import.meta.dirname, '..', '..', 'contents'))
+          : resolve(join(import.meta.dirname, '..', 'contents', 'src'))
       }"`,
     },
   },

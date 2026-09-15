@@ -15,6 +15,7 @@
     "frontend-v5:preview": "vite preview"
   },
   "dependencies": {
+    "@furtherland/contents": "workspace:*",
     "@furtherland/post-components": "workspace:*",
     "@mdx-js/rollup": "^3.1.1",
     "@tailwindcss/vite": "^4.3.3",
