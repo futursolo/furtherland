@@ -1,14 +1,24 @@
-import { defineConfig } from 'vite'
-import { devtools } from '@tanstack/devtools-vite'
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-import { tanstackStart } from '@tanstack/react-start/plugin/vite'
+import { devtools } from '@tanstack/devtools-vite';
 
-import viteReact from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
+import mdx from '@mdx-js/rollup';
+
+import { tanstackStart } from '@tanstack/react-start/plugin/vite';
+import tailwindcss from '@tailwindcss/vite';
+import viteReact from '@vitejs/plugin-react';
+
+import { defineConfig } from 'vite';
+
+// The monorepo root (two levels up from this package). Needed so the dev server
+// and SSR allow reading content that lives outside this package (e.g. contents/).
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
 const config = defineConfig({
   resolve: { tsconfigPaths: true },
-  plugins: [devtools(), tailwindcss(), tanstackStart(), viteReact()],
-})
+  server: { fs: { allow: [repoRoot] } },
+  plugins: [devtools(), tailwindcss(), tanstackStart(), viteReact(), mdx()],
+});
 
-export default config
+export default config;
