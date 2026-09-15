@@ -17,7 +17,7 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../
 const config = defineConfig({
   resolve: { tsconfigPaths: true },
   server: { fs: { allow: [repoRoot] } },
-  plugins: [devtools(), tanstackStart(), viteReact(), mdx()],
+  plugins: [devtools(), tanstackStart(), mdx(), viteReact()],
 });
 
 export default config;

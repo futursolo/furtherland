@@ -1267,6 +1267,7 @@ __metadata:
   resolution: "@furtherland/frontend-v5@workspace:packages/frontend-v5"
   dependencies:
     "@biomejs/biome": "npm:^2.5.13"
+    "@furtherland/post-components": "workspace:*"
     "@mdx-js/rollup": "npm:^3.1.1"
     "@tailwindcss/typography": "npm:^0.5.20"
     "@tailwindcss/vite": "npm:^4.3.3"
@@ -1334,7 +1335,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@furtherland/post-components@workspace:^, @furtherland/post-components@workspace:packages/post-components":
+"@furtherland/post-components@workspace:*, @furtherland/post-components@workspace:^, @furtherland/post-components@workspace:packages/post-components":
   version: 0.0.0-use.local
   resolution: "@furtherland/post-components@workspace:packages/post-components"
   dependencies:
@@ -10510,7 +10511,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^8.0.13, vite@npm:^8.3.0":
+"vite@npm:^8, vite@npm:^8.0.13, vite@npm:^8.3.0":
   version: 8.3.0
   resolution: "vite@npm:8.3.0"
   dependencies:
