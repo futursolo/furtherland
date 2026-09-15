@@ -80,7 +80,8 @@ Astro prerenders all routes at build. Blog post URLs are not hard-coded — `src
 - Lint/format/import-ordering is enforced by **Biome** (`biome.jsonc`): 2-space indent, single quotes, semicolons always, trailing commas, 100-col width, LF endings, auto import organization.
 - TypeScript is `strict`. Keep new code type-clean — `yarn lint` runs `tsc --noEmit` against the frontend project.
 - Prefer the existing patterns (SCSS modules beside each React component, the `theme` SCSS partial, nanostores atoms, the `@@frontend/components` barrel) over introducing new conventions.
-- To fix Biome errors (lint/format/import-ordering), run `yarn biome check --write` rather than editing files by hand.
+- Never try to format code or organise imports manually, and never read the Biome configuration (`biome.jsonc`) by hand to figure out the rules.
+- To fix Biome errors (lint/format/import-ordering), apply the autofix first: run `yarn biome check --write`. Only after the autofix has been applied, resort to manual editing for whatever the autofix could not fix.
 - Do not add a test framework unless asked; `yarn lint` is the verification gate.
 
 ## Deployment
