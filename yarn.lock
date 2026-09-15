@@ -1282,6 +1282,7 @@ __metadata:
     "@vitejs/plugin-react": "npm:^6.1.1"
     react: "npm:^19.3.0"
     react-dom: "npm:^19.3.0"
+    sass: "npm:^1.104.1"
     tailwindcss: "npm:^4.3.3"
     typescript: "npm:^6"
     vite: "npm:^8.3.0"
