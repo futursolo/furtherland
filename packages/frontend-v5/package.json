@@ -9,13 +9,10 @@
     ]
   },
   "scripts": {
-    "dev": "vite dev --port 3000",
-    "generate-routes": "tsr generate",
-    "build": "vite build",
-    "preview": "vite preview",
-    "format": "biome format",
-    "lint": "biome lint",
-    "check": "biome check"
+    "frontend-v5:dev": "vite dev --port 3000",
+    "frontend-v5:generate-routes": "tsr generate",
+    "frontend-v5:build": "vite build",
+    "frontend-v5:preview": "vite preview"
   },
   "dependencies": {
     "@furtherland/post-components": "workspace:*",

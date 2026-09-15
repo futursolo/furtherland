@@ -23,15 +23,15 @@ Run from `packages/frontend-v5/` via `yarn`. There is **no test suite**; Biome i
 
 | Command | What it does |
 | --- | --- |
-| `yarn dev` | Dev server (Vite) on port 3000. |
-| `yarn build` | Production build (Vite). |
-| `yarn preview` | Serves the production build locally. |
-| `yarn generate-routes` | Regenerates `src/routeTree.gen.ts` from `src/routes/**` (`tsr generate`). **Run this after adding / renaming / removing a route.** |
-| `yarn lint` / `yarn check` / `yarn format` | Biome lint / full check / format. |
+| `yarn frontend-v5:dev` | Dev server (Vite) on port 3000. |
+| `yarn frontend-v5:build` | Production build (Vite). |
+| `yarn frontend-v5:preview` | Serves the production build locally. |
+| `yarn frontend-v5:generate-routes` | Regenerates `src/routeTree.gen.ts` from `src/routes/**` (`tsr generate`). **Run this after adding / renaming / removing a route.** |
+| `yarn frontend-v5:lint` / `yarn frontend-v5:check` / `yarn frontend-v5:format` | Biome lint / full check / format. |
 
 ## Routing
 
-File-based, under `src/routes/**` (`tsr.config.json` sets `target: react`). `src/routeTree.gen.ts` is **generated** — do not edit it by hand. Add or rename a file under `src/routes/`, then run `yarn generate-routes`. `src/router.tsx` builds the router (and declares the `Register` module for type-safe navigation); `src/routes/__root.tsx` is the root route / document shell (head, theme init script, `<Header>` / `<Footer>`, devtools).
+File-based, under `src/routes/**` (`tsr.config.json` sets `target: react`). `src/routeTree.gen.ts` is **generated** — do not edit it by hand. Add or rename a file under `src/routes/`, then run `yarn frontend-v5:generate-routes`. `src/router.tsx` builds the router (and declares the `Register` module for type-safe navigation); `src/routes/__root.tsx` is the root route / document shell (head, theme init script, `<Header>` / `<Footer>`, devtools).
 
 ## Path aliases
 
