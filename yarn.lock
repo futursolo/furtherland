@@ -858,7 +858,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emnapi/core@npm:^1.11.1, @emnapi/core@npm:^1.11.3":
+"@emnapi/core@npm:^1.11.1":
   version: 1.11.3
   resolution: "@emnapi/core@npm:1.11.3"
   dependencies:
@@ -1258,8 +1258,6 @@ __metadata:
   resolution: "@furtherland/frontend-v5@workspace:packages/frontend-v5"
   dependencies:
     "@biomejs/biome": "npm:^2.5.13"
-    "@emnapi/core": "npm:^1.11.3"
-    "@emnapi/runtime": "npm:^1.11.3"
     "@tailwindcss/typography": "npm:^0.5.20"
     "@tailwindcss/vite": "npm:^4.3.3"
     "@tanstack/devtools-vite": "npm:^0.8.5"
@@ -1273,7 +1271,6 @@ __metadata:
     "@types/react": "npm:^19.3.0"
     "@types/react-dom": "npm:^19.3.0"
     "@vitejs/plugin-react": "npm:^6.1.1"
-    csstype: "npm:^3.2.3"
     react: "npm:^19.3.0"
     react-dom: "npm:^19.3.0"
     tailwindcss: "npm:^4.3.3"
