@@ -1,3 +1,5 @@
+import { use } from 'react';
+
 import { createFileRoute, notFound } from '@tanstack/react-router';
 
 import { SITE_URL } from '@@frontend-v5/constants/site';
@@ -34,17 +36,19 @@ export const Route = createFileRoute('/pages/$slug')({
   loader: ({ params }) => {
     const page = getPage(params.slug);
     if (!page || (page.isDraft && import.meta.env.PROD)) throw notFound();
-    return page;
+    return { title: page.title, slug: page.slug };
   },
   component: PageRoute,
 });
 
 function PageRoute() {
-  const page: PageEntry = Route.useLoaderData();
+  const pageData: PageEntry = Route.useLoaderData();
+
+  const { default: Content } = use(import(`@@contents/pages/${pageData.slug}.mdx`));
 
   return (
-    <Page title={page.title}>
-      <page.Content components={mdxComponents} />
+    <Page title={pageData.title}>
+      <Content components={mdxComponents} />
     </Page>
   );
 }
