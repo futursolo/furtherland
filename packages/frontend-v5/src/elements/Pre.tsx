@@ -1,4 +1,3 @@
-import { withThemeProvider } from '@@frontend-v5/providers/withThemeProvider';
 import { styled } from '@@frontend-v5/utils';
 
 const Pre = styled('pre')(({ theme }) => ({
@@ -18,4 +17,4 @@ const Pre = styled('pre')(({ theme }) => ({
   },
 }));
 
-export default withThemeProvider(Pre);
+export default Pre;

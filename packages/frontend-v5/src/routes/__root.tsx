@@ -5,6 +5,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 import { Box } from '@@frontend-v5/components';
 import { SITE_NAME } from '@@frontend-v5/constants/site';
 import Root from '@@frontend-v5/layouts/Root';
+import Providers from '@@frontend-v5/providers';
 
 // Pre-hydration theme script. Runs before React hydrates to set `data-theme` on
 // <html>, matching `getThemeKind()` in `atoms/theme.tsx` (the `fl_theme`
@@ -35,9 +36,10 @@ const NotFound = () => {
   );
 };
 
-// Common wrapper rendered for every route: the v5 Root layout (ThemeProvider +
-// Header + Footer) around the matched route. `headerKind` mirrors v4, which used
-// the full-height header only on the home page.
+// Common wrapper rendered for every route: the v5 Root layout (Header + Footer)
+// around the matched route. `headerKind` mirrors v4, which used the full-height
+// header only on the home page. Theme provisioning lives in the document shell
+// (`RootDocument`), which wraps this in `Providers`.
 function RootShell() {
   const { pathname } = useLocation();
   const headerKind = pathname === '/' ? 'home' : 'default';
@@ -52,8 +54,9 @@ function RootShell() {
 // Site-wide head. Per-route head (title, description, canonical, og:* and
 // article:*) lives on each route so tags are not duplicated between the root and a
 // matched route. The global `--fl-theme-*` variables and base `html, body` rules
-// are injected by the `ThemeProvider`'s Emotion `<Global>` (see
-// `providers/theme.tsx`), so no stylesheet link is needed here.
+// are injected by the `ThemeProvider`'s Emotion `<Global>` (loaded once via
+// `Providers` in `RootDocument`, see `providers/theme.tsx`), so no stylesheet
+// link is needed here.
 export const Route = createRootRoute({
   head: () => ({
     meta: [
@@ -76,7 +79,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
+        <Providers>{children}</Providers>
         <TanStackDevtools
           config={{ position: 'bottom-right' }}
           plugins={[{ name: 'Tanstack Router', render: <TanStackRouterDevtoolsPanel /> }]}

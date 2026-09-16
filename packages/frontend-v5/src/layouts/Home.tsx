@@ -1,7 +1,6 @@
 import { Author, Box, Link, Main, MainContainer } from '@@frontend-v5/components';
 import type { PostEntry } from '@@frontend-v5/content/posts';
 import { H2 } from '@@frontend-v5/elements';
-import ThemeProvider from '@@frontend-v5/providers/theme';
 import { styled } from '@@frontend-v5/utils';
 
 interface PostSummaryProps {
@@ -59,13 +58,11 @@ const HomePage = (props: HomePageProps) => {
   const { summaries } = props;
 
   return (
-    <ThemeProvider>
-      <Main style={{ minHeight: 'calc(100vh - 160px)' }}>
-        <MainContainer>
-          <PostList summaries={summaries} />
-        </MainContainer>
-      </Main>
-    </ThemeProvider>
+    <Main style={{ minHeight: 'calc(100vh - 160px)' }}>
+      <MainContainer>
+        <PostList summaries={summaries} />
+      </MainContainer>
+    </Main>
   );
 };
 
