@@ -1,6 +1,9 @@
 import type { PropsWithChildren } from 'react';
 
-import { Author, Main, MainContainer } from '@@frontend-v5/components';
+import { Author, LazyOnly, Main, MainContainer } from '@@frontend-v5/components';
+// Imported directly (not via the barrel) so the Giscus dependency only lands in
+// the post page's bundle, not every page that imports the components barrel.
+import PostComments from '@@frontend-v5/components/PostComments';
 import { H1 } from '@@frontend-v5/elements';
 import ThemeProvider from '@@frontend-v5/providers/theme';
 import { styled } from '@@frontend-v5/utils';
@@ -18,7 +21,7 @@ const Content = styled('article')({
 });
 
 const PostPage = (props: PropsWithChildren<PostPageProps>) => {
-  const { children, date, title, isDraft } = props;
+  const { children, slug, date, title, isDraft } = props;
 
   return (
     <ThemeProvider>
@@ -27,6 +30,9 @@ const PostPage = (props: PropsWithChildren<PostPageProps>) => {
           <H1>{title}</H1>
           <Author date={date} isDraft={isDraft} />
           <Content>{children}</Content>
+          <LazyOnly>
+            <PostComments slug={slug} />
+          </LazyOnly>
         </MainContainer>
       </Main>
     </ThemeProvider>

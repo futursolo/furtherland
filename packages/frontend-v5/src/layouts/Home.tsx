@@ -1,9 +1,8 @@
 import { Author, Box, Link, Main, MainContainer } from '@@frontend-v5/components';
+import type { PostEntry } from '@@frontend-v5/content/posts';
 import { H2 } from '@@frontend-v5/elements';
 import ThemeProvider from '@@frontend-v5/providers/theme';
 import { styled } from '@@frontend-v5/utils';
-
-import type { CollectionEntry } from 'astro:content';
 
 interface PostSummaryProps {
   date: string;
@@ -18,6 +17,7 @@ const PostContainer = styled(Box)({
 
 const PostSummary = (props: PostSummaryProps) => {
   const { date, slug, title, isDraft } = props;
+
   return (
     <PostContainer>
       <Link href={`/posts/${slug}`}>
@@ -29,7 +29,7 @@ const PostSummary = (props: PostSummaryProps) => {
 };
 
 interface PostListProps {
-  summaries: CollectionEntry<'posts'>[];
+  summaries: PostEntry[];
 }
 
 const PostListLayout = styled(Box)({
@@ -38,15 +38,21 @@ const PostListLayout = styled(Box)({
 
 const PostList = (props: PostListProps) => {
   const { summaries } = props;
-  const posts = summaries.map((entry) => {
-    const { date, slug, title, isDraft } = entry.data;
-    return <PostSummary key={slug} slug={slug} date={date} title={title} isDraft={isDraft} />;
-  });
+  const items = summaries.map((post) => (
+    <PostSummary
+      key={post.slug}
+      slug={post.slug}
+      date={post.date}
+      title={post.title}
+      isDraft={post.isDraft}
+    />
+  ));
 
-  return <PostListLayout>{posts}</PostListLayout>;
+  return <PostListLayout>{items}</PostListLayout>;
 };
+
 interface HomePageProps {
-  summaries: CollectionEntry<'posts'>[];
+  summaries: PostEntry[];
 }
 
 const HomePage = (props: HomePageProps) => {
