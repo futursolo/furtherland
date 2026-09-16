@@ -1262,6 +1262,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@furtherland/contents@workspace:*, @furtherland/contents@workspace:^, @furtherland/contents@workspace:packages/contents":
+  version: 0.0.0-use.local
+  resolution: "@furtherland/contents@workspace:packages/contents"
+  dependencies:
+    "@furtherland/post-components": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@furtherland/frontend-v5@workspace:packages/frontend-v5":
   version: 0.0.0-use.local
   resolution: "@furtherland/frontend-v5@workspace:packages/frontend-v5"
@@ -1269,10 +1277,10 @@ __metadata:
     "@biomejs/biome": "npm:^2.5.13"
     "@emotion/react": "npm:^11.14.0"
     "@emotion/styled": "npm:^11.14.1"
+    "@furtherland/contents": "workspace:*"
     "@furtherland/post-components": "workspace:*"
     "@mdx-js/rollup": "npm:^3.1.1"
     "@nanostores/react": "npm:^2.0.1"
-    "@tailwindcss/typography": "npm:^0.5.20"
     "@tailwindcss/vite": "npm:^4.3.3"
     "@tanstack/devtools-vite": "npm:^0.8.5"
     "@tanstack/react-devtools": "npm:^0.10.12"
@@ -1313,6 +1321,7 @@ __metadata:
     "@astrojs/ts-plugin": "npm:^1.10.11"
     "@biomejs/biome": "npm:^2.5.13"
     "@furtherland/common": "workspace:^"
+    "@furtherland/contents": "workspace:^"
     "@furtherland/post-components": "workspace:^"
     "@giscus/react": "npm:^3.1.0"
     "@nanostores/react": "npm:^2.0.1"
@@ -3214,17 +3223,6 @@ __metadata:
     "@tailwindcss/oxide-win32-x64-msvc":
       optional: true
   checksum: 10c0/6c38b25226dad252347451ed8953a998432b51f1e068b25e021215b886ccf8bcf3af58faf5f4ab50368091e657ca2fa341df1deca6101651eddb567122f2acb5
-  languageName: node
-  linkType: hard
-
-"@tailwindcss/typography@npm:^0.5.20":
-  version: 0.5.20
-  resolution: "@tailwindcss/typography@npm:0.5.20"
-  dependencies:
-    postcss-selector-parser: "npm:6.0.10"
-  peerDependencies:
-    tailwindcss: "*"
-  checksum: 10c0/e42f9347a7802d620c56ea3379dc7986c0eece9af2d0ae170d530a8c8ef9815f6fdb6b23b2ae76c9832314dcca125e6a166bfec1c88326495896afeab64c1c2e
   languageName: node
   linkType: hard
 
@@ -5170,15 +5168,6 @@ __metadata:
   version: 6.2.2
   resolution: "css-what@npm:6.2.2"
   checksum: 10c0/91e24c26fb977b4ccef30d7007d2668c1c10ac0154cc3f42f7304410e9594fb772aea4f30c832d2993b132ca8d99338050866476210316345ec2e7d47b248a56
-  languageName: node
-  linkType: hard
-
-"cssesc@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "cssesc@npm:3.0.0"
-  bin:
-    cssesc: bin/cssesc
-  checksum: 10c0/6bcfd898662671be15ae7827120472c5667afb3d7429f1f917737f3bf84c4176003228131b643ae74543f17a394446247df090c597bb9a728cce298606ed0aa7
   languageName: node
   linkType: hard
 
@@ -8789,16 +8778,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-selector-parser@npm:6.0.10":
-  version: 6.0.10
-  resolution: "postcss-selector-parser@npm:6.0.10"
-  dependencies:
-    cssesc: "npm:^3.0.0"
-    util-deprecate: "npm:^1.0.2"
-  checksum: 10c0/a0b27c5e3f7604c8dc7cd83f145fdd7b21448e0d86072da99e0d78e536ba27aa9db2d42024c50aa530408ee517c4bdc0260529e1afb56608f9a82e839c207e82
-  languageName: node
-  linkType: hard
-
 "postcss@npm:^8.3.11, postcss@npm:^8.5.28":
   version: 8.5.28
   resolution: "postcss@npm:8.5.28"
@@ -10711,13 +10690,6 @@ __metadata:
   peerDependencies:
     react: ^16.8.0  || ^17 || ^18 || ^19 || ^19.0.0-rc
   checksum: 10c0/8bbebf52b063f2e705eb27364f08ec2eff987b9e8d28d82a28248652dd89ef53cb514e1f2ee1cbc6ac6e083a8dce86310301c3e92a99902b98c32a26381202d7
-  languageName: node
-  linkType: hard
-
-"util-deprecate@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "util-deprecate@npm:1.0.2"
-  checksum: 10c0/41a5bdd214df2f6c3ecf8622745e4a366c4adced864bc3c833739791aeeeb1838119af7daed4ba36428114b5c67dcda034a79c882e97e43c03e66a4dd7389942
   languageName: node
   linkType: hard
 

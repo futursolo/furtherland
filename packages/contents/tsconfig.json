@@ -6,6 +6,7 @@
     "strict": true,
     "noEmit": true,
     "paths": {
+      "@@post-components/*": ["../post-components/src/*"],
       "@@contents/*": ["./src/*"]
     }
   },
