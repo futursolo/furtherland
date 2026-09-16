@@ -7,8 +7,8 @@ import { styled } from '@@frontend-v5/utils';
 // light theme by default and a dark palette scoped to `html[data-theme='dark']`.
 // Used as an MDX `components={{ table: Table }}` override: MDX passes the
 // `thead`/`tbody` as `children`, which we place inside the `<table>`. The
-// component is rendered inside a `ThemeProvider` (the Post layout), so the
-// `styled` wrapper receives the theme from its provider.
+// component is rendered inside the root `Providers` (which wraps the tree in a
+// `ThemeProvider`), so the `styled` wrapper receives the theme from its provider.
 const Wrapper = styled.div(({ theme }) => ({
   width: '100%',
   margin: '1.5rem 0',

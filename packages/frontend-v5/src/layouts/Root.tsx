@@ -1,7 +1,6 @@
 import type { PropsWithChildren } from 'react';
 
 import { Box, Footer, Header } from '@@frontend-v5/components';
-import ThemeProvider from '@@frontend-v5/providers/theme';
 import { styled } from '@@frontend-v5/utils';
 
 const RootLayout = styled(Box)({
@@ -16,13 +15,11 @@ const Layout = (props: PropsWithChildren<{ headerKind: 'home' | 'default' }>) =>
   const { children, headerKind } = props;
 
   return (
-    <ThemeProvider>
-      <RootLayout>
-        <Header headerKind={headerKind} />
-        {children}
-        <Footer />
-      </RootLayout>
-    </ThemeProvider>
+    <RootLayout>
+      <Header headerKind={headerKind} />
+      {children}
+      <Footer />
+    </RootLayout>
   );
 };
 
