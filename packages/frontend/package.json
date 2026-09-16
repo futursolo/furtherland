@@ -6,8 +6,7 @@
   "scripts": {
     "frontend:start": "astro dev",
     "frontend:build": "astro build",
-    "frontend:preview": "serve -l 1741",
-    "postinstall": "astro sync"
+    "frontend:preview": "serve -l 1741"
   },
   "dependencies": {
     "@astrojs/markdown-satteri": "^0.4.1",
