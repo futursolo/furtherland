@@ -6,7 +6,8 @@
     "module": "ESNext",
     "paths": {
       "@@frontend-v5/*": ["./src/*"],
-      "@@post-components/*": ["../post-components/src/*"]
+      "@@post-components/*": ["../post-components/src/*"],
+      "@@contents/*": ["../contents/src/*"]
     },
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["vite/client"],

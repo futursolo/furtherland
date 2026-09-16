@@ -17,6 +17,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@furtherland/contents": "workspace:*",
     "@furtherland/post-components": "workspace:*",
     "@mdx-js/rollup": "^3.1.1",
     "@nanostores/react": "^2.0.1",
