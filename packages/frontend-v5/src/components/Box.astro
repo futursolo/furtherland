@@ -1,0 +1,28 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+// Layout primitive, the Astro counterpart of the React `Box` component.
+// Renders a flex column with border-box sizing. Props are typed as the built-in
+// attributes for a `<div>` (Astro TypeScript guide, "Built-in HTML attributes"),
+// so consumers can pass `class`, `class:list`, `style` or any other valid
+// `<div>` attribute. A passed `class`/`class:list` is merged with the base `box`
+// class via the `class:list` directive (deduplicated through clsx); all remaining
+// attributes are forwarded to the element. A `<slot/>` holds the children.
+// Import with the explicit `.astro` extension to distinguish it from the React
+// `Box` island in the components barrel.
+type Props = HTMLAttributes<'div'>;
+
+const { class: className, 'class:list': classList, ...restProps } = Astro.props;
+---
+
+<div class:list={['box', className, classList]} {...restProps}>
+  <slot />
+</div>
+
+<style>
+.box {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+</style>
