@@ -1,0 +1,49 @@
+import Giscus from '@giscus/react';
+import { useStore } from '@nanostores/react';
+
+import themeAtom from '@@frontend-v5/atoms/theme';
+import { styled } from '@@frontend-v5/utils';
+
+interface PostCommentsProps {
+  slug: string;
+}
+
+const GiscusComments = ({ slug }: PostCommentsProps) => {
+  const themeKind = useStore(themeAtom);
+
+  return (
+    <Giscus
+      repo="futursolo/furtherland"
+      repoId="MDEwOlJlcG9zaXRvcnkzMzExMDIzOQ=="
+      category="Post Comments"
+      categoryId="DIC_kwDOAfk4384DEdL-"
+      mapping="specific"
+      term={`slug:${slug}`}
+      strict="1"
+      reactionsEnabled="1"
+      emitMetadata="0"
+      inputPosition="top"
+      theme={themeKind}
+      lang="en"
+    />
+  );
+};
+
+const Layout = styled('section')({
+  boxSizing: 'border-box',
+  width: '100%',
+  marginTop: '3rem',
+});
+
+// Post comments wrapper. Styled with SCSS (`./PostComments.module.scss`) rather
+// than Emotion. The `Giscus` iframe is deferred until the section is scrolled
+// into view (via `useIntersectionObserver`) and stays mounted once shown.
+const PostComments = ({ slug }: PostCommentsProps) => {
+  return (
+    <Layout>
+      <GiscusComments slug={slug} />
+    </Layout>
+  );
+};
+
+export default PostComments;

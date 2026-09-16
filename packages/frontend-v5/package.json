@@ -19,6 +19,7 @@
     "@emotion/styled": "^11.14.1",
     "@furtherland/contents": "workspace:*",
     "@furtherland/post-components": "workspace:*",
+    "@giscus/react": "^3.1.0",
     "@mdx-js/rollup": "^3.1.1",
     "@nanostores/react": "^2.0.1",
     "@shikijs/rehype": "^4.4.3",
