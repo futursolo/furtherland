@@ -1,4 +1,5 @@
-import { Author, Box, H2, Link, Main, MainContainer } from '@@frontend-v5/components';
+import { Author, Box, Link, Main, MainContainer } from '@@frontend-v5/components';
+import { H2 } from '@@frontend-v5/elements';
 import ThemeProvider from '@@frontend-v5/providers/theme';
 import { styled } from '@@frontend-v5/utils';
 
