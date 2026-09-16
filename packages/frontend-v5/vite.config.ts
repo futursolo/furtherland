@@ -39,7 +39,13 @@ const config = defineConfig({
   },
   plugins: [
     devtools(),
-    tanstackStart(),
+    tanstackStart({
+      prerender: {
+        enabled: true,
+        crawlLinks: true,
+        failOnError: true,
+      },
+    }),
     mdx({
       remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm],
       // Mirrors the v4 (Astro) `markdown.shikiConfig.themes`: dual-theme Shiki
