@@ -3,10 +3,12 @@ import { fileURLToPath } from 'node:url';
 
 import { devtools } from '@tanstack/devtools-vite';
 import mdx from '@mdx-js/rollup';
+import rehypeShiki from '@shikijs/rehype';
 import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import viteReact from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import remarkFrontmatter from 'remark-frontmatter';
+import remarkGfm from 'remark-gfm';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 
 // The monorepo root (two levels up from this package). Needed so the dev server
@@ -32,7 +34,10 @@ const config = defineConfig({
     devtools(),
     tanstackStart(),
     mdx({
-      remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
+      remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm],
+      // Mirrors the v4 (Astro) `markdown.shikiConfig.themes`: dual-theme Shiki
+      // highlighting, switched on the client via the `data-theme` attribute.
+      rehypePlugins: [[rehypeShiki, { themes: { light: 'github-light', dark: 'github-dark' } }]],
     }),
     viteReact(),
   ],
