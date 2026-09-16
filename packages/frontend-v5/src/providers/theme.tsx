@@ -2,7 +2,7 @@
 
 import { type PropsWithChildren, useEffect } from 'react';
 
-import { ThemeProvider as BaseProvider } from '@emotion/react';
+import { ThemeProvider as BaseProvider, Global } from '@emotion/react';
 import { useStore } from '@nanostores/react';
 import { useMediaQuery } from 'usehooks-ts';
 
@@ -150,7 +150,7 @@ const ThemeProvider = (props: PropsWithChildren) => {
 
   return (
     <BaseProvider theme={theme}>
-      {/* <Global styles={globalStyles} /> */}
+      <Global styles={globalStyles} />
       {children}
     </BaseProvider>
   );
