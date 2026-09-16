@@ -1279,6 +1279,7 @@ __metadata:
     "@emotion/styled": "npm:^11.14.1"
     "@furtherland/contents": "workspace:*"
     "@furtherland/post-components": "workspace:*"
+    "@giscus/react": "npm:^3.1.0"
     "@mdx-js/rollup": "npm:^3.1.1"
     "@nanostores/react": "npm:^2.0.1"
     "@shikijs/rehype": "npm:^4.4.3"
