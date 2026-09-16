@@ -1,3 +1,5 @@
+import { use } from 'react';
+
 import { createFileRoute, notFound } from '@tanstack/react-router';
 
 import { AUTHOR_NAME, SITE_URL } from '@@frontend-v5/constants/site';
@@ -38,17 +40,25 @@ export const Route = createFileRoute('/posts/$slug')({
   loader: ({ params }) => {
     const post = getPost(params.slug);
     if (!post || (post.isDraft && import.meta.env.PROD)) throw notFound();
-    return post;
+    return { slug: post.slug, date: post.date, isDraft: post.isDraft, title: post.title };
   },
   component: PostPage,
 });
 
 function PostPage() {
-  const post: PostEntry = Route.useLoaderData();
+  const postData: PostEntry = Route.useLoaderData();
+  const { default: Content } = use(
+    import(`@@contents/posts/${postData.date}/${postData.slug}.mdx`),
+  );
 
   return (
-    <Post slug={post.slug} date={post.date} title={post.title} isDraft={post.isDraft}>
-      <post.Content components={mdxComponents} />
+    <Post
+      slug={postData.slug}
+      date={postData.date}
+      title={postData.title}
+      isDraft={postData.isDraft}
+    >
+      <Content components={mdxComponents} />
     </Post>
   );
 }
