@@ -2,16 +2,9 @@ import { TanStackDevtools } from '@tanstack/react-devtools';
 import { createRootRoute, HeadContent, Outlet, Scripts, useLocation } from '@tanstack/react-router';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 
-import { Box } from '@@frontend-v5/components';
+import { Box, ThemePreloadScript } from '@@frontend-v5/components';
 import { SITE_NAME } from '@@frontend-v5/constants/site';
 import Root from '@@frontend-v5/layouts/Root';
-
-// Pre-hydration theme script. Runs before React hydrates to set `data-theme` on
-// <html>, matching `getThemeKind()` in `atoms/theme.tsx` (the `fl_theme`
-// localStorage key) so there is no flash of the wrong theme. This is the v5
-// counterpart of v4's `ThemePreloadScript.astro`. It is static and trusted (not
-// user input), so it is safe to inline into <head>.
-const THEME_INIT_SCRIPT = `(function(){try{var t=window.localStorage.getItem('fl_theme');if(t){var s=JSON.parse(t);if(Date.now()/1000-s.last_updated<=6*60*60){if(s.kind==='light'){document.documentElement.setAttribute('data-theme','light');return;}if(s.kind==='dark'){document.documentElement.setAttribute('data-theme','dark');return;}}}catch(e){}if(window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.setAttribute('data-theme','dark');}else{document.documentElement.setAttribute('data-theme','light');}})();`;
 
 // Fallback shown when no route matches (or a route throws `notFound()`). A
 // self-contained 404 using the v5 `Box` component — mirrors v4's `404.astro`.
@@ -71,8 +64,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: static, trusted pre-hydration theme script (not user input) */}
-        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        <ThemePreloadScript />
         <HeadContent />
       </head>
       <body>
