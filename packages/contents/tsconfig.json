@@ -6,8 +6,9 @@
     "strict": true,
     "noEmit": true,
     "paths": {
+      "@@post-components/*": ["../post-components/src/*"],
       "@@contents/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.mdx"]
 }

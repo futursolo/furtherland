@@ -20,11 +20,9 @@ const config = defineConfig({
   resolve: {
     tsconfigPaths: true,
     alias: {
-      // Explicit alias (not just `tsconfigPaths`) so Vite's Sass importer
-      // resolves `@use '@@frontend-v5/...'` inside `.scss` files.
       '@@frontend-v5': path.resolve(import.meta.dirname, 'src'),
-      // Content now lives in the sibling @furtherland/contents package.
       '@@contents': path.resolve(import.meta.dirname, '../contents/src'),
+      '@@post-components': path.resolve(import.meta.dirname, '../post-components/src'),
     },
   },
   server: {
