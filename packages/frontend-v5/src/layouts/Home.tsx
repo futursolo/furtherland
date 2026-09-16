@@ -19,7 +19,7 @@ const PostSummary = (props: PostSummaryProps) => {
 
   return (
     <PostContainer>
-      <Link href={`/posts/${slug}`}>
+      <Link to={`/posts/${slug}`}>
         <H2>{title}</H2>
       </Link>
       <Author date={date} isDraft={isDraft} />

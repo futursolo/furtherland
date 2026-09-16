@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { useTheme } from '@emotion/react';
 import { useStore } from '@nanostores/react';
+import { Link } from '@tanstack/react-router';
 import { FiMoon, FiSun } from 'react-icons/fi';
 
 import themeAtom, { persistThemeKind } from '@@frontend-v5/atoms/theme';
@@ -12,7 +13,7 @@ import { styled } from '@@frontend-v5/utils';
 
 import LinkItem from './LinkItem';
 
-const UnstyledLink = styled('a')({
+const UnstyledLink = styled(Link)({
   color: 'inherit',
   textDecoration: 'none',
 });
@@ -20,13 +21,13 @@ const UnstyledLink = styled('a')({
 const Links = () => {
   return (
     <>
-      <UnstyledLink href="/">
+      <UnstyledLink to="/">
         <LinkItem colour="rgba(92, 184, 230, 0.9)">Home</LinkItem>
       </UnstyledLink>
-      <UnstyledLink href="/pages/about">
+      <UnstyledLink to="/pages/about">
         <LinkItem colour="rgba(255, 242, 66, 0.9)">About</LinkItem>
       </UnstyledLink>
-      <UnstyledLink href="/pages/links">
+      <UnstyledLink to="/pages/links">
         <LinkItem colour="rgba(230, 117, 92, 0.9)">Links</LinkItem>
       </UnstyledLink>
     </>
