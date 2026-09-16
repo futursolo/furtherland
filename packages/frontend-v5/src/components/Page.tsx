@@ -1,6 +1,7 @@
 import type { PropsWithChildren } from 'react';
 
-import { H1, Main, MainContainer } from '@@frontend-v5/components';
+import { Main, MainContainer } from '@@frontend-v5/components';
+import { H1 } from '@@frontend-v5/elements';
 import ThemeProvider from '@@frontend-v5/providers/theme';
 import { styled } from '@@frontend-v5/utils';
 
