@@ -23,6 +23,7 @@
     "@mdx-js/react": "^3.1.1",
     "@yarnpkg/core": "^4.9.1",
     "@yarnpkg/extensions": "^2.0.7",
+    "@yarnpkg/sdks": "^3.3.1",
     "react": "^19.3.0"
   }
 }

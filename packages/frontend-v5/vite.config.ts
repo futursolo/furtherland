@@ -6,17 +6,24 @@ import mdx from '@mdx-js/rollup';
 import rehypeShiki from '@shikijs/rehype';
 import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import viteReact from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import { createLogger, defineConfig } from 'vite';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkGfm from 'remark-gfm';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 
-// The monorepo root (two levels up from this package). Needed so the dev server
-// and SSR allow reading content that lives outside this package (e.g. the
-// sibling @furtherland/contents package).
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
+const logger = createLogger()
+const loggerWarnOnce = logger.warnOnce
+logger.warnOnce = (msg, options) => {
+  if (msg.includes('Using Yarn PnP with Vite is discouraged and PnP-specific bugs will no longer be actively worked on.')) {
+    return
+  }
+  loggerWarnOnce(msg, options)
+}
+
 const config = defineConfig({
+  customLogger: logger,
   resolve: {
     tsconfigPaths: true,
     alias: {

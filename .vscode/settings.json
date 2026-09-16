@@ -12,5 +12,7 @@
   },
   "biome.lsp.bin": "./scripts/biomeBin.sh",
   "eslint.enable": false,
-  "prettier.enable": false
+  "prettier.enable": false,
+  "typescript.tsdk": ".yarn/sdks/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true
 }

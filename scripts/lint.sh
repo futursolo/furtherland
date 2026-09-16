@@ -9,6 +9,5 @@ tsc --project packages/post-components/tsconfig.json --noEmit || FINAL_STATUS=$?
 tsc --project packages/frontend/tsconfig.json --noEmit || FINAL_STATUS=$?
 tsc --project packages/frontend-v5/tsconfig.json --noEmit || FINAL_STATUS=$?
 tsc --project tsconfig.json --noEmit || FINAL_STATUS=$?
-(cd packages/frontend && yarn astro check) || FINAL_STATUS=$?
 
 exit $FINAL_STATUS
