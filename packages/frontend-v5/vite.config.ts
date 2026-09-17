@@ -41,6 +41,10 @@ const config = defineConfig({
   plugins: [
     devtools(),
     tanstackStart({
+      // `/robots.txt` is a server route (no `component`), so the auto-discovery
+      // skips it, and it is never linked from a page. List it explicitly so the
+      // build prerenders it to a static `dist/client/robots.txt`.
+      pages: [{ path: '/robots.txt' }],
       prerender: {
         enabled: true,
         crawlLinks: true,
