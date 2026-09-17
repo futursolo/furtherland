@@ -1,5 +1,6 @@
 import ClientOnly from '@@frontend-v5/components/ClientOnly';
 import LazyOnly from '@@frontend-v5/components/LazyOnly';
+import Render from '@@frontend-v5/components/Render';
 
 import Anchor from './Anchor';
 import H3 from './H3';
@@ -22,4 +23,5 @@ export const mdxComponents = {
   table: Table,
   ClientOnly,
   LazyOnly,
+  Render,
 };

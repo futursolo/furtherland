@@ -7,4 +7,5 @@ export { default as LazyOnly } from './LazyOnly';
 export { default as Link } from './Link';
 export { default as Main, MainContainer } from './Main';
 export { default as NotFound } from './NotFound';
+export { default as Render } from './Render';
 export { default as ThemePreloadScript } from './ThemePreloadScript';
