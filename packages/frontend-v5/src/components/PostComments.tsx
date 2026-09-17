@@ -35,9 +35,9 @@ const Layout = styled('section')({
   marginTop: '3rem',
 });
 
-// Post comments wrapper. Styled with SCSS (`./PostComments.module.scss`) rather
-// than Emotion. The `Giscus` iframe is deferred until the section is scrolled
-// into view (via `useIntersectionObserver`) and stays mounted once shown.
+// Post comments wrapper (styled with Emotion). The `Giscus` iframe is deferred
+// by the post layout, which wraps this component in `LazyOnly` and mounts it
+// only once it is scrolled into view; the observer lives in `LazyOnly`.
 const PostComments = ({ slug }: PostCommentsProps) => {
   return (
     <Layout>
