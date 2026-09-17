@@ -2,3 +2,5 @@
 /.yarn/releases/*    binary
 /.yarn/plugins/**/*  binary
 /.pnp.*              binary linguist-generated
+/yarn.lock           generated
+/packages/frontend-v5/src/routeTree.gen.ts generated

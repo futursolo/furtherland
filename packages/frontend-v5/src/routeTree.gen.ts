@@ -13,6 +13,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as R404RouteImport } from './routes/404'
 import { Route as AtomDotxmlRouteImport } from './routes/atom[.]xml'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as Sitemap0DotxmlRouteImport } from './routes/sitemap-0[.]xml'
+import { Route as SitemapIndexDotxmlRouteImport } from './routes/sitemap-index[.]xml'
 import { Route as PagesSlugRouteImport } from './routes/pages/$slug'
 import { Route as PostsSlugRouteImport } from './routes/posts/$slug'
 
@@ -36,6 +38,16 @@ const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
   path: '/robots.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Sitemap0DotxmlRoute = Sitemap0DotxmlRouteImport.update({
+  id: '/sitemap-0.xml',
+  path: '/sitemap-0.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapIndexDotxmlRoute = SitemapIndexDotxmlRouteImport.update({
+  id: '/sitemap-index.xml',
+  path: '/sitemap-index.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PagesSlugRoute = PagesSlugRouteImport.update({
   id: '/pages/$slug',
   path: '/pages/$slug',
@@ -52,6 +64,8 @@ export interface FileRoutesByFullPath {
   '/404': typeof R404Route
   '/atom.xml': typeof AtomDotxmlRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap-0.xml': typeof Sitemap0DotxmlRoute
+  '/sitemap-index.xml': typeof SitemapIndexDotxmlRoute
   '/pages/$slug': typeof PagesSlugRoute
   '/posts/$slug': typeof PostsSlugRoute
 }
@@ -60,6 +74,8 @@ export interface FileRoutesByTo {
   '/404': typeof R404Route
   '/atom.xml': typeof AtomDotxmlRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap-0.xml': typeof Sitemap0DotxmlRoute
+  '/sitemap-index.xml': typeof SitemapIndexDotxmlRoute
   '/pages/$slug': typeof PagesSlugRoute
   '/posts/$slug': typeof PostsSlugRoute
 }
@@ -69,22 +85,40 @@ export interface FileRoutesById {
   '/404': typeof R404Route
   '/atom.xml': typeof AtomDotxmlRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap-0.xml': typeof Sitemap0DotxmlRoute
+  '/sitemap-index.xml': typeof SitemapIndexDotxmlRoute
   '/pages/$slug': typeof PagesSlugRoute
   '/posts/$slug': typeof PostsSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/404' | '/atom.xml' | '/robots.txt' | '/pages/$slug' | '/posts/$slug'
+    | '/'
+    | '/404'
+    | '/atom.xml'
+    | '/robots.txt'
+    | '/sitemap-0.xml'
+    | '/sitemap-index.xml'
+    | '/pages/$slug'
+    | '/posts/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/404' | '/atom.xml' | '/robots.txt' | '/pages/$slug' | '/posts/$slug'
+    | '/'
+    | '/404'
+    | '/atom.xml'
+    | '/robots.txt'
+    | '/sitemap-0.xml'
+    | '/sitemap-index.xml'
+    | '/pages/$slug'
+    | '/posts/$slug'
   id:
     | '__root__'
     | '/'
     | '/404'
     | '/atom.xml'
     | '/robots.txt'
+    | '/sitemap-0.xml'
+    | '/sitemap-index.xml'
     | '/pages/$slug'
     | '/posts/$slug'
   fileRoutesById: FileRoutesById
@@ -94,6 +128,8 @@ export interface RootRouteChildren {
   R404Route: typeof R404Route
   AtomDotxmlRoute: typeof AtomDotxmlRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
+  Sitemap0DotxmlRoute: typeof Sitemap0DotxmlRoute
+  SitemapIndexDotxmlRoute: typeof SitemapIndexDotxmlRoute
   PagesSlugRoute: typeof PagesSlugRoute
   PostsSlugRoute: typeof PostsSlugRoute
 }
@@ -128,6 +164,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RobotsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sitemap-0.xml': {
+      id: '/sitemap-0.xml'
+      path: '/sitemap-0.xml'
+      fullPath: '/sitemap-0.xml'
+      preLoaderRoute: typeof Sitemap0DotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-index.xml': {
+      id: '/sitemap-index.xml'
+      path: '/sitemap-index.xml'
+      fullPath: '/sitemap-index.xml'
+      preLoaderRoute: typeof SitemapIndexDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pages/$slug': {
       id: '/pages/$slug'
       path: '/pages/$slug'
@@ -150,6 +200,8 @@ const rootRouteChildren: RootRouteChildren = {
   R404Route: R404Route,
   AtomDotxmlRoute: AtomDotxmlRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
+  Sitemap0DotxmlRoute: Sitemap0DotxmlRoute,
+  SitemapIndexDotxmlRoute: SitemapIndexDotxmlRoute,
   PagesSlugRoute: PagesSlugRoute,
   PostsSlugRoute: PostsSlugRoute,
 }
