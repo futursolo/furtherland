@@ -77,7 +77,9 @@ const config = defineConfig({
     alias: {
       '@@frontend-v5': path.resolve(import.meta.dirname, 'src'),
       '@@common': path.resolve(import.meta.dirname, '../common/src'),
-      '@@contents': path.resolve(import.meta.dirname, '../contents/src'),
+      '@@contents': process.env.FL_CONTENTS_DIR
+        ? path.resolve(process.cwd(), process.env.FL_CONTENTS_DIR)
+        : path.resolve(import.meta.dirname, '../contents/src'),
       '@@post-components': path.resolve(import.meta.dirname, '../post-components/src'),
     },
   },
