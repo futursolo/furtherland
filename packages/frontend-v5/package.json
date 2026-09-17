@@ -9,7 +9,7 @@
     ]
   },
   "scripts": {
-    "frontend-v5:dev": "vite dev --port 3000",
+    "frontend-v5:dev": "vite dev --port 1741",
     "frontend-v5:generate-routes": "tsr generate",
     "frontend-v5:build": "vite build",
     "frontend-v5:preview": "vite preview"
