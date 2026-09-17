@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as R404RouteImport } from './routes/404'
 import { Route as AtomDotxmlRouteImport } from './routes/atom[.]xml'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as PagesSlugRouteImport } from './routes/pages/$slug'
@@ -18,6 +19,11 @@ import { Route as PostsSlugRouteImport } from './routes/posts/$slug'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const R404Route = R404RouteImport.update({
+  id: '/404',
+  path: '/404',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AtomDotxmlRoute = AtomDotxmlRouteImport.update({
@@ -43,6 +49,7 @@ const PostsSlugRoute = PostsSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/404': typeof R404Route
   '/atom.xml': typeof AtomDotxmlRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/pages/$slug': typeof PagesSlugRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/404': typeof R404Route
   '/atom.xml': typeof AtomDotxmlRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/pages/$slug': typeof PagesSlugRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/404': typeof R404Route
   '/atom.xml': typeof AtomDotxmlRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/pages/$slug': typeof PagesSlugRoute
@@ -65,12 +74,15 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/atom.xml' | '/robots.txt' | '/pages/$slug' | '/posts/$slug'
+  fullPaths:
+    '/' | '/404' | '/atom.xml' | '/robots.txt' | '/pages/$slug' | '/posts/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/atom.xml' | '/robots.txt' | '/pages/$slug' | '/posts/$slug'
+  to:
+    '/' | '/404' | '/atom.xml' | '/robots.txt' | '/pages/$slug' | '/posts/$slug'
   id:
     | '__root__'
     | '/'
+    | '/404'
     | '/atom.xml'
     | '/robots.txt'
     | '/pages/$slug'
@@ -79,6 +91,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  R404Route: typeof R404Route
   AtomDotxmlRoute: typeof AtomDotxmlRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   PagesSlugRoute: typeof PagesSlugRoute
@@ -92,6 +105,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/404': {
+      id: '/404'
+      path: '/404'
+      fullPath: '/404'
+      preLoaderRoute: typeof R404RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/atom.xml': {
@@ -127,6 +147,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  R404Route: R404Route,
   AtomDotxmlRoute: AtomDotxmlRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   PagesSlugRoute: PagesSlugRoute,

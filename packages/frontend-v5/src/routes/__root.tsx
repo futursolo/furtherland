@@ -2,32 +2,17 @@ import { TanStackDevtools } from '@tanstack/react-devtools';
 import { createRootRoute, HeadContent, Outlet, Scripts, useLocation } from '@tanstack/react-router';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 
-import { Box, ThemePreloadScript } from '@@frontend-v5/components';
+import { NotFound, ThemePreloadScript } from '@@frontend-v5/components';
 import { SITE_NAME, SITE_URL } from '@@frontend-v5/constants/site';
 import Root from '@@frontend-v5/layouts/Root';
 import Providers from '@@frontend-v5/providers';
+import formatTitle from '@@frontend-v5/utils/formatTitle';
 
-// Fallback shown when no route matches (or a route throws `notFound()`). A
-// self-contained 404 using the v5 `Box` component — mirrors v4's `404.astro`.
-const NotFound = () => {
-  return (
-    <Box
-      style={{
-        minHeight: '100vh',
-        justifyContent: 'center',
-        alignItems: 'center',
-        textAlign: 'center',
-        padding: 20,
-      }}
-    >
-      <h1 style={{ fontSize: '4rem', margin: 0 }}>404</h1>
-      <p style={{ fontSize: '1.2rem' }}>Oops! Page Not Found.</p>
-      <a href="/" style={{ color: 'var(--fl-theme-main-colour-primary)' }}>
-        Go back home
-      </a>
-    </Box>
-  );
-};
+// Fallback shown when no route matches (or a route throws `notFound()`). The root
+// `component` (`RootShell`) still renders the site chrome (`Root`: Header + Footer);
+// the not-found component is rendered inside its `<Outlet />`, so it is the bare
+// `NotFound` content — the same way a normal child route renders inside `RootShell`.
+// This reproduces v4's full-page `404.astro` (chrome + centred message).
 
 // Common wrapper rendered for every route: the v5 Root layout (Header + Footer)
 // around the matched route. `headerKind` mirrors v4, which used the full-height
@@ -51,11 +36,18 @@ function RootShell() {
 // `Providers` in `RootDocument`, see `providers/theme.tsx`), so no stylesheet
 // link is needed here.
 export const Route = createRootRoute({
-  head: () => ({
+  head: ({ match }) => ({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width,initial-scale=1.0,viewport-fit=cover' },
       { property: 'og:site_name', content: SITE_NAME },
+      // The root head is shared by every route. Only when the matched tree is a
+      // not-found (a loader threw `notFound()` or no route matched, which sets
+      // `match._notFound`) do we emit a `404 Not Found` title and a `noindex` robots meta
+      // — restoring the head v4's `404.astro` set, which v5 previously dropped.
+      ...(match._notFound
+        ? [{ title: formatTitle('404 Not Found') }, { name: 'robots', content: 'noindex' }]
+        : []),
     ],
     // v4 exposed the feed via `<link rel="alternate">`; v5 serves an Atom feed at
     // `/atom.xml` (see `routes/atom[.]xml.ts` + `server/feed.server.ts`).
