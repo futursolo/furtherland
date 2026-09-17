@@ -15,7 +15,7 @@ Before editing files for a substantial task:
 
 ## What this is
 
-The **v5 frontend** (`@furtherland/frontend-v5`) — a rebuild of furtherland on **TanStack Start** (Vite-based, SSR) + **TanStack Router** (file-based routing) + **React 19**. It is a workspace in this Yarn 4 monorepo and the planned replacement for the Astro-based v4 frontend (`@furtherland/frontend`). Styling is hand-written CSS using custom properties in `src/styles.css` (Tailwind has been removed).
+The **v5 frontend** (`@furtherland/frontend-v5`) — a rebuild of furtherland on **TanStack Start** (Vite-based, SSR) + **TanStack Router** (file-based routing) + **React 19**. It is a workspace in this Yarn 4 monorepo and the planned replacement for the Astro-based v4 frontend (`@furtherland/frontend`). Styling is Emotion-based: a `theme` object in `src/providers/theme.tsx` is consumed by the `ThemeProvider` and by `styled`/`sx` (from `@@frontend-v5/utils`), and global CSS (the `--fl-theme-*` custom properties plus base `html, body` rules) is injected by the provider's Emotion `<Global>`. Tailwind has been removed.
 
 ## Commands
 
