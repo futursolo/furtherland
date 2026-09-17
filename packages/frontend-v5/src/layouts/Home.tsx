@@ -28,7 +28,7 @@ const PostSummary = (props: PostSummaryProps) => {
 };
 
 interface PostListProps {
-  summaries: PostEntry[];
+  summaries: Omit<PostEntry, 'Content'>[];
 }
 
 const PostListLayout = styled(Box)({
@@ -51,7 +51,7 @@ const PostList = (props: PostListProps) => {
 };
 
 interface HomePageProps {
-  summaries: PostEntry[];
+  summaries: Omit<PostEntry, 'Content'>[];
 }
 
 const HomePage = (props: HomePageProps) => {

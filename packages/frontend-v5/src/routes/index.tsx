@@ -22,7 +22,7 @@ export const Route = createFileRoute('/')({
   }),
   loader: async () => {
     const summaries = await getPostSummaries();
-    return { summaries };
+    return { summaries: summaries.map(({ Content, ...m }) => ({ ...m })) };
   },
   component: HomePage,
 });
