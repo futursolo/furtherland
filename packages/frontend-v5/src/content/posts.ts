@@ -33,10 +33,15 @@ export type PostEntry = z.infer<typeof postSchema> & { Content: MdxComponent };
  */
 export const posts: Record<string, PostEntry> = {};
 
-for (const mod of Object.values(mdxModules)) {
-  if (!mod.frontmatter) continue;
-  const parsed = postSchema.safeParse(mod.frontmatter);
-  if (!parsed.success) continue;
+// Matching v4 (Astro `glob` loader + zod schema), invalid frontmatter fails the
+// build rather than being silently skipped. We iterate by file path so the thrown
+// error names the offending file; a missing frontmatter block is treated as `{}`,
+// which also fails the schema (required fields absent).
+for (const [path, mod] of Object.entries(mdxModules)) {
+  const parsed = postSchema.safeParse(mod.frontmatter ?? {});
+  if (!parsed.success) {
+    throw new Error(`Invalid frontmatter in "${path}":\n${z.prettifyError(parsed.error)}`);
+  }
   posts[parsed.data.slug] = { ...parsed.data, Content: mod.default };
 }
 

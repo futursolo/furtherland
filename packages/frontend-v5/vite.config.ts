@@ -28,6 +28,7 @@ const config = defineConfig({
     tsconfigPaths: true,
     alias: {
       '@@frontend-v5': path.resolve(import.meta.dirname, 'src'),
+      '@@common': path.resolve(import.meta.dirname, '../common/src'),
       '@@contents': path.resolve(import.meta.dirname, '../contents/src'),
       '@@post-components': path.resolve(import.meta.dirname, '../post-components/src'),
     },
@@ -40,9 +41,7 @@ const config = defineConfig({
   plugins: [
     devtools(),
     tanstackStart({
-      // `/atom.xml` is a server route (no component), so it is not auto-discovered
-      // or crawl-reachable; list it explicitly so it is prerendered to a static file.
-      pages: [{ path: '/atom.xml' }],
+      pages: [{ path: '/atom.xml' }, { path: '/robots.txt' }],
       prerender: {
         enabled: true,
         crawlLinks: true,
