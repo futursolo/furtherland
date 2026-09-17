@@ -1295,6 +1295,7 @@ __metadata:
     "@types/react": "npm:^19.3.0"
     "@types/react-dom": "npm:^19.3.0"
     "@vitejs/plugin-react": "npm:^6.1.1"
+    feedsmith: "npm:^2.9.6"
     nanostores: "npm:^1.5.3"
     react: "npm:^19.3.0"
     react-dom: "npm:^19.3.0"
@@ -5883,6 +5884,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fast-xml-parser@npm:~5.10.0":
+  version: 5.10.1
+  resolution: "fast-xml-parser@npm:5.10.1"
+  dependencies:
+    "@nodable/entities": "npm:^3.0.0"
+    fast-xml-builder: "npm:^1.2.0"
+    is-unsafe: "npm:^2.0.0"
+    path-expression-matcher: "npm:^1.6.2"
+    strnum: "npm:^2.4.1"
+    xml-naming: "npm:^0.3.0"
+  bin:
+    fxparser: src/cli/cli.js
+  checksum: 10c0/a7ef867ede5366b52efc8d490a5d39fa0afcdcb9d66e1f19296bea23dd304d167de0e61dbabb7138638fbbb099514b89e31710fd4ddc32559513ce1bdc776034
+  languageName: node
+  linkType: hard
+
 "fastq@npm:^1.6.0":
   version: 1.17.1
   resolution: "fastq@npm:1.17.1"
@@ -5910,6 +5927,16 @@ __metadata:
     picomatch:
       optional: true
   checksum: 10c0/e345083c4306b3aed6cb8ec551e26c36bab5c511e99ea4576a16750ddc8d3240e63826cc624f5ae17ad4dc82e68a253213b60d556c11bfad064b7607847ed07f
+  languageName: node
+  linkType: hard
+
+"feedsmith@npm:^2.9.6":
+  version: 2.9.6
+  resolution: "feedsmith@npm:2.9.6"
+  dependencies:
+    entities: "npm:^7.0.1"
+    fast-xml-parser: "npm:~5.10.0"
+  checksum: 10c0/40e4f600d57ac0731f39c5c2ddb9522358b6f72332a0f6770ce88a00852fb3a828ed867ea5640fc31e47c8512fcd9eec384a64812ca4097f9bc0d85287612ffa
   languageName: node
   linkType: hard
 
@@ -9908,7 +9935,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"strnum@npm:^2.4.2":
+"strnum@npm:^2.4.1, strnum@npm:^2.4.2":
   version: 2.4.2
   resolution: "strnum@npm:2.4.2"
   dependencies:

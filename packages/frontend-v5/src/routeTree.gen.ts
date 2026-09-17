@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as R404RouteImport } from './routes/404'
+import { Route as AtomDotxmlRouteImport } from './routes/atom[.]xml'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as Sitemap0DotxmlRouteImport } from './routes/sitemap-0[.]xml'
 import { Route as SitemapIndexDotxmlRouteImport } from './routes/sitemap-index[.]xml'
@@ -19,6 +21,16 @@ import { Route as PostsSlugRouteImport } from './routes/posts/$slug'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const R404Route = R404RouteImport.update({
+  id: '/404',
+  path: '/404',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AtomDotxmlRoute = AtomDotxmlRouteImport.update({
+  id: '/atom.xml',
+  path: '/atom.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
@@ -49,6 +61,8 @@ const PostsSlugRoute = PostsSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/404': typeof R404Route
+  '/atom.xml': typeof AtomDotxmlRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap-0.xml': typeof Sitemap0DotxmlRoute
   '/sitemap-index.xml': typeof SitemapIndexDotxmlRoute
@@ -57,6 +71,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/404': typeof R404Route
+  '/atom.xml': typeof AtomDotxmlRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap-0.xml': typeof Sitemap0DotxmlRoute
   '/sitemap-index.xml': typeof SitemapIndexDotxmlRoute
@@ -66,6 +82,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/404': typeof R404Route
+  '/atom.xml': typeof AtomDotxmlRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap-0.xml': typeof Sitemap0DotxmlRoute
   '/sitemap-index.xml': typeof SitemapIndexDotxmlRoute
@@ -76,6 +94,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/404'
+    | '/atom.xml'
     | '/robots.txt'
     | '/sitemap-0.xml'
     | '/sitemap-index.xml'
@@ -84,6 +104,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/404'
+    | '/atom.xml'
     | '/robots.txt'
     | '/sitemap-0.xml'
     | '/sitemap-index.xml'
@@ -92,6 +114,8 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/404'
+    | '/atom.xml'
     | '/robots.txt'
     | '/sitemap-0.xml'
     | '/sitemap-index.xml'
@@ -101,6 +125,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  R404Route: typeof R404Route
+  AtomDotxmlRoute: typeof AtomDotxmlRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   Sitemap0DotxmlRoute: typeof Sitemap0DotxmlRoute
   SitemapIndexDotxmlRoute: typeof SitemapIndexDotxmlRoute
@@ -115,6 +141,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/404': {
+      id: '/404'
+      path: '/404'
+      fullPath: '/404'
+      preLoaderRoute: typeof R404RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/atom.xml': {
+      id: '/atom.xml'
+      path: '/atom.xml'
+      fullPath: '/atom.xml'
+      preLoaderRoute: typeof AtomDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/robots.txt': {
@@ -157,6 +197,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  R404Route: R404Route,
+  AtomDotxmlRoute: AtomDotxmlRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   Sitemap0DotxmlRoute: Sitemap0DotxmlRoute,
   SitemapIndexDotxmlRoute: SitemapIndexDotxmlRoute,
