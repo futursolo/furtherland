@@ -1,17 +1,14 @@
 import { useEffect, useState } from 'react';
 
 import { useTheme } from '@emotion/react';
-import { useStore } from '@nanostores/react';
 import { Link } from '@tanstack/react-router';
-import { FiMoon, FiSun } from 'react-icons/fi';
 
-import themeAtom, { persistThemeKind } from '@@frontend-v5/atoms/theme';
 import Box from '@@frontend-v5/components/Box';
-import ClientOnly from '@@frontend-v5/components/ClientOnly';
 import FlexSpace from '@@frontend-v5/components/FlexSpace';
 import { styled } from '@@frontend-v5/utils';
 
 import LinkItem from './LinkItem';
+import ThemeToggle from './ThemeToggle';
 
 const UnstyledLink = styled(Link)({
   color: 'inherit',
@@ -34,35 +31,6 @@ const Links = () => {
   );
 };
 
-const ThemeToggleLayout = styled(Box)({
-  height: 60,
-  width: 60,
-
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'center',
-  cursor: 'pointer',
-});
-
-const ThemeToggle = () => {
-  const themeKind = useStore(themeAtom);
-
-  const toggleTheme = () => {
-    const nextThemeKind = themeKind === 'light' ? 'dark' : 'light';
-    persistThemeKind(nextThemeKind);
-    themeAtom.set(nextThemeKind);
-  };
-
-  const themeIcon = themeKind === 'light' ? <FiMoon size={24} /> : <FiSun size={24} />;
-  const altText = themeKind === 'light' ? 'Switch to Dark Theme' : 'Switch to Light Theme';
-
-  return (
-    <ThemeToggleLayout title={altText} onClick={toggleTheme}>
-      {themeIcon}
-    </ThemeToggleLayout>
-  );
-};
 const NavLayout = styled.nav({
   width: '100%',
   height: 60,
@@ -137,9 +105,7 @@ const Nav = () => {
       >
         <Links />
         <FlexSpace />
-        <ClientOnly>
-          <ThemeToggle />
-        </ClientOnly>
+        <ThemeToggle />
       </NavLayout>
     </NavLayout>
   );
