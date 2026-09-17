@@ -50,7 +50,9 @@ export const Route = createRootRoute({
         : []),
     ],
     // v4 exposed the feed via `<link rel="alternate">`; v5 serves an Atom feed at
-    // `/atom.xml` (see `routes/atom[.]xml.ts` + `server/feed.server.ts`).
+    // `/atom.xml` (see `routes/atom[.]xml.ts` + `server/feed.server.ts`), alongside the
+    // sitemap index (v4 emitted this via `@astrojs/sitemap`) pointing at
+    // `/sitemap-index.xml`, the `<sitemapindex>` that references `/sitemap-0.xml`.
     links: [
       {
         rel: 'alternate',
@@ -58,6 +60,7 @@ export const Route = createRootRoute({
         title: SITE_NAME,
         href: `${SITE_URL}/atom.xml`,
       },
+      { rel: 'sitemap', type: 'application/xml', href: `${SITE_URL}/sitemap-index.xml` },
     ],
   }),
   notFoundComponent: NotFound,

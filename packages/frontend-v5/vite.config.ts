@@ -91,7 +91,17 @@ const config = defineConfig({
   plugins: [
     devtools(),
     tanstackStart({
-      pages: [{ path: '/atom.xml' }, { path: '/robots.txt' }],
+      // `/robots.txt`, the Atom feed, and the sitemap routes are server routes (no
+      // `component`), so the auto-discovery skips them, and none is linked from a
+      // page. List them explicitly so the build prerenders each to a static file
+      // under `dist/client/` (`robots.txt`, `atom.xml`, `sitemap-index.xml`,
+      // `sitemap-0.xml`).
+      pages: [
+        { path: '/atom.xml' },
+        { path: '/robots.txt' },
+        { path: '/sitemap-index.xml' },
+        { path: '/sitemap-0.xml' },
+      ],
       prerender: {
         enabled: true,
         crawlLinks: true,
