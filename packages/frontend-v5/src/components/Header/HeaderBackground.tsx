@@ -17,7 +17,7 @@ const Layout = styled.div(({ theme }) => ({
   [theme.breakpoint.md.mediaUp()]: {
     height: 300,
 
-    '&.currently-home': {
+    '&.is-home': {
       height: '100vh',
     },
   },
