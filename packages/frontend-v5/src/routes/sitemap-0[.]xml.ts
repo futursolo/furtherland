@@ -13,7 +13,7 @@ export const Route = createFileRoute('/sitemap-0.xml')({
   server: {
     handlers: {
       GET: async () => {
-        const items = getSitemapItems();
+        const items = await getSitemapItems();
         const stream = new SitemapStream({ hostname: SITE_URL });
         const done = streamToPromise(stream);
         for (const item of items) stream.write(item);

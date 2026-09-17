@@ -20,11 +20,15 @@ export const Route = createFileRoute('/')({
     ],
     links: [{ rel: 'canonical', href: `${SITE_URL}/` }],
   }),
+  loader: async () => {
+    const summaries = await getPostSummaries();
+    return { summaries };
+  },
   component: HomePage,
 });
 
 function HomePage() {
-  const summaries = getPostSummaries();
+  const { summaries } = Route.useLoaderData();
 
   return <Home summaries={summaries} />;
 }

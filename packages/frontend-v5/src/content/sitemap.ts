@@ -1,7 +1,7 @@
 import { SITE_URL } from '@@frontend-v5/constants/site';
 
-import { pages } from './pages';
-import { posts } from './posts';
+import { getPageSummaries } from './pages';
+import { getPostSummaries } from './posts';
 
 /** A single sitemap entry: a public page URL and (for posts) its last-modified date. */
 export type SitemapItem = {
@@ -16,15 +16,15 @@ export type SitemapItem = {
  * `lastmod` derived from its date, mirroring v4's `@astrojs/sitemap` `serialize`
  * hook. The result is sorted by URL, matching v4's output ordering.
  */
-export function getSitemapItems(): SitemapItem[] {
+export async function getSitemapItems(): Promise<SitemapItem[]> {
   const items: SitemapItem[] = [{ url: `${SITE_URL}/` }];
 
-  for (const page of Object.values(pages)) {
+  for (const page of await getPageSummaries()) {
     if (page.isDraft) continue;
     items.push({ url: `${SITE_URL}/pages/${page.slug}` });
   }
 
-  for (const post of Object.values(posts)) {
+  for (const post of await getPostSummaries()) {
     if (post.isDraft) continue;
     items.push({
       url: `${SITE_URL}/posts/${post.slug}`,

@@ -13,8 +13,8 @@ import formatTitle from '@@frontend-v5/utils/formatTitle';
 // loader, unknown / production-draft pages throw `notFound()`, and the content
 // is wrapped in the v5 Page layout.
 export const Route = createFileRoute('/pages/$slug')({
-  head: ({ params }) => {
-    const page = getPage(params.slug);
+  head: async ({ params }) => {
+    const page = await getPage(params.slug);
     if (!page) return {};
     const url = `${SITE_URL}/pages/${page.slug}`;
     return {
@@ -29,8 +29,8 @@ export const Route = createFileRoute('/pages/$slug')({
       links: [{ rel: 'canonical', href: url }],
     };
   },
-  loader: ({ params }) => {
-    const page = getPage(params.slug);
+  loader: async ({ params }) => {
+    const page = await getPage(params.slug);
     if (!page || (page.isDraft && import.meta.env.PROD)) throw notFound();
     return { title: page.title, slug: page.slug };
   },

@@ -70,7 +70,7 @@ const toEntry = (post: PostEntry): Atom.Entry<string> => {
  * excluded in production (see `getPostSummaries`), entries are newest first, and
  * each entry carries the post's rendered body.
  */
-export function buildAtomFeed(): string {
+export async function buildAtomFeed(): Promise<string> {
   const feed: DeepPartial<Atom.Feed<string>> = {
     id: FEED_URL,
     title: SITE_NAME,
@@ -78,7 +78,7 @@ export function buildAtomFeed(): string {
     updated: new Date().toISOString(),
     links: [{ rel: 'alternate', href: SITE_URL }],
     authors: [{ name: AUTHOR_NAME, uri: SITE_URL }],
-    entries: getPostSummaries().map(toEntry),
+    entries: (await getPostSummaries()).map(toEntry),
   };
 
   return generateAtomFeed<true>(feed);
