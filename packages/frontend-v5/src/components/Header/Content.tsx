@@ -1,4 +1,5 @@
 import Box from '@@frontend-v5/components/Box';
+import { SITE_NAME } from '@@frontend-v5/constants/site';
 import { styled } from '@@frontend-v5/utils';
 
 const Layout = styled(Box)({
@@ -35,7 +36,7 @@ const Title = styled(Box)(({ theme }) => ({
 
 const Content = () => (
   <Layout>
-    <Title>Hoshikawa&apos;s Secret Room</Title>
+    <Title>{SITE_NAME}</Title>
   </Layout>
 );
 
