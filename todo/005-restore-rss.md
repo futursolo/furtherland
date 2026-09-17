@@ -14,9 +14,7 @@ matching `<link rel="alternate" type="application/rss+xml">` is also **absent** 
 
 ## Action
 
-- [ ] Re-implement `/rss.xml` in v5 (draft-filter + newest-first + sanitized body).
-- [ ] Add `<link rel="alternate" type="application/rss+xml">` (pointing at `/rss.xml`) to the v5
-  root `head()` in `__root.tsx:54-60`.
+- [ ] Re-implement the feed with feedsmith and implement as atom feed instead.
 - [ ] Run `yarn frontend-v5:generate-routes` after adding the new route file.
 
 ## References
