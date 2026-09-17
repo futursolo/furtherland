@@ -2,9 +2,9 @@ import { createFileRoute } from '@tanstack/react-router';
 
 import { SITE_URL } from '@@frontend-v5/constants/site';
 
-// The `Sitemap:` line must point at the v5 sitemap route (todo/007-restore-sitemap) —
-// a route that emits `sitemap.xml`. Keep this path in sync with that route's URL.
-const sitemapURL = new URL('sitemap.xml', SITE_URL);
+// The `Sitemap:` line must point at the v5 sitemap index route
+// (`/sitemap-index.xml`). Keep this path in sync with that route's URL.
+const sitemapURL = new URL('sitemap-index.xml', SITE_URL);
 
 // The v5 equivalent of v4's `pages/robots.txt.ts`. v4 served this via a GET
 // route/handler too; here it is a TanStack Start *server route* (the `server`

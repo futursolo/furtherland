@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as Sitemap0DotxmlRouteImport } from './routes/sitemap-0[.]xml'
+import { Route as SitemapIndexDotxmlRouteImport } from './routes/sitemap-index[.]xml'
 import { Route as PagesSlugRouteImport } from './routes/pages/$slug'
 import { Route as PostsSlugRouteImport } from './routes/posts/$slug'
 
@@ -22,6 +24,16 @@ const IndexRoute = IndexRouteImport.update({
 const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
   id: '/robots.txt',
   path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Sitemap0DotxmlRoute = Sitemap0DotxmlRouteImport.update({
+  id: '/sitemap-0.xml',
+  path: '/sitemap-0.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapIndexDotxmlRoute = SitemapIndexDotxmlRouteImport.update({
+  id: '/sitemap-index.xml',
+  path: '/sitemap-index.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PagesSlugRoute = PagesSlugRouteImport.update({
@@ -38,12 +50,16 @@ const PostsSlugRoute = PostsSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap-0.xml': typeof Sitemap0DotxmlRoute
+  '/sitemap-index.xml': typeof SitemapIndexDotxmlRoute
   '/pages/$slug': typeof PagesSlugRoute
   '/posts/$slug': typeof PostsSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap-0.xml': typeof Sitemap0DotxmlRoute
+  '/sitemap-index.xml': typeof SitemapIndexDotxmlRoute
   '/pages/$slug': typeof PagesSlugRoute
   '/posts/$slug': typeof PostsSlugRoute
 }
@@ -51,20 +67,43 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap-0.xml': typeof Sitemap0DotxmlRoute
+  '/sitemap-index.xml': typeof SitemapIndexDotxmlRoute
   '/pages/$slug': typeof PagesSlugRoute
   '/posts/$slug': typeof PostsSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/robots.txt' | '/pages/$slug' | '/posts/$slug'
+  fullPaths:
+    | '/'
+    | '/robots.txt'
+    | '/sitemap-0.xml'
+    | '/sitemap-index.xml'
+    | '/pages/$slug'
+    | '/posts/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/robots.txt' | '/pages/$slug' | '/posts/$slug'
-  id: '__root__' | '/' | '/robots.txt' | '/pages/$slug' | '/posts/$slug'
+  to:
+    | '/'
+    | '/robots.txt'
+    | '/sitemap-0.xml'
+    | '/sitemap-index.xml'
+    | '/pages/$slug'
+    | '/posts/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/robots.txt'
+    | '/sitemap-0.xml'
+    | '/sitemap-index.xml'
+    | '/pages/$slug'
+    | '/posts/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
+  Sitemap0DotxmlRoute: typeof Sitemap0DotxmlRoute
+  SitemapIndexDotxmlRoute: typeof SitemapIndexDotxmlRoute
   PagesSlugRoute: typeof PagesSlugRoute
   PostsSlugRoute: typeof PostsSlugRoute
 }
@@ -83,6 +122,20 @@ declare module '@tanstack/react-router' {
       path: '/robots.txt'
       fullPath: '/robots.txt'
       preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-0.xml': {
+      id: '/sitemap-0.xml'
+      path: '/sitemap-0.xml'
+      fullPath: '/sitemap-0.xml'
+      preLoaderRoute: typeof Sitemap0DotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-index.xml': {
+      id: '/sitemap-index.xml'
+      path: '/sitemap-index.xml'
+      fullPath: '/sitemap-index.xml'
+      preLoaderRoute: typeof SitemapIndexDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pages/$slug': {
@@ -105,9 +158,21 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
+  Sitemap0DotxmlRoute: Sitemap0DotxmlRoute,
+  SitemapIndexDotxmlRoute: SitemapIndexDotxmlRoute,
   PagesSlugRoute: PagesSlugRoute,
   PostsSlugRoute: PostsSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

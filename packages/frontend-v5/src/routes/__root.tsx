@@ -3,7 +3,7 @@ import { createRootRoute, HeadContent, Outlet, Scripts, useLocation } from '@tan
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 
 import { Box, ThemePreloadScript } from '@@frontend-v5/components';
-import { SITE_NAME } from '@@frontend-v5/constants/site';
+import { SITE_NAME, SITE_URL } from '@@frontend-v5/constants/site';
 import Root from '@@frontend-v5/layouts/Root';
 import Providers from '@@frontend-v5/providers';
 
@@ -57,6 +57,9 @@ export const Route = createRootRoute({
       { name: 'viewport', content: 'width=device-width,initial-scale=1.0,viewport-fit=cover' },
       { property: 'og:site_name', content: SITE_NAME },
     ],
+    // The site's sitemap index (v4 emitted this via `@astrojs/sitemap`). Points at
+    // `/sitemap-index.xml`, the `<sitemapindex>` that references `/sitemap-0.xml`.
+    links: [{ rel: 'sitemap', type: 'application/xml', href: `${SITE_URL}/sitemap-index.xml` }],
   }),
   notFoundComponent: NotFound,
   component: RootShell,

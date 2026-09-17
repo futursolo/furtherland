@@ -41,10 +41,11 @@ const config = defineConfig({
   plugins: [
     devtools(),
     tanstackStart({
-      // `/robots.txt` is a server route (no `component`), so the auto-discovery
-      // skips it, and it is never linked from a page. List it explicitly so the
-      // build prerenders it to a static `dist/client/robots.txt`.
-      pages: [{ path: '/robots.txt' }],
+      // `/robots.txt` and the sitemap routes are server routes (no `component`),
+      // so the auto-discovery skips them, and none is linked from a page. List them
+      // explicitly so the build prerenders each to a static file under
+      // `dist/client/` (`robots.txt`, `sitemap-index.xml`, `sitemap-0.xml`).
+      pages: [{ path: '/robots.txt' }, { path: '/sitemap-index.xml' }, { path: '/sitemap-0.xml' }],
       prerender: {
         enabled: true,
         crawlLinks: true,
