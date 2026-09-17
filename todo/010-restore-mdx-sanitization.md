@@ -15,8 +15,8 @@ raw/untrusted MDX content is no longer sanitized before rendering.
 - [ ] Add a sanitization step to the v5 MDX pipeline (or confirm all content is trusted/first-party
   and document the decision to skip sanitization).
 - [ ] If re-adding, wire a sanitizer into the v5 MDX compilation (e.g. a remark/rehype
-  sanitization plugin) and re-enable it for the RSS body too (see
-  `todo/005-restore-rss.md`).
+  sanitization plugin) and re-enable it for the feed body too (see
+  `packages/frontend-v5/src/server/feed.server.ts`).
 
 ## References
 

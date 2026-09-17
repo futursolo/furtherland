@@ -40,6 +40,9 @@ const config = defineConfig({
   plugins: [
     devtools(),
     tanstackStart({
+      // `/atom.xml` is a server route (no component), so it is not auto-discovered
+      // or crawl-reachable; list it explicitly so it is prerendered to a static file.
+      pages: [{ path: '/atom.xml' }],
       prerender: {
         enabled: true,
         crawlLinks: true,

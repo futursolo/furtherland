@@ -28,6 +28,7 @@
     "@tanstack/react-router-devtools": "^1.167.2",
     "@tanstack/react-start": "^1.168.54",
     "@tanstack/router-core": "^1.171.30",
+    "feedsmith": "^2.9.6",
     "nanostores": "^1.5.3",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",

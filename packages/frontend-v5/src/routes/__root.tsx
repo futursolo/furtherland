@@ -3,7 +3,7 @@ import { createRootRoute, HeadContent, Outlet, Scripts, useLocation } from '@tan
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 
 import { Box, ThemePreloadScript } from '@@frontend-v5/components';
-import { SITE_NAME } from '@@frontend-v5/constants/site';
+import { SITE_NAME, SITE_URL } from '@@frontend-v5/constants/site';
 import Root from '@@frontend-v5/layouts/Root';
 import Providers from '@@frontend-v5/providers';
 
@@ -56,6 +56,16 @@ export const Route = createRootRoute({
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width,initial-scale=1.0,viewport-fit=cover' },
       { property: 'og:site_name', content: SITE_NAME },
+    ],
+    // v4 exposed the feed via `<link rel="alternate">`; v5 serves an Atom feed at
+    // `/atom.xml` (see `routes/atom[.]xml.ts` + `server/feed.server.ts`).
+    links: [
+      {
+        rel: 'alternate',
+        type: 'application/atom+xml',
+        title: SITE_NAME,
+        href: `${SITE_URL}/atom.xml`,
+      },
     ],
   }),
   notFoundComponent: NotFound,
