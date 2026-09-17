@@ -32,7 +32,7 @@ This is a test table.
 
 This is a test BarChart.
 
-<BarChart client:only="react"
+<BarChart client:only
   xAxis={[{ data: ['group A', 'group B', 'group C'] }]}
   series={[{ data: [4, 3, 5] }, { data: [1, 6, 3] }, { data: [2, 5, 6] }]}
   height={300}
@@ -40,7 +40,7 @@ This is a test BarChart.
 
 This is a test RadarChart.
 
-<RadarChart client:only="react"
+<RadarChart client:only
   series={[{ data: [3, 2, 2, 5], label: 'A' }, { data: [4, 3, 5, 4], label: 'B' }]}
   radar={{ metrics: ['Metric A', 'Metric B', 'Metric C', 'Metric D'] }}
   height={300}
