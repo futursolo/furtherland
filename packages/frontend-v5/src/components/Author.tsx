@@ -1,3 +1,4 @@
+import { AUTHOR_NAME } from '@@frontend-v5/constants/site';
 import { styled } from '@@frontend-v5/utils';
 
 import Box from './Box';
@@ -54,7 +55,7 @@ const Author = (props: AuthorProps) => {
     <AuthorLayout>
       <AuthorImage />
       <AuthorRightLayout>
-        <AuthorName>Kaede Hoshikawa</AuthorName>
+        <AuthorName>{AUTHOR_NAME}</AuthorName>
         <AuthoredDate>
           {date}
           {isDraft ? ' (Draft)' : ''}

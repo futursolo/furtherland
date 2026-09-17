@@ -1,8 +1,9 @@
+import { SITE_NAME } from '@@frontend-v5/constants/site';
 import { styled } from '@@frontend-v5/utils';
 
 import Box from './Box';
 
-const FoooterContainer = styled.footer({
+const FooterContainer = styled.footer({
   height: 100,
   width: '100%',
 
@@ -39,14 +40,14 @@ const Copy = styled.div(({ theme }) => ({
 
 const Footer = () => {
   return (
-    <FoooterContainer>
+    <FooterContainer>
       <FooterLayout>
-        <Title>&copy; 2026 Hoshikawa&apos;s Secret Room</Title>
+        <Title>&copy; 2026 {SITE_NAME}</Title>
         <Copy>
           All articles on this site are licensed under the CC-BY-SA 4.0 International Licence.
         </Copy>
       </FooterLayout>
-    </FoooterContainer>
+    </FooterContainer>
   );
 };
 
