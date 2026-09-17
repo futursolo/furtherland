@@ -14,11 +14,25 @@ const Layout = styled.div(({ theme }) => ({
     height: '100vh',
   },
 
+  // If touch device, this should be extended to cover the bottom bar.
+  '@media (pointer: coarse)': {
+    '&.is-home': {
+      height: 'calc(100vh + 60px)',
+    },
+  },
+
   [theme.breakpoint.md.mediaUp()]: {
     height: 300,
 
-    '&.currently-home': {
+    '&.is-home': {
       height: '100vh',
+    },
+
+    // If touch device, this should be extended to cover the bottom bar.
+    '@media (pointer: coarse)': {
+      '&.is-home': {
+        height: 'calc(100vh + 60px)',
+      },
     },
   },
 }));
