@@ -15,8 +15,8 @@ import formatTitle from '@@frontend-v5/utils/formatTitle';
 // `notFoundComponent`, with a 404 status). The post is wrapped in the v5 Post
 // layout.
 export const Route = createFileRoute('/posts/$slug')({
-  head: ({ params }) => {
-    const post = getPost(params.slug);
+  head: async ({ params }) => {
+    const post = await getPost(params.slug);
     if (!post) return {};
     const url = `${SITE_URL}/posts/${post.slug}`;
     return {
@@ -33,8 +33,8 @@ export const Route = createFileRoute('/posts/$slug')({
       links: [{ rel: 'canonical', href: url }],
     };
   },
-  loader: ({ params }) => {
-    const post = getPost(params.slug);
+  loader: async ({ params }) => {
+    const post = await getPost(params.slug);
     if (!post || (post.isDraft && import.meta.env.PROD)) throw notFound();
     return { slug: post.slug, date: post.date, isDraft: post.isDraft, title: post.title };
   },

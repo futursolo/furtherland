@@ -2,14 +2,6 @@ import { z } from 'zod';
 
 import type { MdxComponent, MdxModule } from './types';
 
-/**
- * All standalone pages, globbed from the `@furtherland/contents` package via the
- * `@@contents` alias (Vite resolves aliases inside `import.meta.glob` patterns).
- */
-const mdxModules = import.meta.glob<MdxModule>(['@@contents/pages/**/*.mdx'], {
-  eager: true,
-});
-
 // Mirrors v4's `content.config.ts` `pages` schema: a page is a draft unless it
 // is explicitly published.
 const pageSchema = z
@@ -25,25 +17,49 @@ const pageSchema = z
 export type PageEntry = z.infer<typeof pageSchema> & { Content: MdxComponent };
 
 /**
- * Map of slug -> page entry for every page. Drafts are included here; callers
- * decide whether to surface them (see v4, which hides drafts in production).
+ * Slug -> page entry map, filled lazily on first access (via `loadPages`) and
+ * cached afterwards, so the page modules are only ever imported once — and only
+ * when actually needed. Drafts are included; callers decide whether to surface
+ * them (see v4, which hides drafts in production).
  */
-export const pages: Record<string, PageEntry> = {};
+let pagesPromise: Promise<Record<string, PageEntry>> | undefined;
 
-// Matching v4 (Astro `glob` loader + zod schema), invalid frontmatter fails the
-// build rather than being silently skipped. We iterate by file path so the thrown
-// error names the offending file; a missing frontmatter block is treated as `{}`,
-// which also fails the schema (required fields absent).
-for (const [path, mod] of Object.entries(mdxModules)) {
-  const parsed = pageSchema.safeParse(mod.frontmatter ?? {});
-  if (!parsed.success) {
-    throw new Error(`Invalid frontmatter in "${path}":\n${z.prettifyError(parsed.error)}`);
+/**
+ * Import every page module and validate its frontmatter against the schema,
+ * resolving to the slug -> entry map. The `import.meta.glob` is declared inside
+ * this function (not at module scope) and loaded lazily (no `eager`), so no page
+ * module is imported until this is first called — each page becomes its own
+ * on-demand chunk. Pages are globbed from the `@furtherland/contents` package via
+ * the `@@contents` alias (Vite resolves aliases inside `import.meta.glob`
+ * patterns). Matching v4 (Astro `glob` loader + zod schema), invalid frontmatter
+ * throws rather than being silently skipped; we iterate by file path so the error
+ * names the offending file, and a missing frontmatter block is treated as `{}`,
+ * which also fails the schema (required fields absent). The page routes call a
+ * getter while prerendering, so a bad frontmatter still fails the build.
+ */
+function loadPages(): Promise<Record<string, PageEntry>> {
+  if (!pagesPromise) {
+    pagesPromise = (async () => {
+      const mdxModules = import.meta.glob<MdxModule>(['@@contents/pages/**/*.mdx']);
+      const entries = await Promise.all(
+        Object.entries(mdxModules).map(async ([path, load]) => {
+          const mod = await load();
+          const parsed = pageSchema.safeParse(mod.frontmatter ?? {});
+          if (!parsed.success) {
+            throw new Error(`Invalid frontmatter in "${path}":\n${z.prettifyError(parsed.error)}`);
+          }
+          return [parsed.data.slug, { ...parsed.data, Content: mod.default }] as const;
+        }),
+      );
+      return Object.fromEntries(entries);
+    })();
   }
-  pages[parsed.data.slug] = { ...parsed.data, Content: mod.default };
+  return pagesPromise;
 }
 
-/** Look up a page by slug. */
-export function getPage(slug: string): PageEntry | undefined {
+/** Look up a page by slug (imports the page modules on first call). */
+export async function getPage(slug: string): Promise<PageEntry | undefined> {
+  const pages = await loadPages();
   return pages[slug];
 }
 
@@ -51,7 +67,8 @@ export function getPage(slug: string): PageEntry | undefined {
  * Pages for listing/linking, alphabetically by slug. Drafts are only included
  * outside production (mirrors v4's published-page filtering).
  */
-export function getPageSummaries(): PageEntry[] {
+export async function getPageSummaries(): Promise<PageEntry[]> {
+  const pages = await loadPages();
   const all = Object.values(pages);
   const visible = import.meta.env.PROD ? all.filter((page) => !page.isDraft) : all;
   return [...visible].sort((l, r) => (l.slug === r.slug ? 0 : l.slug < r.slug ? -1 : 1));

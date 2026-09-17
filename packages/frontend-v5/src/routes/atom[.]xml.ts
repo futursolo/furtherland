@@ -16,7 +16,7 @@ export const Route = createFileRoute('/atom.xml')({
   server: {
     handlers: {
       GET: async () =>
-        new Response(buildAtomFeed(), {
+        new Response(await buildAtomFeed(), {
           headers: { 'content-type': 'application/atom+xml; charset=utf-8' },
         }),
     },
