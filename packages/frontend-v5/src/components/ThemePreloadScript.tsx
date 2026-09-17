@@ -38,12 +38,7 @@ const THEME_INIT_SCRIPT = `(() => {
 })();`;
 
 const ThemePreloadScript = () => {
-  return (
-    <>
-      {/* biome-ignore lint/security/noDangerouslySetInnerHtml: static, trusted pre-hydration theme script (not user input) */}
-      <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
-    </>
-  );
+  return <script>{THEME_INIT_SCRIPT}</script>;
 };
 
 export default ThemePreloadScript;
