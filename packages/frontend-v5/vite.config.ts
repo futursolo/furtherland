@@ -88,13 +88,16 @@ const config = defineConfig({
       allow: [repoRoot],
     },
   },
+  build: {
+    outDir: 'build',
+  },
   plugins: [
     devtools(),
     tanstackStart({
       // `/robots.txt`, the Atom feed, and the sitemap routes are server routes (no
       // `component`), so the auto-discovery skips them, and none is linked from a
       // page. List them explicitly so the build prerenders each to a static file
-      // under `dist/client/` (`robots.txt`, `atom.xml`, `sitemap-index.xml`,
+      // under `build/client/` (`robots.txt`, `atom.xml`, `sitemap-index.xml`,
       // `sitemap-0.xml`).
       pages: [
         { path: '/atom.xml' },
