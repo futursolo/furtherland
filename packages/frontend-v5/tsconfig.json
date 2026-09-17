@@ -6,6 +6,7 @@
     "module": "ESNext",
     "paths": {
       "@@frontend-v5/*": ["./src/*"],
+      "@@common/*": ["../common/src/*"],
       "@@post-components/*": ["../post-components/src/*"],
       "@@contents/*": ["../contents/src/*"]
     },

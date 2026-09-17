@@ -4,13 +4,9 @@ import { createFileRoute, notFound } from '@tanstack/react-router';
 
 import { AUTHOR_NAME, SITE_URL } from '@@frontend-v5/constants/site';
 import { getPost, type PostEntry } from '@@frontend-v5/content/posts';
-import { Anchor, Pre, Table } from '@@frontend-v5/elements';
+import { mdxComponents } from '@@frontend-v5/elements';
 import Post from '@@frontend-v5/layouts/Post';
 import formatTitle from '@@frontend-v5/utils/formatTitle';
-
-// MDX element overrides — the v5 counterparts of v4's `Mdx/Anchor.astro`,
-// `Mdx/Pre.astro` and `Mdx/Table.astro`, passed to the compiled MDX component.
-const mdxComponents = { a: Anchor, pre: Pre, table: Table };
 
 // Blog post — the v5 equivalent of v4's `pages/posts/[slug].astro`. v4 used
 // `getStaticPaths` to expand one route per post; here the `$slug` param is

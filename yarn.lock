@@ -1248,7 +1248,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@furtherland/common@workspace:^, @furtherland/common@workspace:packages/common":
+"@furtherland/common@workspace:*, @furtherland/common@workspace:^, @furtherland/common@workspace:packages/common":
   version: 0.0.0-use.local
   resolution: "@furtherland/common@workspace:packages/common"
   dependencies:
@@ -1277,6 +1277,7 @@ __metadata:
     "@biomejs/biome": "npm:^2.5.13"
     "@emotion/react": "npm:^11.14.0"
     "@emotion/styled": "npm:^11.14.1"
+    "@furtherland/common": "workspace:*"
     "@furtherland/contents": "workspace:*"
     "@furtherland/post-components": "workspace:*"
     "@giscus/react": "npm:^3.1.0"
