@@ -3,7 +3,7 @@ import { createRootRoute, HeadContent, Outlet, Scripts, useLocation } from '@tan
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 
 import { NotFound, ThemePreloadScript } from '@@frontend-v5/components';
-import { SITE_NAME } from '@@frontend-v5/constants/site';
+import { SITE_NAME, SITE_URL } from '@@frontend-v5/constants/site';
 import Root from '@@frontend-v5/layouts/Root';
 import Providers from '@@frontend-v5/providers';
 import formatTitle from '@@frontend-v5/utils/formatTitle';
@@ -48,6 +48,16 @@ export const Route = createRootRoute({
       ...(match._notFound
         ? [{ title: formatTitle('404 Not Found') }, { name: 'robots', content: 'noindex' }]
         : []),
+    ],
+    // v4 exposed the feed via `<link rel="alternate">`; v5 serves an Atom feed at
+    // `/atom.xml` (see `routes/atom[.]xml.ts` + `server/feed.server.ts`).
+    links: [
+      {
+        rel: 'alternate',
+        type: 'application/atom+xml',
+        title: SITE_NAME,
+        href: `${SITE_URL}/atom.xml`,
+      },
     ],
   }),
   notFoundComponent: NotFound,

@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as R404RouteImport } from './routes/404'
+import { Route as AtomDotxmlRouteImport } from './routes/atom[.]xml'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as PagesSlugRouteImport } from './routes/pages/$slug'
 import { Route as PostsSlugRouteImport } from './routes/posts/$slug'
 
@@ -22,6 +24,16 @@ const IndexRoute = IndexRouteImport.update({
 const R404Route = R404RouteImport.update({
   id: '/404',
   path: '/404',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AtomDotxmlRoute = AtomDotxmlRouteImport.update({
+  id: '/atom.xml',
+  path: '/atom.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PagesSlugRoute = PagesSlugRouteImport.update({
@@ -38,12 +50,16 @@ const PostsSlugRoute = PostsSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/404': typeof R404Route
+  '/atom.xml': typeof AtomDotxmlRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/pages/$slug': typeof PagesSlugRoute
   '/posts/$slug': typeof PostsSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/404': typeof R404Route
+  '/atom.xml': typeof AtomDotxmlRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/pages/$slug': typeof PagesSlugRoute
   '/posts/$slug': typeof PostsSlugRoute
 }
@@ -51,20 +67,33 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/404': typeof R404Route
+  '/atom.xml': typeof AtomDotxmlRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/pages/$slug': typeof PagesSlugRoute
   '/posts/$slug': typeof PostsSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/404' | '/pages/$slug' | '/posts/$slug'
+  fullPaths:
+    '/' | '/404' | '/atom.xml' | '/robots.txt' | '/pages/$slug' | '/posts/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/404' | '/pages/$slug' | '/posts/$slug'
-  id: '__root__' | '/' | '/404' | '/pages/$slug' | '/posts/$slug'
+  to:
+    '/' | '/404' | '/atom.xml' | '/robots.txt' | '/pages/$slug' | '/posts/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/404'
+    | '/atom.xml'
+    | '/robots.txt'
+    | '/pages/$slug'
+    | '/posts/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   R404Route: typeof R404Route
+  AtomDotxmlRoute: typeof AtomDotxmlRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
   PagesSlugRoute: typeof PagesSlugRoute
   PostsSlugRoute: typeof PostsSlugRoute
 }
@@ -83,6 +112,20 @@ declare module '@tanstack/react-router' {
       path: '/404'
       fullPath: '/404'
       preLoaderRoute: typeof R404RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/atom.xml': {
+      id: '/atom.xml'
+      path: '/atom.xml'
+      fullPath: '/atom.xml'
+      preLoaderRoute: typeof AtomDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pages/$slug': {
@@ -105,18 +148,11 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   R404Route: R404Route,
+  AtomDotxmlRoute: AtomDotxmlRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
   PagesSlugRoute: PagesSlugRoute,
   PostsSlugRoute: PostsSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

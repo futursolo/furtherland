@@ -28,6 +28,7 @@ const config = defineConfig({
     tsconfigPaths: true,
     alias: {
       '@@frontend-v5': path.resolve(import.meta.dirname, 'src'),
+      '@@common': path.resolve(import.meta.dirname, '../common/src'),
       '@@contents': path.resolve(import.meta.dirname, '../contents/src'),
       '@@post-components': path.resolve(import.meta.dirname, '../post-components/src'),
     },
@@ -40,6 +41,7 @@ const config = defineConfig({
   plugins: [
     devtools(),
     tanstackStart({
+      pages: [{ path: '/atom.xml' }, { path: '/robots.txt' }],
       prerender: {
         enabled: true,
         crawlLinks: true,
