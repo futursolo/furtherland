@@ -46,12 +46,12 @@ const Title = styled(Box)(({ theme }) => ({
 
 const HomeContent = () => {
   const scrollToMain = () => {
-    const navEl = document.querySelector('nav');
-    if (!navEl) {
+    const mainEl = document.querySelector('main');
+    if (!mainEl) {
       return;
     }
 
-    navEl.scrollIntoView({ behavior: 'smooth' });
+    mainEl.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
