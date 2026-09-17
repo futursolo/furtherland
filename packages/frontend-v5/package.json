@@ -17,6 +17,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@furtherland/common": "workspace:*",
     "@furtherland/contents": "workspace:*",
     "@furtherland/post-components": "workspace:*",
     "@giscus/react": "^3.1.0",
