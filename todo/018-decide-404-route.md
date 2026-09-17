@@ -13,12 +13,10 @@ v4 had a dedicated `pages/404.astro` that set `<meta name="robots" content="noin
 
 ## Action (decide)
 
-- [ ] Decide whether the root `notFoundComponent` is sufficient, or whether a dedicated 404 route
-  should be added.
-- [ ] Restore the `<meta name="robots" content="noindex">` on the not-found output (v5 currently
-  sets none) — on the `NotFound` component and/or the route `head()`.
+- [ ] Implement the same 404 page as v4 for both not found component and /404.tsx.
 
 ## References
 
 - `packages/frontend-v5/src/routes/__root.tsx:12-30,54-60,61`
 - v4 counterpart: `pages/404.astro:11` (see `TODOs.md` §5)
+
