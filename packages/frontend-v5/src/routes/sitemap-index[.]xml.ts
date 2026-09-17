@@ -16,7 +16,7 @@ export const Route = createFileRoute('/sitemap-index.xml')({
   server: {
     handlers: {
       GET: async () => {
-        const items = getSitemapItems();
+        const items = await getSitemapItems();
         const stream = new SitemapIndexStream();
         const done = streamToPromise(stream);
         stream.write({ url: shardUrl, lastmod: getLatestLastmod(items) });
