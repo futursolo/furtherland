@@ -30,10 +30,15 @@ export type PageEntry = z.infer<typeof pageSchema> & { Content: MdxComponent };
  */
 export const pages: Record<string, PageEntry> = {};
 
-for (const mod of Object.values(mdxModules)) {
-  if (!mod.frontmatter) continue;
-  const parsed = pageSchema.safeParse(mod.frontmatter);
-  if (!parsed.success) continue;
+// Matching v4 (Astro `glob` loader + zod schema), invalid frontmatter fails the
+// build rather than being silently skipped. We iterate by file path so the thrown
+// error names the offending file; a missing frontmatter block is treated as `{}`,
+// which also fails the schema (required fields absent).
+for (const [path, mod] of Object.entries(mdxModules)) {
+  const parsed = pageSchema.safeParse(mod.frontmatter ?? {});
+  if (!parsed.success) {
+    throw new Error(`Invalid frontmatter in "${path}":\n${z.prettifyError(parsed.error)}`);
+  }
   pages[parsed.data.slug] = { ...parsed.data, Content: mod.default };
 }
 
