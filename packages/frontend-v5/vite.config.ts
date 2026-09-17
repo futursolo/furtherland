@@ -20,7 +20,55 @@ logger.warnOnce = (msg, options) => {
     return
   }
   loggerWarnOnce(msg, options)
-}
+  }
+
+// v5 (`@mdx-js/rollup`) does not interpret Astro's `client:only` / `client:visible`
+// directives — the attribute lands on the component as a plain prop, so a
+// client-only element would be SSR-rendered, breaking the client-only intent. This
+// rewrites each such directive into a `ClientOnly` / `LazyOnly` wrapper (see
+// `components/ClientOnly.tsx` / `LazyOnly.tsx`); the compiled MDX resolves those
+// from the `components` map. The shared `@furtherland/contents` MDX stays
+// framework-agnostic (it still uses the Astro-style directive, which v4 applies
+// natively).
+type MdxAstNode = {
+  type?: string;
+  name?: string;
+  attributes?: Array<{ name?: string; value?: unknown }>;
+  children?: MdxAstNode[];
+};
+
+const clientDirectiveWrappers: Record<string, string> = {
+  'client:only': 'ClientOnly',
+  'client:visible': 'LazyOnly',
+};
+
+const rewriteClientDirectives = (tree: MdxAstNode): void => {
+  const visit = (node: MdxAstNode | undefined): void => {
+    if (!node || typeof node !== 'object' || !Array.isArray(node.children)) return;
+    for (let i = 0; i < node.children.length; i++) {
+      const child = node.children[i];
+      const isJsx = child && (child.type === 'mdxJsxFlowElement' || child.type === 'mdxJsxTextElement');
+      if (isJsx && Array.isArray(child.attributes)) {
+        const directive = child.attributes.find(
+          (attr) => typeof attr?.name === 'string' && attr.name.startsWith('client:')
+        );
+        if (directive && typeof directive.name === 'string') {
+          const wrapperName = clientDirectiveWrappers[directive.name] ?? 'ClientOnly';
+          child.attributes = child.attributes.filter(
+            (attr) => !(typeof attr?.name === 'string' && attr.name.startsWith('client:'))
+          );
+          node.children[i] = { type: child.type, name: wrapperName, attributes: [], children: [child] };
+          visit(node.children[i]);
+          continue;
+        }
+      }
+      visit(child);
+    }
+  };
+  visit(tree);
+};
+
+const rewriteClientDirectivesPlugin = () => (tree: MdxAstNode): void => rewriteClientDirectives(tree);
 
 const config = defineConfig({
   customLogger: logger,
@@ -53,9 +101,10 @@ const config = defineConfig({
     }),
     mdx({
       remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm],
-      // Mirrors the v4 (Astro) `markdown.shikiConfig.themes`: dual-theme Shiki
-      // highlighting, switched on the client via the `data-theme` attribute.
-      rehypePlugins: [[rehypeShiki, { themes: { light: 'github-light', dark: 'github-dark' } }]],
+      // `rewriteClientDirectives` first so it runs on the (pre-highlight) hast;
+      // shiki mirrors v4's `markdown.shikiConfig.themes`: dual-theme highlighting,
+      // switched on the client via the `data-theme` attribute.
+      rehypePlugins: [rewriteClientDirectivesPlugin, [rehypeShiki, { themes: { light: 'github-light', dark: 'github-dark' } }]],
     }),
     viteReact(),
   ],
