@@ -3,6 +3,7 @@ import LazyOnly from '@@frontend-v5/components/LazyOnly';
 import Render from '@@frontend-v5/components/Render';
 
 import Anchor from './Anchor';
+import Code from './Code';
 import H1 from './H1';
 import H2 from './H2';
 import H3 from './H3';
@@ -19,6 +20,7 @@ import Table from './Table';
 // tables get a horizontal-scroll wrapper).
 export const mdxComponents = {
   a: Anchor,
+  code: Code,
   h1: H1,
   h2: H2,
   h3: H3,
