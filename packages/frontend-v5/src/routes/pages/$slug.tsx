@@ -2,7 +2,7 @@ import { Suspense, use } from 'react';
 
 import { createFileRoute, notFound } from '@tanstack/react-router';
 
-import Main, { MainContainer } from '@@frontend-v5/components/Main';
+import Skeleton from '@@frontend-v5/components/Skeleton';
 import { SITE_URL } from '@@frontend-v5/constants/site';
 import { getPage, type PageEntry } from '@@frontend-v5/content/pages';
 import { mdxComponents } from '@@frontend-v5/elements';
@@ -40,8 +40,8 @@ export const Route = createFileRoute('/pages/$slug')({
 
 // Renders the page's MDX body. The `use()` call suspends this component while
 // the page's MDX chunk is fetched; the `<Suspense>` boundary in `PageRoute`
-// (below) scopes that suspension, so an empty `<Main>`/`<MainContainer>` is shown
-// in place of the layout while the content loads.
+// (below) scopes that suspension to the content alone, so a `<Skeleton>` is shown
+// in its place while the layout stays visible.
 function PageContent(props: { slug: string }) {
   const { default: Content } = use(import(`@@contents/pages/${props.slug}.mdx`));
   return <Content components={mdxComponents} />;
@@ -51,16 +51,10 @@ function PageRoute() {
   const pageData: PageEntry = Route.useLoaderData();
 
   return (
-    <Suspense
-      fallback={
-        <Main>
-          <MainContainer />
-        </Main>
-      }
-    >
-      <Page title={pageData.title}>
+    <Page title={pageData.title}>
+      <Suspense fallback={<Skeleton height="300px" width="100%" />}>
         <PageContent slug={pageData.slug} />
-      </Page>
-    </Suspense>
+      </Suspense>
+    </Page>
   );
 }
