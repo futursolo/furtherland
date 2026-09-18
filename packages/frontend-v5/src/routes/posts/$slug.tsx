@@ -2,7 +2,7 @@ import { Suspense, use } from 'react';
 
 import { createFileRoute, notFound } from '@tanstack/react-router';
 
-import Main, { MainContainer } from '@@frontend-v5/components/Main';
+import Skeleton from '@@frontend-v5/components/Skeleton';
 import { AUTHOR_NAME, SITE_URL } from '@@frontend-v5/constants/site';
 import { getPost, type PostEntry } from '@@frontend-v5/content/posts';
 import { mdxComponents } from '@@frontend-v5/elements';
@@ -44,8 +44,8 @@ export const Route = createFileRoute('/posts/$slug')({
 
 // Renders the post's MDX body. The `use()` call suspends this component while
 // the post's MDX chunk is fetched; the `<Suspense>` boundary in `PostPage`
-// (below) scopes that suspension, so an empty `<Main>`/`<MainContainer>` is shown
-// in place of the layout while the content loads.
+// (below) scopes that suspension to the content alone, so a `<Skeleton>` is shown
+// in its place while the layout stays visible.
 function PostContent(props: { date: string; slug: string }) {
   const { default: Content } = use(import(`@@contents/posts/${props.date}/${props.slug}.mdx`));
   return <Content components={mdxComponents} />;
@@ -55,21 +55,15 @@ function PostPage() {
   const postData: PostEntry = Route.useLoaderData();
 
   return (
-    <Suspense
-      fallback={
-        <Main>
-          <MainContainer />
-        </Main>
-      }
+    <Post
+      slug={postData.slug}
+      date={postData.date}
+      title={postData.title}
+      isDraft={postData.isDraft}
     >
-      <Post
-        slug={postData.slug}
-        date={postData.date}
-        title={postData.title}
-        isDraft={postData.isDraft}
-      >
+      <Suspense fallback={<Skeleton height="300px" width="100%" />}>
         <PostContent date={postData.date} slug={postData.slug} />
-      </Post>
-    </Suspense>
+      </Suspense>
+    </Post>
   );
 }
