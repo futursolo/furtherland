@@ -46,7 +46,7 @@ This is a test RadarChart.
   method="lazy"
   load={() => import('@@post-components/shared/RadarChart')}
   render={(RadarChart) => (
-    <RadarChart client:only
+    <RadarChart
       series={[{ data: [3, 2, 2, 5], label: 'A' }, { data: [4, 3, 5, 4], label: 'B' }]}
       radar={{ metrics: ['Metric A', 'Metric B', 'Metric C', 'Metric D'] }}
       height={300}
