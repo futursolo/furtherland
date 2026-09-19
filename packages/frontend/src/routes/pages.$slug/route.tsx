@@ -11,7 +11,7 @@ import Page from '@@frontend/layouts/Page';
 import formatTitle from '@@frontend/utils/formatTitle';
 import { baseMeta } from '@@frontend/utils/meta';
 
-import type { Route } from './+types/$slug';
+import type { Route } from './+types/route';
 
 export async function loader({ params }: Route.LoaderArgs) {
   const page = await getPage(params.slug);
