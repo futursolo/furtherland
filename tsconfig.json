@@ -14,14 +14,13 @@
     "skipLibCheck": true,
     "paths": {
       "@@common/*": ["./packages/common/src/*"],
+      "@@contents/*": ["./packages/contents/src/*"],
       "@@post-components/*": ["./packages/post-components/src/*"],
       "@@frontend/*": ["./packages/frontend/src/*"]
     }
   },
   "include": [
     "./packages/common/src/**/*",
-    "./packages/post-components/src/**/*",
-    "./packages/frontend/src/**/*",
-    "./packages/frontend/.astro/types.d.ts"
+    "./packages/post-components/src/**/*"
   ]
 }

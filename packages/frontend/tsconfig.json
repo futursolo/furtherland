@@ -1,29 +1,28 @@
 {
-  "extends": "astro/tsconfigs/base",
+  "include": ["**/*.ts", "**/*.tsx"],
   "compilerOptions": {
-    "target": "esnext",
-    "lib": ["dom", "esnext"],
+    "target": "ESNext",
     "jsx": "react-jsx",
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "noEmit": true,
-    "plugins": [{ "name": "@astrojs/ts-plugin" }],
+    "module": "ESNext",
     "paths": {
       "@@frontend/*": ["./src/*"],
       "@@common/*": ["../common/src/*"],
-      "@@post-components/*": ["../post-components/src/*"]
-    }
-  },
-  "include": [
-    "../common/src/**/*",
-    "../post-components/src/**/*",
-    "./src/**/*",
-    "./astro.config.ts",
-    ".astro/types.d.ts"
-  ]
+      "@@post-components/*": ["../post-components/src/*"],
+      "@@contents/*": ["../contents/src/*"]
+    },
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["vite/client"],
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    /* Linting */
+    "skipLibCheck": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
+  }
 }

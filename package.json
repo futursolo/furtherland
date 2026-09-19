@@ -5,20 +5,25 @@
   "packageManager": "yarn@4.18.0",
   "scripts": {
     "lint": "scripts/lint.sh",
-    "start": "yarn workspace @furtherland/frontend frontend:start",
+    "dev": "yarn workspace @furtherland/frontend frontend:dev",
     "build": "yarn workspace @furtherland/frontend frontend:build",
-    "preview": "yarn workspace @furtherland/frontend frontend:preview"
+    "preview": "yarn workspace @furtherland/frontend frontend:preview",
+    "generate-routes": "yarn workspace @furtherland/frontend frontend:generate-routes"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.11",
-    "@types/react": "^19.2.18",
-    "typescript": "6"
+    "@biomejs/biome": "^2.5.13",
+    "@types/node": "^26.5.1",
+    "@types/react": "^19.3.0",
+    "typescript": "^6"
   },
   "workspaces": [
     "packages/*"
   ],
   "dependencies": {
     "@mdx-js/react": "^3.1.1",
-    "react": "^19.2.8"
+    "@yarnpkg/core": "^4.9.1",
+    "@yarnpkg/extensions": "^2.0.7",
+    "@yarnpkg/sdks": "^3.3.1",
+    "react": "^19.3.0"
   }
 }
