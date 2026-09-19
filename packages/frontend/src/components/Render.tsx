@@ -12,14 +12,6 @@ type RenderProps<T extends ComponentType<P>, P> = {
   method?: 'lazy' | 'normal';
 };
 
-// Resolves the module from `load` via `use()` and hands the component to
-// `render`. `load()` runs exactly once: its promise is memoized via `useMemo` so
-// it stays referentially stable across renders, and `use()` suspends until it
-// settles; the surrounding `Suspense` (blank fallback) keeps the slot empty
-// until then. `Loader` is mounted only once its wrapper renders it — on mount
-// for `normal` (via `ClientOnly`) or when the sentinel scrolls into view for
-// `lazy` (via `LazyOnly`) — and unmounting before the promise resolves discards
-// the in-flight load.
 const Loader = <T extends ComponentType<P>, P>({
   load,
   render,
@@ -36,10 +28,6 @@ const Loader = <T extends ComponentType<P>, P>({
   return render(resolved);
 };
 
-// Renders a dynamically imported component. `method` controls when `load` is
-// triggered: `normal` loads as soon as it is rendered on the client, while
-// `lazy` waits until the placeholder scrolls into view before loading. The
-// loader suspends behind a blank `Suspense` fallback until the import resolves.
 const Render = <T extends ComponentType<P>, P>(props: RenderProps<T, P>) => {
   const content = (
     <Suspense fallback={null}>

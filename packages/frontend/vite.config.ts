@@ -22,13 +22,6 @@ logger.warnOnce = (msg, options) => {
   loggerWarnOnce(msg, options)
   }
 
-// `@mdx-js/rollup` does not interpret Astro's `client:only` / `client:visible`
-// directives — the attribute lands on the component as a plain prop, so a
-// client-only element would be SSR-rendered, breaking the client-only intent. This
-// rewrites each such directive into a `ClientOnly` / `LazyOnly` wrapper (see
-// `components/ClientOnly.tsx` / `LazyOnly.tsx`); the compiled MDX resolves those
-// from the `components` map. The shared `@furtherland/contents` MDX stays
-// framework-agnostic.
 type MdxAstNode = {
   type?: string;
   name?: string;
@@ -93,11 +86,6 @@ const config = defineConfig({
   plugins: [
     devtools(),
     tanstackStart({
-      // `/robots.txt`, the Atom feed, and the sitemap routes are server routes (no
-      // `component`), so the auto-discovery skips them, and none is linked from a
-      // page. List them explicitly so the build prerenders each to a static file
-      // under `build/client/` (`robots.txt`, `atom.xml`, `sitemap-index.xml`,
-      // `sitemap-0.xml`).
       pages: [
         { path: '/atom.xml' },
         { path: '/robots.txt' },
@@ -112,9 +100,6 @@ const config = defineConfig({
     }),
     mdx({
       remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm],
-      // `rewriteClientDirectives` first so it runs on the (pre-highlight) hast;
-      // shiki mirrors v4's `markdown.shikiConfig.themes`: dual-theme highlighting,
-      // switched on the client via the `data-theme` attribute.
       rehypePlugins: [rewriteClientDirectivesPlugin, [rehypeShiki, { themes: { light: 'github-light', dark: 'github-dark' } }]],
     }),
     viteReact(),

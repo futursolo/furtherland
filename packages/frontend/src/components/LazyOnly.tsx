@@ -6,10 +6,6 @@ import { styled } from '@@frontend/utils';
 
 const Sentinel = styled.div({ height: 0 });
 
-// Like `ClientOnly`, but only renders its children once scrolled into view.
-// A zero-height sentinel div (always rendered, so SSR/hydration-safe) is observed
-// via `useIntersectionObserver`; the children render once the sentinel becomes
-// visible, then stay mounted (frozen).
 const LazyOnly = (props: PropsWithChildren) => {
   const { children } = props;
 

@@ -8,12 +8,6 @@ export type SitemapItem = {
   url: string;
 };
 
-/**
- * Every public URL the site serves: the home page, each published page, and each
- * published (non-draft) post. Drafts are always excluded — a sitemap is a production
- * artifact, so it should never advertise unpublished content. The result is sorted by
- * URL, matching v4's output ordering.
- */
 export async function getSitemapItems(): Promise<SitemapItem[]> {
   const items: SitemapItem[] = [{ url: `${SITE_URL}/` }];
 
