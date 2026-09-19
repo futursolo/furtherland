@@ -1,3 +1,4 @@
+import { useAtom } from 'jotai';
 import { FiMoon, FiSun } from 'react-icons/fi';
 
 import themeAtom, { persistThemeKind } from '@@frontend/atoms/theme';
@@ -56,11 +57,12 @@ interface ThemeToggleProps {
 
 const ThemeToggle = (props: ThemeToggleProps) => {
   const { position } = props;
+  const [themeKind, setThemeKind] = useAtom(themeAtom);
 
   const toggleTheme = () => {
-    const nextThemeKind = themeAtom.get() === 'light' ? 'dark' : 'light';
+    const nextThemeKind = themeKind === 'light' ? 'dark' : 'light';
     persistThemeKind(nextThemeKind);
-    themeAtom.set(nextThemeKind);
+    setThemeKind(nextThemeKind);
   };
 
   return (

@@ -492,7 +492,7 @@ __metadata:
   resolution: "@furtherland/common@workspace:packages/common"
   dependencies:
     "@biomejs/biome": "npm:^2.5.14"
-    nanostores: "npm:^1.5.3"
+    jotai: "npm:^3.0.0"
     typescript: "npm:^6"
     vite: "npm:^8.3.0"
   languageName: unknown
@@ -518,7 +518,6 @@ __metadata:
     "@furtherland/post-components": "workspace:^"
     "@giscus/react": "npm:^3.1.0"
     "@mdx-js/rollup": "npm:^3.1.1"
-    "@nanostores/react": "npm:^2.0.1"
     "@shikijs/rehype": "npm:^4.4.3"
     "@tanstack/devtools-vite": "npm:^0.8.5"
     "@tanstack/react-devtools": "npm:^0.10.12"
@@ -533,7 +532,7 @@ __metadata:
     "@vitejs/plugin-react": "npm:^6.1.1"
     cheerio: "npm:^1.2.0"
     feedsmith: "npm:^2.9.6"
-    nanostores: "npm:^1.5.3"
+    jotai: "npm:^3.0.0"
     react: "npm:^19.3.0"
     react-dom: "npm:^19.3.0"
     react-icons: "npm:^5.7.0"
@@ -560,10 +559,9 @@ __metadata:
     "@mui/material": "npm:^9.4.0"
     "@mui/system": "npm:^9.4.0"
     "@mui/x-charts": "npm:^9.14.0"
-    "@nanostores/react": "npm:^2.0.1"
     "@types/react": "npm:^19.3.0"
     "@types/react-dom": "npm:^19.3.0"
-    nanostores: "npm:^1.5.3"
+    jotai: "npm:^3.0.0"
     react: "npm:^19.3.0"
     react-dom: "npm:^19.3.0"
     ts-pattern: "npm:^5.9.0"
@@ -962,16 +960,6 @@ __metadata:
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
   checksum: 10c0/33889ccb91c768a31cdbf07fba0233cbcdcd579c0655f298ec0a15f4288989545b493281a798bb54bc04cc8c754e6615b53d0c8be00b5f5f67af2294c16d159f
-  languageName: node
-  linkType: hard
-
-"@nanostores/react@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "@nanostores/react@npm:2.0.1"
-  peerDependencies:
-    nanostores: ^1.2.0
-    react: ">=18.0.0"
-  checksum: 10c0/d1ad8680f43194b943f2a69ee8810d1732a32e02c1d31b9ecfbb963b949d92b8a65a93edaa332505c3557f1218204f43daf4451eb951d4495be09fb2c5aa7b99
   languageName: node
   linkType: hard
 
@@ -4371,6 +4359,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jotai@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "jotai@npm:3.0.0"
+  peerDependencies:
+    "@types/react": ">=18.0.0"
+    react: ">=18.0.0"
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    react:
+      optional: true
+  checksum: 10c0/c62bddc1421d372fd29984aa5c41e10cd3719b552e4a6a937b927e8601e40288cbdf5a7c00ae9062d02272923e2b41749b6fa621fea576011acab97f4e24e188
+  languageName: node
+  linkType: hard
+
 "js-tokens@npm:^3.0.0 || ^4.0.0, js-tokens@npm:^4.0.0":
   version: 4.0.0
   resolution: "js-tokens@npm:4.0.0"
@@ -5536,13 +5539,6 @@ __metadata:
   bin:
     nanoid: bin/nanoid.cjs
   checksum: 10c0/ce7afa6258bfaa00bdc8de291cfe9913280eaa403b7d9cff3db4e4200c1913e7163577df74897958da144db473a96c67f74f57db0f542fbfe409df677bae3255
-  languageName: node
-  linkType: hard
-
-"nanostores@npm:^1.5.3":
-  version: 1.5.3
-  resolution: "nanostores@npm:1.5.3"
-  checksum: 10c0/c364320b2fb2534c92d46866b7beb988a8f699d8056d29f4f7136894bf966bf91f430381d46182c90189dfd937b4ac4b0afa955a65331aadcb75ba2704378e2a
   languageName: node
   linkType: hard
 
