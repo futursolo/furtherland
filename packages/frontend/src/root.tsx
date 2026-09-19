@@ -72,7 +72,11 @@ export default function Root() {
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   if (isRouteErrorResponse(error) && error.status === 404) {
-    return <NotFound />;
+    return (
+      <RootLayout headerKind="default">
+        <NotFound />
+      </RootLayout>
+    );
   }
 
   return (
