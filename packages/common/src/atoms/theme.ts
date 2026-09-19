@@ -1,4 +1,4 @@
-import { atom } from 'nanostores';
+import { atom } from 'jotai';
 
 export const getThemeKind = () => {
   if (import.meta.env.SSR) {
