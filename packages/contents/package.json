@@ -4,6 +4,10 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@furtherland/post-components": "workspace:^"
+    "@furtherland/post-components": "workspace:^",
+    "react": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0"
   }
 }

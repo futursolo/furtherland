@@ -6,7 +6,8 @@
   "scripts": {
     "frontend:start": "react-router dev --port 1741",
     "frontend:typegen": "react-router typegen",
-    "frontend:build": "react-router build",
+    "frontend:prepare-prerender": "vite-node --config ./vite.node.config.ts src/scripts/prepare-prerender.ts",
+    "frontend:build": "yarn frontend:prepare-prerender && react-router build",
     "frontend:preview": "react-router-serve ./build/server/index.js"
   },
   "dependencies": {
@@ -44,6 +45,7 @@
     "@types/node": "^26.6.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
     "typescript": "^6",
     "vite": "^8.3.0"
   }
