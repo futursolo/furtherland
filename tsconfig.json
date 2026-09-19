@@ -16,14 +16,11 @@
       "@@common/*": ["./packages/common/src/*"],
       "@@contents/*": ["./packages/contents/src/*"],
       "@@post-components/*": ["./packages/post-components/src/*"],
-      "@@frontend/*": ["./packages/frontend/src/*"],
       "@@frontend-v5/*": ["./packages/frontend-v5/src/*"]
     }
   },
   "include": [
     "./packages/common/src/**/*",
-    "./packages/post-components/src/**/*",
-    "./packages/frontend/src/**/*",
-    "./packages/frontend/.astro/types.d.ts"
+    "./packages/post-components/src/**/*"
   ]
 }
