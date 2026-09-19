@@ -1,0 +1,63 @@
+import backgroundAvif from '@@frontend/assets/background.avif';
+import backgroundFallback from '@@frontend/assets/background.jpg';
+import backgroundJxl from '@@frontend/assets/background.jxl';
+import backgroundWebp from '@@frontend/assets/background.webp';
+import { styled } from '@@frontend/utils';
+
+const Layout = styled.div(({ theme }) => ({
+  position: 'absolute',
+
+  height: 200,
+  width: '100%',
+
+  '&.is-home': {
+    height: '100vh',
+  },
+
+  // If touch device, this should be extended to cover the bottom bar.
+  '@media (pointer: coarse)': {
+    '&.is-home': {
+      height: 'calc(100vh + 60px)',
+    },
+  },
+
+  [theme.breakpoint.md.mediaUp()]: {
+    height: 300,
+
+    '&.is-home': {
+      height: '100vh',
+    },
+
+    // If touch device, this should be extended to cover the bottom bar.
+    '@media (pointer: coarse)': {
+      '&.is-home': {
+        height: 'calc(100vh + 60px)',
+      },
+    },
+  },
+}));
+
+const Image = styled.img({
+  height: '100%',
+  width: '100%',
+
+  objectFit: 'cover',
+  objectPosition: 'top right',
+});
+
+const HeaderBackground = (props: { headerKind: 'home' | 'default' }) => {
+  const { headerKind } = props;
+
+  return (
+    <Layout className={headerKind === 'home' ? 'is-home' : undefined}>
+      <picture>
+        <source srcSet={backgroundJxl} type="image/jxl" />
+        <source srcSet={backgroundAvif} type="image/avif" />
+        <source srcSet={backgroundWebp} type="image/webp" />
+        <Image src={backgroundFallback} />
+      </picture>
+    </Layout>
+  );
+};
+
+export default HeaderBackground;

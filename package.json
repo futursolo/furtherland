@@ -5,10 +5,10 @@
   "packageManager": "yarn@4.18.0",
   "scripts": {
     "lint": "scripts/lint.sh",
-    "dev": "yarn workspace @furtherland/frontend-v5 frontend-v5:dev",
-    "build": "yarn workspace @furtherland/frontend-v5 frontend-v5:build",
-    "preview": "yarn workspace @furtherland/frontend-v5 frontend-v5:preview",
-    "generate-routes": "yarn workspace @furtherland/frontend-v5 frontend-v5:generate-routes"
+    "dev": "yarn workspace @furtherland/frontend frontend:dev",
+    "build": "yarn workspace @furtherland/frontend frontend:build",
+    "preview": "yarn workspace @furtherland/frontend frontend:preview",
+    "generate-routes": "yarn workspace @furtherland/frontend frontend:generate-routes"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.13",
