@@ -11,9 +11,6 @@ export interface SkeletonProps {
   setDataStatus?: boolean;
 }
 
-// The shimmer keyframe is identical for every placeholder, so it is defined once
-// and shared by all instances (the React equivalent of the original Rust
-// module-level `KEYFRAME_ID` static).
 const wave = keyframes`
   from {
     transform: translateX(-100px);
