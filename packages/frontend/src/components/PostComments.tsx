@@ -1,5 +1,5 @@
 import Giscus from '@giscus/react';
-import { useStore } from '@nanostores/react';
+import { useAtomValue } from 'jotai';
 
 import themeAtom from '@@frontend/atoms/theme';
 import { styled } from '@@frontend/utils';
@@ -9,7 +9,7 @@ interface PostCommentsProps {
 }
 
 const GiscusComments = ({ slug }: PostCommentsProps) => {
-  const themeKind = useStore(themeAtom);
+  const themeKind = useAtomValue(themeAtom);
 
   return (
     <Giscus

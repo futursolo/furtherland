@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "nanostores": "^1.5.3"
+    "jotai": "^3.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.14",

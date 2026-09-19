@@ -1,7 +1,7 @@
 import type { ComponentType, JSX, PropsWithChildren } from 'react';
 
 import { createTheme, ThemeProvider as MuiThemeProvider } from '@mui/material';
-import { useStore } from '@nanostores/react';
+import { useAtomValue } from 'jotai';
 
 import themeAtom from '@@common/atoms/theme';
 
@@ -16,7 +16,7 @@ const lightTheme = createTheme();
 export const ThemeProvider = (props: PropsWithChildren) => {
   const { children } = props;
 
-  const themeKind = useStore(themeAtom);
+  const themeKind = useAtomValue(themeAtom);
 
   return (
     <MuiThemeProvider theme={themeKind === 'light' ? lightTheme : darkTheme}>
