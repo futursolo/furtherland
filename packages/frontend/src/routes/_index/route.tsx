@@ -6,7 +6,7 @@ import Home from '@@frontend/layouts/Home';
 import formatTitle from '@@frontend/utils/formatTitle';
 import { baseMeta } from '@@frontend/utils/meta';
 
-import type { Route } from './+types/_index';
+import type { Route } from './+types/route';
 
 export async function loader() {
   const summaries = await getPostSummaries();
