@@ -2,7 +2,7 @@ import { Suspense, use } from 'react';
 
 import { createFileRoute, notFound } from '@tanstack/react-router';
 
-import Skeleton from '@@frontend-v5/components/Skeleton';
+import { ContentSkeleton } from '@@frontend-v5/components';
 import { SITE_URL } from '@@frontend-v5/constants/site';
 import { getPage, type PageEntry } from '@@frontend-v5/content/pages';
 import { mdxComponents } from '@@frontend-v5/elements';
@@ -33,6 +33,9 @@ export const Route = createFileRoute('/pages/$slug')({
   loader: async ({ params }) => {
     const page = await getPage(params.slug);
     if (!page || (page.isDraft && import.meta.env.PROD)) throw notFound();
+
+    await import(`@@contents/pages/${page.slug}.mdx`);
+
     return { title: page.title, slug: page.slug };
   },
   component: PageRoute,
@@ -52,7 +55,7 @@ function PageRoute() {
 
   return (
     <Page title={pageData.title}>
-      <Suspense fallback={<Skeleton height="300px" width="100%" />}>
+      <Suspense fallback={<ContentSkeleton />}>
         <PageContent slug={pageData.slug} />
       </Suspense>
     </Page>
