@@ -1,4 +1,4 @@
-import { buildAtomFeed } from '@@frontend/server/feed.server';
+import { buildAtomFeed } from './feed.server';
 
 export async function loader() {
   return new Response(await buildAtomFeed(), {
