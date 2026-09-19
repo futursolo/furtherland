@@ -3,16 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "intent": {
-    "skills": [
-      "@tanstack/*"
-    ]
-  },
   "scripts": {
-    "frontend:start": "vite dev --port 1741",
-    "frontend:generate-routes": "tsr generate",
-    "frontend:build": "vite build",
-    "frontend:preview": "vite preview"
+    "frontend:start": "react-router dev --port 1741",
+    "frontend:typegen": "react-router typegen",
+    "frontend:build": "react-router build",
+    "frontend:preview": "react-router-serve ./build/server/index.js"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -23,18 +18,17 @@
     "@giscus/react": "^3.1.0",
     "@mdx-js/rollup": "^3.1.1",
     "@nanostores/react": "^2.0.1",
+    "@react-router/node": "^8.4.0",
+    "@react-router/serve": "^8.4.0",
     "@shikijs/rehype": "^4.4.3",
-    "@tanstack/react-devtools": "^0.10.12",
-    "@tanstack/react-router": "^1.170.38",
-    "@tanstack/react-router-devtools": "^1.167.2",
-    "@tanstack/react-start": "^1.168.56",
-    "@tanstack/router-core": "^1.171.32",
     "cheerio": "^1.2.0",
     "feedsmith": "^2.9.6",
+    "isbot": "^5",
     "nanostores": "^1.5.3",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "react-icons": "^5.7.0",
+    "react-router": "^8.4.0",
     "remark-frontmatter": "^5.0.0",
     "remark-gfm": "^4.0.1",
     "remark-mdx-frontmatter": "^5.2.0",
@@ -45,12 +39,10 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.14",
-    "@tanstack/devtools-vite": "^0.8.5",
-    "@tanstack/router-cli": "^1.167.38",
+    "@react-router/dev": "^8.4.0",
     "@types/node": "^26.6.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "@vitejs/plugin-react": "^6.1.1",
     "typescript": "^6",
     "vite": "^8.3.0"
   }

@@ -7,8 +7,7 @@
     "lint": "scripts/lint.sh",
     "start": "yarn workspace @furtherland/frontend frontend:start",
     "build": "yarn workspace @furtherland/frontend frontend:build",
-    "preview": "yarn workspace @furtherland/frontend frontend:preview",
-    "generate-routes": "yarn workspace @furtherland/frontend frontend:generate-routes"
+    "preview": "yarn workspace @furtherland/frontend frontend:preview"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.14",
