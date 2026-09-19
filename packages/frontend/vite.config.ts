@@ -1,11 +1,9 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { devtools } from '@tanstack/devtools-vite';
+import { reactRouter } from '@react-router/dev/vite';
 import mdx from '@mdx-js/rollup';
 import rehypeShiki from '@shikijs/rehype';
-import { tanstackStart } from '@tanstack/react-start/plugin/vite';
-import viteReact from '@vitejs/plugin-react';
 import { createLogger, defineConfig } from 'vite';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkGfm from 'remark-gfm';
@@ -40,29 +38,12 @@ const config = defineConfig({
       allow: [repoRoot],
     },
   },
-  build: {
-    outDir: 'build',
-  },
   plugins: [
-    devtools(),
-    tanstackStart({
-      pages: [
-        { path: '/atom.xml' },
-        { path: '/robots.txt' },
-        { path: '/sitemap-index.xml' },
-        { path: '/sitemap-0.xml' },
-      ],
-      prerender: {
-        enabled: true,
-        crawlLinks: true,
-        failOnError: true,
-      },
-    }),
     mdx({
       remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm],
       rehypePlugins: [[rehypeShiki, { themes: { light: 'github-light', dark: 'github-dark' } }]],
     }),
-    viteReact(),
+    reactRouter(),
   ],
 });
 

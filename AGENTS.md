@@ -4,13 +4,13 @@ Guidance for AI coding agents working in this repository.
 
 ## What this is
 
-A personal blog ("furtherland") built on **TanStack Start** (Vite-based, SSR) + **TanStack Router** (file-based routing) + **React 19**, styled with **Emotion** (a `theme` object in `src/providers/theme.tsx` consumed by the `ThemeProvider` and by `styled`/`sx`), client state via **jotai**, and **MDX** for content. It is a Yarn monorepo (node linker: `pnp`). Content is authored as MDX files and loaded by the app; the app is SSR by default, with a small set of routes (the Atom feed, `robots.txt`, and the sitemap) prerendered to static files at build time.
+A personal blog ("furtherland") built on **React Router** (v8, framework mode — Vite-based, SSR) + **React 19**, styled with **Emotion** (a `theme` object in `src/providers/theme.tsx` consumed by the `ThemeProvider` and by `styled`/`sx`), client state via **jotai**, and **MDX** for content. It is a Yarn monorepo (node linker: `pnp`). Content is authored as MDX files and loaded by the app; the app is SSR by default, with a small set of routes (the Atom feed, `robots.txt`, and the sitemap) prerendered to static files at build time.
 
 ## Package manager
 
 - **Yarn 4** via **corepack**. Run `corepack enable` once if `yarn` is not available.
 - Always set environment variable `YARN_GLOBAL_FOLDER` to the **project root's** `.yarn/berry` (the `.yarn` directory that sits next to `.git` at the repo root) before running yarn. Point it at the **absolute** path of that directory (e.g. `$(git rev-parse --show-toplevel)/.yarn/berry`), never a relative `.yarn/berry` — a relative value is resolved against the current workspace directory, which creates stray `.yarn/` folders inside `packages/*` and can exhaust disk space.
-- Always invoke dependencies through `yarn` (e.g. `yarn vite dev`), never `npx`/directly.
+- Always invoke dependencies through `yarn` (e.g. `yarn react-router dev`), never `npx`/directly.
 - It is OK to install Node, Yarn (via corepack), and any missing dependencies (via `yarn install`) in the current environment to be able to run the project.
 - When adding or updating dependencies, do **not** look up or read version numbers (e.g. via `yarn info <pkg> version` or the registry) unless absolutely necessary — just run `yarn add <pkg>` for new dependencies or `yarn up <pkg>` to update existing ones.
 
@@ -29,16 +29,15 @@ Run from the **repository root** unless noted. There is **no test suite**.
 | Command | What it does |
 | --- | --- |
 | `yarn lint` | Runs `scripts/lint.sh`: `biome check` (lint + format + import order, per `biome.jsonc`) then `tsc --noEmit` against each workspace's `tsconfig.json` and the root `tsconfig.json`. This is the main verification step after any change. |
-| `yarn start` | Vite dev server on port 1741 (`yarn workspace @furtherland/frontend frontend:start`). |
-| `yarn build` | Production build (`yarn workspace @furtherland/frontend frontend:build`): prerenders the selected routes to static files under `build/client`. |
-| `yarn preview` | Serves the `build/` output locally (`yarn workspace @furtherland/frontend frontend:preview`). |
-| `yarn generate-routes` | Regenerates `packages/frontend/src/routeTree.gen.ts` from `src/routes/**` (`tsr generate`). **Run this after adding / renaming / removing a route.** |
+| `yarn start` | React Router dev server (Vite) on port 1741 (`yarn workspace @furtherland/frontend frontend:start` = `react-router dev`). |
+| `yarn build` | Production build (`yarn workspace @furtherland/frontend frontend:build` = `react-router build`): prerenders the routes listed in `react-router.config.ts` to static files under `build/client`. |
+| `yarn preview` | Serves the `build/` output locally (`yarn workspace @furtherland/frontend frontend:preview` = `react-router-serve ./build/server/index.js`). |
 
-Package scripts that shell out to a dependency (e.g. `vite`, `tsr`) must be run through `yarn` from the owning package directory (e.g. `yarn frontend:start` from `packages/frontend`).
+Package scripts that shell out to a dependency (e.g. `react-router`, `react-router-serve`, `vite`) must be run through `yarn` from the owning package directory (e.g. `yarn frontend:start` from `packages/frontend`).
 
 ## Monorepo layout
 
-- `packages/frontend/` — the app (`@furtherland/frontend`), a TanStack Start (Vite) project. The routes (`src/routes/**`), router (`src/router.tsx`), generated `src/routeTree.gen.ts`, layouts, components, elements, providers, atoms, and utils live here, alongside the content loaders (`src/content/**`) and the `vite.config.ts` build config.
+- `packages/frontend/` — the app (`@furtherland/frontend`), a React Router (framework mode) + Vite project. The root module (`src/root.tsx`), route config (`src/routes.ts`), route modules (`src/routes/**`), generated route types (`.react-router/`), layouts, components, elements, providers, atoms, and utils live here, alongside the content loaders (`src/content/**`), the Vite build config (`vite.config.ts`), and the React Router app config (`react-router.config.ts`).
 - `packages/contents/` (`@furtherland/contents`) — author-facing MDX content:
   - `packages/contents/src/posts/<YYYY-MM-DD>/<slug>.mdx` — blog posts.
   - `packages/contents/src/pages/<slug>.mdx` — standalone pages.
@@ -57,11 +56,11 @@ Use these aliases for cross-directory imports rather than deep relative paths.
 
 ## Routing
 
-File-based via TanStack Router, under `packages/frontend/src/routes/**`. `src/routeTree.gen.ts` is **generated** — do not edit it by hand; add or rename a file under `src/routes/`, then run `yarn generate-routes`. `src/router.tsx` builds the router (and declares the `Register` module for type-safe navigation); `src/routes/__root.tsx` is the root route / document shell (head, theme init script, `<Header>` / `<Footer>`). Dynamic routes (posts, pages) look their content up by slug at request time.
+Routes are declared in `packages/frontend/src/routes.ts` using `route()` / `index()` / `layout()` from `react-router`; each route is a module under `src/routes/**` exporting a `default` component plus `loader` / `meta`. The root module `src/root.tsx` provides the document `Layout` (head, theme init script, `<Header>` / `<Footer>`) and `meta` / `links`. Typed route params / `loaderData` come from generated `+types` modules under `.react-router/` (imported in each route as `./+types/<id>`) — regenerate with `yarn workspace @furtherland/frontend frontend:typegen` (`react-router typegen`); it also runs automatically during `yarn lint` and the dev server. Dynamic routes (posts, pages) look their content up by slug at request time.
 
 ## Rendering / build output
 
-The app is **SSR** (TanStack Start / Vite). A small set of routes — the Atom feed (`/atom.xml`), `/robots.txt`, and the sitemap (`/sitemap-index.xml`, `/sitemap-0.xml`) — are explicitly **prerendered** to static files under `build/client/` at build time (see the `tanstackStart({ pages, prerender })` block in `vite.config.ts`); everything else is served from Node.
+The app is **SSR** (React Router / Vite). A small set of routes — the Atom feed (`/atom.xml`), `/robots.txt`, and the sitemap (`/sitemap-index.xml`, `/sitemap-0.xml`) — are explicitly **prerendered** to static files under `build/client/` at build time; prerendering is declared in `react-router.config.ts` (`ssr: true` plus a `prerender` path list) and wired into the build by the `reactRouter()` Vite plugin. Everything else is served from Node.
 
 `@@contents` resolves to `packages/contents/src` by default and can be overridden with the `FL_CONTENTS_DIR` env var; when set, the value is resolved relative to the cwd of the `yarn` command that runs the build (i.e. `process.cwd()`), rather than the package directory.
 
@@ -89,6 +88,6 @@ The app is **SSR** (TanStack Start / Vite). A small set of routes — the Atom f
 ## Conventions to respect
 
 - Server-only logic uses the `*.server.tsx` / `*.server.ts` file suffix convention; keep server-only imports (e.g. `node:fs`) out of client bundles.
-- The Vite build config (plugins, `resolve.alias`, the `tanstackStart` prerender block, `build.outDir`) lives in `packages/frontend/vite.config.ts`.
-- The frontend `.gitignore` excludes `build/` and `.tanstack/`; the root `.gitignore` excludes `node_modules/`. Don't commit build output.
+- The Vite build config (plugins, `resolve.alias`, `build.outDir`) lives in `packages/frontend/vite.config.ts`; the React Router app config (`appDirectory`, `ssr`, `prerender`) lives in `packages/frontend/react-router.config.ts`.
+- The frontend `.gitignore` excludes `build/` and `.react-router/`; the root `.gitignore` excludes `node_modules/`. Don't commit build output.
 - React components can accept other React components as children (and vice versa).

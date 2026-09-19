@@ -4,7 +4,7 @@ build/
 *.local
 .env
 .nitro
-.tanstack
+.react-router
 .wrangler
 .output
 .vinxi

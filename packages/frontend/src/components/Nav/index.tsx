@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { useTheme } from '@emotion/react';
-import { Link } from '@tanstack/react-router';
+import { Link as RouterLink } from 'react-router';
 
 import Box from '@@frontend/components/Box';
 import FlexSpace from '@@frontend/components/FlexSpace';
@@ -10,7 +10,7 @@ import { styled } from '@@frontend/utils';
 import LinkItem from './LinkItem';
 import ThemeToggle from './ThemeToggle';
 
-const UnstyledLink = styled(Link)({
+const UnstyledLink = styled(RouterLink)({
   color: 'inherit',
   textDecoration: 'none',
 });
