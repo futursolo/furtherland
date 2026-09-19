@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "jotai": "^3.0.0"
+    "jotai": "^3.0.0",
+    "react": "^19.3.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.14",

@@ -15,7 +15,11 @@ const logger = createLogger()
 const loggerWarnOnce = logger.warnOnce
 logger.warnOnce = (msg, options) => {
   if (msg.includes('Using Yarn PnP with Vite is discouraged and PnP-specific bugs will no longer be actively worked on.')) {
-    return
+    return;
+  }
+
+  if (msg.includes('Using Yarn PnP with Vite is discouraged and PnP-specific bugs will no longer be actively worked on. Please switch to a different nodeLinker mode or to a different package manager.')) {
+    return;
   }
   loggerWarnOnce(msg, options)
   }
