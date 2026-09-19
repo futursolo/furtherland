@@ -11,8 +11,8 @@
     "generate-routes": "yarn workspace @furtherland/frontend frontend:generate-routes"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.13",
-    "@types/node": "^26.5.1",
+    "@biomejs/biome": "^2.5.14",
+    "@types/node": "^26.6.1",
     "@types/react": "^19.3.0",
     "typescript": "^6"
   },
