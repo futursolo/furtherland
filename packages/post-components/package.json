@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "devDependencies": {
-    "@biomejs/biome": "^2.5.13",
-    "@types/node": "^26.5.1",
+    "@biomejs/biome": "^2.5.14",
+    "@types/node": "^26.6.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "typescript": "^6"
@@ -16,7 +16,7 @@
     "@furtherland/common": "workspace:^",
     "@mui/material": "^9.4.0",
     "@mui/system": "^9.4.0",
-    "@mui/x-charts": "^9.13.0",
+    "@mui/x-charts": "^9.14.0",
     "@nanostores/react": "^2.0.1",
     "nanostores": "^1.5.3",
     "react": "^19.3.0",

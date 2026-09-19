@@ -4,6 +4,6 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@furtherland/post-components": "workspace:*"
+    "@furtherland/post-components": "workspace:^"
   }
 }
