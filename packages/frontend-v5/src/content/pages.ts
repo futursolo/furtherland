@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import type { MdxComponent, MdxModule } from './types';
+import type { MdxModule } from './types';
 
 // Mirrors v4's `content.config.ts` `pages` schema: a page is a draft unless it
 // is explicitly published.
@@ -14,7 +14,7 @@ const pageSchema = z
   .transform((data) => ({ ...data, isDraft: !data.isPublished }));
 
 /** Frontmatter data for a page, plus the compiled MDX component. */
-export type PageEntry = z.infer<typeof pageSchema> & { Content: MdxComponent };
+export type PageEntry = z.infer<typeof pageSchema>;
 
 /**
  * Slug -> page entry map, filled lazily on first access (via `loadPages`) and
@@ -48,7 +48,7 @@ function loadPages(): Promise<Record<string, PageEntry>> {
           if (!parsed.success) {
             throw new Error(`Invalid frontmatter in "${path}":\n${z.prettifyError(parsed.error)}`);
           }
-          return [parsed.data.slug, { ...parsed.data, Content: mod.default }] as const;
+          return [parsed.data.slug, { ...parsed.data }] as const;
         }),
       );
       return Object.fromEntries(entries);

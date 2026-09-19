@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import type { MdxComponent, MdxModule } from './types';
+import type { MdxModule } from './types';
 
 // Mirrors v4's `content.config.ts` `posts` schema, including the draft rule
 // (a post dated 2099-12-31 is a draft).
@@ -14,7 +14,7 @@ const postSchema = z
   .transform((data) => ({ ...data, isDraft: data.date === '2099-12-31' }));
 
 /** Frontmatter data for a post, plus the compiled MDX component. */
-export type PostEntry = z.infer<typeof postSchema> & { Content: MdxComponent };
+export type PostEntry = z.infer<typeof postSchema>;
 
 /**
  * Slug -> post entry map, filled lazily on first access (via `loadPosts`) and
@@ -48,7 +48,7 @@ function loadPosts(): Promise<Record<string, PostEntry>> {
           if (!parsed.success) {
             throw new Error(`Invalid frontmatter in "${path}":\n${z.prettifyError(parsed.error)}`);
           }
-          return [parsed.data.slug, { ...parsed.data, Content: mod.default }] as const;
+          return [parsed.data.slug, { ...parsed.data }] as const;
         }),
       );
       return Object.fromEntries(entries);
