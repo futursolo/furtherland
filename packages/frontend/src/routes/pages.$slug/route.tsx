@@ -1,10 +1,9 @@
-import { Suspense, useMemo } from 'react';
+import { use, useMemo } from 'react';
 
-import { Await, useLoaderData } from 'react-router';
+import { useLoaderData } from 'react-router';
 
-import { ContentSkeleton } from '@@frontend/components';
 import { SITE_URL } from '@@frontend/constants/site';
-import { getPage, type PageEntry } from '@@frontend/content/pages';
+import { getPage, type PageEntry } from '@@frontend/content/pages.server';
 import type { MdxModule } from '@@frontend/content/types';
 import { mdxComponents } from '@@frontend/elements';
 import Page from '@@frontend/layouts/Page';
@@ -52,13 +51,11 @@ export default function PageRoute() {
     [pageData.slug],
   );
 
+  const { default: Component } = use(contentPromise);
+
   return (
     <Page title={pageData.title}>
-      <Suspense fallback={<ContentSkeleton />}>
-        <Await resolve={contentPromise}>
-          {({ default: Component }) => <Component components={mdxComponents} />}
-        </Await>
-      </Suspense>
+      <Component components={mdxComponents} />
     </Page>
   );
 }

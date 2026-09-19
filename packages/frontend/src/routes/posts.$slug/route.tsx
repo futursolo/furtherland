@@ -1,10 +1,9 @@
-import { Suspense, useMemo } from 'react';
+import { use, useMemo } from 'react';
 
-import { Await, useLoaderData } from 'react-router';
+import { useLoaderData } from 'react-router';
 
-import { ContentSkeleton } from '@@frontend/components';
 import { AUTHOR_NAME, SITE_URL } from '@@frontend/constants/site';
-import { getPost, type PostEntry } from '@@frontend/content/posts';
+import { getPost, type PostEntry } from '@@frontend/content/posts.server';
 import type { MdxModule } from '@@frontend/content/types';
 import { mdxComponents } from '@@frontend/elements';
 import Post from '@@frontend/layouts/Post';
@@ -54,6 +53,8 @@ export default function PostPage() {
     [postData.date, postData.slug],
   );
 
+  const { default: Component } = use(contentPromise);
+
   return (
     <Post
       slug={postData.slug}
@@ -61,11 +62,7 @@ export default function PostPage() {
       title={postData.title}
       isDraft={postData.isDraft}
     >
-      <Suspense fallback={<ContentSkeleton />}>
-        <Await resolve={contentPromise}>
-          {({ default: Component }) => <Component components={mdxComponents} />}
-        </Await>
-      </Suspense>
+      <Component components={mdxComponents} />
     </Post>
   );
 }
