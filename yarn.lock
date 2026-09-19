@@ -491,6 +491,7 @@ __metadata:
     "@giscus/react": "npm:^3.1.0"
     "@mdx-js/rollup": "npm:^3.1.1"
     "@react-router/dev": "npm:^8.4.0"
+    "@react-router/fs-routes": "npm:^8.4.0"
     "@react-router/node": "npm:^8.4.0"
     "@react-router/serve": "npm:^8.4.0"
     "@shikijs/rehype": "npm:^4.4.3"
@@ -1081,6 +1082,21 @@ __metadata:
     typescript:
       optional: true
   checksum: 10c0/900045703606010ca74f9e98ce98b56a46eea6950a3dcf500dae675813f43cbdfa876349518f37378f87176553ff977b89794418cf0ea1aa3f5550e7fb6ca22b
+  languageName: node
+  linkType: hard
+
+"@react-router/fs-routes@npm:^8.4.0":
+  version: 8.4.0
+  resolution: "@react-router/fs-routes@npm:8.4.0"
+  dependencies:
+    minimatch: "npm:^10.2.5"
+  peerDependencies:
+    "@react-router/dev": ^8.4.0
+    typescript: ^5.1.0 || ^6.0.0 || ^7.0.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/077cdfd952872b39cccaa312da25dfd5374d681913f3e1abb096205988c7f35b086da1f10974673afad1f38b976fdba32d0b8d0f983c38be69f91f1ae4c38e3f
   languageName: node
   linkType: hard
 
@@ -2124,6 +2140,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"balanced-match@npm:^4.0.2":
+  version: 4.0.4
+  resolution: "balanced-match@npm:4.0.4"
+  checksum: 10c0/07e86102a3eb2ee2a6a1a89164f29d0dbaebd28f2ca3f5ca786f36b8b23d9e417eb3be45a4acf754f837be5ac0a2317de90d3fcb7f4f4dc95720a1f36b26a17b
+  languageName: node
+  linkType: hard
+
 "baseline-browser-mapping@npm:^2.11.12":
   version: 2.11.15
   resolution: "baseline-browser-mapping@npm:2.11.15"
@@ -2179,6 +2202,15 @@ __metadata:
   dependencies:
     balanced-match: "npm:^1.0.0"
   checksum: 10c0/17ee4194c85b05cde0a7b7c068eeef664440c027116ef42c3d35c13ebabdc9fd3eaf05c5c8a06dd0ca20ae012d652561d8ac2a699daa5cbee1f0510e5134ab4d
+  languageName: node
+  linkType: hard
+
+"brace-expansion@npm:^5.0.8":
+  version: 5.0.12
+  resolution: "brace-expansion@npm:5.0.12"
+  dependencies:
+    balanced-match: "npm:^4.0.2"
+  checksum: 10c0/a40ac64d3bdb5bb222456514d3633c1f627f03b844f509c69e70f98b78be0ce85e21b44bbfecdd0ddd4cc0855ca4242b41ea96ddccf88c7c3c7a84405474bb3a
   languageName: node
   linkType: hard
 
@@ -5086,6 +5118,15 @@ __metadata:
   version: 3.1.0
   resolution: "mimic-response@npm:3.1.0"
   checksum: 10c0/0d6f07ce6e03e9e4445bee655202153bdb8a98d67ee8dc965ac140900d7a2688343e6b4c9a72cfc9ef2f7944dfd76eef4ab2482eb7b293a68b84916bac735362
+  languageName: node
+  linkType: hard
+
+"minimatch@npm:^10.2.5":
+  version: 10.2.6
+  resolution: "minimatch@npm:10.2.6"
+  dependencies:
+    brace-expansion: "npm:^5.0.8"
+  checksum: 10c0/4559a836243b98bd4d17ea9f7edae698717c76399eea7be374f3737f33164e4907f19e9726891ddeb122f750a5a7fa80d2ac43e851d6e5984dc4ff42ec127d3a
   languageName: node
   linkType: hard
 
