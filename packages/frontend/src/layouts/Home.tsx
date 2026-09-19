@@ -1,5 +1,5 @@
 import { Author, Box, Link, Main, MainContainer } from '@@frontend/components';
-import type { PostEntry } from '@@frontend/content/posts';
+import type { PostEntry } from '@@frontend/content/posts.server';
 import { H2 } from '@@frontend/elements';
 import { styled } from '@@frontend/utils';
 

@@ -1,7 +1,7 @@
 import { SitemapStream, streamToPromise } from 'sitemap';
 
 import { SITE_URL } from '@@frontend/constants/site';
-import { getSitemapItems } from '@@frontend/content/sitemap';
+import { getSitemapItems } from '@@frontend/content/sitemap.server';
 
 export async function loader() {
   const items = await getSitemapItems();

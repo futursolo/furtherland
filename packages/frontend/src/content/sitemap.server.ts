@@ -1,7 +1,7 @@
 import { SITE_URL } from '@@frontend/constants/site';
 
-import { getPageSummaries } from './pages';
-import { getPostSummaries } from './posts';
+import { getPageSummaries } from './pages.server';
+import { getPostSummaries } from './posts.server';
 
 /** A single sitemap entry: a public page URL. */
 export type SitemapItem = {
