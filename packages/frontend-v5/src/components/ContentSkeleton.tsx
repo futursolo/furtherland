@@ -4,7 +4,7 @@ import Box from './Box';
 import Skeleton from './Skeleton';
 
 const Layout = styled(Box)({
-  paddingBottom: '2rem',
+  paddingBottom: '1rem',
 });
 
 const ContentSkeleton = () => (
