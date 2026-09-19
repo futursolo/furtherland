@@ -9,7 +9,7 @@
     ]
   },
   "scripts": {
-    "frontend:dev": "vite dev --port 1741",
+    "frontend:start": "vite dev --port 1741",
     "frontend:generate-routes": "tsr generate",
     "frontend:build": "vite build",
     "frontend:preview": "vite preview"
@@ -38,7 +38,6 @@
     "remark-gfm": "^4.0.1",
     "remark-mdx-frontmatter": "^5.2.0",
     "rollup": "^4.63.3",
-    "sass": "^1.104.1",
     "sitemap": "^9.0.1",
     "usehooks-ts": "^3.1.1",
     "zod": "^4.6.5"
