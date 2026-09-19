@@ -17,11 +17,10 @@ A personal blog ("furtherland") built on **TanStack Start** (Vite-based, SSR) + 
 ## Git workflow
 
 - **Always inspect the current branch before making changes** (e.g. `git branch --show-current` and `git status`).
-- **If the current branch is `main` or `v5`, always start a new branch first** before doing any work (e.g. `git switch -c <branch-name>` or `git checkout -b <branch-name>`). Do not make changes or commit directly on `main` or `v5`.
-- New working branches should be branched from `main` or `v5`, whichever is the appropriate base for the work.
+- **If the current branch is `main`, always start a new branch first** before doing any work (e.g. `git switch -c <branch-name>` or `git checkout -b <branch-name>`). Do not make changes or commit directly on `main`.
+- New working branches should be branched from `main`.
 - Choose a descriptive branch name derived from the task (e.g. `fix/<summary>`, `feat/<summary>`).
-- Branches created from `v5` must be prefixed with `v5/` (e.g. `v5/fix/<summary>`, `v5/feat/<summary>`).
-- If a suitable branch other than `main`/`v5` already exists and the work belongs there, continue on it; otherwise create a new one.
+- If a suitable branch other than `main` already exists and the work belongs there, continue on it; otherwise create a new one.
 
 ## Commands
 
@@ -30,16 +29,16 @@ Run from the **repository root** unless noted. There is **no test suite**.
 | Command | What it does |
 | --- | --- |
 | `yarn lint` | Runs `scripts/lint.sh`: `biome check` (lint + format + import order, per `biome.jsonc`) then `tsc --noEmit` against each workspace's `tsconfig.json` and the root `tsconfig.json`. This is the main verification step after any change. |
-| `yarn dev` | Vite dev server on port 1741 (`yarn workspace @furtherland/frontend-v5 frontend-v5:dev`). |
-| `yarn build` | Production build (`yarn workspace @furtherland/frontend-v5 frontend-v5:build`): prerenders the selected routes to static files under `build/client`. |
-| `yarn preview` | Serves the `build/` output locally (`yarn workspace @furtherland/frontend-v5 frontend-v5:preview`). |
-| `yarn generate-routes` | Regenerates `packages/frontend-v5/src/routeTree.gen.ts` from `src/routes/**` (`tsr generate`). **Run this after adding / renaming / removing a route.** |
+| `yarn dev` | Vite dev server on port 1741 (`yarn workspace @furtherland/frontend frontend:dev`). |
+| `yarn build` | Production build (`yarn workspace @furtherland/frontend frontend:build`): prerenders the selected routes to static files under `build/client`. |
+| `yarn preview` | Serves the `build/` output locally (`yarn workspace @furtherland/frontend frontend:preview`). |
+| `yarn generate-routes` | Regenerates `packages/frontend/src/routeTree.gen.ts` from `src/routes/**` (`tsr generate`). **Run this after adding / renaming / removing a route.** |
 
-Package scripts that shell out to a dependency (e.g. `vite`, `tsr`) must be run through `yarn` from the owning package directory (e.g. `yarn frontend-v5:dev` from `packages/frontend-v5`).
+Package scripts that shell out to a dependency (e.g. `vite`, `tsr`) must be run through `yarn` from the owning package directory (e.g. `yarn frontend:dev` from `packages/frontend`).
 
 ## Monorepo layout
 
-- `packages/frontend-v5/` — the app (`@furtherland/frontend-v5`), a TanStack Start (Vite) project. The routes (`src/routes/**`), router (`src/router.tsx`), generated `src/routeTree.gen.ts`, layouts, components, elements, providers, atoms, and utils live here, alongside the content loaders (`src/content/**`) and the `vite.config.ts` build config.
+- `packages/frontend/` — the app (`@furtherland/frontend`), a TanStack Start (Vite) project. The routes (`src/routes/**`), router (`src/router.tsx`), generated `src/routeTree.gen.ts`, layouts, components, elements, providers, atoms, and utils live here, alongside the content loaders (`src/content/**`) and the `vite.config.ts` build config.
 - `packages/contents/` (`@furtherland/contents`) — author-facing MDX content:
   - `packages/contents/src/posts/<YYYY-MM-DD>/<slug>.mdx` — blog posts.
   - `packages/contents/src/pages/<slug>.mdx` — standalone pages.
@@ -49,7 +48,7 @@ Package scripts that shell out to a dependency (e.g. `vite`, `tsr`) must be run 
 ### Path aliases
 
 Defined in each package's `tsconfig.json` (and wired into the Vite build via `vite.config.ts` `resolve.alias`):
-- `@@frontend-v5/*` → `packages/frontend-v5/src/*`
+- `@@frontend/*` → `packages/frontend/src/*`
 - `@@common/*` → `packages/common/src/*`
 - `@@contents/*` → `packages/contents/src/*`
 - `@@post-components/*` → `packages/post-components/src/*`
@@ -58,7 +57,7 @@ Use these aliases for cross-directory imports rather than deep relative paths.
 
 ## Routing
 
-File-based via TanStack Router, under `packages/frontend-v5/src/routes/**`. `src/routeTree.gen.ts` is **generated** — do not edit it by hand; add or rename a file under `src/routes/`, then run `yarn generate-routes`. `src/router.tsx` builds the router (and declares the `Register` module for type-safe navigation); `src/routes/__root.tsx` is the root route / document shell (head, theme init script, `<Header>` / `<Footer>`). Dynamic routes (posts, pages) look their content up by slug at request time.
+File-based via TanStack Router, under `packages/frontend/src/routes/**`. `src/routeTree.gen.ts` is **generated** — do not edit it by hand; add or rename a file under `src/routes/`, then run `yarn generate-routes`. `src/router.tsx` builds the router (and declares the `Register` module for type-safe navigation); `src/routes/__root.tsx` is the root route / document shell (head, theme init script, `<Header>` / `<Footer>`). Dynamic routes (posts, pages) look their content up by slug at request time.
 
 ## Rendering / build output
 
@@ -77,7 +76,7 @@ The app is **SSR** (TanStack Start / Vite). A small set of routes — the Atom f
 
 - Lint/format/import-ordering is enforced by **Biome** (`biome.jsonc`): 2-space indent, single quotes, semicolons always, trailing commas, 100-col width, LF endings, auto import organization.
 - TypeScript is `strict`. Keep new code type-clean — `yarn lint` runs `tsc --noEmit` against each workspace.
-- Prefer the existing patterns (Emotion `styled`/`sx` + the `theme`, nanostores atoms, the `@@frontend-v5/components` and `@@frontend-v5/elements` barrels) over introducing new conventions.
+- Prefer the existing patterns (Emotion `styled`/`sx` + the `theme`, nanostores atoms, the `@@frontend/components` and `@@frontend/elements` barrels) over introducing new conventions.
 - Never try to format code or organise imports manually, and never read the Biome configuration (`biome.jsonc`) by hand to figure out the rules.
 - To fix Biome errors (lint/format/import-ordering), apply the autofix first: run `yarn biome check --write`. Only after the autofix has been applied, resort to manual editing for whatever the autofix could not fix.
 - Do not add a test framework unless asked; `yarn lint` is the verification gate.
@@ -90,6 +89,6 @@ The app is **SSR** (TanStack Start / Vite). A small set of routes — the Atom f
 ## Conventions to respect
 
 - Server-only logic uses the `*.server.tsx` / `*.server.ts` file suffix convention; keep server-only imports (e.g. `node:fs`) out of client bundles.
-- The Vite build config (plugins, `resolve.alias`, the `tanstackStart` prerender block, `build.outDir`) lives in `packages/frontend-v5/vite.config.ts`.
+- The Vite build config (plugins, `resolve.alias`, the `tanstackStart` prerender block, `build.outDir`) lives in `packages/frontend/vite.config.ts`.
 - The frontend `.gitignore` excludes `build/` and `.tanstack/`; the root `.gitignore` excludes `node_modules/`. Don't commit build output.
 - React components can accept other React components as children (and vice versa).
