@@ -976,9 +976,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@furtherland/frontend-v5@workspace:packages/frontend-v5":
+"@furtherland/frontend@workspace:packages/frontend":
   version: 0.0.0-use.local
-  resolution: "@furtherland/frontend-v5@workspace:packages/frontend-v5"
+  resolution: "@furtherland/frontend@workspace:packages/frontend"
   dependencies:
     "@biomejs/biome": "npm:^2.5.13"
     "@emotion/react": "npm:^11.14.0"

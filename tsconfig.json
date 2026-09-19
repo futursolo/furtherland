@@ -16,7 +16,7 @@
       "@@common/*": ["./packages/common/src/*"],
       "@@contents/*": ["./packages/contents/src/*"],
       "@@post-components/*": ["./packages/post-components/src/*"],
-      "@@frontend-v5/*": ["./packages/frontend-v5/src/*"]
+      "@@frontend/*": ["./packages/frontend/src/*"]
     }
   },
   "include": [
