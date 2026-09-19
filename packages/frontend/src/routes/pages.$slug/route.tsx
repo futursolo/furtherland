@@ -3,7 +3,7 @@ import { use, useMemo } from 'react';
 import { useLoaderData } from 'react-router';
 
 import { SITE_URL } from '@@frontend/constants/site';
-import { getPage, type PageEntry } from '@@frontend/content/pages';
+import { getPage, type PageEntry } from '@@frontend/content/pages.server';
 import type { MdxModule } from '@@frontend/content/types';
 import { mdxComponents } from '@@frontend/elements';
 import Page from '@@frontend/layouts/Page';

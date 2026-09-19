@@ -3,7 +3,7 @@ import { use, useMemo } from 'react';
 import { useLoaderData } from 'react-router';
 
 import { AUTHOR_NAME, SITE_URL } from '@@frontend/constants/site';
-import { getPost, type PostEntry } from '@@frontend/content/posts';
+import { getPost, type PostEntry } from '@@frontend/content/posts.server';
 import type { MdxModule } from '@@frontend/content/types';
 import { mdxComponents } from '@@frontend/elements';
 import Post from '@@frontend/layouts/Post';

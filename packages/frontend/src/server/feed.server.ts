@@ -6,7 +6,7 @@ import type { Atom, DeepPartial } from 'feedsmith/types';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 import { AUTHOR_NAME, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@@frontend/constants/site';
-import { getPostSummaries, type PostEntry } from '@@frontend/content/posts';
+import { getPostSummaries, type PostEntry } from '@@frontend/content/posts.server';
 import type { MdxModule } from '@@frontend/content/types';
 
 const FEED_URL = `${SITE_URL}/atom.xml`;
