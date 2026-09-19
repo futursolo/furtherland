@@ -35,6 +35,7 @@
     "rollup": "^4.63.3",
     "sitemap": "^9.0.1",
     "usehooks-ts": "^3.1.1",
+    "vite-node": "^6.0.0",
     "zod": "^4.6.5"
   },
   "devDependencies": {
