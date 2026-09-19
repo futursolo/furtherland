@@ -23,7 +23,7 @@ Run from `packages/frontend/` via `yarn`. There is **no test suite**; Biome is t
 
 | Command | What it does |
 | --- | --- |
-| `yarn frontend:dev` | Dev server (Vite) on port 1741. |
+| `yarn frontend:start` | Dev server (Vite) on port 1741. |
 | `yarn frontend:build` | Production build (Vite). |
 | `yarn frontend:preview` | Serves the production build locally. |
 | `yarn frontend:generate-routes` | Regenerates `src/routeTree.gen.ts` from `src/routes/**` (`tsr generate`). **Run this after adding / renaming / removing a route.** |

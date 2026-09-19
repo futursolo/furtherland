@@ -9,7 +9,7 @@
     ]
   },
   "scripts": {
-    "frontend:dev": "vite dev --port 1741",
+    "frontend:start": "vite dev --port 1741",
     "frontend:generate-routes": "tsr generate",
     "frontend:build": "vite build",
     "frontend:preview": "vite preview"
