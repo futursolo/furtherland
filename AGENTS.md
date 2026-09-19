@@ -29,12 +29,12 @@ Run from the **repository root** unless noted. There is **no test suite**.
 | Command | What it does |
 | --- | --- |
 | `yarn lint` | Runs `scripts/lint.sh`: `biome check` (lint + format + import order, per `biome.jsonc`) then `tsc --noEmit` against each workspace's `tsconfig.json` and the root `tsconfig.json`. This is the main verification step after any change. |
-| `yarn dev` | Vite dev server on port 1741 (`yarn workspace @furtherland/frontend frontend:dev`). |
+| `yarn start` | Vite dev server on port 1741 (`yarn workspace @furtherland/frontend frontend:start`). |
 | `yarn build` | Production build (`yarn workspace @furtherland/frontend frontend:build`): prerenders the selected routes to static files under `build/client`. |
 | `yarn preview` | Serves the `build/` output locally (`yarn workspace @furtherland/frontend frontend:preview`). |
 | `yarn generate-routes` | Regenerates `packages/frontend/src/routeTree.gen.ts` from `src/routes/**` (`tsr generate`). **Run this after adding / renaming / removing a route.** |
 
-Package scripts that shell out to a dependency (e.g. `vite`, `tsr`) must be run through `yarn` from the owning package directory (e.g. `yarn frontend:dev` from `packages/frontend`).
+Package scripts that shell out to a dependency (e.g. `vite`, `tsr`) must be run through `yarn` from the owning package directory (e.g. `yarn frontend:start` from `packages/frontend`).
 
 ## Monorepo layout
 
