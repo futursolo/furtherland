@@ -2,7 +2,7 @@ import { NotFound } from '@@frontend/components';
 import formatTitle from '@@frontend/utils/formatTitle';
 import { baseMeta } from '@@frontend/utils/meta';
 
-import type { Route } from './+types/404';
+import type { Route } from './+types/route';
 
 export function meta(): Route.MetaDescriptors {
   return [
