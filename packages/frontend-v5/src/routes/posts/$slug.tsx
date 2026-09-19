@@ -2,9 +2,10 @@ import { Suspense, use } from 'react';
 
 import { createFileRoute, notFound } from '@tanstack/react-router';
 
-import Skeleton from '@@frontend-v5/components/Skeleton';
+import { ContentSkeleton } from '@@frontend-v5/components';
 import { AUTHOR_NAME, SITE_URL } from '@@frontend-v5/constants/site';
 import { getPost, type PostEntry } from '@@frontend-v5/content/posts';
+import type { MdxModule } from '@@frontend-v5/content/types';
 import { mdxComponents } from '@@frontend-v5/elements';
 import Post from '@@frontend-v5/layouts/Post';
 import formatTitle from '@@frontend-v5/utils/formatTitle';
@@ -37,6 +38,8 @@ export const Route = createFileRoute('/posts/$slug')({
   loader: async ({ params }) => {
     const post = await getPost(params.slug);
     if (!post || (post.isDraft && import.meta.env.PROD)) throw notFound();
+
+    await import(`@@contents/posts/${post.date}/${post.slug}.mdx`);
     return { slug: post.slug, date: post.date, isDraft: post.isDraft, title: post.title };
   },
   component: PostPage,
@@ -47,7 +50,9 @@ export const Route = createFileRoute('/posts/$slug')({
 // (below) scopes that suspension to the content alone, so a `<Skeleton>` is shown
 // in its place while the layout stays visible.
 function PostContent(props: { date: string; slug: string }) {
-  const { default: Content } = use(import(`@@contents/posts/${props.date}/${props.slug}.mdx`));
+  const { default: Content } = use(
+    import(`@@contents/posts/${props.date}/${props.slug}.mdx`),
+  ) as MdxModule;
   return <Content components={mdxComponents} />;
 }
 
@@ -61,7 +66,7 @@ function PostPage() {
       title={postData.title}
       isDraft={postData.isDraft}
     >
-      <Suspense fallback={<Skeleton height="300px" width="100%" />}>
+      <Suspense fallback={<ContentSkeleton />}>
         <PostContent date={postData.date} slug={postData.slug} />
       </Suspense>
     </Post>
