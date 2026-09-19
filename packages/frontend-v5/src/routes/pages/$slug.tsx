@@ -1,18 +1,15 @@
-import { Suspense, use } from 'react';
+import { useMemo } from 'react';
 
-import { createFileRoute, notFound } from '@tanstack/react-router';
+import { Await, createFileRoute, notFound } from '@tanstack/react-router';
 
-import Skeleton from '@@frontend-v5/components/Skeleton';
+import { ContentSkeleton } from '@@frontend-v5/components';
 import { SITE_URL } from '@@frontend-v5/constants/site';
 import { getPage, type PageEntry } from '@@frontend-v5/content/pages';
+import type { MdxModule } from '@@frontend-v5/content/types';
 import { mdxComponents } from '@@frontend-v5/elements';
 import Page from '@@frontend-v5/layouts/Page';
 import formatTitle from '@@frontend-v5/utils/formatTitle';
 
-// Static page — the v5 equivalent of v4's `pages/pages/[slug].astro`. As with
-// posts, the `$slug` param resolves against the build-time `pages` map in the
-// loader, unknown / production-draft pages throw `notFound()`, and the content
-// is wrapped in the v5 Page layout.
 export const Route = createFileRoute('/pages/$slug')({
   head: async ({ params }) => {
     const page = await getPage(params.slug);
@@ -33,28 +30,25 @@ export const Route = createFileRoute('/pages/$slug')({
   loader: async ({ params }) => {
     const page = await getPage(params.slug);
     if (!page || (page.isDraft && import.meta.env.PROD)) throw notFound();
-    return { title: page.title, slug: page.slug };
+
+    return page;
   },
   component: PageRoute,
 });
 
-// Renders the page's MDX body. The `use()` call suspends this component while
-// the page's MDX chunk is fetched; the `<Suspense>` boundary in `PageRoute`
-// (below) scopes that suspension to the content alone, so a `<Skeleton>` is shown
-// in its place while the layout stays visible.
-function PageContent(props: { slug: string }) {
-  const { default: Content } = use(import(`@@contents/pages/${props.slug}.mdx`));
-  return <Content components={mdxComponents} />;
-}
-
 function PageRoute() {
   const pageData: PageEntry = Route.useLoaderData();
 
+  const contentPromise = useMemo(
+    () => import(`@@contents/pages/${pageData.slug}.mdx`) as Promise<MdxModule>,
+    [pageData.slug],
+  );
+
   return (
     <Page title={pageData.title}>
-      <Suspense fallback={<Skeleton height="300px" width="100%" />}>
-        <PageContent slug={pageData.slug} />
-      </Suspense>
+      <Await promise={contentPromise} fallback={<ContentSkeleton />}>
+        {({ default: Component }) => <Component components={mdxComponents} />}
+      </Await>
     </Page>
   );
 }

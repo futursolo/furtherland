@@ -5,9 +5,6 @@ import { getPostSummaries } from '@@frontend-v5/content/posts';
 import Home from '@@frontend-v5/layouts/Home';
 import formatTitle from '@@frontend-v5/utils/formatTitle';
 
-// Home page — the v5 equivalent of v4's `pages/index.astro`: lists the posts
-// (newest first, drafts hidden in production) using the v5 Home layout and the
-// v5 `Main` / `MainContainer` / `H2` / `Author` / `Link` components.
 export const Route = createFileRoute('/')({
   head: () => ({
     meta: [
@@ -22,7 +19,7 @@ export const Route = createFileRoute('/')({
   }),
   loader: async () => {
     const summaries = await getPostSummaries();
-    return { summaries: summaries.map(({ Content, ...m }) => ({ ...m })) };
+    return { summaries: summaries };
   },
   component: HomePage,
 });

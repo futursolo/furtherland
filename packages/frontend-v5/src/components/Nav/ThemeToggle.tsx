@@ -9,7 +9,7 @@ const ThemeToggleLayout = styled.div({
   width: 60,
 });
 
-const Button = styled('button')({
+const Button = styled.button<{ $position: 'top' | 'default' }>(({ theme, $position }) => ({
   position: 'absolute',
   inset: 0,
 
@@ -25,24 +25,15 @@ const Button = styled('button')({
 
   border: 'none',
   backgroundColor: 'transparent',
-  // Inherits the nav's position-aware colour (white by default, the primary
-  // font colour once the nav is pinned to the top). An explicit `inherit` also
-  // sidesteps Safari's default button-colour quirk.
-  color: 'inherit',
+  color: $position === 'top' ? theme.fontColour.primary.cssVar : 'rgb(255, 255 ,255)',
 
   opacity: 0,
   pointerEvents: 'none',
   zIndex: 0,
 
   transition: 'opacity 0.3s, color 0.3s',
-});
+}));
 
-// Both buttons live in the DOM at all times; exactly one is shown via the
-// `html[data-theme]` attribute. That attribute is set pre-hydration by the theme
-// preload script and kept in sync by the theme provider, so the correct button is
-// visible on first paint (no flash) and SSR renders both buttons — no
-// `ClientOnly` needed, and no hydration mismatch since the markup is static.
-// Toggling only flips the attribute, so this component never re-renders.
 const LightButton = styled(Button)({
   'html[data-theme="light"] &': {
     opacity: 1,
@@ -59,7 +50,13 @@ const DarkButton = styled(Button)({
   },
 });
 
-const ThemeToggle = () => {
+interface ThemeToggleProps {
+  position: 'top' | 'default';
+}
+
+const ThemeToggle = (props: ThemeToggleProps) => {
+  const { position } = props;
+
   const toggleTheme = () => {
     const nextThemeKind = themeAtom.get() === 'light' ? 'dark' : 'light';
     persistThemeKind(nextThemeKind);
@@ -69,6 +66,7 @@ const ThemeToggle = () => {
   return (
     <ThemeToggleLayout>
       <LightButton
+        $position={position}
         type="button"
         title="Switch to Dark Theme"
         aria-label="Switch to Dark Theme"
@@ -77,6 +75,7 @@ const ThemeToggle = () => {
         <FiMoon size={24} />
       </LightButton>
       <DarkButton
+        $position={position}
         type="button"
         title="Switch to Light Theme"
         aria-label="Switch to Light Theme"

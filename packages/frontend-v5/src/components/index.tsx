@@ -1,6 +1,7 @@
 export { default as Author } from './Author';
 export { default as Box } from './Box';
 export { default as ClientOnly } from './ClientOnly';
+export { default as ContentSkeleton } from './ContentSkeleton';
 export { default as Footer } from './Footer';
 export { default as Header } from './Header';
 export { default as LazyOnly } from './LazyOnly';

@@ -1,20 +1,15 @@
-import { Suspense, use } from 'react';
+import { useMemo } from 'react';
 
-import { createFileRoute, notFound } from '@tanstack/react-router';
+import { Await, createFileRoute, notFound } from '@tanstack/react-router';
 
-import Skeleton from '@@frontend-v5/components/Skeleton';
+import { ContentSkeleton } from '@@frontend-v5/components';
 import { AUTHOR_NAME, SITE_URL } from '@@frontend-v5/constants/site';
 import { getPost, type PostEntry } from '@@frontend-v5/content/posts';
+import type { MdxModule } from '@@frontend-v5/content/types';
 import { mdxComponents } from '@@frontend-v5/elements';
 import Post from '@@frontend-v5/layouts/Post';
 import formatTitle from '@@frontend-v5/utils/formatTitle';
 
-// Blog post — the v5 equivalent of v4's `pages/posts/[slug].astro`. v4 used
-// `getStaticPaths` to expand one route per post; here the `$slug` param is
-// resolved against the build-time `posts` map in the loader, and unknown /
-// production-draft posts throw `notFound()` (rendered by the root's
-// `notFoundComponent`, with a 404 status). The post is wrapped in the v5 Post
-// layout.
 export const Route = createFileRoute('/posts/$slug')({
   head: async ({ params }) => {
     const post = await getPost(params.slug);
@@ -37,22 +32,19 @@ export const Route = createFileRoute('/posts/$slug')({
   loader: async ({ params }) => {
     const post = await getPost(params.slug);
     if (!post || (post.isDraft && import.meta.env.PROD)) throw notFound();
-    return { slug: post.slug, date: post.date, isDraft: post.isDraft, title: post.title };
+
+    return post;
   },
   component: PostPage,
 });
 
-// Renders the post's MDX body. The `use()` call suspends this component while
-// the post's MDX chunk is fetched; the `<Suspense>` boundary in `PostPage`
-// (below) scopes that suspension to the content alone, so a `<Skeleton>` is shown
-// in its place while the layout stays visible.
-function PostContent(props: { date: string; slug: string }) {
-  const { default: Content } = use(import(`@@contents/posts/${props.date}/${props.slug}.mdx`));
-  return <Content components={mdxComponents} />;
-}
-
 function PostPage() {
   const postData: PostEntry = Route.useLoaderData();
+
+  const contentPromise = useMemo(
+    () => import(`@@contents/posts/${postData.date}/${postData.slug}.mdx`) as Promise<MdxModule>,
+    [postData.date, postData.slug],
+  );
 
   return (
     <Post
@@ -61,9 +53,9 @@ function PostPage() {
       title={postData.title}
       isDraft={postData.isDraft}
     >
-      <Suspense fallback={<Skeleton height="300px" width="100%" />}>
-        <PostContent date={postData.date} slug={postData.slug} />
-      </Suspense>
+      <Await promise={contentPromise} fallback={<ContentSkeleton />}>
+        {({ default: Component }) => <Component components={mdxComponents} />}
+      </Await>
     </Post>
   );
 }
