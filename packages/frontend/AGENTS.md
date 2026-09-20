@@ -14,7 +14,7 @@ Run from `packages/frontend/` via `yarn`. There is **no test suite**; Biome is t
 | --- | --- |
 | `yarn frontend:start` | Dev server (`react-router dev`, Vite) on port 1741. |
 | `yarn frontend:build` | Production build (`react-router build`, Vite). |
-| `yarn frontend:preview` | Serves the production build locally (`react-router-serve`). |
+| `yarn frontend:preview` | Serves the production build locally (static `serve` of `build/client`). |
 | `yarn frontend:typegen` | Regenerates the route types under `.react-router/` (`react-router typegen`). Runs automatically in dev and via `yarn lint`; run it after adding / renaming / removing a route. |
 | `yarn lint` (from the repo root) | The verification gate: `biome check` plus `tsc --noEmit` across workspaces (see `scripts/lint.sh`). |
 
