@@ -50,10 +50,13 @@ export const meta = ({ loaderData }: Route.MetaArgs): Route.MetaDescriptors => {
 const PageDraftRoute = () => {
   const pageData: PageEntry = useLoaderData<typeof loader>();
 
-  const contentPromise = useMemo(
-    () => import(`@@contents/page-drafts/${pageData.slug}.mdx`) as Promise<MdxModule>,
-    [pageData.slug],
-  );
+  const contentPromise = useMemo(() => {
+    // Special code for tree shaking.
+    if (!import.meta.env.PROD) {
+      return import(`@@contents/page-drafts/${pageData.slug}.mdx`) as Promise<MdxModule>;
+    }
+    throw new Error('Impossible under production!');
+  }, [pageData.slug]);
 
   const { default: Component } = use(contentPromise);
 
