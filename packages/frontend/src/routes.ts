@@ -1,7 +1,7 @@
 import { flatRoutes } from '@react-router/fs-routes';
 
 export default flatRoutes({
-  ignoredRouteFiles: import.meta.env.PROD
+  ignoredRouteFiles: process.env.FL_BUILDING
     ? ['routes/page-drafts.$slug', 'routes/post-drafts.$slug']
     : [],
 });
