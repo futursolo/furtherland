@@ -1,10 +1,38 @@
+import { spawn } from 'node:child_process';
+import { readFile } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Config } from '@react-router/dev/config';
 
+const configDir = dirname(fileURLToPath(import.meta.url));
+const staticPathsFile = join(configDir, 'src', 'generated', 'staticPaths.json');
+
+async function runPreparePrerender(): Promise<void> {
+  await new Promise<void>((resolve, reject) => {
+    const child = spawn(
+      'yarn',
+      ['vite-node', '--config', './vite.node.config.ts', 'src/scripts/prepare-prerender.ts'],
+      { cwd: configDir, stdio: 'inherit' },
+    );
+    child.on('error', reject);
+    child.on('exit', (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(`prepare-prerender exited with code ${code}`));
+      }
+    });
+  });
+}
+
+async function prerender(): Promise<string[]> {
+  await runPreparePrerender();
+  const contents = await readFile(staticPathsFile, 'utf-8');
+  return JSON.parse(contents) as string[];
+}
+
 export default {
-  // The app source lives under `src/` (shared with the rest of the package).
   appDirectory: 'src',
-  // Server-side render by default.
   ssr: true,
-  // Prerender the non-HTML resource routes to static files at build time.
-  prerender: ['/atom.xml', '/robots.txt', '/sitemap-index.xml', '/sitemap-0.xml'],
+  prerender,
 } satisfies Config;

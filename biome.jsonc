@@ -10,10 +10,10 @@
     "includes": [
       "**/packages/*/src/**/*.ts",
       "**/packages/*/src/**/*.tsx",
-      "**/packages/*/src/**/*.astro",
       "**/*/biome.jsonc",
       "**/*/tsconfig.json",
       "**/*/astro.config.ts",
+      "**/*react-router.config.ts",
       "!**/routeTree.gen.ts"
     ]
   },
