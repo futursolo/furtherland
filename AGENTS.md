@@ -31,9 +31,9 @@ Run from the **repository root** unless noted. There is **no test suite**.
 | `yarn lint` | Runs `scripts/lint.sh`: `biome check` (lint + format + import order, per `biome.jsonc`) then `tsc --noEmit` against each workspace's `tsconfig.json` and the root `tsconfig.json`. This is the main verification step after any change. |
 | `yarn start` | React Router dev server (Vite) on port 1741 (`yarn workspace @furtherland/frontend frontend:start` = `react-router dev`). |
 | `yarn build` | Production build (`yarn workspace @furtherland/frontend frontend:build` = `react-router build`): prerenders the routes listed in `react-router.config.ts` to static files under `build/client`. |
-| `yarn preview` | Serves the `build/` output locally (`yarn workspace @furtherland/frontend frontend:preview` = `react-router-serve ./build/server/index.js`). |
+| `yarn preview` | Serves the `build/client` static bundle locally (`yarn workspace @furtherland/frontend frontend:preview` = `serve ./build/client`). |
 
-Package scripts that shell out to a dependency (e.g. `react-router`, `react-router-serve`, `vite`) must be run through `yarn` from the owning package directory (e.g. `yarn frontend:start` from `packages/frontend`).
+Package scripts that shell out to a dependency (e.g. `react-router`, `serve`, `vite`) must be run through `yarn` from the owning package directory (e.g. `yarn frontend:start` from `packages/frontend`).
 
 ## Monorepo layout
 
