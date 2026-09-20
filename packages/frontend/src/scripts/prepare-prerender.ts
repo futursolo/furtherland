@@ -4,15 +4,8 @@ import { fileURLToPath } from 'node:url';
 
 type CollectPrerender = () => Promise<string[]>;
 
-// Discover every route's `+collectPrerender` module, run its collector, and write
-// the union of the returned paths to `src/generated/staticPaths.json`. The React
-// Router config reads that file to decide which routes to prerender at build time.
-//
-// This script is meant to be run with `vite-node` (so `import.meta.glob` and the
-// Vite config's aliases/plugins apply) using the dedicated `vite.node.config.ts`:
-//   vite-node --config ./vite.node.config.ts src/scripts/prepare-prerender.ts
 const collecters = import.meta.glob<{ default: CollectPrerender }>(
-  '../routes/**/+collectPrerender.{ts,tsx}',
+  '@@frontend/routes/**/+collectPrerender.{ts,tsx}',
 );
 
 const allPaths: string[] = [];
