@@ -1,6 +1,6 @@
 import { use, useMemo } from 'react';
 
-import { useLoaderData } from 'react-router';
+import { data, useLoaderData } from 'react-router';
 
 import { AUTHOR_NAME, SITE_URL } from '@@frontend/constants/site';
 import { getPost, type PostEntry } from '@@frontend/content/posts.server';
@@ -15,7 +15,7 @@ import type { Route } from './+types/route';
 export const loader = async ({ params }: Route.LoaderArgs) => {
   const post = await getPost(params.slug);
   if (!post || (post.isDraft && import.meta.env.PROD)) {
-    throw new Response(null, { status: 404, statusText: 'Not Found' });
+    throw data('Not Found', { status: 404 });
   }
   return post;
 };

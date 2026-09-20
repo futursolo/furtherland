@@ -73,7 +73,12 @@ const Root = () => {
 export default Root;
 
 export const ErrorBoundary = ({ error }: Route.ErrorBoundaryProps) => {
-  if (isRouteErrorResponse(error) && error.status === 404) {
+  console.log(error);
+  if (
+    (isRouteErrorResponse(error) && error.status === 404) ||
+    // Workaround to create 404 at runtime.
+    (error instanceof Error && error.message.includes('No result found for routeId '))
+  ) {
     return (
       <RootLayout headerKind="default">
         <NotFound />
