@@ -25,10 +25,16 @@ async function runPreparePrerender(): Promise<void> {
   });
 }
 
+async function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function prerender(): Promise<string[]> {
   await runPreparePrerender();
   const contents = await readFile(staticPathsFile, 'utf-8');
-  return JSON.parse(contents) as string[];
+  const paths = JSON.parse(contents) as string[];
+  await sleep(100);
+  return paths;
 }
 
 export default {
