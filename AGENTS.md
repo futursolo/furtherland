@@ -79,6 +79,7 @@ The app is **SSR** (React Router / Vite). A small set of routes — the Atom fee
 - Never try to format code or organise imports manually, and never read the Biome configuration (`biome.jsonc`) by hand to figure out the rules.
 - To fix Biome errors (lint/format/import-ordering), apply the autofix first: run `yarn biome check --write`. Only after the autofix has been applied, resort to manual editing for whatever the autofix could not fix.
 - Do not add a test framework unless asked; `yarn lint` is the verification gate.
+- Do not add comments in code unless asked.
 
 ## Deployment
 
