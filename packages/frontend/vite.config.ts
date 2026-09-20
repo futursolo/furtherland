@@ -9,18 +9,29 @@ import remarkFrontmatter from 'remark-frontmatter';
 import remarkGfm from 'remark-gfm';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 
-const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+// When you update this file, you may also want to update other Vite configs.
 
-const logger = createLogger()
-const loggerWarnOnce = logger.warnOnce
+export const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+
+export const logger = createLogger();
+const loggerWarnOnce = logger.warnOnce;
 logger.warnOnce = (msg, options) => {
-  if (msg.includes('Using Yarn PnP with Vite is discouraged and PnP-specific bugs will no longer be actively worked on.')) {
+  if (
+    msg.includes(
+      'Using Yarn PnP with Vite is discouraged and PnP-specific bugs will no longer be actively worked on.',
+    )
+  ) {
     return;
   }
-  loggerWarnOnce(msg, options)
-  }
+  loggerWarnOnce(msg, options);
+};
 
-const config = defineConfig({
+export const mdxPlugin = mdx({
+  remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm],
+  rehypePlugins: [[rehypeShiki, { themes: { light: 'github-light', dark: 'github-dark' } }]],
+});
+
+export const baseConfig = {
   customLogger: logger,
   resolve: {
     tsconfigPaths: true,
@@ -38,13 +49,9 @@ const config = defineConfig({
       allow: [repoRoot],
     },
   },
-  plugins: [
-    mdx({
-      remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm],
-      rehypePlugins: [[rehypeShiki, { themes: { light: 'github-light', dark: 'github-dark' } }]],
-    }),
-    reactRouter(),
-  ],
-});
+};
 
-export default config;
+export default defineConfig({
+  ...baseConfig,
+  plugins: [mdxPlugin, reactRouter()],
+});
