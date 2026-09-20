@@ -35,23 +35,13 @@
           "level": "on",
           "options": {
             "groups": [
-              [
-                "react",
-                "react-dom"
-              ],
+              ["react", "react-dom"],
               ":BLANK_LINE:",
-              [
-                ":PACKAGE:",
-                ":NODE:"
-              ],
+              [":PACKAGE:", ":NODE:"],
               ":BLANK_LINE:",
-              [
-                "@@*/**"
-              ],
+              ["@@*/**"],
               ":BLANK_LINE:",
-              [
-                ":PATH:"
-              ]
+              [":PATH:"]
             ]
           }
         }
