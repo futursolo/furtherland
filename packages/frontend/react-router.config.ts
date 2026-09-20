@@ -6,13 +6,13 @@ import type { Config } from '@react-router/dev/config';
 const configDir = dirname(fileURLToPath(import.meta.url));
 const staticPathsFile = join(configDir, 'src', 'generated', 'staticPaths.json');
 
-async function prerender(): Promise<string[]> {
+const prerender = async (): Promise<string[]> => {
   if (process.env.FL_BUILDING !== 'true') {
     return [];
   }
   const contents = await readFile(staticPathsFile, 'utf-8');
   return JSON.parse(contents) as string[];
-}
+};
 
 export default {
   appDirectory: 'src',

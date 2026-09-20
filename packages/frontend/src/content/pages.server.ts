@@ -18,7 +18,7 @@ export type PageEntry = z.infer<typeof pageSchema>;
 
 let pagesPromise: Promise<Record<string, PageEntry>> | undefined;
 
-function loadPages(): Promise<Record<string, PageEntry>> {
+const loadPages = (): Promise<Record<string, PageEntry>> => {
   if (!pagesPromise) {
     pagesPromise = (async () => {
       const mdxModules = import.meta.glob<MdxModule>(['@@contents/pages/**/*.mdx']);
@@ -36,17 +36,17 @@ function loadPages(): Promise<Record<string, PageEntry>> {
     })();
   }
   return pagesPromise;
-}
+};
 
 /** Look up a page by slug (imports the page modules on first call). */
-export async function getPage(slug: string): Promise<PageEntry | undefined> {
+export const getPage = async (slug: string): Promise<PageEntry | undefined> => {
   const pages = await loadPages();
   return pages[slug];
-}
+};
 
-export async function getPageSummaries(): Promise<PageEntry[]> {
+export const getPageSummaries = async (): Promise<PageEntry[]> => {
   const pages = await loadPages();
   const all = Object.values(pages);
   const visible = import.meta.env.PROD ? all.filter((page) => !page.isDraft) : all;
   return [...visible].sort((l, r) => (l.slug === r.slug ? 0 : l.slug < r.slug ? -1 : 1));
-}
+};

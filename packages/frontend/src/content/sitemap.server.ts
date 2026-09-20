@@ -8,7 +8,7 @@ export type SitemapItem = {
   url: string;
 };
 
-export async function getSitemapItems(): Promise<SitemapItem[]> {
+export const getSitemapItems = async (): Promise<SitemapItem[]> => {
   const items: SitemapItem[] = [{ url: `${SITE_URL}/` }];
 
   for (const page of await getPageSummaries()) {
@@ -22,4 +22,4 @@ export async function getSitemapItems(): Promise<SitemapItem[]> {
   }
 
   return items.sort((a, b) => (a.url === b.url ? 0 : a.url < b.url ? -1 : 1));
-}
+};

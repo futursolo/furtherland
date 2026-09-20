@@ -12,15 +12,15 @@ import { baseMeta } from '@@frontend/utils/meta';
 
 import type { Route } from './+types/route';
 
-export async function loader({ params }: Route.LoaderArgs) {
+export const loader = async ({ params }: Route.LoaderArgs) => {
   const page = await getPage(params.slug);
   if (!page || (page.isDraft && import.meta.env.PROD)) {
     throw new Response(null, { status: 404, statusText: 'Not Found' });
   }
   return page;
-}
+};
 
-export function meta({ loaderData }: Route.MetaArgs): Route.MetaDescriptors {
+export const meta = ({ loaderData }: Route.MetaArgs): Route.MetaDescriptors => {
   if (!loaderData) {
     return [
       ...baseMeta,
@@ -41,9 +41,9 @@ export function meta({ loaderData }: Route.MetaArgs): Route.MetaDescriptors {
     { property: 'og:url', content: url },
     { tagName: 'link', rel: 'canonical', href: url },
   ];
-}
+};
 
-export default function PageRoute() {
+const PageRoute = () => {
   const pageData: PageEntry = useLoaderData<typeof loader>();
 
   const contentPromise = useMemo(
@@ -58,4 +58,6 @@ export default function PageRoute() {
       <Component components={mdxComponents} />
     </Page>
   );
-}
+};
+
+export default PageRoute;

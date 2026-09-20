@@ -18,7 +18,7 @@ export type PostEntry = z.infer<typeof postSchema>;
 
 let postsPromise: Promise<Record<string, PostEntry>> | undefined;
 
-function loadPosts(): Promise<Record<string, PostEntry>> {
+const loadPosts = (): Promise<Record<string, PostEntry>> => {
   if (!postsPromise) {
     postsPromise = (async () => {
       const mdxModules = import.meta.glob<MdxModule>(['@@contents/posts/**/*.mdx']);
@@ -36,17 +36,17 @@ function loadPosts(): Promise<Record<string, PostEntry>> {
     })();
   }
   return postsPromise;
-}
+};
 
 /** Look up a post by slug (imports the post modules on first call). */
-export async function getPost(slug: string): Promise<PostEntry | undefined> {
+export const getPost = async (slug: string): Promise<PostEntry | undefined> => {
   const posts = await loadPosts();
   return posts[slug];
-}
+};
 
-export async function getPostSummaries(): Promise<PostEntry[]> {
+export const getPostSummaries = async (): Promise<PostEntry[]> => {
   const posts = await loadPosts();
   const all = Object.values(posts);
   const visible = import.meta.env.PROD ? all.filter((post) => !post.isDraft) : all;
   return [...visible].sort((l, r) => (l.date === r.date ? 0 : l.date < r.date ? 1 : -1));
-}
+};

@@ -5,7 +5,7 @@ import { getSitemapItems } from '@@frontend/content/sitemap.server';
 
 const XML_CONTENT_TYPE = 'application/xml';
 
-export async function loader() {
+export const loader = async () => {
   const items = await getSitemapItems();
   const stream = new SitemapStream({ hostname: SITE_URL });
   const done = streamToPromise(stream);
@@ -13,4 +13,4 @@ export async function loader() {
   stream.end();
   const xml = (await done).toString('utf-8');
   return new Response(xml, { headers: { 'Content-Type': XML_CONTENT_TYPE } });
-}
+};
