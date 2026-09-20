@@ -33,6 +33,6 @@ async function prerender(): Promise<string[]> {
 
 export default {
   appDirectory: 'src',
-  ssr: true,
+  ssr: false,
   prerender,
 } satisfies Config;
