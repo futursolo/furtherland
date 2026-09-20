@@ -52,15 +52,11 @@ export const meta = ({ loaderData }: Route.MetaArgs): Route.MetaDescriptors => {
 const PostDraftPage = () => {
   const postData: PostEntry = useLoaderData<typeof loader>();
 
-  const contentPromise = useMemo(() => {
-    // Special code for tree shaking.
-    if (!import.meta.env.PROD) {
-      return import(
-        `@@contents/post-drafts/${postData.date}/${postData.slug}.mdx`
-      ) as Promise<MdxModule>;
-    }
-    throw new Error('Impossible under production!');
-  }, [postData.date, postData.slug]);
+  const contentPromise = useMemo(
+    () =>
+      import(`@@contents/post-drafts/${postData.date}/${postData.slug}.mdx`) as Promise<MdxModule>,
+    [postData.date, postData.slug],
+  );
 
   const { default: Component } = use(contentPromise);
 
