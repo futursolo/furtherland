@@ -56,7 +56,7 @@ Use these aliases for cross-directory imports rather than deep relative paths.
 
 ## Routing
 
-Routes are declared in `packages/frontend/src/routes.ts` using `route()` / `index()` / `layout()` from `react-router`; each route is a module under `src/routes/**` exporting a `default` component plus `loader` / `meta`. The root module `src/root.tsx` provides the document `Layout` (head, theme init script, `<Header>` / `<Footer>`) and `meta` / `links`. Typed route params / `loaderData` come from generated `+types` modules under `.react-router/` (imported in each route as `./+types/<id>`) — regenerate with `yarn workspace @furtherland/frontend frontend:typegen` (`react-router typegen`); it also runs automatically during `yarn lint` and the dev server. Dynamic routes (posts, pages) look their content up by slug at request time.
+Routes are declared in `packages/frontend/src/routes.ts` using `route()` / `index()` / `layout()` from `react-router`; each route is a module under `src/routes/**` exporting a `default` component plus `loader` / `meta`. The root module `src/root.tsx` provides the document `Layout` (head, theme init script, `<Header>` / `<Footer>`) and `meta` / `links`. Typed route params / `loaderData` come from generated `+types` modules under `.react-router/` (imported in each route as `./+types/<id>`) — regenerate with `yarn workspace @furtherland/frontend frontend:typegen` (`react-router typegen`); it also runs automatically during `yarn lint` and the dev server. Dynamic routes (posts, pages, and their `post-drafts` / `page-drafts` draft counterparts) look their content up by slug at request time.
 
 ## Rendering / build output
 
@@ -66,10 +66,10 @@ The app is **SSR** (React Router / Vite). A small set of routes — the Atom fee
 
 ## Content (MDX) conventions
 
-- Posts live at `packages/contents/src/posts/<YYYY-MM-DD>/<slug>.mdx` and carry YAML frontmatter: `title`, `date`, `slug`, and optional `description`.
-- The `slug` must match the file name, and the `date` frontmatter must match the containing directory name — this keeps the URL (`/posts/<slug>`) and the on-disk path in sync, which is what the `import.meta.glob` loader relies on.
-- **Drafts**: a post with `date: '2099-12-31'` is a draft (`isDraft`) and is hidden from the home list in production builds (shown in dev). See `packages/contents/src/posts/2099-12-31/test.mdx`.
-- MDX is compiled by `@mdx-js/rollup` (with `remark-frontmatter` / `remark-mdx-frontmatter` / `remark-gfm` and Shiki highlighting) in `vite.config.ts`; frontmatter is validated with **zod** (see `src/content/posts.ts`) and invalid frontmatter throws.
+- Posts live at `packages/contents/src/posts/<YYYY-MM-DD>/<slug>.mdx` (published) or `packages/contents/src/post-drafts/<YYYY-MM-DD>/<slug>.mdx` (drafts), carrying YAML frontmatter `title`, `date`, `slug`, and optional `description`. Pages live at `packages/contents/src/pages/<slug>.mdx` (published) or `packages/contents/src/page-drafts/<slug>.mdx` (drafts), carrying `title`, `slug`, and optional `description`.
+- The `slug` must match the file name, and for posts the `date` frontmatter must match the containing directory name — this keeps the URL (`/posts/<slug>`, or `/post-drafts/<slug>` for drafts) and the on-disk path in sync, which is what the loaders' `import.meta.glob` globs rely on.
+- **Drafts**: content is collected from two separate `import.meta.glob` globs per type — published (`posts/` / `pages/`) and draft (`post-drafts/` / `page-drafts/`) — so an entry's `isDraft` is set by which collection it came from (the globs are kept in separate modules to preserve code-splitting). Drafts are served at `/post-drafts/<slug>` and `/page-drafts/<slug>` (previewable in dev, 404 in production builds) and are hidden from the home list, sitemap, and Atom feed, and are not prerendered in production. See `packages/contents/src/post-drafts/2099-12-31/test-draft.mdx` and `packages/contents/src/page-drafts/test.mdx`.
+- MDX is compiled by `@mdx-js/rollup` (with `remark-frontmatter` / `remark-mdx-frontmatter` / `remark-gfm` and Shiki highlighting) in `vite.config.ts`; frontmatter is validated with **zod** (see `src/content/posts.server.ts` / `src/content/pages.server.ts`) and invalid frontmatter throws.
 
 ## Code style
 

@@ -2,51 +2,61 @@ import { z } from 'zod';
 
 import type { MdxModule } from './types';
 
-// Mirrors v4's `content.config.ts` `pages` schema: a page is a draft unless it
-// is explicitly published.
-const pageSchema = z
-  .object({
-    isPublished: z.boolean().default(false),
-    slug: z.string(),
-    title: z.string(),
-    description: z.string().optional(),
-  })
-  .transform((data) => ({ ...data, isDraft: !data.isPublished }));
+const pageSchema = z.object({
+  slug: z.string(),
+  title: z.string(),
+  description: z.string().optional(),
+});
 
-/** Frontmatter data for a page, plus the compiled MDX component. */
-export type PageEntry = z.infer<typeof pageSchema>;
+type PageData = z.infer<typeof pageSchema>;
 
-let pagesPromise: Promise<Record<string, PageEntry>> | undefined;
+/** Frontmatter data for a page, plus whether it is a draft. */
+export type PageEntry = PageData & { isDraft: boolean };
 
-const loadPages = (): Promise<Record<string, PageEntry>> => {
-  if (!pagesPromise) {
-    pagesPromise = (async () => {
-      const mdxModules = import.meta.glob<MdxModule>(['@@contents/pages/**/*.mdx']);
-      const entries = await Promise.all(
-        Object.entries(mdxModules).map(async ([path, load]) => {
-          const mod = await load();
-          const parsed = pageSchema.safeParse(mod.frontmatter ?? {});
-          if (!parsed.success) {
-            throw new Error(`Invalid frontmatter in "${path}":\n${z.prettifyError(parsed.error)}`);
-          }
-          return [parsed.data.slug, { ...parsed.data }] as const;
-        }),
-      );
-      return Object.fromEntries(entries);
-    })();
-  }
-  return pagesPromise;
+const publishedPageMdx = import.meta.glob<MdxModule>('@@contents/pages/**/*.mdx');
+const draftPageMdx = import.meta.glob<MdxModule>('@@contents/page-drafts/**/*.mdx');
+
+const sortBySlug = (a: PageEntry, b: PageEntry): number =>
+  a.slug === b.slug ? 0 : a.slug < b.slug ? -1 : 1;
+
+const collect = (
+  modules: Record<string, () => Promise<MdxModule>>,
+  isDraft: boolean,
+): Promise<Array<[string, PageEntry]>> =>
+  Promise.all(
+    Object.entries(modules).map(async ([path, load]) => {
+      const mod = await load();
+      const parsed = pageSchema.safeParse(mod.frontmatter ?? {});
+      if (!parsed.success) {
+        throw new Error(`Invalid frontmatter in "${path}":\n${z.prettifyError(parsed.error)}`);
+      }
+      return [parsed.data.slug, { ...parsed.data, isDraft }] as const;
+    }),
+  );
+
+let publishedPagesPromise: Promise<Record<string, PageEntry>> | undefined;
+const loadPublishedPages = (): Promise<Record<string, PageEntry>> => {
+  publishedPagesPromise ??= collect(publishedPageMdx, false).then((entries) =>
+    Object.fromEntries(entries),
+  );
+  return publishedPagesPromise;
 };
 
-/** Look up a page by slug (imports the page modules on first call). */
-export const getPage = async (slug: string): Promise<PageEntry | undefined> => {
-  const pages = await loadPages();
-  return pages[slug];
+let draftPagesPromise: Promise<Record<string, PageEntry>> | undefined;
+const loadDraftPages = (): Promise<Record<string, PageEntry>> => {
+  draftPagesPromise ??= collect(draftPageMdx, true).then((entries) => Object.fromEntries(entries));
+  return draftPagesPromise;
 };
 
-export const getPageSummaries = async (): Promise<PageEntry[]> => {
-  const pages = await loadPages();
-  const all = Object.values(pages);
-  const visible = import.meta.env.PROD ? all.filter((page) => !page.isDraft) : all;
-  return [...visible].sort((l, r) => (l.slug === r.slug ? 0 : l.slug < r.slug ? -1 : 1));
-};
+/** Look up a published page by slug (imports the page modules on first call). */
+export const getPage = async (slug: string): Promise<PageEntry | undefined> =>
+  (await loadPublishedPages())[slug];
+
+export const getDraftPage = async (slug: string): Promise<PageEntry | undefined> =>
+  (await loadDraftPages())[slug];
+
+export const getPageSummaries = async (): Promise<PageEntry[]> =>
+  Object.values(await loadPublishedPages()).sort(sortBySlug);
+
+export const getDraftPageSummaries = async (): Promise<PageEntry[]> =>
+  Object.values(await loadDraftPages()).sort(sortBySlug);

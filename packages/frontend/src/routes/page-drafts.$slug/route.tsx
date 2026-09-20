@@ -3,7 +3,7 @@ import { use, useMemo } from 'react';
 import { data, useLoaderData } from 'react-router';
 
 import { SITE_URL } from '@@frontend/constants/site';
-import { getPage, type PageEntry } from '@@frontend/content/pages.server';
+import { getDraftPage, type PageEntry } from '@@frontend/content/pages.server';
 import type { MdxModule } from '@@frontend/content/types';
 import { mdxComponents } from '@@frontend/elements';
 import Page from '@@frontend/layouts/Page';
@@ -13,7 +13,10 @@ import { baseMeta } from '@@frontend/utils/meta';
 import type { Route } from './+types/route';
 
 export const loader = async ({ params }: Route.LoaderArgs) => {
-  const page = await getPage(params.slug);
+  if (import.meta.env.PROD) {
+    throw data('Not Found', { status: 404 });
+  }
+  const page = await getDraftPage(params.slug);
   if (!page) {
     throw data('Not Found', { status: 404 });
   }
@@ -29,12 +32,13 @@ export const meta = ({ loaderData }: Route.MetaArgs): Route.MetaDescriptors => {
     ];
   }
   const page: PageEntry = loaderData;
-  const url = `${SITE_URL}/pages/${page.slug}`;
+  const url = `${SITE_URL}/page-drafts/${page.slug}`;
 
   return [
     ...baseMeta,
     { title: formatTitle(page.title) },
     ...(page.description ? [{ name: 'description', content: page.description }] : []),
+    { name: 'robots', content: 'noindex' },
     { property: 'og:type', content: 'website' },
     { property: 'og:title', content: formatTitle(page.title) },
     ...(page.description ? [{ property: 'og:description', content: page.description }] : []),
@@ -43,11 +47,11 @@ export const meta = ({ loaderData }: Route.MetaArgs): Route.MetaDescriptors => {
   ];
 };
 
-const PageRoute = () => {
+const PageDraftRoute = () => {
   const pageData: PageEntry = useLoaderData<typeof loader>();
 
   const contentPromise = useMemo(
-    () => import(`@@contents/pages/${pageData.slug}.mdx`) as Promise<MdxModule>,
+    () => import(`@@contents/page-drafts/${pageData.slug}.mdx`) as Promise<MdxModule>,
     [pageData.slug],
   );
 
@@ -60,4 +64,4 @@ const PageRoute = () => {
   );
 };
 
-export default PageRoute;
+export default PageDraftRoute;
