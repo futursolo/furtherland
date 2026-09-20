@@ -4,6 +4,7 @@ const Pre = styled('pre')(({ theme }) => ({
   backgroundColor: `${theme.colour.background.code.cssVar} !important`,
   padding: '1.5rem',
   borderRadius: 4,
+  overflowY: 'auto',
   '& > code': {
     paddingLeft: 0,
     paddingRight: 0,
