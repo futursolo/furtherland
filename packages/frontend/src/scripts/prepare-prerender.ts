@@ -1,6 +1,5 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 
 type CollectPrerender = () => Promise<string[]>;
 
@@ -19,7 +18,7 @@ for (const load of Object.values(collecters)) {
 
 const staticPaths = [...new Set(allPaths)].sort();
 
-const outDir = join(dirname(fileURLToPath(import.meta.url)), '..', 'generated');
+const outDir = join(process.cwd(), 'src', 'generated');
 mkdirSync(outDir, { recursive: true });
 writeFileSync(join(outDir, 'staticPaths.json'), `${JSON.stringify(staticPaths, null, 2)}\n`);
 
