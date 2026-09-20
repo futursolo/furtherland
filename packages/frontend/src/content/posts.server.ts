@@ -2,51 +2,62 @@ import { z } from 'zod';
 
 import type { MdxModule } from './types';
 
-// Mirrors v4's `content.config.ts` `posts` schema, including the draft rule
-// (a post dated 2099-12-31 is a draft).
-const postSchema = z
-  .object({
-    date: z.string(),
-    slug: z.string(),
-    title: z.string(),
-    description: z.string().optional(),
-  })
-  .transform((data) => ({ ...data, isDraft: data.date === '2099-12-31' }));
+const postSchema = z.object({
+  date: z.string(),
+  slug: z.string(),
+  title: z.string(),
+  description: z.string().optional(),
+});
 
-/** Frontmatter data for a post, plus the compiled MDX component. */
-export type PostEntry = z.infer<typeof postSchema>;
+type PostData = z.infer<typeof postSchema>;
 
-let postsPromise: Promise<Record<string, PostEntry>> | undefined;
+/** Frontmatter data for a post, plus whether it is a draft. */
+export type PostEntry = PostData & { isDraft: boolean };
 
-const loadPosts = (): Promise<Record<string, PostEntry>> => {
-  if (!postsPromise) {
-    postsPromise = (async () => {
-      const mdxModules = import.meta.glob<MdxModule>(['@@contents/posts/**/*.mdx']);
-      const entries = await Promise.all(
-        Object.entries(mdxModules).map(async ([path, load]) => {
-          const mod = await load();
-          const parsed = postSchema.safeParse(mod.frontmatter ?? {});
-          if (!parsed.success) {
-            throw new Error(`Invalid frontmatter in "${path}":\n${z.prettifyError(parsed.error)}`);
-          }
-          return [parsed.data.slug, { ...parsed.data }] as const;
-        }),
-      );
-      return Object.fromEntries(entries);
-    })();
-  }
-  return postsPromise;
+const publishedPostMdx = import.meta.glob<MdxModule>('@@contents/posts/**/*.mdx');
+const draftPostMdx = import.meta.glob<MdxModule>('@@contents/post-drafts/**/*.mdx');
+
+const sortByDate = (a: PostEntry, b: PostEntry): number =>
+  a.date === b.date ? 0 : a.date < b.date ? 1 : -1;
+
+const collect = (
+  modules: Record<string, () => Promise<MdxModule>>,
+  isDraft: boolean,
+): Promise<Array<[string, PostEntry]>> =>
+  Promise.all(
+    Object.entries(modules).map(async ([path, load]) => {
+      const mod = await load();
+      const parsed = postSchema.safeParse(mod.frontmatter ?? {});
+      if (!parsed.success) {
+        throw new Error(`Invalid frontmatter in "${path}":\n${z.prettifyError(parsed.error)}`);
+      }
+      return [parsed.data.slug, { ...parsed.data, isDraft }] as const;
+    }),
+  );
+
+let publishedPostsPromise: Promise<Record<string, PostEntry>> | undefined;
+const loadPublishedPosts = (): Promise<Record<string, PostEntry>> => {
+  publishedPostsPromise ??= collect(publishedPostMdx, false).then((entries) =>
+    Object.fromEntries(entries),
+  );
+  return publishedPostsPromise;
 };
 
-/** Look up a post by slug (imports the post modules on first call). */
-export const getPost = async (slug: string): Promise<PostEntry | undefined> => {
-  const posts = await loadPosts();
-  return posts[slug];
+let draftPostsPromise: Promise<Record<string, PostEntry>> | undefined;
+const loadDraftPosts = (): Promise<Record<string, PostEntry>> => {
+  draftPostsPromise ??= collect(draftPostMdx, true).then((entries) => Object.fromEntries(entries));
+  return draftPostsPromise;
 };
 
-export const getPostSummaries = async (): Promise<PostEntry[]> => {
-  const posts = await loadPosts();
-  const all = Object.values(posts);
-  const visible = import.meta.env.PROD ? all.filter((post) => !post.isDraft) : all;
-  return [...visible].sort((l, r) => (l.date === r.date ? 0 : l.date < r.date ? 1 : -1));
-};
+/** Look up a published post by slug (imports the post modules on first call). */
+export const getPost = async (slug: string): Promise<PostEntry | undefined> =>
+  (await loadPublishedPosts())[slug];
+
+export const getDraftPost = async (slug: string): Promise<PostEntry | undefined> =>
+  (await loadDraftPosts())[slug];
+
+export const getPostSummaries = async (): Promise<PostEntry[]> =>
+  Object.values(await loadPublishedPosts()).sort(sortByDate);
+
+export const getDraftPostSummaries = async (): Promise<PostEntry[]> =>
+  Object.values(await loadDraftPosts()).sort(sortByDate);

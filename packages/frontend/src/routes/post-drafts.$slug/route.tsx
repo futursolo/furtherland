@@ -3,7 +3,7 @@ import { use, useMemo } from 'react';
 import { data, useLoaderData } from 'react-router';
 
 import { AUTHOR_NAME, SITE_URL } from '@@frontend/constants/site';
-import { getPost, type PostEntry } from '@@frontend/content/posts.server';
+import { getDraftPost, type PostEntry } from '@@frontend/content/posts.server';
 import type { MdxModule } from '@@frontend/content/types';
 import { mdxComponents } from '@@frontend/elements';
 import Post from '@@frontend/layouts/Post';
@@ -13,7 +13,10 @@ import { baseMeta } from '@@frontend/utils/meta';
 import type { Route } from './+types/route';
 
 export const loader = async ({ params }: Route.LoaderArgs) => {
-  const post = await getPost(params.slug);
+  if (import.meta.env.PROD) {
+    throw data('Not Found', { status: 404 });
+  }
+  const post = await getDraftPost(params.slug);
   if (!post) {
     throw data('Not Found', { status: 404 });
   }
@@ -29,12 +32,13 @@ export const meta = ({ loaderData }: Route.MetaArgs): Route.MetaDescriptors => {
     ];
   }
   const post: PostEntry = loaderData;
-  const url = `${SITE_URL}/posts/${post.slug}`;
+  const url = `${SITE_URL}/post-drafts/${post.slug}`;
 
   return [
     ...baseMeta,
     { title: formatTitle(post.title) },
     ...(post.description ? [{ name: 'description', content: post.description }] : []),
+    { name: 'robots', content: 'noindex' },
     { property: 'og:type', content: 'article' },
     { property: 'og:title', content: formatTitle(post.title) },
     ...(post.description ? [{ property: 'og:description', content: post.description }] : []),
@@ -45,11 +49,12 @@ export const meta = ({ loaderData }: Route.MetaArgs): Route.MetaDescriptors => {
   ];
 };
 
-const PostPage = () => {
+const PostDraftPage = () => {
   const postData: PostEntry = useLoaderData<typeof loader>();
 
   const contentPromise = useMemo(
-    () => import(`@@contents/posts/${postData.date}/${postData.slug}.mdx`) as Promise<MdxModule>,
+    () =>
+      import(`@@contents/post-drafts/${postData.date}/${postData.slug}.mdx`) as Promise<MdxModule>,
     [postData.date, postData.slug],
   );
 
@@ -67,4 +72,4 @@ const PostPage = () => {
   );
 };
 
-export default PostPage;
+export default PostDraftPage;

@@ -1,7 +1,7 @@
 import { useLoaderData } from 'react-router';
 
 import { SITE_DESCRIPTION, SITE_URL } from '@@frontend/constants/site';
-import { getPostSummaries } from '@@frontend/content/posts.server';
+import { getDraftPostSummaries, getPostSummaries } from '@@frontend/content/posts.server';
 import Home from '@@frontend/layouts/Home';
 import formatTitle from '@@frontend/utils/formatTitle';
 import { baseMeta } from '@@frontend/utils/meta';
@@ -9,7 +9,7 @@ import { baseMeta } from '@@frontend/utils/meta';
 import type { Route } from './+types/route';
 
 export const loader = async () => {
-  const summaries = await getPostSummaries();
+  const summaries = [...(await getDraftPostSummaries()), ...(await getPostSummaries())];
   return { summaries };
 };
 
