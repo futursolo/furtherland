@@ -42,6 +42,9 @@ export default defineConfig({
       allow: [repoRoot],
     },
   },
+  optimizeDeps: {
+    noDiscovery: true,
+  },
   plugins: [
     mdx({
       remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm],
