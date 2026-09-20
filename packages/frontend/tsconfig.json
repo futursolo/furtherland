@@ -1,18 +1,40 @@
 {
-  "include": ["**/*.ts", "**/*.tsx", ".react-router/types/**/*"],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".react-router/types/**/*"
+  ],
   "compilerOptions": {
     "target": "ESNext",
     "jsx": "react-jsx",
     "module": "ESNext",
-    "rootDirs": [".", "./.react-router/types"],
+    "rootDirs": [
+      ".",
+      "./.react-router/types"
+    ],
     "paths": {
-      "@@frontend/*": ["./src/*"],
-      "@@common/*": ["../common/src/*"],
-      "@@post-components/*": ["../post-components/src/*"],
-      "@@contents/*": ["../contents/src/*"]
+      "@@frontend/*": [
+        "./src/*"
+      ],
+      "@@common/*": [
+        "../common/src/*"
+      ],
+      "@@post-components/*": [
+        "../post-components/src/*"
+      ],
+      "@@contents/*": [
+        "../contents/src/*"
+      ]
     },
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "types": ["vite/client"],
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "types": [
+      "vite/client",
+      "node"
+    ],
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
