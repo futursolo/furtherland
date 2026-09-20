@@ -39,7 +39,7 @@ async function prerender(): Promise<string[]> {
 
 export default {
   appDirectory: 'src',
-  ssr: false,
+  ssr: process.env.NODE_ENV !== 'production',
   prerender,
   buildEnd: async ({ reactRouterConfig }) => {
     const clientDir = join(reactRouterConfig.buildDirectory, 'client');
