@@ -1,6 +1,6 @@
 import { use, useMemo } from 'react';
 
-import { useLoaderData } from 'react-router';
+import { data, useLoaderData } from 'react-router';
 
 import { SITE_URL } from '@@frontend/constants/site';
 import { getPage, type PageEntry } from '@@frontend/content/pages.server';
@@ -15,7 +15,7 @@ import type { Route } from './+types/route';
 export const loader = async ({ params }: Route.LoaderArgs) => {
   const page = await getPage(params.slug);
   if (!page || (page.isDraft && import.meta.env.PROD)) {
-    throw new Response(null, { status: 404, statusText: 'Not Found' });
+    throw data('Not Found', { status: 404 });
   }
   return page;
 };
