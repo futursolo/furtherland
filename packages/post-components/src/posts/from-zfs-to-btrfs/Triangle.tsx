@@ -3,16 +3,17 @@ import Typography from '@mui/material/Typography';
 import {
   ChartsTooltipContainer,
   ChartsTooltipPaper,
+  type ChartsTooltipProps,
   useAxesTooltip,
 } from '@mui/x-charts/ChartsTooltip';
 import { match } from 'ts-pattern';
 
 import RadarChart from '@@post-components/shared/RadarChart';
 
-export function CustomItemTooltip() {
+export function CustomItemTooltip(props: ChartsTooltipProps) {
   const tooltipData = useAxesTooltip<'radar'>();
   if (!tooltipData) {
-    return null;
+    return <ChartsTooltipContainer {...props}></ChartsTooltipContainer>;
   }
 
   const axesLabel = tooltipData[0].axisValue.toString() as 'Wi-Fi' | 'ROCm' | 'OS' | 'ZFS';
@@ -31,7 +32,7 @@ export function CustomItemTooltip() {
     .exhaustive();
 
   return (
-    <ChartsTooltipContainer>
+    <ChartsTooltipContainer {...props}>
       <ChartsTooltipPaper sx={{ padding: '0.7rem' }}>
         <Stack direction="row" sx={{ alignItems: 'center' }}>
           <div
@@ -55,7 +56,7 @@ export function CustomItemTooltip() {
               backgroundColor: 'red',
             }}
           />
-          <Typography sx={{ ml: 2 }}>Conflicts</Typography>
+          <Typography sx={{ ml: 2 }}>Conflicts With</Typography>
         </Stack>
         <Typography variant="body2">{axesConflicts}</Typography>
       </ChartsTooltipPaper>
