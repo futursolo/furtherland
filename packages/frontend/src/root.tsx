@@ -19,7 +19,7 @@ import { baseMeta } from '@@frontend/utils/meta';
 
 import type { Route } from './+types/root';
 
-export function meta({ matches }: Route.MetaArgs): Route.MetaDescriptors {
+export const meta: Route.MetaFunction = ({ matches }: Route.MetaArgs): Route.MetaDescriptors => {
   const hasNotFound = matches.some(
     (m) => m !== undefined && isRouteErrorResponse(m.error) && m.error.status === 404,
   );
@@ -30,7 +30,7 @@ export function meta({ matches }: Route.MetaArgs): Route.MetaDescriptors {
   }
 
   return result;
-}
+};
 
 export const links: Route.LinksFunction = () => [
   {
@@ -42,7 +42,7 @@ export const links: Route.LinksFunction = () => [
   { rel: 'sitemap', type: 'application/xml', href: `${SITE_URL}/sitemap-index.xml` },
 ];
 
-export function Layout({ children }: { children: ReactNode }) {
+export const Layout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -57,9 +57,9 @@ export function Layout({ children }: { children: ReactNode }) {
       </body>
     </html>
   );
-}
+};
 
-export default function Root() {
+const Root = () => {
   const { pathname } = useLocation();
   const headerKind = pathname === '/' ? 'home' : 'default';
 
@@ -68,9 +68,11 @@ export default function Root() {
       <Outlet />
     </RootLayout>
   );
-}
+};
 
-export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+export default Root;
+
+export const ErrorBoundary = ({ error }: Route.ErrorBoundaryProps) => {
   if (isRouteErrorResponse(error) && error.status === 404) {
     return (
       <RootLayout headerKind="default">
@@ -85,4 +87,4 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
       {error instanceof Error && <pre style={{ whiteSpace: 'pre-wrap' }}>{error.message}</pre>}
     </main>
   );
-}
+};

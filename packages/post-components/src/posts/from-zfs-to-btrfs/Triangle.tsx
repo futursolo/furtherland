@@ -10,7 +10,7 @@ import { match } from 'ts-pattern';
 
 import RadarChart from '@@post-components/shared/RadarChart';
 
-export function CustomItemTooltip(props: ChartsTooltipProps) {
+export const CustomItemTooltip = (props: ChartsTooltipProps) => {
   const tooltipData = useAxesTooltip<'radar'>();
   if (!tooltipData) {
     return <ChartsTooltipContainer {...props}></ChartsTooltipContainer>;
@@ -62,7 +62,7 @@ export function CustomItemTooltip(props: ChartsTooltipProps) {
       </ChartsTooltipPaper>
     </ChartsTooltipContainer>
   );
-}
+};
 
 const Triangle = () => {
   return (

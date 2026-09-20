@@ -52,7 +52,7 @@ const toEntry = async (post: PostEntry): Promise<Atom.Entry<string>> => {
   };
 };
 
-export async function buildAtomFeed(): Promise<string> {
+export const buildAtomFeed = async (): Promise<string> => {
   const feed: DeepPartial<Atom.Feed<string>> = {
     id: FEED_URL,
     title: SITE_NAME,
@@ -64,4 +64,4 @@ export async function buildAtomFeed(): Promise<string> {
   };
 
   return generateAtomFeed<true>(feed);
-}
+};

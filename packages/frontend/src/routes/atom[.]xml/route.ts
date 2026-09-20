@@ -1,7 +1,7 @@
 import { buildAtomFeed } from './feed.server';
 
-export async function loader() {
+export const loader = async () => {
   return new Response(await buildAtomFeed(), {
     headers: { 'content-type': 'application/atom+xml; charset=utf-8' },
   });
-}
+};

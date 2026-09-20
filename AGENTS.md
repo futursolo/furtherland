@@ -75,6 +75,7 @@ The app is **SSR** (React Router / Vite). A small set of routes — the Atom fee
 
 - Lint/format/import-ordering is enforced by **Biome** (`biome.jsonc`): 2-space indent, single quotes, semicolons always, trailing commas, 100-col width, LF endings, auto import organization.
 - TypeScript is `strict`. Keep new code type-clean — `yarn lint` runs `tsc --noEmit` against each workspace.
+- Use **arrow functions only** — never `function` declarations or `function` expressions. Define them as `const` arrow functions (e.g. `const foo = (x: T): R => {}`); use `export const` for named exports, and for a default-exported component use `const X = () => {}; export default X` to preserve the component name.
 - Prefer the existing patterns (Emotion `styled`/`sx` + the `theme`, jotai atoms, the `@@frontend/components` and `@@frontend/elements` barrels) over introducing new conventions.
 - Never try to format code or organise imports manually, and never read the Biome configuration (`biome.jsonc`) by hand to figure out the rules.
 - To fix Biome errors (lint/format/import-ordering), apply the autofix first: run `yarn biome check --write`. Only after the autofix has been applied, resort to manual editing for whatever the autofix could not fix.

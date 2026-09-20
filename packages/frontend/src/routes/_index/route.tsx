@@ -8,12 +8,12 @@ import { baseMeta } from '@@frontend/utils/meta';
 
 import type { Route } from './+types/route';
 
-export async function loader() {
+export const loader = async () => {
   const summaries = await getPostSummaries();
   return { summaries };
-}
+};
 
-export function meta(): Route.MetaDescriptors {
+export const meta = (): Route.MetaDescriptors => {
   return [
     ...baseMeta,
     { title: formatTitle('Home') },
@@ -23,12 +23,14 @@ export function meta(): Route.MetaDescriptors {
     { property: 'og:description', content: SITE_DESCRIPTION },
     { property: 'og:url', content: `${SITE_URL}/` },
   ];
-}
+};
 
 export const links: Route.LinksFunction = () => [{ rel: 'canonical', href: `${SITE_URL}/` }];
 
-export default function HomePage() {
+const HomePage = () => {
   const { summaries } = useLoaderData<typeof loader>();
 
   return <Home summaries={summaries} />;
-}
+};
+
+export default HomePage;
