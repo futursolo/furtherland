@@ -6,8 +6,7 @@
   "scripts": {
     "frontend:start": "react-router dev --port 1741",
     "frontend:typegen": "react-router typegen",
-    "frontend:prepare-prerender": "vite-node --config ./vite.node.config.ts src/scripts/prepare-prerender.ts",
-    "frontend:build": "react-router build",
+    "frontend:build": "scripts/build.sh",
     "frontend:preview": "serve ./build/client"
   },
   "dependencies": {
