@@ -10,10 +10,10 @@
     "includes": [
       "**/packages/*/src/**/*.ts",
       "**/packages/*/src/**/*.tsx",
-      "**/packages/*/src/**/*.astro",
       "**/*/biome.jsonc",
       "**/*/tsconfig.json",
       "**/*/astro.config.ts",
+      "**/*react-router.config.ts",
       "!**/routeTree.gen.ts"
     ]
   },
@@ -35,13 +35,23 @@
           "level": "on",
           "options": {
             "groups": [
-              ["react", "react-dom"],
+              [
+                "react",
+                "react-dom"
+              ],
               ":BLANK_LINE:",
-              [":PACKAGE:", ":NODE:"],
+              [
+                ":PACKAGE:",
+                ":NODE:"
+              ],
               ":BLANK_LINE:",
-              ["@@*/**"],
+              [
+                "@@*/**"
+              ],
               ":BLANK_LINE:",
-              [":PATH:"]
+              [
+                ":PATH:"
+              ]
             ]
           }
         }

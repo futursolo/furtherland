@@ -11,7 +11,10 @@ const collecters = import.meta.glob<{ default: CollectPrerender }>(
 const allPaths: string[] = [];
 for (const load of Object.values(collecters)) {
   const { default: collect } = await load();
-  allPaths.push(...(await collect()));
+  for (const path of await collect()) {
+    allPaths.push(path);
+    console.log(path);
+  }
 }
 
 const staticPaths = [...new Set(allPaths)].sort();
@@ -20,6 +23,5 @@ const outDir = join(dirname(fileURLToPath(import.meta.url)), '..', 'generated');
 mkdirSync(outDir, { recursive: true });
 writeFileSync(join(outDir, 'staticPaths.json'), `${JSON.stringify(staticPaths, null, 2)}\n`);
 
-console.log(`Wrote ${staticPaths.length} prerender path(s) to src/generated/staticPaths.json:`);
-for (const path of staticPaths) console.log(`  ${path}`);
+console.log(`Wrote ${staticPaths.length} prerender path(s) to src/generated/staticPaths.json`);
 process.exit(0);
