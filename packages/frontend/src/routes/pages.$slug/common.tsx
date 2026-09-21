@@ -37,31 +37,22 @@ export const createMeta = (options: CreateMetaOptions) => {
   ];
 };
 
-interface CreateRouteComponentOptions {
+interface RouteComponentProps {
+  loaderData: PageEntry;
   createContentPromise: (options: { slug: string }) => Promise<MdxModule>;
 }
 
-export const createRouteComponent = (options: CreateRouteComponentOptions) => {
-  const { createContentPromise } = options;
+export const RouteComponent = ({ loaderData, createContentPromise }: RouteComponentProps) => {
+  const contentPromise = useMemo(
+    () => createContentPromise({ slug: loaderData.slug }),
+    [loaderData.slug, createContentPromise],
+  );
 
-  interface PageRouteProps {
-    loaderData: PageEntry;
-  }
+  const { default: Component } = use(contentPromise);
 
-  const PageRoute = ({ loaderData }: PageRouteProps) => {
-    const contentPromise = useMemo(
-      () => createContentPromise({ slug: loaderData.slug }),
-      [loaderData.slug],
-    );
-
-    const { default: Component } = use(contentPromise);
-
-    return (
-      <Layout title={loaderData.title}>
-        <MdxRenderer Content={Component} />
-      </Layout>
-    );
-  };
-
-  return PageRoute;
+  return (
+    <Layout title={loaderData.title}>
+      <MdxRenderer Content={Component} />
+    </Layout>
+  );
 };

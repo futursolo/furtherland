@@ -1,12 +1,10 @@
-import type React from 'react';
-
 import { data } from 'react-router';
 
 import { SITE_URL } from '@@frontend/constants/site';
 import { getPage } from '@@frontend/content/pages.server';
 
 import type { Route } from './+types/route';
-import { createMeta, createRouteComponent } from './common';
+import { RouteComponent as BaseRoute, createMeta } from './common';
 
 export const loader = async ({ params }: Route.LoaderArgs) => {
   const page = await getPage(params.slug);
@@ -21,8 +19,11 @@ export const meta = ({ loaderData }: Route.MetaArgs): Route.MetaDescriptors => {
   return createMeta({ loaderData, url });
 };
 
-const PageRoute: React.FC<Route.ComponentProps> = createRouteComponent({
-  createContentPromise: ({ slug }) => import(`@@contents/pages/${slug}.mdx`),
-});
+const PageRoute = ({ loaderData }: Route.ComponentProps) => (
+  <BaseRoute
+    loaderData={loaderData}
+    createContentPromise={({ slug }) => import(`@@contents/pages/${slug}.mdx`)}
+  />
+);
 
 export default PageRoute;
