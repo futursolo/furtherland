@@ -41,36 +41,27 @@ export const createMeta = (options: CreateMetaOptions) => {
   ];
 };
 
-interface CreateRouteComponentOptions {
+interface RouteComponentProps {
+  loaderData: PostEntry;
   createContentPromise: (options: { slug: string; date: string }) => Promise<MdxModule>;
 }
 
-export const createRouteComponent = (options: CreateRouteComponentOptions) => {
-  const { createContentPromise } = options;
+export const RouteComponent = ({ loaderData, createContentPromise }: RouteComponentProps) => {
+  const contentPromise = useMemo(
+    () => createContentPromise({ slug: loaderData.slug, date: loaderData.date }),
+    [loaderData.slug, loaderData.date, createContentPromise],
+  );
 
-  interface PostRouteProps {
-    loaderData: PostEntry;
-  }
+  const { default: Component } = use(contentPromise);
 
-  const PostRoute = ({ loaderData }: PostRouteProps) => {
-    const contentPromise = useMemo(
-      () => createContentPromise({ slug: loaderData.slug, date: loaderData.date }),
-      [loaderData.slug, loaderData.date],
-    );
-
-    const { default: Component } = use(contentPromise);
-
-    return (
-      <Layout
-        slug={loaderData.slug}
-        date={loaderData.date}
-        title={loaderData.title}
-        isDraft={loaderData.isDraft}
-      >
-        <MdxRenderer Content={Component} />
-      </Layout>
-    );
-  };
-
-  return PostRoute;
+  return (
+    <Layout
+      slug={loaderData.slug}
+      date={loaderData.date}
+      title={loaderData.title}
+      isDraft={loaderData.isDraft}
+    >
+      <MdxRenderer Content={Component} />
+    </Layout>
+  );
 };

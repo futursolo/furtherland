@@ -3,7 +3,7 @@ import { data } from 'react-router';
 import { SITE_URL } from '@@frontend/constants/site';
 import { getDraftPost } from '@@frontend/content/posts.server';
 
-import { createMeta, createRouteComponent } from '../posts.$slug/common';
+import { RouteComponent as BaseRoute, createMeta } from '../posts.$slug/common';
 import type { Route } from './+types/route';
 
 export const loader = async ({ params }: Route.LoaderArgs) => {
@@ -24,8 +24,11 @@ export const meta = ({ loaderData }: Route.MetaArgs): Route.MetaDescriptors => {
   return [...commonMeta, { name: 'robots', content: 'noindex' }];
 };
 
-const PostDraftRoute = createRouteComponent({
-  createContentPromise: ({ date, slug }) => import(`@@contents/post-drafts/${date}/${slug}.mdx`),
-});
+const PostDraftRoute = ({ loaderData }: Route.ComponentProps) => (
+  <BaseRoute
+    loaderData={loaderData}
+    createContentPromise={({ date, slug }) => import(`@@contents/post-drafts/${date}/${slug}.mdx`)}
+  />
+);
 
 export default PostDraftRoute;
