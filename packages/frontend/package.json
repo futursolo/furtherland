@@ -16,6 +16,7 @@
     "@furtherland/contents": "workspace:^",
     "@furtherland/post-components": "workspace:^",
     "@giscus/react": "^3.1.0",
+    "@mdx-js/react": "^3.1.1",
     "@mdx-js/rollup": "^3.1.1",
     "@react-router/fs-routes": "^8.4.0",
     "@react-router/node": "^8.4.0",
@@ -44,6 +45,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
+    "rehype-github-alerts": "^4.2.0",
     "serve": "^14.2.6",
     "typescript": "^6",
     "vite": "^8.3.0"
