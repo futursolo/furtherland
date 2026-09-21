@@ -2,6 +2,7 @@ import { use, useMemo } from 'react';
 
 import { data, useLoaderData } from 'react-router';
 
+import MdxRenderer from '@@frontend/components/MDXRenderer';
 import { AUTHOR_NAME, SITE_URL } from '@@frontend/constants/site';
 import { getPost, type PostEntry } from '@@frontend/content/posts.server';
 import type { MdxModule } from '@@frontend/content/types';
@@ -61,7 +62,7 @@ const PostPage = () => {
       title={postData.title}
       isDraft={postData.isDraft}
     >
-      <Component />
+      <MdxRenderer Content={Component} />
     </Post>
   );
 };
