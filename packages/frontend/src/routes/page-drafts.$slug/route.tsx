@@ -6,10 +6,10 @@ import { MdxRenderer } from '@@frontend/components';
 import { SITE_URL } from '@@frontend/constants/site';
 import { getDraftPage, type PageEntry } from '@@frontend/content/pages.server';
 import type { MdxModule } from '@@frontend/content/types';
-import Page from '@@frontend/layouts/Page';
 import formatTitle from '@@frontend/utils/formatTitle';
 import { baseMeta } from '@@frontend/utils/meta';
 
+import Layout from '../pages.$slug/Layout';
 import type { Route } from './+types/route';
 
 export const loader = async ({ params }: Route.LoaderArgs) => {
@@ -58,9 +58,9 @@ const PageDraftRoute = () => {
   const { default: Component } = use(contentPromise);
 
   return (
-    <Page title={pageData.title}>
+    <Layout title={pageData.title}>
       <MdxRenderer Content={Component} />
-    </Page>
+    </Layout>
   );
 };
 

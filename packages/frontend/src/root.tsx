@@ -12,12 +12,12 @@ import {
 
 import { NotFound, ThemePreloadScript } from '@@frontend/components';
 import { SITE_NAME, SITE_URL } from '@@frontend/constants/site';
-import RootLayout from '@@frontend/layouts/Root';
 import Providers from '@@frontend/providers';
 import formatTitle from '@@frontend/utils/formatTitle';
 import { baseMeta } from '@@frontend/utils/meta';
 
 import type { Route } from './+types/root';
+import RootLayout from './root/Layout';
 
 export const meta: Route.MetaFunction = ({ matches }: Route.MetaArgs): Route.MetaDescriptors => {
   const hasNotFound = matches.some(

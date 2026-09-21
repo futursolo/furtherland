@@ -2,11 +2,11 @@ import { useLoaderData } from 'react-router';
 
 import { SITE_DESCRIPTION, SITE_URL } from '@@frontend/constants/site';
 import { getDraftPostSummaries, getPostSummaries } from '@@frontend/content/posts.server';
-import Home from '@@frontend/layouts/Home';
 import formatTitle from '@@frontend/utils/formatTitle';
 import { baseMeta } from '@@frontend/utils/meta';
 
 import type { Route } from './+types/route';
+import Layout from './Layout';
 
 export const loader = async () => {
   const summaries = [...(await getDraftPostSummaries()), ...(await getPostSummaries())];
@@ -30,7 +30,7 @@ export const links: Route.LinksFunction = () => [{ rel: 'canonical', href: `${SI
 const HomePage = () => {
   const { summaries } = useLoaderData<typeof loader>();
 
-  return <Home summaries={summaries} />;
+  return <Layout summaries={summaries} />;
 };
 
 export default HomePage;

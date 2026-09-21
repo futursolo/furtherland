@@ -6,11 +6,11 @@ import { MdxRenderer } from '@@frontend/components';
 import { AUTHOR_NAME, SITE_URL } from '@@frontend/constants/site';
 import { getPost, type PostEntry } from '@@frontend/content/posts.server';
 import type { MdxModule } from '@@frontend/content/types';
-import Post from '@@frontend/layouts/Post';
 import formatTitle from '@@frontend/utils/formatTitle';
 import { baseMeta } from '@@frontend/utils/meta';
 
 import type { Route } from './+types/route';
+import Layout from './Layout';
 
 export const loader = async ({ params }: Route.LoaderArgs) => {
   const post = await getPost(params.slug);
@@ -56,14 +56,14 @@ const PostPage = () => {
   const { default: Component } = use(contentPromise);
 
   return (
-    <Post
+    <Layout
       slug={postData.slug}
       date={postData.date}
       title={postData.title}
       isDraft={postData.isDraft}
     >
       <MdxRenderer Content={Component} />
-    </Post>
+    </Layout>
   );
 };
 
