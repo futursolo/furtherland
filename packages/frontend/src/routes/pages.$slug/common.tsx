@@ -6,7 +6,6 @@ import type { MdxModule } from '@@frontend/content/types';
 import formatTitle from '@@frontend/utils/formatTitle';
 import { baseMeta } from '@@frontend/utils/meta';
 
-import type { Route } from './+types/route';
 import Layout from './Layout';
 
 interface CreateMetaOptions {
@@ -45,7 +44,11 @@ interface CreateRouteComponentOptions {
 export const createRouteComponent = (options: CreateRouteComponentOptions) => {
   const { createContentPromise } = options;
 
-  const PageRoute = ({ loaderData }: Route.ComponentProps) => {
+  interface PageRouteProps {
+    loaderData: PageEntry;
+  }
+
+  const PageRoute = ({ loaderData }: PageRouteProps) => {
     const contentPromise = useMemo(
       () => createContentPromise({ slug: loaderData.slug }),
       [loaderData.slug],

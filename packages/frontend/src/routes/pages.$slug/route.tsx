@@ -1,3 +1,5 @@
+import type React from 'react';
+
 import { data } from 'react-router';
 
 import { SITE_URL } from '@@frontend/constants/site';
@@ -19,7 +21,7 @@ export const meta = ({ loaderData }: Route.MetaArgs): Route.MetaDescriptors => {
   return createMeta({ loaderData, url });
 };
 
-const PageRoute = createRouteComponent({
+const PageRoute: React.FC<Route.ComponentProps> = createRouteComponent({
   createContentPromise: ({ slug }) => import(`@@contents/pages/${slug}.mdx`),
 });
 
