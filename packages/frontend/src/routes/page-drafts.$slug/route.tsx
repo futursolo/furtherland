@@ -2,7 +2,7 @@ import { use, useMemo } from 'react';
 
 import { data, useLoaderData } from 'react-router';
 
-import MdxRenderer from '@@frontend/components/MDXRenderer';
+import { MdxRenderer } from '@@frontend/components';
 import { SITE_URL } from '@@frontend/constants/site';
 import { getDraftPage, type PageEntry } from '@@frontend/content/pages.server';
 import type { MdxModule } from '@@frontend/content/types';

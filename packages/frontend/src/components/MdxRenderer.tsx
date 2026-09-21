@@ -10,7 +10,7 @@ interface MdxRendererProps {
 }
 
 const Layout = styled(Box)({
-  lineHeight: '2rem',
+  lineHeight: '1.5rem',
 });
 
 const MdxRenderer = (props: MdxRendererProps) => {
