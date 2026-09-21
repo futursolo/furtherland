@@ -1,15 +1,9 @@
-import { use, useMemo } from 'react';
+import { data } from 'react-router';
 
-import { data, useLoaderData } from 'react-router';
+import { SITE_URL } from '@@frontend/constants/site';
+import { getDraftPost } from '@@frontend/content/posts.server';
 
-import { MdxRenderer } from '@@frontend/components';
-import { AUTHOR_NAME, SITE_URL } from '@@frontend/constants/site';
-import { getDraftPost, type PostEntry } from '@@frontend/content/posts.server';
-import type { MdxModule } from '@@frontend/content/types';
-import formatTitle from '@@frontend/utils/formatTitle';
-import { baseMeta } from '@@frontend/utils/meta';
-
-import Layout from '../posts.$slug/Layout';
+import { createMeta, createRouteComponent } from '../posts.$slug/common';
 import type { Route } from './+types/route';
 
 export const loader = async ({ params }: Route.LoaderArgs) => {
@@ -24,52 +18,14 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
 };
 
 export const meta = ({ loaderData }: Route.MetaArgs): Route.MetaDescriptors => {
-  if (!loaderData) {
-    return [
-      ...baseMeta,
-      { title: formatTitle('404 Not Found') },
-      { name: 'robots', content: 'noindex' },
-    ];
-  }
-  const post: PostEntry = loaderData;
-  const url = `${SITE_URL}/post-drafts/${post.slug}`;
+  const url = `${SITE_URL}/post-drafts/${loaderData.slug}`;
+  const commonMeta = createMeta({ loaderData, url });
 
-  return [
-    ...baseMeta,
-    { title: formatTitle(post.title) },
-    ...(post.description ? [{ name: 'description', content: post.description }] : []),
-    { name: 'robots', content: 'noindex' },
-    { property: 'og:type', content: 'article' },
-    { property: 'og:title', content: formatTitle(post.title) },
-    ...(post.description ? [{ property: 'og:description', content: post.description }] : []),
-    { property: 'og:url', content: url },
-    { property: 'article:published_time', content: new Date(post.date).toISOString() },
-    { property: 'article:author', content: AUTHOR_NAME },
-    { tagName: 'link', rel: 'canonical', href: url },
-  ];
+  return [...commonMeta, { name: 'robots', content: 'noindex' }];
 };
 
-const PostDraftPage = () => {
-  const postData: PostEntry = useLoaderData<typeof loader>();
+const PostDraftRoute = createRouteComponent({
+  createContentPromise: ({ date, slug }) => import(`@@contents/post-drafts/${date}/${slug}.mdx`),
+});
 
-  const contentPromise = useMemo(
-    () =>
-      import(`@@contents/post-drafts/${postData.date}/${postData.slug}.mdx`) as Promise<MdxModule>,
-    [postData.date, postData.slug],
-  );
-
-  const { default: Component } = use(contentPromise);
-
-  return (
-    <Layout
-      slug={postData.slug}
-      date={postData.date}
-      title={postData.title}
-      isDraft={postData.isDraft}
-    >
-      <MdxRenderer Content={Component} />
-    </Layout>
-  );
-};
-
-export default PostDraftPage;
+export default PostDraftRoute;
