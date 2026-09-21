@@ -9,7 +9,10 @@ import { baseMeta } from '@@frontend/utils/meta';
 import type { Route } from './+types/route';
 
 export const loader = async () => {
-  const summaries = [...(await getDraftPostSummaries()), ...(await getPostSummaries())];
+  const summaries = [
+    ...(import.meta.env.PROD ? [] : await getDraftPostSummaries()),
+    ...(await getPostSummaries()),
+  ];
   return { summaries };
 };
 
