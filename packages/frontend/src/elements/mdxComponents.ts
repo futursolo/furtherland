@@ -7,9 +7,11 @@ import Code from './Code';
 import H1 from './H1';
 import H2 from './H2';
 import H3 from './H3';
+import OrderedList from './OrderedList';
 import Paragraph from './Paragraph';
 import Pre from './Pre';
 import Table from './Table';
+import UnorderedList from './UnorderedList';
 
 export const mdxComponents = {
   a: Anchor,
@@ -23,4 +25,6 @@ export const mdxComponents = {
   ClientOnly,
   LazyOnly,
   Render,
+  ol: OrderedList,
+  ul: UnorderedList,
 };

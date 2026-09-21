@@ -1,6 +1,7 @@
 import type { MdxComponent } from '@@frontend/content/types';
 import { mdxComponents } from '@@frontend/elements';
 import { styled } from '@@frontend/utils';
+import 'rehype-github-alerts/styling/css/index.css';
 
 import Box from './Box';
 
