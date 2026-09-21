@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "frontend:start": "react-router dev --port 1741",
-    "frontend:typegen": "react-router typegen",
+    "frontend:typegen": "NODE_ENV=development react-router typegen --mode=development",
     "frontend:build": "scripts/build.sh",
     "frontend:preview": "serve ./build/client"
   },

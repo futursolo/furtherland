@@ -1,15 +1,13 @@
-import { use, useMemo } from 'react';
+import { data } from 'react-router';
 
-import { data, useLoaderData } from 'react-router';
-
-import { MdxRenderer } from '@@frontend/components';
 import { SITE_URL } from '@@frontend/constants/site';
-import { getDraftPage, type PageEntry } from '@@frontend/content/pages.server';
-import type { MdxModule } from '@@frontend/content/types';
-import Page from '@@frontend/layouts/Page';
-import formatTitle from '@@frontend/utils/formatTitle';
-import { baseMeta } from '@@frontend/utils/meta';
+import { getDraftPage } from '@@frontend/content/pages.server';
 
+import {
+  RouteComponent as BaseRoute,
+  type CreateContentPromiseFn,
+  createMeta,
+} from '../pages.$slug/common';
 import type { Route } from './+types/route';
 
 export const loader = async ({ params }: Route.LoaderArgs) => {
@@ -24,44 +22,17 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
 };
 
 export const meta = ({ loaderData }: Route.MetaArgs): Route.MetaDescriptors => {
-  if (!loaderData) {
-    return [
-      ...baseMeta,
-      { title: formatTitle('404 Not Found') },
-      { name: 'robots', content: 'noindex' },
-    ];
-  }
-  const page: PageEntry = loaderData;
-  const url = `${SITE_URL}/page-drafts/${page.slug}`;
+  const url = `${SITE_URL}/page-drafts/${loaderData.slug}`;
+  const commonMeta = createMeta({ loaderData, url });
 
-  return [
-    ...baseMeta,
-    { title: formatTitle(page.title) },
-    ...(page.description ? [{ name: 'description', content: page.description }] : []),
-    { name: 'robots', content: 'noindex' },
-    { property: 'og:type', content: 'website' },
-    { property: 'og:title', content: formatTitle(page.title) },
-    ...(page.description ? [{ property: 'og:description', content: page.description }] : []),
-    { property: 'og:url', content: url },
-    { tagName: 'link', rel: 'canonical', href: url },
-  ];
+  return [...commonMeta, { name: 'robots', content: 'noindex' }];
 };
 
-const PageDraftRoute = () => {
-  const pageData: PageEntry = useLoaderData<typeof loader>();
+const createContentPromise: CreateContentPromiseFn = ({ slug }) =>
+  import(`@@contents/page-drafts/${slug}.mdx`);
 
-  const contentPromise = useMemo(
-    () => import(`@@contents/page-drafts/${pageData.slug}.mdx`) as Promise<MdxModule>,
-    [pageData.slug],
-  );
-
-  const { default: Component } = use(contentPromise);
-
-  return (
-    <Page title={pageData.title}>
-      <MdxRenderer Content={Component} />
-    </Page>
-  );
-};
+const PageDraftRoute = ({ loaderData }: Route.ComponentProps) => (
+  <BaseRoute loaderData={loaderData} createContentPromise={createContentPromise} />
+);
 
 export default PageDraftRoute;
