@@ -8,6 +8,7 @@ import { createLogger, defineConfig } from 'vite';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkGfm from 'remark-gfm';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
+import { rehypeGithubAlerts } from 'rehype-github-alerts'
 
 // When you update this file, you may also want to update other Vite configs.
 
@@ -28,7 +29,7 @@ logger.warnOnce = (msg, options) => {
 
 export const mdxPlugin = mdx({
   remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm],
-  rehypePlugins: [[rehypeShiki, { themes: { light: 'github-light', dark: 'github-dark' } }]],
+  rehypePlugins: [[rehypeShiki, { themes: { light: 'github-light', dark: 'github-dark' } }], rehypeGithubAlerts],
 });
 
 export const baseConfig = {

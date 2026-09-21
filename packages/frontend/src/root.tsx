@@ -44,18 +44,20 @@ export const links: Route.LinksFunction = () => [
 
 export const Layout = ({ children }: { children: ReactNode }) => {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <ThemePreloadScript />
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        <Providers>{children}</Providers>
-        <ScrollRestoration />
-        <Scripts />
-      </body>
-    </html>
+    <Providers>
+      <html lang="en" suppressHydrationWarning>
+        <head>
+          <ThemePreloadScript />
+          <Meta />
+          <Links />
+        </head>
+        <body>
+          {children}
+          <ScrollRestoration />
+          <Scripts />
+        </body>
+      </html>
+    </Providers>
   );
 };
 

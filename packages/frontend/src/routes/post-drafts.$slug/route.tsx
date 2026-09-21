@@ -2,10 +2,10 @@ import { use, useMemo } from 'react';
 
 import { data, useLoaderData } from 'react-router';
 
+import { MdxRenderer } from '@@frontend/components';
 import { AUTHOR_NAME, SITE_URL } from '@@frontend/constants/site';
 import { getDraftPost, type PostEntry } from '@@frontend/content/posts.server';
 import type { MdxModule } from '@@frontend/content/types';
-import { mdxComponents } from '@@frontend/elements';
 import Post from '@@frontend/layouts/Post';
 import formatTitle from '@@frontend/utils/formatTitle';
 import { baseMeta } from '@@frontend/utils/meta';
@@ -67,7 +67,7 @@ const PostDraftPage = () => {
       title={postData.title}
       isDraft={postData.isDraft}
     >
-      <Component components={mdxComponents} />
+      <MdxRenderer Content={Component} />
     </Post>
   );
 };

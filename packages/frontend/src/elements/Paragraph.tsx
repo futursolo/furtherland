@@ -1,5 +1,5 @@
 import { styled } from '@@frontend/utils';
 
-const Paragraph = styled('p')({ lineHeight: '2rem' });
+const Paragraph = styled('p')({ margin: '0.5rem' });
 
 export default Paragraph;
