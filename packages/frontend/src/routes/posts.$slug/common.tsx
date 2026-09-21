@@ -41,9 +41,14 @@ export const createMeta = (options: CreateMetaOptions) => {
   ];
 };
 
+export type CreateContentPromiseFn = (options: {
+  slug: string;
+  date: string;
+}) => Promise<MdxModule>;
+
 interface RouteComponentProps {
   loaderData: PostEntry;
-  createContentPromise: (options: { slug: string; date: string }) => Promise<MdxModule>;
+  createContentPromise: CreateContentPromiseFn;
 }
 
 export const RouteComponent = ({ loaderData, createContentPromise }: RouteComponentProps) => {

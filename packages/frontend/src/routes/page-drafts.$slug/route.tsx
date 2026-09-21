@@ -3,7 +3,11 @@ import { data } from 'react-router';
 import { SITE_URL } from '@@frontend/constants/site';
 import { getDraftPage } from '@@frontend/content/pages.server';
 
-import { RouteComponent as BaseRoute, createMeta } from '../pages.$slug/common';
+import {
+  RouteComponent as BaseRoute,
+  type CreateContentPromiseFn,
+  createMeta,
+} from '../pages.$slug/common';
 import type { Route } from './+types/route';
 
 export const loader = async ({ params }: Route.LoaderArgs) => {
@@ -24,11 +28,11 @@ export const meta = ({ loaderData }: Route.MetaArgs): Route.MetaDescriptors => {
   return [...commonMeta, { name: 'robots', content: 'noindex' }];
 };
 
+const createContentPromise: CreateContentPromiseFn = ({ slug }) =>
+  import(`@@contents/page-drafts/${slug}.mdx`);
+
 const PageDraftRoute = ({ loaderData }: Route.ComponentProps) => (
-  <BaseRoute
-    loaderData={loaderData}
-    createContentPromise={({ slug }) => import(`@@contents/page-drafts/${slug}.mdx`)}
-  />
+  <BaseRoute loaderData={loaderData} createContentPromise={createContentPromise} />
 );
 
 export default PageDraftRoute;
