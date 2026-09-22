@@ -464,6 +464,8 @@ __metadata:
   resolution: "@furtherland/common@workspace:packages/common"
   dependencies:
     "@biomejs/biome": "npm:^2.5.14"
+    "@emotion/react": "npm:^11.14.0"
+    "@emotion/styled": "npm:^11.14.1"
     jotai: "npm:^3.0.0"
     react: "npm:^19.3.0"
     typescript: "npm:^6"
