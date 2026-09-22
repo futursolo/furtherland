@@ -8,7 +8,7 @@ import {
 } from '@mui/x-charts/ChartsTooltip';
 import { match } from 'ts-pattern';
 
-import RadarChart from '@@post-components/shared/RadarChart';
+import RadarChart from '@@content-components/shared/RadarChart';
 
 export const CustomItemTooltip = (props: ChartsTooltipProps) => {
   const tooltipData = useAxesTooltip<'radar'>();

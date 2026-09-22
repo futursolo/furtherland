@@ -42,7 +42,7 @@ export const baseConfig = {
       '@@contents': process.env.FL_CONTENTS_DIR
         ? path.resolve(process.cwd(), process.env.FL_CONTENTS_DIR)
         : path.resolve(import.meta.dirname, '../contents/src'),
-      '@@post-components': path.resolve(import.meta.dirname, '../post-components/src'),
+      '@@content-components': path.resolve(import.meta.dirname, '../content-components/src'),
     },
   },
   server: {

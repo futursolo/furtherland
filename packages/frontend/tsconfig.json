@@ -8,7 +8,7 @@
     "paths": {
       "@@frontend/*": ["./src/*"],
       "@@common/*": ["../common/src/*"],
-      "@@post-components/*": ["../post-components/src/*"],
+      "@@content-components/*": ["../content-components/src/*"],
       "@@contents/*": ["../contents/src/*"]
     },
     "lib": ["ES2022", "DOM", "DOM.Iterable"],

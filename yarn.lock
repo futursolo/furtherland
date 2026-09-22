@@ -471,11 +471,33 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@furtherland/content-components@workspace:^, @furtherland/content-components@workspace:packages/content-components":
+  version: 0.0.0-use.local
+  resolution: "@furtherland/content-components@workspace:packages/content-components"
+  dependencies:
+    "@biomejs/biome": "npm:^2.5.14"
+    "@emotion/react": "npm:^11.14.0"
+    "@emotion/styled": "npm:^11.14.1"
+    "@furtherland/common": "workspace:^"
+    "@mui/material": "npm:^9.4.0"
+    "@mui/system": "npm:^9.4.0"
+    "@mui/x-charts": "npm:^9.14.0"
+    "@types/react": "npm:^19.3.0"
+    "@types/react-dom": "npm:^19.3.0"
+    jotai: "npm:^3.0.0"
+    react: "npm:^19.3.0"
+    react-dom: "npm:^19.3.0"
+    ts-pattern: "npm:^5.9.0"
+    typescript: "npm:^6"
+    vite: "npm:^8.3.0"
+  languageName: unknown
+  linkType: soft
+
 "@furtherland/contents@workspace:^, @furtherland/contents@workspace:packages/contents":
   version: 0.0.0-use.local
   resolution: "@furtherland/contents@workspace:packages/contents"
   dependencies:
-    "@furtherland/post-components": "workspace:^"
+    "@furtherland/content-components": "workspace:^"
     "@types/react": "npm:^19.3.0"
     react: "npm:^19.3.0"
   languageName: unknown
@@ -489,8 +511,8 @@ __metadata:
     "@emotion/react": "npm:^11.14.0"
     "@emotion/styled": "npm:^11.14.1"
     "@furtherland/common": "workspace:^"
+    "@furtherland/content-components": "workspace:^"
     "@furtherland/contents": "workspace:^"
-    "@furtherland/post-components": "workspace:^"
     "@giscus/react": "npm:^3.1.0"
     "@mdx-js/rollup": "npm:^3.1.1"
     "@react-router/dev": "npm:^8.4.0"
@@ -521,28 +543,6 @@ __metadata:
     vite: "npm:^8.3.0"
     vite-node: "npm:^6.0.0"
     zod: "npm:^4.6.5"
-  languageName: unknown
-  linkType: soft
-
-"@furtherland/post-components@workspace:^, @furtherland/post-components@workspace:packages/post-components":
-  version: 0.0.0-use.local
-  resolution: "@furtherland/post-components@workspace:packages/post-components"
-  dependencies:
-    "@biomejs/biome": "npm:^2.5.14"
-    "@emotion/react": "npm:^11.14.0"
-    "@emotion/styled": "npm:^11.14.1"
-    "@furtherland/common": "workspace:^"
-    "@mui/material": "npm:^9.4.0"
-    "@mui/system": "npm:^9.4.0"
-    "@mui/x-charts": "npm:^9.14.0"
-    "@types/react": "npm:^19.3.0"
-    "@types/react-dom": "npm:^19.3.0"
-    jotai: "npm:^3.0.0"
-    react: "npm:^19.3.0"
-    react-dom: "npm:^19.3.0"
-    ts-pattern: "npm:^5.9.0"
-    typescript: "npm:^6"
-    vite: "npm:^8.3.0"
   languageName: unknown
   linkType: soft
 

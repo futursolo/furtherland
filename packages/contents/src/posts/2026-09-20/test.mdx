@@ -35,7 +35,7 @@ This is a test BarChart.
 
 <Render
   method="lazy"
-  load={() => import('@@post-components/shared/BarChart')}
+  load={() => import('@@content-components/shared/BarChart')}
   render={(BarChart) => (
     <BarChart
       xAxis={[{ data: ['group A', 'group B', 'group C'] }]}
@@ -49,7 +49,7 @@ This is a test RadarChart.
 
 <Render
   method="lazy"
-  load={() => import('@@post-components/shared/RadarChart')}
+  load={() => import('@@content-components/shared/RadarChart')}
   render={(RadarChart) => (
     <RadarChart
       series={[{ data: [3, 2, 2, 5], label: 'A' }, { data: [4, 3, 5, 4], label: 'B' }]}
