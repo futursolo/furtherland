@@ -41,7 +41,7 @@ Package scripts that shell out to a dependency (e.g. `react-router`, `serve`, `v
 - `packages/contents/` (`@furtherland/contents`) — author-facing MDX content:
   - `packages/contents/src/posts/<YYYY-MM-DD>/<slug>.mdx` — blog posts.
   - `packages/contents/src/pages/<slug>.mdx` — standalone pages.
-- `packages/common/`, `packages/post-components/` — shared utilities / post components.
+- `packages/common/`, `packages/content-components/` — shared utilities / content components.
 - `biome.jsonc`, root `tsconfig.json`, `scripts/` — repo-level tooling.
 
 ### Path aliases
@@ -50,7 +50,7 @@ Defined in each package's `tsconfig.json` (and wired into the Vite build via `vi
 - `@@frontend/*` → `packages/frontend/src/*`
 - `@@common/*` → `packages/common/src/*`
 - `@@contents/*` → `packages/contents/src/*`
-- `@@post-components/*` → `packages/post-components/src/*`
+- `@@content-components/*` → `packages/content-components/src/*`
 
 Use these aliases for cross-directory imports rather than deep relative paths.
 

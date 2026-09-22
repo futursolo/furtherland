@@ -13,7 +13,7 @@
     "noEmit": true,
     "paths": {
       "@@common/*": ["../common/src/*"],
-      "@@post-components/*": ["./src/*"]
+      "@@content-components/*": ["./src/*"]
     }
   },
   "include": ["./src/**/*", "../common/src/**/*"]

@@ -15,12 +15,12 @@
     "paths": {
       "@@common/*": ["./packages/common/src/*"],
       "@@contents/*": ["./packages/contents/src/*"],
-      "@@post-components/*": ["./packages/post-components/src/*"],
+      "@@content-components/*": ["./packages/content-components/src/*"],
       "@@frontend/*": ["./packages/frontend/src/*"]
     }
   },
   "include": [
     "./packages/common/src/**/*",
-    "./packages/post-components/src/**/*"
+    "./packages/content-components/src/**/*"
   ]
 }
