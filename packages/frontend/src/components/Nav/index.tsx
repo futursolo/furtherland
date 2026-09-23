@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import { useTheme } from '@emotion/react';
 import { Link as RouterLink } from 'react-router';
 
 import Box from '@@frontend/components/Box';
@@ -44,18 +43,30 @@ const NavLayout = styled.nav({
   boxSizing: 'border-box',
 
   backgroundColor: 'rgba(255, 255, 255, 0)',
+});
+
+const InnerNavLayout = styled(NavLayout)(({ theme }) => ({
+  color: 'rgb(255, 255, 255)',
 
   paddingLeft: 'env(safe-area-inset-left)',
   paddingRight: 'env(safe-area-inset-right)',
-});
+
+  '&.nav-pos-top': {
+    position: 'fixed',
+    top: '0',
+
+    backgroundColor: theme.colour.background.component.cssVar,
+    color: theme.fontColour.primary.cssVar,
+
+    boxShadow: '0 0 10px 5px rgba(0, 0, 0, 0.3)',
+  },
+}));
 
 export const NavPlaceholder = styled(Box)({ height: 60, width: '100%' });
 
 const Nav = () => {
   const [layoutEl, setLayoutEl] = useState<HTMLElement | null>(null);
   const [navPos, setNavPos] = useState<'top' | 'default'>('default');
-
-  const theme = useTheme();
 
   useEffect(() => {
     if (layoutEl) {
@@ -86,27 +97,11 @@ const Nav = () => {
 
   return (
     <NavLayout ref={setLayoutEl}>
-      <NavLayout
-        style={{
-          color: 'rgb(255, 255, 255)',
-
-          ...(navPos === 'top'
-            ? {
-                position: 'fixed',
-                top: '0',
-
-                backgroundColor: theme.colour.background.component.cssVar,
-                color: theme.fontColour.primary.cssVar,
-
-                boxShadow: '0 0 10px 5px rgba(0, 0, 0, 0.3)',
-              }
-            : {}),
-        }}
-      >
+      <InnerNavLayout className={navPos === 'top' ? 'nav-pos-top' : ''}>
         <Links />
         <FlexSpace />
         <ThemeToggle position={navPos} />
-      </NavLayout>
+      </InnerNavLayout>
     </NavLayout>
   );
 };
