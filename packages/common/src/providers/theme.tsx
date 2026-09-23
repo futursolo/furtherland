@@ -1,4 +1,10 @@
-/* eslint-disable no-underscore-dangle */
+import { type PropsWithChildren, useEffect } from 'react';
+
+import { ThemeProvider as BaseProvider, Global } from '@emotion/react';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { useMediaQuery } from 'usehooks-ts';
+
+import themeAtom, { getThemeKind } from '@@common/atoms/theme';
 
 const createColour = (name: string, lightValue: string, darkValue: string) => {
   return {
@@ -125,3 +131,29 @@ export const globalStyles = {
     transition: 'background-color 0.3s, color 0.3s',
   },
 };
+
+const ThemeProvider = (props: PropsWithChildren) => {
+  const { children } = props;
+  const prefersDarkTheme = useMediaQuery('(prefers-color-scheme: dark)');
+  const themeKind = useAtomValue(themeAtom);
+  const setThemeKind = useSetAtom(themeAtom);
+
+  useEffect(() => {
+    // Make prefersDarkTheme a dependency of useEffect.
+    prefersDarkTheme;
+    setThemeKind(getThemeKind());
+  }, [prefersDarkTheme, setThemeKind]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', themeKind);
+  }, [themeKind]);
+
+  return (
+    <BaseProvider theme={theme}>
+      <Global styles={globalStyles} />
+      {children}
+    </BaseProvider>
+  );
+};
+
+export default ThemeProvider;
