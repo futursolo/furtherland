@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "frontend:start": "NODE_OPTIONS=--experimental-vm-modules rsbuild dev --port 1741",
+    "frontend:start": "NODE_OPTIONS=\"--experimental-vm-modules $NODE_OPTIONS\" rsbuild dev --port 1741",
     "frontend:typegen": "NODE_ENV=development react-router typegen --mode=development",
     "frontend:build": "scripts/build.sh",
     "frontend:preview": "serve ./build/client"

@@ -38,10 +38,5 @@ export const baseConfig = {
 
 export default defineConfig({
   ...baseConfig,
-  source: {
-    define: {
-      'import.meta.env.PROD': process.env.FL_BUILDING === 'true',
-    },
-  },
   plugins: [mdxPlugin, pluginReact(), pluginReactRouter()],
 });
