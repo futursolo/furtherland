@@ -24,7 +24,7 @@
     "@yarnpkg/sdks": "^3.3.1"
   },
   "dependenciesMeta": {
-    "rsbuild-plugin-react-router@0.8.0": {
+    "rsbuild-plugin-react-router@0.8.1": {
       "unplugged": true
     }
   }
