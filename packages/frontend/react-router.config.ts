@@ -1,7 +1,7 @@
 import { access, readdir, readFile, rename, rmdir } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Config } from '@react-router/dev/config';
+import type { ReactRouterRsbuildConfig } from 'rsbuild-plugin-react-router';
 
 const configDir = dirname(fileURLToPath(import.meta.url));
 const staticPathsFile = join(configDir, 'src', 'generated', 'staticPaths.json');
@@ -62,4 +62,4 @@ export default {
     await rename(spaFallback, notFound);
     console.log('Renamed __spa-fallback.html -> 404.html');
   },
-} satisfies Config;
+} satisfies ReactRouterRsbuildConfig;

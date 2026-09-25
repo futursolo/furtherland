@@ -3,13 +3,14 @@ import { join } from 'node:path';
 
 type CollectPrerender = () => Promise<string[]>;
 
-const collecters = import.meta.glob<{ default: CollectPrerender }>(
-  '@@frontend/routes/**/+collectPrerender.{ts,tsx}',
-);
+const context = import.meta.webpackContext('@@frontend/routes', {
+  recursive: true,
+  regExp: /\+collectPrerender\.(ts|tsx)$/,
+});
 
 const allPaths: string[] = [];
-for (const load of Object.values(collecters)) {
-  const { default: collect } = await load();
+for (const key of context.keys()) {
+  const { default: collect } = (await context(key)) as { default: CollectPrerender };
   for (const path of await collect()) {
     allPaths.push(path);
     console.log(path);

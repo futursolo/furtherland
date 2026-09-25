@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import type { MdxModule } from './types';
+import { type MdxModule, modulesFromContext } from './types';
 
 const pageSchema = z.object({
   slug: z.string(),
@@ -13,8 +13,12 @@ type PageData = z.infer<typeof pageSchema>;
 /** Frontmatter data for a page, plus whether it is a draft. */
 export type PageEntry = PageData & { isDraft: boolean };
 
-const publishedPageMdx = import.meta.glob<MdxModule>('@@contents/pages/**/*.mdx');
-const draftPageMdx = import.meta.glob<MdxModule>('@@contents/page-drafts/**/*.mdx');
+const publishedPageMdx = modulesFromContext<MdxModule>(
+  import.meta.webpackContext('@@contents/pages', { recursive: true, regExp: /\.mdx$/ }),
+);
+const draftPageMdx = modulesFromContext<MdxModule>(
+  import.meta.webpackContext('@@contents/page-drafts', { recursive: true, regExp: /\.mdx$/ }),
+);
 
 const sortBySlug = (a: PageEntry, b: PageEntry): number =>
   a.slug === b.slug ? 0 : a.slug < b.slug ? -1 : 1;

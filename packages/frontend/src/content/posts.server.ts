@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import type { MdxModule } from './types';
+import { type MdxModule, modulesFromContext } from './types';
 
 const postSchema = z.object({
   date: z.string(),
@@ -14,8 +14,12 @@ type PostData = z.infer<typeof postSchema>;
 /** Frontmatter data for a post, plus whether it is a draft. */
 export type PostEntry = PostData & { isDraft: boolean };
 
-const publishedPostMdx = import.meta.glob<MdxModule>('@@contents/posts/**/*.mdx');
-const draftPostMdx = import.meta.glob<MdxModule>('@@contents/post-drafts/**/*.mdx');
+const publishedPostMdx = modulesFromContext<MdxModule>(
+  import.meta.webpackContext('@@contents/posts', { recursive: true, regExp: /\.mdx$/ }),
+);
+const draftPostMdx = modulesFromContext<MdxModule>(
+  import.meta.webpackContext('@@contents/post-drafts', { recursive: true, regExp: /\.mdx$/ }),
+);
 
 const sortByDate = (a: PostEntry, b: PostEntry): number =>
   a.date === b.date ? 0 : a.date < b.date ? 1 : -1;
