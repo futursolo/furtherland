@@ -11,9 +11,9 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.14",
-    "@types/node": "^26.6.1",
+    "@types/node": "^26.6.2",
     "@types/react": "^19.3.0",
-    "typescript": "^6"
+    "typescript": "^7"
   },
   "workspaces": [
     "packages/*"
