@@ -10,7 +10,7 @@ import {
   useLocation,
 } from 'react-router';
 
-import { NotFound, ThemePreloadScript } from '@@frontend/components';
+import { LoadingIndicator, NotFound, ThemePreloadScript } from '@@frontend/components';
 import { SITE_NAME, SITE_URL } from '@@frontend/constants/site';
 import Providers from '@@frontend/providers';
 import formatTitle from '@@frontend/utils/formatTitle';
@@ -66,9 +66,12 @@ const Root = () => {
   const headerKind = pathname === '/' ? 'home' : 'default';
 
   return (
-    <RootLayout headerKind={headerKind}>
-      <Outlet />
-    </RootLayout>
+    <>
+      <LoadingIndicator />
+      <RootLayout headerKind={headerKind}>
+        <Outlet />
+      </RootLayout>
+    </>
   );
 };
 
