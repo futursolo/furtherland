@@ -6,7 +6,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "jotai": "^3.0.0",
+    "jotai": "^3.0.1",
     "react": "^19.3.0",
     "usehooks-ts": "^3.1.1"
   },
@@ -14,6 +14,6 @@
     "@biomejs/biome": "^2.5.14",
     "@types/react": "^19.3.0",
     "typescript": "^6",
-    "vite": "^8.3.0"
+    "vite": "^8.3.1"
   }
 }
