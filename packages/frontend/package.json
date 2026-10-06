@@ -45,7 +45,7 @@
     "remark-mdx-frontmatter": "^6.0.0",
     "rollup": "^4.63.5",
     "serve": "^14.2.6",
-    "typescript": "^7",
+    "typescript": "^6",
     "vite": "^8.3.1",
     "vite-node": "^6.0.0"
   }
