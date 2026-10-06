@@ -1,8 +1,8 @@
 import { createElement } from 'react';
 
 import { load } from 'cheerio';
+import type { AtomFeed } from 'feedsmith';
 import { generateAtomFeed } from 'feedsmith';
-import type { Atom, DeepPartial } from 'feedsmith/types';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 import { AUTHOR_NAME, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@@frontend/constants/site';
@@ -36,32 +36,32 @@ const renderPostContent = async (post: PostEntry): Promise<string> => {
   }
 };
 
-const toEntry = async (post: PostEntry): Promise<Atom.Entry<string>> => {
+const toEntry = async (post: PostEntry): Promise<AtomFeed.Entry<string>> => {
   const url = `${SITE_URL}/posts/${post.slug}`;
   const isoDate = new Date(post.date).toISOString();
 
   return {
     id: url,
-    title: post.title,
+    title: { value: post.title },
     published: isoDate,
     updated: isoDate,
-    ...(post.description ? { summary: post.description } : {}),
-    content: await renderPostContent(post),
+    ...(post.description ? { summary: { value: post.description } } : {}),
+    content: { value: await renderPostContent(post) },
     links: [{ rel: 'alternate', href: url }],
     authors: [{ name: AUTHOR_NAME }],
   };
 };
 
 export const buildAtomFeed = async (): Promise<string> => {
-  const feed: DeepPartial<Atom.Feed<string>> = {
+  const feed: AtomFeed.Feed<string> = {
     id: FEED_URL,
-    title: SITE_NAME,
-    subtitle: SITE_DESCRIPTION,
+    title: { value: SITE_NAME },
+    subtitle: { value: SITE_DESCRIPTION },
     updated: new Date().toISOString(),
     links: [{ rel: 'alternate', href: SITE_URL }],
     authors: [{ name: AUTHOR_NAME, uri: SITE_URL }],
     entries: await Promise.all((await getPostSummaries()).map(toEntry)),
   };
 
-  return generateAtomFeed<true>(feed);
+  return generateAtomFeed(feed);
 };
