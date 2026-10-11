@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.14",
+    "@furtherland/vite-plugins": "workspace:^",
     "@mdx-js/rollup": "^3.1.1",
     "@react-router/dev": "^8.4.0",
     "@shikijs/rehype": "^4.4.3",

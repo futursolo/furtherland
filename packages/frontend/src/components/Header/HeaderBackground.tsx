@@ -1,7 +1,4 @@
-import backgroundAvif from '@@frontend/assets/background.avif';
-import backgroundFallback from '@@frontend/assets/background.jpg';
-import backgroundJxl from '@@frontend/assets/background.jxl';
-import backgroundWebp from '@@frontend/assets/background.webp';
+import Background from '@@frontend/assets/background.jpg?multiview';
 import { styled } from '@@frontend/utils';
 
 const Layout = styled.div(({ theme }) => ({
@@ -50,12 +47,7 @@ const HeaderBackground = (props: { headerKind: 'home' | 'default' }) => {
 
   return (
     <Layout className={headerKind === 'home' ? 'is-home' : undefined}>
-      <picture>
-        <source srcSet={backgroundJxl} type="image/jxl" />
-        <source srcSet={backgroundAvif} type="image/avif" />
-        <source srcSet={backgroundWebp} type="image/webp" />
-        <Image src={backgroundFallback} />
-      </picture>
+      <Background ImgComponent={Image} />
     </Layout>
   );
 };
