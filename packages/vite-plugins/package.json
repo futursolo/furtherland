@@ -4,10 +4,15 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./multiview": {
+      "types": "./src/multiview.d.ts"
+    }
   },
   "devDependencies": {
     "@types/node": "^26.6.3",
+    "@types/react": "^19.3.0",
+    "react": "^19.3.0",
     "typescript": "^6",
     "vite": "^8.3.1"
   },
