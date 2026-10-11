@@ -1,8 +1,8 @@
 /// <reference types="@jsquash/jxl/emscripten-types" />
 import { createHash } from 'node:crypto';
 import { mkdir, readdir, readFile, stat, unlink, writeFile } from 'node:fs/promises';
-import { createRequire } from 'node:module';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import jxlEncode, { init as jxlInit } from '@jsquash/jxl/encode.js';
 import sharp, { type Metadata } from 'sharp';
 import { normalizePath, type Plugin } from 'vite';
@@ -123,8 +123,10 @@ let jxlModulePromise: Promise<void> | null = null;
  */
 const getJxlModule = (): Promise<void> => {
   jxlModulePromise ??= (async () => {
-    const require = createRequire(import.meta.url);
-    const wasmBytes = await readFile(require.resolve('@jsquash/jxl/codec/enc/jxl_enc.wasm'));
+    const wasmPath = fileURLToPath(
+      new URL(import.meta.resolve('@jsquash/jxl/codec/enc/jxl_enc.wasm')),
+    );
+    const wasmBytes = await readFile(wasmPath);
     // `init` accepts a compiled WebAssembly.Module as its first argument (see
     // the README), although its type declaration only covers the
     // options-object overload.
