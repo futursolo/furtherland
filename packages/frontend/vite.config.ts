@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { multiviewImagePlugin } from '@furtherland/vite-plugins';
 import { reactRouter } from '@react-router/dev/vite';
 import mdx from '@mdx-js/rollup';
 import rehypeShiki from '@shikijs/rehype';
@@ -61,5 +62,5 @@ export default defineConfig({
       },
     },
   },
-  plugins: [mdxPlugin, reactRouter()],
+  plugins: [mdxPlugin, multiviewImagePlugin(), reactRouter()],
 });
