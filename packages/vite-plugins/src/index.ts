@@ -36,7 +36,7 @@ export interface MultiviewImageOptions {
    * generated variants are encoded losslessly (JXL in lossless mode) and the
    * fallback is the original file itself.
    *
-   * @default 500 * 1024
+   * @default 256 * 1024
    */
   losslessBelow?: number;
   /**
@@ -232,7 +232,7 @@ export const multiviewImagePlugin = (userOptions: MultiviewImageOptions = {}): P
     query = 'multiview',
     quality: defaultQuality = 80,
     effort = 4,
-    losslessBelow = 500 * 1024,
+    losslessBelow = 256 * 1024,
     cacheDir: userCacheDir = 'node_modules/.image-opt-cache',
   } = userOptions;
 
