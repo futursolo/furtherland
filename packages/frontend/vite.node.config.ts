@@ -6,7 +6,10 @@ export default defineConfig({
   ...baseConfig,
   build: {
     ssr: 'src/scripts/prepare-prerender.ts',
-    rollupOptions: {
+    rolldownOptions: {
+      checks: {
+        bundlerTimings: false,
+      },
       output: {
         format: 'es',
         entryFileNames: 'prepare-prerender.mjs',
