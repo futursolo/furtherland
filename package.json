@@ -2,7 +2,7 @@
   "name": "@furtherland/workspace",
   "private": true,
   "type": "module",
-  "packageManager": "yarn@4.18.0",
+  "packageManager": "yarn@4.18.1",
   "scripts": {
     "lint": "scripts/lint.sh",
     "start": "yarn workspace @furtherland/frontend frontend:start",
