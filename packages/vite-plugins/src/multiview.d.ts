@@ -1,5 +1,5 @@
 /**
- * Modules imported with the `?multiview` query (see `MultiviewImagePlugin` in
+ * Modules imported with the `?multiview` query (see `multiviewImagePlugin` in
  * this package) export a React component that renders a `<picture>` element
  * with a `<source>` per generated format (JXL, AVIF, WebP) and a JPEG
  * fallback `<img>`, plus a named string export per format URL.

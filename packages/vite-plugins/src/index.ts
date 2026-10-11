@@ -227,7 +227,7 @@ const generateModule = (
  * variants are encoded losslessly (JXL in lossless mode) and the fallback
  * is the original file itself.
  */
-export const MultiviewImagePlugin = (userOptions: MultiviewImageOptions = {}): Plugin => {
+export const multiviewImagePlugin = (userOptions: MultiviewImageOptions = {}): Plugin => {
   const {
     query = 'multiview',
     quality: defaultQuality = 80,
