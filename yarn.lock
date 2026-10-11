@@ -592,9 +592,6 @@ __metadata:
     "@yarnpkg/extensions": "npm:^2.0.7"
     "@yarnpkg/sdks": "npm:^3.3.1"
     typescript: "npm:^6"
-  dependenciesMeta:
-    "@jsquash/jxl":
-      unplugged: true
   languageName: unknown
   linkType: soft
 
