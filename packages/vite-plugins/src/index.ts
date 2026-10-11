@@ -32,6 +32,14 @@ export interface MultiviewImageOptions {
    */
   effort?: number;
   /**
+   * Source images smaller than this size (in bytes) are never degraded: the
+   * generated variants are encoded losslessly (JXL in lossless mode) and the
+   * fallback is the original file itself.
+   *
+   * @default 500 * 1024
+   */
+  losslessBelow?: number;
+  /**
    * Where the generated images are cached. Relative paths are resolved from
    * the Vite root. Files are keyed by the SHA-256 of the source image's
    * content, so the cache survives restarts and stale entries are
@@ -83,14 +91,24 @@ const isJpeg = (ext: string): boolean => ext === 'jpg' || ext === 'jpeg';
 
 type SharpInstance = ReturnType<typeof sharp>;
 
+interface SharpWriteOptions {
+  quality?: number;
+  lossless?: boolean;
+}
+
 /**
  * The sharp output writers for the non-JXL formats. JXL is handled
  * separately because sharp's prebuilt binaries do not ship a JXL encoder.
  */
-const SHARP_WRITERS: Record<string, (image: SharpInstance, quality: number) => SharpInstance> = {
-  avif: (image, quality) => image.avif({ quality }),
-  webp: (image, quality) => image.webp({ quality }),
-  jpg: (image, quality) => image.jpeg({ quality }),
+const SHARP_WRITERS: Record<
+  string,
+  (image: SharpInstance, options: SharpWriteOptions) => SharpInstance
+> = {
+  avif: (image, options) =>
+    options.lossless ? image.avif({ lossless: true }) : image.avif({ quality: options.quality }),
+  webp: (image, options) =>
+    options.lossless ? image.webp({ lossless: true }) : image.webp({ quality: options.quality }),
+  jpg: (image, options) => image.jpeg({ quality: options.quality }),
 };
 
 const hash = (input: string): string => createHash('sha1').update(input).digest('hex').slice(0, 10);
@@ -118,8 +136,7 @@ const getJxlModule = (): Promise<JxlModule> => {
 
 const encodeJxl = async (
   sourceBuffer: Buffer,
-  quality: number,
-  effort: number,
+  options: { quality: number; effort: number; lossless: boolean },
 ): Promise<Buffer> => {
   const { data, info } = await sharp(sourceBuffer)
     .ensureAlpha()
@@ -128,8 +145,11 @@ const encodeJxl = async (
   const module = await getJxlModule();
   const encoded = module.encode(data, info.width, info.height, {
     ...jxlDefaultOptions,
-    quality,
-    effort,
+    // The encoder ignores quality/effort in lossless mode (and warns unless
+    // quality is 100).
+    quality: options.lossless ? 100 : options.quality,
+    effort: options.effort,
+    lossless: options.lossless,
   });
   if (!encoded) {
     throw new Error('[@furtherland/vite-plugins] the JXL encoder failed to produce an output');
@@ -202,17 +222,23 @@ const generateModule = (
  * also available as a named export (`jxl`, `avif`, `webp`, `jpg`). The
  * component accepts an `ImgComponent` prop to replace the fallback `<img>`
  * element (e.g. with a styled component).
+ *
+ * Source images smaller than `losslessBelow` are never degraded: the
+ * variants are encoded losslessly (JXL in lossless mode) and the fallback
+ * is the original file itself.
  */
 export const MultiviewImagePlugin = (userOptions: MultiviewImageOptions = {}): Plugin => {
   const {
     query = 'multiview',
     quality: defaultQuality = 80,
     effort = 4,
+    losslessBelow = 500 * 1024,
     cacheDir: userCacheDir = 'node_modules/.image-opt-cache',
   } = userOptions;
 
   let cacheDir = '';
   const cache = new Map<string, { statKey: string; code: string }>();
+  const inflight = new Map<string, Promise<string>>();
 
   return {
     name: '@furtherland/vite-plugins:multiview',
@@ -246,99 +272,133 @@ export const MultiviewImagePlugin = (userOptions: MultiviewImageOptions = {}): P
       if (!id.startsWith(VIRTUAL_PREFIX)) return null;
       if (this.environment.mode === 'scan') return null;
 
-      const searchIndex = id.indexOf('?');
-      const sourcePath = id.slice(
-        VIRTUAL_PREFIX.length,
-        searchIndex === -1 ? undefined : searchIndex,
-      );
-      const qualityParam =
-        searchIndex !== -1 ? new URLSearchParams(id.slice(searchIndex + 1)).get('quality') : null;
-      const parsedQuality = qualityParam == null ? null : Number(qualityParam);
-      const quality = clampQuality(
-        parsedQuality == null || Number.isNaN(parsedQuality) ? defaultQuality : parsedQuality,
-      );
+      // Concurrent loads of the same module (e.g. Vite's pre-transform racing
+      // a real request) share a single conversion.
+      const pending = inflight.get(id);
+      if (pending) return pending;
 
-      const info = await stat(sourcePath);
-      const statKey = `${info.mtimeMs}:${info.size}`;
-
-      // Fast path: the source file is unchanged since the last load in this
-      // process, so its SHA-256 (and the generated code) cannot have changed.
-      const cached = cache.get(id);
-      if (cached?.statKey === statKey) return cached.code;
-
-      this.addWatchFile(sourcePath);
-
-      let sourceBuffer: Buffer;
-      let metadata: Metadata;
-      try {
-        sourceBuffer = await readFile(sourcePath);
-        metadata = await sharp(sourceBuffer).metadata();
-      } catch (cause) {
-        throw new Error(
-          `[@furtherland/vite-plugins] failed to read '${sourcePath}' as an image: ${cause instanceof Error ? cause.message : String(cause)}`,
+      const result = (async () => {
+        const searchIndex = id.indexOf('?');
+        const sourcePath = id.slice(
+          VIRTUAL_PREFIX.length,
+          searchIndex === -1 ? undefined : searchIndex,
         );
-      }
+        const qualityParam =
+          searchIndex !== -1 ? new URLSearchParams(id.slice(searchIndex + 1)).get('quality') : null;
+        const parsedQuality = qualityParam == null ? null : Number(qualityParam);
+        const quality = clampQuality(
+          parsedQuality == null || Number.isNaN(parsedQuality) ? defaultQuality : parsedQuality,
+        );
 
-      // Cache identity is the SHA-256 of the source image's content, so it
-      // is stable across machines and independent of the file's location,
-      // timestamp or name.
-      const contentSha256 = createHash('sha256').update(sourceBuffer).digest('hex');
-      const key = hash(`${contentSha256}:${quality}:${effort}`);
+        const info = await stat(sourcePath);
+        const statKey = `${info.mtimeMs}:${info.size}`;
 
-      const sourceExtension = path.extname(sourcePath).slice(1).toLowerCase();
-      const baseName = path.basename(sourcePath, path.extname(sourcePath));
+        // Fast path: the source file is unchanged since the last load in this
+        // process, so its SHA-256 (and the generated code) cannot have changed.
+        const cached = cache.get(id);
+        if (cached?.statKey === statKey) return cached.code;
 
-      const cachePaths = MULTIVIEW_FORMATS.map((format) =>
-        path.join(cacheDir, `${baseName}-${key}.${format.ext}`),
-      );
-      const currentFiles = cachePaths.map((cachePath) => path.basename(cachePath));
-      const missing = (
-        await Promise.all(
-          cachePaths.map(async (cachePath) => (await stat(cachePath).catch(() => null)) == null),
-        )
-      ).some((isMissing) => isMissing);
+        this.addWatchFile(sourcePath);
 
-      if (missing) {
-        await mkdir(cacheDir, { recursive: true });
-
-        for (const [index, format] of MULTIVIEW_FORMATS.entries()) {
-          if ((await stat(cachePaths[index]).catch(() => null)) != null) continue;
-
-          const sameFormat =
-            sourceExtension === format.ext || (isJpeg(sourceExtension) && isJpeg(format.ext));
-          let buffer: Buffer;
-          if (sameFormat) {
-            buffer = sourceBuffer;
-          } else if (format.ext === 'jxl') {
-            buffer = await encodeJxl(sourceBuffer, quality, effort);
-          } else {
-            buffer = await SHARP_WRITERS[format.ext](sharp(sourceBuffer), quality).toBuffer();
-          }
-          await writeFile(cachePaths[index], buffer);
+        let sourceBuffer: Buffer;
+        let metadata: Metadata;
+        try {
+          sourceBuffer = await readFile(sourcePath);
+          metadata = await sharp(sourceBuffer).metadata();
+        } catch (cause) {
+          throw new Error(
+            `[@furtherland/vite-plugins] failed to read '${sourcePath}' as an image: ${cause instanceof Error ? cause.message : String(cause)}`,
+          );
         }
 
-        // Remove cache files left over from earlier versions of this source.
-        const stale = await readdir(cacheDir).catch(() => []);
-        for (const name of stale) {
-          if (name.startsWith(`${baseName}-`) && !currentFiles.includes(name)) {
-            await unlink(path.join(cacheDir, name)).catch(() => null);
+        // Small images are never degraded: the variants are encoded
+        // losslessly and the fallback is the original file itself.
+        const lossless = info.size < losslessBelow;
+
+        // Cache identity is the SHA-256 of the source image's content, so it
+        // is stable across machines and independent of the file's location,
+        // timestamp or name.
+        const contentSha256 = createHash('sha256').update(sourceBuffer).digest('hex');
+        const key = hash(
+          `${contentSha256}:${quality}:${effort}:${lossless ? 'lossless' : 'lossy'}`,
+        );
+
+        const sourceExtension = path.extname(sourcePath).slice(1).toLowerCase();
+        const baseName = path.basename(sourcePath, path.extname(sourcePath));
+        // Names cache files per source file so that same-named sources in
+        // different directories never collide (or garbage-collect each other).
+        const sourceHash = hash(sourcePath).slice(0, 8);
+
+        const cachePaths = MULTIVIEW_FORMATS.map((format) =>
+          path.join(cacheDir, `${baseName}-${sourceHash}-${key}.${format.ext}`),
+        );
+        const currentFiles = cachePaths.map((cachePath) => path.basename(cachePath));
+        const missing = (
+          await Promise.all(
+            cachePaths.map(async (cachePath) => (await stat(cachePath).catch(() => null)) == null),
+          )
+        ).some((isMissing) => isMissing);
+
+        if (missing) {
+          await mkdir(cacheDir, { recursive: true });
+
+          for (const [index, format] of MULTIVIEW_FORMATS.entries()) {
+            if ((await stat(cachePaths[index]).catch(() => null)) != null) continue;
+
+            const sameFormat =
+              sourceExtension === format.ext || (isJpeg(sourceExtension) && isJpeg(format.ext));
+            let buffer: Buffer;
+            if (sameFormat) {
+              buffer = sourceBuffer;
+            } else if (lossless) {
+              // Never degrade a small image: encode losslessly, and keep the
+              // original file as the fallback.
+              buffer =
+                format.ext === 'jxl'
+                  ? await encodeJxl(sourceBuffer, { quality, effort, lossless: true })
+                  : format.ext === 'jpg'
+                    ? sourceBuffer
+                    : await SHARP_WRITERS[format.ext](sharp(sourceBuffer), {
+                        lossless: true,
+                      }).toBuffer();
+            } else if (format.ext === 'jxl') {
+              buffer = await encodeJxl(sourceBuffer, { quality, effort, lossless: false });
+            } else {
+              buffer = await SHARP_WRITERS[format.ext](sharp(sourceBuffer), { quality }).toBuffer();
+            }
+            await writeFile(cachePaths[index], buffer);
+          }
+
+          // Remove cache files left over from earlier versions of this source.
+          const stalePrefix = `${baseName}-${sourceHash}-`;
+          const stale = await readdir(cacheDir).catch(() => []);
+          for (const name of stale) {
+            if (name.startsWith(stalePrefix) && !currentFiles.includes(name)) {
+              await unlink(path.join(cacheDir, name)).catch(() => null);
+            }
           }
         }
+
+        const sources: GeneratedSource[] = MULTIVIEW_FORMATS.map((format, index) => ({
+          ext: format.ext,
+          mime: format.mime,
+          url: normalizePath(cachePaths[index]),
+        }));
+
+        const code = generateModule(sources, {
+          name: path.basename(sourcePath),
+          width: metadata.width,
+          height: metadata.height,
+        });
+        cache.set(id, { statKey, code });
+        return code;
+      })();
+      inflight.set(id, result);
+      try {
+        return await result;
+      } finally {
+        inflight.delete(id);
       }
-
-      const sources: GeneratedSource[] = MULTIVIEW_FORMATS.map((format, index) => ({
-        ext: format.ext,
-        mime: format.mime,
-        url: normalizePath(cachePaths[index]),
-      }));
-
-      const code = generateModule(sources, {
-        name: path.basename(sourcePath),
-        width: metadata.width,
-        height: metadata.height,
-      });
-      cache.set(id, { statKey, code });
-      return code;
     },
   };
 };
