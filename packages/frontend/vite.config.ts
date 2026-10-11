@@ -54,5 +54,12 @@ export const baseConfig = {
 
 export default defineConfig({
   ...baseConfig,
+  build: {
+    rolldownOptions: {
+      checks: {
+        bundlerTimings: false,
+      },
+    },
+  },
   plugins: [mdxPlugin, reactRouter()],
 });
