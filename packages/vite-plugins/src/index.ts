@@ -3,9 +3,7 @@ import { createHash } from 'node:crypto';
 import { mkdir, readdir, readFile, stat, unlink, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import path from 'node:path';
-import jxlEncoderFactory from '@jsquash/jxl/codec/enc/jxl_enc.js';
-import { defaultOptions as jxlDefaultOptions } from '@jsquash/jxl/meta.js';
-import { initEmscriptenModule } from '@jsquash/jxl/utils.js';
+import jxlEncode, { init as jxlInit } from '@jsquash/jxl/encode.js';
 import sharp, { type Metadata } from 'sharp';
 import { normalizePath, type Plugin } from 'vite';
 
@@ -115,21 +113,23 @@ const hash = (input: string): string => createHash('sha1').update(input).digest(
 
 const clampQuality = (value: number): number => Math.min(100, Math.max(0, Math.round(value)));
 
-type JxlModule = Awaited<ReturnType<typeof jxlEncoderFactory>>;
-
-let jxlModulePromise: Promise<JxlModule> | null = null;
+let jxlModulePromise: Promise<void> | null = null;
 
 /**
- * Initializes the WASM JXL encoder. The encoder's Emscripten glue only loads
- * its `.wasm` binary through the web fetch path, so the binary is compiled
- * ahead of time and handed to the module factory instead.
+ * Initialises the WASM JXL encoder via the manual initialisation path
+ * documented in the @jsquash/jxl README. The library's automatic
+ * initialisation fetches its `.wasm` binary over the network, which does not
+ * work in Node, so the binary is compiled ahead of time and handed to `init`.
  */
-const getJxlModule = (): Promise<JxlModule> => {
+const getJxlModule = (): Promise<void> => {
   jxlModulePromise ??= (async () => {
     const require = createRequire(import.meta.url);
-    const encoderPath = require.resolve('@jsquash/jxl/codec/enc/jxl_enc.js');
-    const wasmBytes = await readFile(path.join(path.dirname(encoderPath), 'jxl_enc.wasm'));
-    return initEmscriptenModule(jxlEncoderFactory, await WebAssembly.compile(wasmBytes));
+    const wasmBytes = await readFile(require.resolve('@jsquash/jxl/codec/enc/jxl_enc.wasm'));
+    // `init` accepts a compiled WebAssembly.Module as its first argument (see
+    // the README), although its type declaration only covers the
+    // options-object overload.
+    const wasmModule = await WebAssembly.compile(wasmBytes);
+    await jxlInit(wasmModule as unknown as Parameters<typeof jxlInit>[0]);
   })();
   return jxlModulePromise;
 };
@@ -142,18 +142,22 @@ const encodeJxl = async (
     .ensureAlpha()
     .raw()
     .toBuffer({ resolveWithObject: true });
-  const module = await getJxlModule();
-  const encoded = module.encode(data, info.width, info.height, {
-    ...jxlDefaultOptions,
-    // The encoder ignores quality/effort in lossless mode (and warns unless
-    // quality is 100).
-    quality: options.lossless ? 100 : options.quality,
-    effort: options.effort,
-    lossless: options.lossless,
-  });
-  if (!encoded) {
-    throw new Error('[@furtherland/vite-plugins] the JXL encoder failed to produce an output');
-  }
+  await getJxlModule();
+  // The wrapper fills in the remaining encoder options from its own defaults
+  // and requires quality 100 (and ignores it) in lossless mode.
+  const encoded = await jxlEncode(
+    {
+      data: new Uint8ClampedArray(data),
+      width: info.width,
+      height: info.height,
+      colorSpace: 'srgb',
+    },
+    {
+      quality: options.lossless ? 100 : options.quality,
+      effort: options.effort,
+      lossless: options.lossless,
+    },
+  );
   return Buffer.from(encoded);
 };
 
