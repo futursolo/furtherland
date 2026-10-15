@@ -1,6 +1,185 @@
 # Plan: Port `@furtherland/frontend` from React Router (Vite) to Modern.js
 
-Status: **draft** — branch `feat/modern-js`.
+Status: **port functionally complete — static-head post-processing is the last remaining
+piece** (see §0, 2026-10-15). Branch `feat/modern-js`.
+
+---
+
+## 0. Status as of 2026-10-15 — read this first
+
+Everything below §0 is the original (historical) plan. Where it disagrees with §0, §0
+wins. The port is built and verified end-to-end except for the `<head>` of the
+statically rendered pages (root cause found; fix half-prepared — see "Remaining work").
+
+### Deviations from the original plan (all deliberate, all verified)
+
+1. **Linker: `nodeLinker: node-modules`** in `.yarnrc.yml`. PnP/pnpify abandoned (the
+   pnpm linker was tried at user request and rejected — its virtual store links peer
+   `react` inconsistently). `@yarnpkg/pnpify` and `cheerio` removed from deps; no pnpify
+   in any script (`frontend:start`/`frontend:build` are plain `yarn exec modern dev|build`).
+2. **`@modern-js/plugin-ssg` is NOT used** — removed from deps. Replaced by a custom CLI
+   plugin `staticSitePlugin` in `packages/frontend/modern.config.ts`
+   (`CliPlugin<AppTools>`, `api.onAfterBuild`): boots the freshly built production server
+   (`createProdServer` + `loadServerPlugins` from `@modern-js/prod-server`, now a direct
+   devDep), reads `dist/route.json` (SPA routes marked `isSSR: true` +
+   `bundle: 'bundles/<entryName>.js'` — the server manifest loader requires both), renders
+   each SSG route **sequentially** via
+   `requestHandler(new Request(url, { headers: { host: 'localhost' } }), { node: { req:
+   mockIncomingMessage (carries `x-modern-ssg-render: 'true'`), res: new
+   ServerResponse(mockReq) } })` → `response.text()`, then writes the flattened
+   `build/client/<route>.html` (`/` → `index.html`, `/404` → `404.html`,
+   `/posts/x` → `posts/x.html`), copies `dist/static` → `build/client/static`, and writes
+   the four XML/text files from `site-xml.ts`.
+   - Why not the framework SSG: it renders up to 10 routes **concurrently** in one
+     process (`chunkArray(routes, 10)` + `Promise.all`), and `react-helmet`'s
+     module-level state (react-side-effect) is then shared across interleaved renders →
+     corrupted `<head>`.
+   - The prod build must keep `server.ssr: true` (set unconditionally in the config):
+     with `ssr: false` and no SSG plugin the build emits **no server bundle**
+     (`dist/bundles/<entry>.js`), which `staticSitePlugin` needs to render with. The
+     server bundle is never deployed (only `build/client` is).
+3. **Dev/prod detection**: `process.env.NODE_ENV` is `production` for *both* `modern dev`
+   and `modern build` (rsbuild `loadEnv`; the old Vite-era `.env.development` /
+   `.env.production` files that caused this are `git rm`'d). The
+   `defineConfig(({ command }) => …)` callback sets module-level `isProd =
+   command === 'build'` and `process.env.FL_IS_PROD = '1'|'0'`; `src/modern.routes.ts`
+   (loaded later, no command access) uses `FL_IS_PROD` for the draft-route filter.
+4. **XML/text endpoints**: no `server/modern.server.ts` Hono config. `site-xml.ts`
+   (package root, Node-only, **relative imports only** — aliases don't resolve in the
+   CLI/config context) generates all four docs from frontmatter on disk (`yaml` parse,
+   `sitemap` v9, `feedsmith`). Dev: `dev.setupMiddlewares` (unshift; short-circuits
+   before SSR). Prod: written by `staticSitePlugin`. Known deviation: atom feed entries
+   carry the post `description` as content (full MDX rendering needs the Rsbuild MDX
+   pipeline, unavailable in the Node-only generator) — not byte-identical to the old
+   feed.
+5. **`react-server-dom-rspack@0.1.0`** added as a frontend devDep — exact pin dictated by
+   `@modern-js/render`'s peer requirement (the one legitimate version pin).
+6. **`output.splitRouteChunks: false` was tried and reverted** — no effect on head
+   capture (see below); keeps the framework default (code-split route chunks).
+
+### ⚠️ The head issue (root cause found 2026-10-15) — the remaining work
+
+The statically rendered pages have a **stale/empty `<head>`** (title off-by-one across
+the render sequence; `<meta>` tags absent entirely) while the **bodies are correct**.
+Instrumented evidence (timestamps of Helmet render vs template build, sequential
+renders):
+
+- Modern.js captures the head in `buildShellBeforeTemplate`
+  (`@modern-js/runtime` `core/server/stream/beforeTemplate.mjs`) by calling
+  `react_helmet.renderStatic()` — **module-level** — while building the shell template,
+  at `onAllReady` (SSG/bot requests) or `onShellReady` (browser requests).
+- In the prod build the route components (and their `<Helmet>`) render **after** that
+  capture: the router delivers route content via a post-load **state update, not a
+  Suspense boundary** React's `onAllReady` waits for. Measured: Helmet render ≈ 2 ms
+  *after* the template build, per request → each page captured the *previous* page's
+  title; the first captured none (empty).
+- react-helmet's server-side **`meta` rendering is broken in this stack independently of
+  timing**: even where the title *is* captured (dev + bot/curl UA), the captured state
+  contains only `title` + `link[rel=canonical]` — `metaTags` come back empty from
+  `mapStateOnServer`. So SSR output never contains description/og:*/robots metas (they
+  appear client-side after hydration).
+- Dev server: browser UA → empty title in SSR HTML (onShellReady capture); bot/curl UA →
+  correct title, no metas. Client hydration fixes the head for real browsers either way.
+  (The original React Router site had none of this — its `meta` export is
+  framework-computed per route. This is a port regression for SSR-observed heads; the
+  deployed static output is fixed by the step below, which is what matters for
+  crawlers/SEO.)
+- `splitRouteChunks: false` (eager lazy imports) does **not** help: the router's
+  state-update delivery is still not awaited by `onAllReady`.
+
+**Fix in progress — post-process the `<head>` of each static file after rendering** (the
+body is already correct):
+
+1. `src/utils/formatTitle.tsx` → **renamed to `src/utils/formatTitle.ts`** (done — pure
+   function, no JSX), so the config-context import chain is TS-only.
+2. **Rewrite `src/utils/meta.ts` as the shared meta module** (relative imports only —
+   `../constants/site`, `./formatTitle`; no `@@frontend` aliases): export `MetaTag`
+   (descriptor union: `{title}` | `{charSet}` | `{name, content}` | `{property, content}`
+   | `{tagName: 'link', rel, href}`) plus `baseMeta`, `homeMeta()`, `notFoundMeta()`,
+   `postMeta(entry, url)`, `pageMeta(entry, url)` — logic moved verbatim from the inline
+   arrays in `routes/page.tsx`, `routes/404/page.tsx`, `routes/{posts,pages}/[slug]/
+   common.tsx` (posts add `article:published_time` + `article:author`; drafts add
+   `robots noindex` at the call site — unchanged).
+3. **Route files switch to the shared fns**: posts/pages `createMeta` →
+   `postMeta`/`pageMeta` (+ `notFoundMeta` fallback); home → `homeMeta()`;
+   `404/page.tsx` + `error.tsx` → `notFoundMeta()`.
+4. **New `packages/frontend/site-head.ts`** (Node-only, like site-xml.ts):
+   - `fixStaticHead(html, tags)`: strip stale helmet output (regexes for
+     `<title…>…</title>`, `<meta charset…>`, `<meta name="viewport"…>`,
+     `<meta (name|property)="description|robots|og:…|article:…">`,
+     `<link rel="canonical"…>`), then insert the fresh tags (rendered from `MetaTag[]`
+     with HTML-escaped attribute values) before `</head>`. Stripping the template's
+     charset/viewport is intentional — the app's `baseMeta` versions (matching the
+     original site's head) are re-inserted.
+   - `staticMetaForRoute(route, posts, pages)`: `/` → `homeMeta()`, `/404` →
+     `notFoundMeta()`, `/posts/<slug>` / `/pages/<slug>` → frontmatter-driven
+     `postMeta`/`pageMeta` with `url = SITE_URL + route`; unknown → `notFoundMeta()`.
+5. **`site-xml.ts`**: export `Summary`, `collectPosts`, `collectPages` (reused by
+   site-head.ts).
+6. **`staticSitePlugin`** (modern.config.ts): after `response.text()`, run
+   `fixStaticHead(html, staticMetaForRoute(route, posts, pages))` before writing the
+   file.
+
+### Verified state (2026-10-15)
+
+- `yarn tsc --noEmit` green (frontend). Dev server (port 1741) boots clean; `/`,
+  `/posts/test`, `/pages/about`, `/pages/links` → 200 with correct SSR **bodies**
+  (Shiki + github-alert styling); `/nonexistent` → custom 404 page (not the framework
+  default).
+- XML endpoints in dev (middleware): `/atom.xml` (`application/atom+xml`, valid
+  feedsmith feed), `/robots.txt` (`text/plain`), both sitemaps (`application/xml`) —
+  correct bodies.
+- Prod build (`yarn exec modern build`) exits 0; `build/client` contains `index.html`,
+  `404.html`, `posts/test.html`, `pages/{about,links}.html`, `atom.xml`, `robots.txt`,
+  `sitemap-index.xml`, `sitemap-0.xml`, `static/` (css/js/image). All XML payloads
+  verified; sitemap + atom contain only published content (no drafts). **Only the
+  `<head>` of the HTML files is wrong (above).**
+- Deps hygiene done: removed `cheerio`, `@yarnpkg/pnpify`, `@modern-js/plugin-ssg`;
+  added `@modern-js/prod-server` + `yaml` (devDeps); `sitemap` + `feedsmith` now used
+  by `site-xml.ts`.
+- All node_modules debug instrumentation reverted (runtime `beforeTemplate.mjs`,
+  server-core `render.mjs` + `resource.mjs`, plugin `run.mjs`) — tree is clean.
+- No processes left running (dev server killed at wrap-up).
+
+### Remaining work (checklist, in order)
+
+1. Steps 2–6 of the fix above (shared meta module → route switch → `site-head.ts` →
+   plugin wiring).
+2. `yarn tsc --project packages/frontend/tsconfig.json --noEmit` + `yarn biome check
+   --write packages/frontend` (import order in the touched files).
+3. `yarn exec modern build`; verify each `build/client/**/*.html` head: correct title,
+   description (where present), og:site_name/type/title/description/url,
+   article:published_time + article:author (posts), canonical, robots noindex (404);
+   no stale duplicates; asset URLs still `/static/...` and files present.
+4. Dev re-verification: restart `modern dev`; `/`, posts, pages, **`/post-drafts/
+   test-draft` and `/page-drafts/test` (must be 200 in dev — FL_IS_PROD=0)**,
+   `/nonexistent` (404 page), XML endpoints.
+5. Prod client-bundle audit: no draft slugs/content in `build/client/static/js/**`
+   (e.g. `Test Draft` / `Test Page` strings).
+6. `yarn preview` smoke test (serve `build/client`; pages load standalone; unknown URL
+   → `404.html`).
+7. `yarn lint` (root) green — note `scripts/lint.sh` may still reference the old
+   `frontend:typegen` script; it was dropped in the port (verify + fix the script if
+   stale).
+8. Docs: root + `packages/frontend` `AGENTS.md` still describe React Router/PnP —
+   rewrite (framework, commands, file-convention routing, `staticSitePlugin` +
+   `site-xml.ts`/`site-head.ts`, `nodeLinker: node-modules`, the
+   `YARN_GLOBAL_FOLDER` note).
+9. Commit everything on `feat/modern-js` (currently committed: only `plan.md`
+   (`ca99ccc`); the whole port is uncommitted).
+
+### Environment notes
+
+- Branch `feat/modern-js`, worktree
+  `/home/futursolo/projects/furtherland/.yolo/worktrees/feat-modern-js`.
+- Yarn 4 via corepack; always
+  `YARN_GLOBAL_FOLDER=$(git rev-parse --show-toplevel)/.yarn/berry` before yarn
+  commands; `nodeLinker: node-modules`.
+- Build/dev logs: `/tmp/opencode/modern-build{1..8}.log`,
+  `/tmp/opencode/modern-dev2{0,1}.log`.
+- Content fixtures: `packages/contents/src/posts/2026-09-20/test.mdx`,
+  `pages/{about,links}.mdx`, `post-drafts/2099-12-31/test-draft.mdx`,
+  `page-drafts/test.mdx`.
 
 ## 1. Goal
 

@@ -10,5 +10,5 @@ export { default as LoadingIndicator } from './LoadingIndicator';
 export { default as Main, MainContainer } from './Main';
 export { default as MdxRenderer } from './MdxRenderer';
 export { default as NotFound } from './NotFound';
+export { default as PostList } from './PostList';
 export { default as Render } from './Render';
-export { default as ThemePreloadScript } from './ThemePreloadScript';

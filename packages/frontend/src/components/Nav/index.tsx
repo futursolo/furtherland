@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Link as RouterLink } from 'react-router';
+import { Link as RouterLink } from '@modern-js/runtime/router';
 
 import Box from '@@frontend/components/Box';
 import FlexSpace from '@@frontend/components/FlexSpace';

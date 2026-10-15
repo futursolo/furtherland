@@ -1,10 +1,9 @@
 {
-  "include": ["**/*.ts", "**/*.tsx", ".react-router/types/**/*"],
+  "include": ["**/*.ts", "**/*.tsx"],
   "compilerOptions": {
     "target": "ESNext",
     "jsx": "react-jsx",
     "module": "ESNext",
-    "rootDirs": [".", "./.react-router/types"],
     "paths": {
       "@@frontend/*": ["./src/*"],
       "@@common/*": ["../common/src/*"],
@@ -12,7 +11,7 @@
       "@@contents/*": ["../contents/src/*"]
     },
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "types": ["vite/client", "node", "@furtherland/vite-plugins/multiview"],
+    "types": ["node", "@rspack/core/module"],
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,

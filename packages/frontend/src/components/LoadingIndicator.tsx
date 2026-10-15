@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-import { useNavigation } from 'react-router';
+import { useNavigation } from '@modern-js/runtime/router';
 
 import { styled } from '@@frontend/utils';
 
