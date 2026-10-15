@@ -1,3 +1,4 @@
+export { imagePrivacyPlugin } from './image-privacy.ts';
 export {
   multiviewImagePlugin,
   MULTIVIEW_FORMATS,
