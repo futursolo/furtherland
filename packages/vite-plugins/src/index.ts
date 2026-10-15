@@ -57,14 +57,21 @@ export interface MultiviewFormat {
 
 /**
  * The formats generated for every matched import, in the order they appear in
- * the emitted `<picture>`. The last format is used as the `<img>` fallback.
+ * the emitted `<picture>`. The `<img>` fallback is chosen separately per
+ * source: JPEG for opaque images, PNG for images with an alpha channel (JPEG
+ * cannot represent transparency).
  */
 export const MULTIVIEW_FORMATS: readonly MultiviewFormat[] = [
   { ext: 'jxl', mime: 'image/jxl' },
   { ext: 'avif', mime: 'image/avif' },
   { ext: 'webp', mime: 'image/webp' },
-  { ext: 'jpg', mime: 'image/jpeg' },
 ];
+
+/** The `<img>` fallback for opaque sources. */
+const JPEG_FALLBACK: MultiviewFormat = { ext: 'jpg', mime: 'image/jpeg' };
+
+/** The `<img>` fallback for sources with an alpha channel. */
+const PNG_FALLBACK: MultiviewFormat = { ext: 'png', mime: 'image/png' };
 
 const IMAGE_EXTENSIONS = new Set([
   'png',
@@ -84,6 +91,10 @@ const IMAGE_EXTENSIONS = new Set([
 ]);
 
 const VIRTUAL_PREFIX = '\0@furtherland/vite-plugins:multiview:';
+
+// Bumped whenever the generated output changes for an unchanged source, so
+// that stale cache entries are regenerated instead of being reused.
+const CACHE_FORMAT_VERSION = 3;
 
 const isJpeg = (ext: string): boolean => ext === 'jpg' || ext === 'jpeg';
 
@@ -107,6 +118,8 @@ const SHARP_WRITERS: Record<
   webp: (image, options) =>
     options.lossless ? image.webp({ lossless: true }) : image.webp({ quality: options.quality }),
   jpg: (image, options) => image.jpeg({ quality: options.quality }),
+  // PNG has no lossy mode, so the fallback is recompressed losslessly.
+  png: (image) => image.png({ compressionLevel: 9 }),
 };
 
 const hash = (input: string): string => createHash('sha1').update(input).digest('hex').slice(0, 10);
@@ -193,7 +206,10 @@ const generateModule = (
     '',
     ...sources.map((source, index) => `import __multiview${index} from '${source.url}';`),
     '',
-    ...sources.map((source, index) => `export const ${source.ext} = __multiview${index};`),
+    ...sources.map((source, index) => {
+      const exportName = index === fallbackIndex ? 'fallback' : source.ext;
+      return `export const ${exportName} = __multiview${index};`;
+    }),
     '',
     'const MultiviewImage = (props) => {',
     "  const { ImgComponent: MultiviewImg = 'img', ...rest } = props ?? {};",
@@ -218,16 +234,20 @@ const generateModule = (
  * every generated format and a fallback `<img>`.
  *
  * Regardless of the source format, the loader generates JXL, AVIF and WebP
- * variants plus a JPEG fallback (reused as-is when the source is already
- * JPEG). The generated files are written to a cache directory (by default
- * `<root>/node_modules/.image-opt-cache`), keyed by the SHA-256 of the
- * source image's content, and served by Vite's regular asset pipeline in
- * both dev and build.
+ * variants plus a fallback: JPEG for opaque sources, and a lossless PNG for
+ * sources with an alpha channel (JPEG cannot represent transparency). A
+ * source in the same format as a variant is reused as-is for that variant,
+ * but the fallback of a large source is re-encoded so that it is compressed
+ * like the other generated formats. The generated files are written to a
+ * cache directory (by default `<root>/node_modules/.image-opt-cache`), keyed
+ * by the SHA-256 of the source image's content, and served by Vite's regular
+ * asset pipeline in both dev and build.
  *
- * The module's default export is the component. The URL of each format is
- * also available as a named export (`jxl`, `avif`, `webp`, `jpg`). The
- * component accepts an `ImgComponent` prop to replace the fallback `<img>`
- * element (e.g. with a styled component).
+ * The module's default export is the component. The URL of each variant is
+ * available as a named export (`jxl`, `avif`, `webp`), and the URL of the
+ * fallback `<img>` as `fallback`. The component accepts an `ImgComponent`
+ * prop to replace the fallback `<img>` element (e.g. with a styled
+ * component).
  *
  * Source images smaller than `losslessBelow` are never degraded: the
  * variants are encoded losslessly (JXL in lossless mode) and the fallback
@@ -321,12 +341,16 @@ export const multiviewImagePlugin = (userOptions: MultiviewImageOptions = {}): P
         // losslessly and the fallback is the original file itself.
         const lossless = info.size < losslessBelow;
 
+        // JPEG cannot represent transparency, so sources with an alpha
+        // channel get a lossless PNG fallback instead.
+        const formats = [...MULTIVIEW_FORMATS, metadata.hasAlpha ? PNG_FALLBACK : JPEG_FALLBACK];
+
         // Cache identity is the SHA-256 of the source image's content, so it
         // is stable across machines and independent of the file's location,
         // timestamp or name.
         const contentSha256 = createHash('sha256').update(sourceBuffer).digest('hex');
         const key = hash(
-          `${contentSha256}:${quality}:${effort}:${lossless ? 'lossless' : 'lossy'}`,
+          `${CACHE_FORMAT_VERSION}:${contentSha256}:${quality}:${effort}:${lossless ? 'lossless' : 'lossy'}`,
         );
 
         const sourceExtension = path.extname(sourcePath).slice(1).toLowerCase();
@@ -335,7 +359,7 @@ export const multiviewImagePlugin = (userOptions: MultiviewImageOptions = {}): P
         // different directories never collide (or garbage-collect each other).
         const sourceHash = hash(sourcePath).slice(0, 8);
 
-        const cachePaths = MULTIVIEW_FORMATS.map((format) =>
+        const cachePaths = formats.map((format) =>
           path.join(cacheDir, `${baseName}-${sourceHash}-${key}.${format.ext}`),
         );
         const currentFiles = cachePaths.map((cachePath) => path.basename(cachePath));
@@ -348,13 +372,18 @@ export const multiviewImagePlugin = (userOptions: MultiviewImageOptions = {}): P
         if (missing) {
           await mkdir(cacheDir, { recursive: true });
 
-          for (const [index, format] of MULTIVIEW_FORMATS.entries()) {
+          for (const [index, format] of formats.entries()) {
             if ((await stat(cachePaths[index]).catch(() => null)) != null) continue;
 
             const sameFormat =
               sourceExtension === format.ext || (isJpeg(sourceExtension) && isJpeg(format.ext));
+            const isFallback = index === formats.length - 1;
+            // A same-format source is reused as-is, except for the fallback
+            // of a large source, which is re-encoded so that it is compressed
+            // like the other generated formats.
+            const reuseOriginal = sameFormat && (lossless || !isFallback);
             let buffer: Buffer;
-            if (sameFormat) {
+            if (reuseOriginal) {
               buffer = sourceBuffer;
             } else if (lossless) {
               // Never degrade a small image: encode losslessly, and keep the
@@ -362,7 +391,7 @@ export const multiviewImagePlugin = (userOptions: MultiviewImageOptions = {}): P
               buffer =
                 format.ext === 'jxl'
                   ? await encodeJxl(sourceBuffer, { quality, effort, lossless: true })
-                  : format.ext === 'jpg'
+                  : isFallback
                     ? sourceBuffer
                     : await SHARP_WRITERS[format.ext](sharp(sourceBuffer), {
                         lossless: true,
@@ -385,7 +414,7 @@ export const multiviewImagePlugin = (userOptions: MultiviewImageOptions = {}): P
           }
         }
 
-        const sources: GeneratedSource[] = MULTIVIEW_FORMATS.map((format, index) => ({
+        const sources: GeneratedSource[] = formats.map((format, index) => ({
           ext: format.ext,
           mime: format.mime,
           url: normalizePath(cachePaths[index]),
