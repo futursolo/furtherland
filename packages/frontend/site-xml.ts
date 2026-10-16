@@ -21,7 +21,7 @@ import { AUTHOR_NAME, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from './src/consta
  * available through the Rsbuild MDX pipeline.
  */
 
-type Summary = {
+export type Summary = {
   slug: string;
   title: string;
   date?: string;
@@ -48,7 +48,7 @@ const readSummary = (file: string, fallbackDate?: string): Summary | null => {
   };
 };
 
-const collectPosts = (contentsRoot: string): Summary[] => {
+export const collectPosts = (contentsRoot: string): Summary[] => {
   const postsDir = path.join(contentsRoot, 'posts');
   if (!existsSync(postsDir)) return [];
   const out: Summary[] = [];
@@ -64,7 +64,7 @@ const collectPosts = (contentsRoot: string): Summary[] => {
   return out.sort((a, b) => (a.date === b.date ? 0 : a.date! < b.date! ? 1 : -1));
 };
 
-const collectPages = (contentsRoot: string): Summary[] => {
+export const collectPages = (contentsRoot: string): Summary[] => {
   const pagesDir = path.join(contentsRoot, 'pages');
   if (!existsSync(pagesDir)) return [];
   const out: Summary[] = [];

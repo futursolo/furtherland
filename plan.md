@@ -1,15 +1,59 @@
 # Plan: Port `@furtherland/frontend` from React Router (Vite) to Modern.js
 
-Status: **port functionally complete — static-head post-processing is the last remaining
-piece** (see §0, 2026-10-15). Branch `feat/modern-js`.
+Status: **complete** (2026-10-16). Branch `feat/modern-js`. The static-head
+post-processing fix landed, plus a draft-leak fix in the prod client bundle
+(see §0). All checklist items verified; docs rewritten; committed.
 
 ---
 
-## 0. Status as of 2026-10-15 — read this first
+## 0. Status as of 2026-10-16 — read this first
 
 Everything below §0 is the original (historical) plan. Where it disagrees with §0, §0
-wins. The port is built and verified end-to-end except for the `<head>` of the
-statically rendered pages (root cause found; fix half-prepared — see "Remaining work").
+wins. The port is built and verified end-to-end, including the `<head>` of the
+statically rendered pages (fixed by post-processing) and a clean prod client
+bundle (no draft code).
+
+### Done 2026-10-16 (completing the 2026-10-15 checklist)
+
+- **Static-head fix (checklist 1–3)**: `src/utils/meta.ts` is now the shared meta
+  module (`MetaTag` descriptor union + `baseMeta` / `homeMeta` / `notFoundMeta` /
+  `postMeta` / `pageMeta`; relative imports only so it loads in the Node-only
+  build context). Route files switched to it; new Node-only `site-head.ts`
+  (`fixStaticHead` strips the stale helmet output and re-inserts fresh tags before
+  `</head>`, `staticMetaForRoute` maps route → tags); `staticSitePlugin` runs
+  `fixStaticHead` on every rendered page before writing. `site-xml.ts` exports
+  `Summary` / `collectPosts` / `collectPages`. Verified: every `build/client/**/*.html`
+  head has the correct title/description/og:*/article:*/canonical (posts) /
+  robots noindex (404), no stale duplicates, asset URLs intact.
+- **Draft leak in the prod client bundle (checklist 5) — root cause + fix**:
+  the prod build's client-side router runs data loaders in the browser, so every
+  module a loader imports is bundled. Two defects let draft code through:
+  (a) `src/modern.routes.ts`'s draft filter was a no-op (it matched the child
+  `path` against bare segments, but the framework flattens the detected tree so
+  `path` is the full relative path `post-drafts/:slug`) **and** its `isProd`
+  condition was inverted; (b) the home loader statically imported
+  `getDraftPostSummaries` from `posts.server.ts`, whose draft `import.meta.glob`
+  pulled the draft MDX chunks into the client bundle even with the routes
+  filtered. Fix: corrected the filter (first-segment match, `!isProd ||
+  !isDraft`), and split the draft globs into their own modules
+  (`src/content/posts-drafts.server.ts`, `pages-drafts.server.ts`) that only the
+  draft data files import; the home loader reaches them through a
+  development-only dynamic import (`import.meta.env.PROD ? … :
+  import('@@frontend/content/posts-drafts.server')`), dead code in the prod
+  bundle. Verified: no draft titles/slugs/content in `build/client/static/js/**`
+  (the only remaining `post-drafts` string is the `PostList` link-href template,
+  which the original site's bundle also contained); no draft routes in the
+  client route manifest.
+- **Verification (checklist 4, 6, 7)**: dev server — home lists published +
+  draft posts, posts/pages render, `/post-drafts/test-draft` +
+  `/page-drafts/test` → 200 (draft content present), `/nonexistent` → 404 page,
+  XML endpoints correct (types + payloads). `yarn preview` — pages load
+  standalone, unknown URL → 404 page. Root `yarn lint` green.
+- **Docs (checklist 8)**: root + `packages/frontend` `AGENTS.md` rewritten for
+  Modern.js (framework, commands, file-convention routing, `staticSitePlugin` +
+  `site-xml.ts`/`site-head.ts`, `nodeLinker: node-modules`, draft-content
+  isolation). `scripts/lint.sh` needed no change (no stale `frontend:typegen`).
+- **Committed** on `feat/modern-js`.
 
 ### Deviations from the original plan (all deliberate, all verified)
 
@@ -87,8 +131,8 @@ renders):
 - `splitRouteChunks: false` (eager lazy imports) does **not** help: the router's
   state-update delivery is still not awaited by `onAllReady`.
 
-**Fix in progress — post-process the `<head>` of each static file after rendering** (the
-body is already correct):
+**Fix (implemented + verified 2026-10-16) — post-process the `<head>` of each static
+file after rendering** (the body was already correct):
 
 1. `src/utils/formatTitle.tsx` → **renamed to `src/utils/formatTitle.ts`** (done — pure
    function, no JSX), so the config-context import chain is TS-only.
@@ -141,32 +185,27 @@ body is already correct):
   server-core `render.mjs` + `resource.mjs`, plugin `run.mjs`) — tree is clean.
 - No processes left running (dev server killed at wrap-up).
 
-### Remaining work (checklist, in order)
+### ~~Remaining work~~ — all completed 2026-10-16 (see "Done 2026-10-16" above)
 
-1. Steps 2–6 of the fix above (shared meta module → route switch → `site-head.ts` →
+1. ✅ Steps 2–6 of the fix (shared meta module → route switch → `site-head.ts` →
    plugin wiring).
-2. `yarn tsc --project packages/frontend/tsconfig.json --noEmit` + `yarn biome check
-   --write packages/frontend` (import order in the touched files).
-3. `yarn exec modern build`; verify each `build/client/**/*.html` head: correct title,
-   description (where present), og:site_name/type/title/description/url,
+2. ✅ `yarn tsc --project packages/frontend/tsconfig.json --noEmit` + `yarn biome check
+   --write packages/frontend`.
+3. ✅ `yarn exec modern build`; every `build/client/**/*.html` head verified: correct
+   title, description (where present), og:site_name/type/title/description/url,
    article:published_time + article:author (posts), canonical, robots noindex (404);
    no stale duplicates; asset URLs still `/static/...` and files present.
-4. Dev re-verification: restart `modern dev`; `/`, posts, pages, **`/post-drafts/
-   test-draft` and `/page-drafts/test` (must be 200 in dev — FL_IS_PROD=0)**,
-   `/nonexistent` (404 page), XML endpoints.
-5. Prod client-bundle audit: no draft slugs/content in `build/client/static/js/**`
-   (e.g. `Test Draft` / `Test Page` strings).
-6. `yarn preview` smoke test (serve `build/client`; pages load standalone; unknown URL
-   → `404.html`).
-7. `yarn lint` (root) green — note `scripts/lint.sh` may still reference the old
-   `frontend:typegen` script; it was dropped in the port (verify + fix the script if
-   stale).
-8. Docs: root + `packages/frontend` `AGENTS.md` still describe React Router/PnP —
-   rewrite (framework, commands, file-convention routing, `staticSitePlugin` +
-   `site-xml.ts`/`site-head.ts`, `nodeLinker: node-modules`, the
-   `YARN_GLOBAL_FOLDER` note).
-9. Commit everything on `feat/modern-js` (currently committed: only `plan.md`
-   (`ca99ccc`); the whole port is uncommitted).
+4. ✅ Dev re-verification: `/`, posts, pages, `/post-drafts/test-draft` +
+   `/page-drafts/test` → 200 (draft content present; home lists drafts),
+   `/nonexistent` → 404 page, XML endpoints correct.
+5. ✅ Prod client-bundle audit: no draft slugs/content in
+   `build/client/static/js/**` — required the draft-leak fix described in "Done
+   2026-10-16" (route filter no-op + inverted condition, and the home loader's
+   static import of the draft glob).
+6. ✅ `yarn preview` smoke test: pages load standalone; unknown URL → 404 page.
+7. ✅ `yarn lint` (root) green (`scripts/lint.sh` had no stale `frontend:typegen`).
+8. ✅ Docs: root + `packages/frontend` `AGENTS.md` rewritten for Modern.js.
+9. ✅ Committed on `feat/modern-js`.
 
 ### Environment notes
 

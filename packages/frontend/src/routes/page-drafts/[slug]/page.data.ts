@@ -1,6 +1,6 @@
 import { data } from '@modern-js/runtime/router';
 
-import { getDraftPage } from '@@frontend/content/pages.server';
+import { getDraftPage } from '@@frontend/content/pages-drafts.server';
 
 export const loader = async ({ params }: { params: { slug: string } }) => {
   if (import.meta.env.PROD) {

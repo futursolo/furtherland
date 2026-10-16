@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
 
-import type { MetaDescriptor } from '@modern-js/runtime/router';
+import type { MetaTag } from './meta';
 
 /**
- * Render a list of React Router style meta descriptors as react-helmet tags.
+ * Render a list of meta tag descriptors as react-helmet tags.
  */
-const metaToTags = (descriptors: MetaDescriptor[]): ReactNode[] =>
+const metaToTags = (descriptors: MetaTag[]): ReactNode[] =>
   descriptors.flatMap((descriptor) => {
     if (typeof descriptor !== 'object' || descriptor === null) return [];
 

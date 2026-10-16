@@ -24,7 +24,8 @@ import remarkFrontmatter from 'remark-frontmatter';
 import remarkGfm from 'remark-gfm';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 
-import { buildSiteXml } from './site-xml';
+import { fixStaticHead, staticMetaForRoute } from './site-head';
+import { buildSiteXml, collectPages, collectPosts } from './site-xml';
 import { SITE_NAME, SITE_URL } from './src/constants/site';
 
 const configDir = path.dirname(fileURLToPath(import.meta.url));
@@ -155,6 +156,13 @@ const staticSitePlugin: CliPlugin<AppTools> = {
           : route,
       );
 
+      // The fresh <head> for each rendered route (the rendered helmet
+      // output is stale/empty — see site-head.ts).
+      const { posts, pages } = {
+        posts: collectPosts(contentsRoot()),
+        pages: collectPages(contentsRoot()),
+      };
+
       const server = await createProdServer({
         pwd: distDir,
         // The normalized app config is structurally wider than the server's
@@ -183,7 +191,10 @@ const staticSitePlugin: CliPlugin<AppTools> = {
         const response = await requestHandler(request, {
           node: { req: mockReq, res: new ServerResponse(mockReq) },
         });
-        const html = await response.text();
+        const html = fixStaticHead(
+          await response.text(),
+          staticMetaForRoute(route, posts, pages),
+        );
         const routeDir = route === '/' ? '' : route.slice(1);
         const targetPath = path.join(outDir, routeDir === '' ? 'index.html' : `${routeDir}.html`);
         mkdirSync(path.dirname(targetPath), { recursive: true });

@@ -3,9 +3,8 @@ import { isRouteErrorResponse, useRouteError } from '@modern-js/runtime/router';
 
 import NotFound from '@@frontend/components/NotFound';
 import RootLayout from '@@frontend/components/RootLayout';
-import formatTitle from '@@frontend/utils/formatTitle';
 import metaToTags from '@@frontend/utils/helmet';
-import { baseMeta } from '@@frontend/utils/meta';
+import { notFoundMeta } from '@@frontend/utils/meta';
 
 const ErrorBoundary = () => {
   const error = useRouteError();
@@ -13,13 +12,7 @@ const ErrorBoundary = () => {
   if (isRouteErrorResponse(error) && error.status === 404) {
     return (
       <>
-        <Helmet>
-          {metaToTags([
-            ...baseMeta,
-            { title: formatTitle('404 Not Found') },
-            { name: 'robots', content: 'noindex' },
-          ])}
-        </Helmet>
+        <Helmet>{metaToTags(notFoundMeta())}</Helmet>
         <RootLayout headerKind="default">
           <NotFound />
         </RootLayout>

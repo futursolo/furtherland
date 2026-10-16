@@ -1,4 +1,4 @@
-import { SITE_NAME } from '@@frontend/constants/site';
+import { SITE_NAME } from '../constants/site';
 
 const formatTitle = (title: string) => {
   if (title) {
