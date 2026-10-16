@@ -19,18 +19,11 @@ import { baseMeta } from '@@frontend/utils/meta';
 import type { Route } from './+types/root';
 import RootLayout from './root/Layout';
 
-export const meta: Route.MetaFunction = ({ matches }: Route.MetaArgs): Route.MetaDescriptors => {
-  const hasNotFound = matches.some(
-    (m) => m !== undefined && isRouteErrorResponse(m.error) && m.error.status === 404,
-  );
-
-  const result: Route.MetaDescriptors = [...baseMeta];
-  if (hasNotFound) {
-    result.push({ title: formatTitle('404 Not Found') }, { name: 'robots', content: 'noindex' });
-  }
-
-  return result;
-};
+export const meta: Route.MetaFunction = (): Route.MetaDescriptors => [
+  ...baseMeta,
+  { title: formatTitle('404 Not Found') },
+  { name: 'robots', content: 'noindex' },
+];
 
 export const links: Route.LinksFunction = () => [
   {
