@@ -5,7 +5,7 @@
   "type": "module",
   "dependencies": {
     "@furtherland/content-components": "workspace:^",
-    "react": "^19.3.0"
+    "react": "^19.3.1"
   },
   "devDependencies": {
     "@types/react": "^19.3.0"
