@@ -7,7 +7,7 @@
     "frontend:start": "react-router dev --port 1741",
     "frontend:typegen": "NODE_ENV=development react-router typegen --mode=development",
     "frontend:build": "scripts/build.sh",
-    "frontend:preview": "serve ./build/client"
+    "frontend:preview": "vite preview"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -45,7 +45,6 @@
     "remark-gfm": "^4.0.1",
     "remark-mdx-frontmatter": "^6.0.0",
     "rollup": "^4.66.0",
-    "serve": "^14.2.6",
     "typescript": "^6",
     "vite": "^8.3.5",
     "vite-node": "^6.0.0"
