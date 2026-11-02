@@ -1,6 +1,6 @@
 import { styled } from '@@frontend/utils';
 
-const UnorderedList = styled('ol')({
+const UnorderedList = styled('ul')({
   margin: '0.5rem',
 });
 
