@@ -8,6 +8,8 @@ updates:
       npm:
         patterns:
           - '*'
+        exclude-patterns:
+          - 'typescript'
 
   - package-ecosystem: "github-actions"
     directory: "/"
