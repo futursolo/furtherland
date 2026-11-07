@@ -16,7 +16,7 @@
     "@furtherland/common": "workspace:^",
     "@mui/material": "^9.5.0",
     "@mui/system": "^9.5.0",
-    "@mui/x-charts": "^9.16.0",
+    "@mui/x-charts": "^9.17.0",
     "jotai": "^3.0.1",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
